@@ -1,5 +1,5 @@
 from PyQt5.QtGui import *
-from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
+from PyQt5.QtMultimedia import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5 import uic
@@ -48,7 +48,8 @@ class MainWin(QMainWindow):
         )
         self.serialT.sysDate.connect(self.receiveDate)
         self.serialT.sysClock.connect(self.adjustTime)
-        self.serialT.start()          
+        # self.serialT.start()       
+        # self.serialT.setPriority(0)
         self.license = self.configs['LICENSE']
         self.movie = QMovie(LOCK_GIF)
         self.movie.frameChanged.connect(self.unlock)
@@ -57,7 +58,13 @@ class MainWin(QMainWindow):
         self.movie.stop()
         self.lblSplash.setStyleSheet(f'border-image:url({SPLASH[-21:]});')
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
-        self.time(edit=True)
+        self.time(edit=True)        
+        self.shotSound = QSoundEffect()
+        self.shotSound.setSource(QUrl.fromLocalFile(SHOT_SOUND))
+        self.wellcomeSound = QSoundEffect()
+        self.wellcomeSound.setSource(QUrl.fromLocalFile(WELLCOME_SOUND))
+        self.touchSound = QSoundEffect()
+        self.touchSound.setSource(QUrl.fromLocalFile(TOUCH_SOUND))
         self.initPages()
         self.initTimers()
         self.initButtons()
@@ -98,6 +105,9 @@ class MainWin(QMainWindow):
         self.initSensors()
         self.serialT.readTime()
 
+    def readData(self):
+        self.serialT.checkBuffer()
+
     def initPages(self):
         self.stackedWidget.setCurrentWidget(self.splashPage)
         self.stackedWidgetLaser.setCurrentIndex(0)
@@ -125,6 +135,9 @@ class MainWin(QMainWindow):
         self.hwStackedWidget.setSlideTransition(True)
 
     def initTimers(self):
+        self.checkBuffer = QTimer()
+        self.checkBuffer.timeout.connect(self.readData)
+        self.checkBuffer.start(10)
         self.loginLabelTimer = QTimer()
         self.submitLabelTimer = QTimer()
         self.editLabelTimer = QTimer()
@@ -290,6 +303,25 @@ class MainWin(QMainWindow):
         self.btnBackLaser.clicked.connect(lambda: self.setReady(False))
         self.btnBackLaser.clicked.connect(self.serialT.selectionPage)
         self.btnBackLaser.setVisible(False)
+        sensors = [
+            'btnPhysicalDamage', 'btnOverHeat', 'btnTemp',
+            'btnLock', 'btnWaterLevel', 'btnWaterflow',
+        ]
+        self.touchSignals = {}
+        allButtons = self.findChildren(QPushButton)
+        for btn in allButtons:
+            if btn.objectName() == 'btnSaveCase':
+                self.touchSignals[btn.objectName()] = btn.clicked.connect(
+                    self.touchSound.play
+                )
+            elif btn.objectName() not in sensors:
+                self.touchSignals[btn.objectName()] = btn.pressed.connect(
+                    self.touchSound.play
+                )
+
+        # for btn in allButtons:
+        #     if btn.objectName() not in sensors:
+        #         btn.disconnect(self.touchSignals[btn.objectName()])
 
     def initTextboxes(self):
         self.txtNumber.returnPressed.connect(self.startSession)
@@ -421,6 +453,8 @@ class MainWin(QMainWindow):
             pass
 
     def powerOff(self):
+        self.serialT.quit()
+        self.serialT.closePort()
         if platform.system() == 'Windows':
             self.close()
         else:
@@ -436,8 +470,11 @@ class MainWin(QMainWindow):
     def shot(self):
         self.currentCounter += 1
         self.user.incShot(self.bodyPart)
-        self.lblCounterValue.setText(str(self.currentCounter))
-        self.sparkTimer.start(1000/self.frequency + 50)
+        self.lblCounterValue.setText(f'{self.currentCounter}')
+        QApplication.processEvents()
+        self.shotSound.play()
+        QApplication.processEvents()
+        self.sparkTimer.start(1000/self.frequency + 100)
         self.lblSpark.setVisible(True)
         self.lblLasing.setVisible(True)
 
@@ -600,6 +637,7 @@ class MainWin(QMainWindow):
             btnDelete.setIconSize(QSize(60, 60))
             btnDelete.setStyleSheet(ACTION_BTN)
             btnDelete.clicked.connect(self.removeLock)
+            btnDelete.pressed.connect(self.touchSound.play)
             self.tableLock.setCellWidget(i, 3, btnDelete)
 
     def removeLock(self):
@@ -662,6 +700,7 @@ class MainWin(QMainWindow):
                     self.keyboard('hide')
                     self.movie.start()
                     self.txtPassword.clear()
+                    self.wellcomeSound.play()
                     return
 
                 else:
@@ -676,6 +715,9 @@ class MainWin(QMainWindow):
         if frameNumber == self.movie.frameCount() - 1: 
             self.movie.stop()
             os.chdir(CURRENT_FILE_DIR)
+            self.serialT.quit()
+            self.serialT.closePort()
+            QApplication.processEvents()
             if platform.system() == 'Windows':
                 os.system('python app.py')
             else:

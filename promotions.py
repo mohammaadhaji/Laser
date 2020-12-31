@@ -1,9 +1,10 @@
 from PyQt5.QtMultimediaWidgets import QVideoWidget
+from PyQt5.QtMultimedia import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtWidgets, QtCore
-from paths import INFORMATION_ICON
+from paths import *
 from styles import ACTION_BTN
 import json
 
@@ -14,7 +15,8 @@ class Action(QWidget):
         super().__init__(parent)
         self.number = number
         stylesheet = ACTION_BTN
-                    
+        self.sound = QSoundEffect()
+        self.sound.setSource(QUrl.fromLocalFile(TOUCH_SOUND))
         layout = QHBoxLayout(self)
         btn_edit = QPushButton(self)
         editIcon = QIcon()
@@ -23,6 +25,7 @@ class Action(QWidget):
         btn_edit.setIconSize(QSize(60, 60))
         btn_edit.setStyleSheet(stylesheet)
         btn_edit.clicked.connect(lambda: self.edit.emit(self.number))
+        btn_edit.pressed.connect(self.sound.play)
 
         spacerItem = QSpacerItem(
             40, 20, 

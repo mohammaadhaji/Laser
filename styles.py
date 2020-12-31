@@ -166,9 +166,6 @@ QSlider::handle:horizontal {
     margin: -40px 0;
     padding: -40px 0px;
 }
-QSlider::handle:horizontal:hover {
-    background-color: rgb(155, 180, 255);
-}
 QSlider::handle:horizontal:pressed {
     background-color: rgb(65, 255, 195);
 }
