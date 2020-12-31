@@ -225,11 +225,10 @@ class SerialThread(QThread):
                                         
                                         if packet[PAGE_INDEX] == SETTING_PAGE:
                                             if packet[FIELD_INDEX] == 0:
-                                                data = packet[4:-2].decode()
-                                                d = data[-2:]
-                                                m = data[-4:-2]
-                                                y = data[-8:-4]
-                                                serNum = data[:-8]
+                                                serNum = packet[4:-2].decode()
+                                                d = serNum[-2:]
+                                                m = serNum[-4:-2]
+                                                y = serNum[-8:-4]
                                                 pdate = y + ' / ' + m + ' / ' + d
                                                 self.productionDate.emit(pdate)
                                                 self.serialNumber.emit(serNum)
@@ -272,11 +271,10 @@ class SerialThread(QThread):
 
                                         elif packet[PAGE_INDEX] == SETTING_PAGE:
                                             if packet[FIELD_INDEX] == 0:
-                                                data = packet[4:-2].decode()
-                                                d = data[-2:]
-                                                m = data[-4:-2]
-                                                y = data[-8:-4]
-                                                serNum = data[:-8]
+                                                serNum = packet[4:-2].decode()
+                                                d = serNum[-2:]
+                                                m = serNum[-4:-2]
+                                                y = serNum[-8:-4]
                                                 pdate = y + ' / ' + m + ' / ' + d
                                                 self.productionDate.emit(pdate)
                                                 self.serialNumber.emit(serNum)

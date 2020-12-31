@@ -14,7 +14,7 @@ from user import *
 from lock import *
 from itertools import chain
 from pathlib import Path
-import jdatetime, datetime, platform, hashlib, math, sys
+import jdatetime, platform, hashlib, math, sys
 
 
 class MainWin(QMainWindow):
@@ -267,7 +267,6 @@ class MainWin(QMainWindow):
         self.btnIncF.clicked.connect(lambda: self.setFrequency('inc'))
         self.btnDecF.clicked.connect(lambda: self.setFrequency('dec'))
         self.sliderFrequency.sliderMoved.connect(self.sldrSetFrequency)
-        self.sliderFrequency.sliderReleased.connect(self.freqSldrReleasd)
         self.btnMale.clicked.connect(lambda: self.stackedWidgetSex.setCurrentWidget(self.malePage))
         self.btnFemale.clicked.connect(lambda: self.stackedWidgetSex.setCurrentWidget(self.femalePage))
         self.btnDecCooling.clicked.connect(lambda: self.setCooling('dec'))
@@ -420,7 +419,6 @@ class MainWin(QMainWindow):
                 self.unlockLIC(auto=True)
         except Exception:
             pass
-
 
     def powerOff(self):
         if platform.system() == 'Windows':
@@ -718,6 +716,7 @@ class MainWin(QMainWindow):
             self.enterSettingPage(REPORT)
 
         elif password == '0':
+            self.enterSettingPage(REPORT)
             for txt in txts:
                 txt.setReadOnly(True)
                 txt.setDisabled(True)
@@ -729,7 +728,7 @@ class MainWin(QMainWindow):
             self.lblRpiVersion.setVisible(False)
             self.txtHwPass.clear()
             self.stackedWidgetSettings.setCurrentWidget(self.hWPage)
-            self.enterSettingPage(REPORT)
+            
 
         else:
             self.txtHwPass.setStyleSheet(TXT_HW_WRONG_PASS)
@@ -1156,24 +1155,26 @@ class MainWin(QMainWindow):
     def setFrequency(self, operation):
         freq = self.frequency
         freq = freq + 1 if operation == 'inc' else freq - 1
-        freqCon = MIN_FREQUENCY <= freq <= MAX_FREQUENCY
-        freqPlCon = freq <= 1000 / (2 * self.pulseWidth)
-        if freqCon and freqPlCon:
+        if MIN_FREQUENCY <= freq <= MAX_FREQUENCY:
             self.frequency = freq
             self.sliderFrequency.setValue(freq)
             self.lblFrequencyValue.setText(str(freq))
-                 
+            maxPl_f = 1000 / (2 * self.frequency)
+            maxPl_f_con = MAX_PULSE_WIDTH >= maxPl_f
+            if maxPl_f_con and self.pulseWidth >= maxPl_f:
+                self.pulseWidth = math.floor(maxPl_f)
+                self.sliderPulseWidth.setValue(self.pulseWidth)
+                self.lblPulseWidthValue.setText(str(self.pulseWidth))
+ 
     def sldrSetFrequency(self, value):
-        freqCon = MIN_FREQUENCY <= value <= MAX_FREQUENCY
-        freqPlCon = value <= 1000 / (2 * self.pulseWidth)
-        if freqCon and freqPlCon:
-            self.frequency = value
-            self.lblFrequencyValue.setText(str(value))
-            self.sliderFrequency.setValue(value)
-            self.lblFrequencyValue.setText(str(value))
-
-    def freqSldrReleasd(self):
-        self.sliderFrequency.setValue(self.frequency)
+        self.frequency = value
+        self.lblFrequencyValue.setText(str(value))
+        maxPl_f = 1000 / (2 * self.frequency)
+        maxPl_f_con = MAX_PULSE_WIDTH >= maxPl_f
+        if maxPl_f_con and self.pulseWidth >= maxPl_f:
+            self.pulseWidth = math.floor(maxPl_f)
+            self.sliderPulseWidth.setValue(self.pulseWidth)
+            self.lblPulseWidthValue.setText(str(self.pulseWidth))
         
     def saveCase(self):
         case = openCase(self.case)
