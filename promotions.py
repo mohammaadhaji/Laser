@@ -79,12 +79,13 @@ class SkinGrade(QFrame):
                 margin:0px;
                 border:0px solid black;
                 background-color: rgb(179, 196, 255);
+                outline:0;
             }
             QLabel {
                 font: 20pt \"Arial\";
             }
         ''')
-        self.setFrameShape(QFrame.StyledPanel)
+        self.setFrameShape(QFrame.NoFrame)
         self.setFrameShadow(QFrame.Raised)
         self.setObjectName("frame")
         self.btnCaseI = QPushButton(self)
@@ -94,7 +95,7 @@ class SkinGrade(QFrame):
         self.btnCaseI.setStyleSheet('background-color: rgb(128, 157, 255);')
         self.btnCaseI.setText("")
         icon = QIcon()
-        icon.addPixmap(QPixmap(".\\ui\\images/I.png"), QIcon.Normal, QIcon.Off)
+        icon.addPixmap(QPixmap(CASE_I), QIcon.Normal, QIcon.Off)
         self.btnCaseI.setIcon(icon)
         self.btnCaseI.setIconSize(QSize(80, 80))
         self.btnCaseI.setObjectName("btnCaseI")
@@ -103,7 +104,7 @@ class SkinGrade(QFrame):
         self.btnCaseII.setMaximumSize(QSize(maxWidth, 16777215))
         self.btnCaseII.setText("")
         icon1 = QIcon()
-        icon1.addPixmap(QPixmap(".\\ui\\images/II.png"), QIcon.Normal, QIcon.Off)
+        icon1.addPixmap(QPixmap(CASE_II), QIcon.Normal, QIcon.Off)
         self.btnCaseII.setIcon(icon1)
         self.btnCaseII.setIconSize(QSize(80, 80))
         self.btnCaseII.setObjectName("btnCaseII")
@@ -112,7 +113,7 @@ class SkinGrade(QFrame):
         self.btnCaseIII.setMaximumSize(QSize(maxWidth, 16777215))
         self.btnCaseIII.setText("")
         icon2 = QIcon()
-        icon2.addPixmap(QPixmap(".\\ui\\images/III.png"), QIcon.Normal, QIcon.Off)
+        icon2.addPixmap(QPixmap(CASE_II), QIcon.Normal, QIcon.Off)
         self.btnCaseIII.setIcon(icon2)
         self.btnCaseIII.setIconSize(QSize(80, 80))
         self.btnCaseIII.setObjectName("btnCaseIII")
@@ -121,7 +122,7 @@ class SkinGrade(QFrame):
         self.btnCaseIV.setMaximumSize(QSize(maxWidth, 16777215))
         self.btnCaseIV.setText("")
         icon3 = QIcon()
-        icon3.addPixmap(QPixmap(".\\ui\\images/IV.png"), QIcon.Normal, QIcon.Off)
+        icon3.addPixmap(QPixmap(CASE_IV), QIcon.Normal, QIcon.Off)
         self.btnCaseIV.setIcon(icon3)
         self.btnCaseIV.setIconSize(QSize(80, 80))
         self.btnCaseIV.setObjectName("btnCaseIV")
@@ -130,7 +131,7 @@ class SkinGrade(QFrame):
         self.btnCaseV.setMaximumSize(QSize(maxWidth, 16777215))
         self.btnCaseV.setText("")
         icon4 = QIcon()
-        icon4.addPixmap(QPixmap(".\\ui\\images/V.png"), QIcon.Normal, QIcon.Off)
+        icon4.addPixmap(QPixmap(CASE_V), QIcon.Normal, QIcon.Off)
         self.btnCaseV.setIcon(icon4)
         self.btnCaseV.setIconSize(QSize(80, 80))
         self.btnCaseV.setObjectName("btnCaseV")
@@ -140,7 +141,7 @@ class SkinGrade(QFrame):
         self.btnSave.setText("Save")
         self.btnSave.setFont(QFont('Arial', 20))
         icon5 = QIcon()
-        icon5.addPixmap(QPixmap(".\\ui\\images/save.png"), QIcon.Normal, QIcon.Off)
+        icon5.addPixmap(QPixmap(CASE_SAVE), QIcon.Normal, QIcon.Off)
         self.btnSave.setIcon(icon5)
         self.btnSave.setIconSize(QSize(70, 70))
         self.btnSave.setObjectName("save")

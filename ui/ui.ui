@@ -11819,7 +11819,7 @@ background-color: rgb(0, 170, 255);
                       <property name="font">
                        <font>
                         <family>Arial</family>
-                        <pointsize>16</pointsize>
+                        <pointsize>20</pointsize>
                        </font>
                       </property>
                       <property name="text">
