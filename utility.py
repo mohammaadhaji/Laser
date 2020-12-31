@@ -1,4 +1,3 @@
-from typing_extensions import final
 from uuid import getnode as get_mac
 from PyQt5.QtCore import QThread, pyqtSignal
 from paths import *

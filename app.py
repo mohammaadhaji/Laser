@@ -1,7 +1,3 @@
-from PyQt5.QtGui import *
-from PyQt5.QtMultimedia import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
 from PyQt5 import uic
 from communication import *
 from promotions import *
@@ -14,8 +10,7 @@ from user import *
 from lock import *
 from itertools import chain
 from pathlib import Path
-from os.path import isfile, isdir, join
-import jdatetime, platform, hashlib, math, sys
+import jdatetime, math, sys
 
 
 class MainWin(QMainWindow):
@@ -74,12 +69,10 @@ class MainWin(QMainWindow):
             self.wellcomeText.setVisible(False)
         self.wellcomeText.move(self.geometry().bottomLeft())     
         self.time(edit=True)        
-        self.shotSound = QSoundEffect()
-        self.shotSound.setSource(QUrl.fromLocalFile(SHOT_SOUND))
-        self.wellcomeSound = QSoundEffect()
-        self.wellcomeSound.setSource(QUrl.fromLocalFile(WELLCOME_SOUND))
-        self.touchSound = QSoundEffect()
-        self.touchSound.setSource(QUrl.fromLocalFile(TOUCH_SOUND))
+        self.shotSound = QSound(SHOT_SOUND)
+        self.wellcomeSound = QSound(WELLCOME_SOUND)
+        self.touchSound = QSound(TOUCH_SOUND)
+        # self.touchSound.setSource(QUrl.fromLocalFile(TOUCH_SOUND))
         self.initPages()
         self.initTimers()
         self.initButtons()
