@@ -285,7 +285,7 @@ class MainWin(QMainWindow):
         self.hwWrongPassTimer.timeout.connect(self.hwWrongPass)
         self.sparkTimer.timeout.connect(self.hideSpark)
         self.monitorSensorsTimer.timeout.connect(self.monitorSensors)
-        self.monitorReceivingSensors.timeout.connect(lambda: self.setReceivingSensorsData(False))
+        self.monitorReceivingSensors.timeout.connect(self.setReceivingSensorsDataTimer)
 
     def initTables(self):
         for tbl in self.findChildren(QTableWidget):
@@ -578,14 +578,16 @@ class MainWin(QMainWindow):
         self.setOverHeatError(flags[3])
         self.setPhysicalDamage(flags[4])
 
-    def setReceivingSensorsData(self, receiving):
-        self.receivingSensorsData = receiving
-        self.monitorReceivingSensors.stop()
-        self.monitorReceivingSensors.start(2000)
-        if not self.receivingSensorsData:
-            self.setLock(True)
-            self.setWaterLevelError(True)
+    def setReceivingSensorsData(self):
+        self.receivingSensorsData = True
+
+    def setReceivingSensorsDataTimer(self):
+        if self.receivingSensorsData:
+            self.receivingSensorsData = False
+        else:
             self.setWaterflowError(True)
+            self.setWaterLevelError(True)
+            self.setLock(True)
             self.setTemp(0)
 
     def changeTheme(self, theme):
@@ -2365,7 +2367,7 @@ class MainWin(QMainWindow):
         self.mainPage.setVisible(False)
         enterPage(BODY_PART_PAGE)
         self.monitorSensorsTimer.start(1000)
-        self.monitorReceivingSensors.start(2000)
+        self.monitorReceivingSensors.start(3000)
 
     def endSession(self):
         try:
