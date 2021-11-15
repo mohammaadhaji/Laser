@@ -29,42 +29,6 @@ QPushButton:hover:!pressed{
 }
 """
 
-SELECTED_BODYPART = """
-QPushButton {
-    background-color: rgb(213, 213, 213);
-    color: rgb(0, 0, 0);
-    min-width: 140px;
-    min-height: 140px;
-    max-width: 150px;
-    max-height: 150px;
-    border-radius: 15px;
-    border: 10px solid red;
-    outline:0;
-}
-QPushButton:hover:!pressed{
-    background-color: rgb(255, 255, 255);
-    border: 10px solid  red;
-}
-"""
-
-NOT_SELECTED_BODYPART = """
-QPushButton {
-    background-color: rgb(213, 213, 213);
-    color: rgb(0, 0, 0);
-    min-width: 140px;
-    min-height: 140px;
-    max-width: 150px;
-    max-height: 150px;
-    border-radius: 15px;
-    border: 10px solid rgb(213, 213, 213);
-    outline:0;
-}
-QPushButton:hover:!pressed{
-    background-color: rgb(255, 255, 255);
-    border: 10px solid  rgb(255, 255, 255);
-}
-"""
-
 SHIFT_PRESSED = """
 QPushButton{
     min-width:120px;
@@ -79,7 +43,6 @@ QPushButton{
 }
 """
 
-
 FARSI_PRESSED = """
 QPushButton{
     background-color: rgb(0, 170, 255);
@@ -87,33 +50,50 @@ QPushButton{
 """
 
 EPF_SELECTED = """
-QPushButton {
+QPushButton{
+    outline : 0;
     background-color: rgb(213, 213, 213);
-    color: rgb(0, 0, 0);
-    max-width: 80px;
-    max-height: 80px;
     border-radius: 15px;
-    border: 8px solid red;
-    outline:0;
+    border: 10px solid red;
 }
-QPushButton:hover:!pressed{
-    background-color: rgb(255, 255, 255);
+
+QPushButton:pressed{
+    border: 10px solid red;
+"""
+
+# EPF: Energy, Pulse Width, Frequency
+EPF_NOT_SELECTED = """ 
+QPushButton{
+    outline : 0;
+    background-color: rgb(213, 213, 213);
+    border-radius: 15px;
+    border: 10px solid rgb(213, 213, 213);
+}
+
+QPushButton:pressed{
     border: 10px solid red;
 }
 """
 
-EPF_NOT_SELECTED = """
+SELECTED_CASE = """
 QPushButton {
-    background-color: rgb(213, 213, 213);
-    color: rgb(0, 0, 0);
-    max-width: 80px;
-    max-height: 80px;
-    border-radius: 15px;
-    border: 8px solid rgb(213, 213, 213);
     outline:0;
+    border-radius:45px;
+    background-color: rgb(255, 0, 0);
 }
-QPushButton:hover:!pressed{
-    background-color: rgb(255, 255, 255);
-    border: 10px solid rgb(255, 255, 255);
+QPushButton:pressed{
+    background-color: rgb(255, 0, 0);
+}
+"""
+
+NOT_SELECTED_CASE = """
+QPushButton {
+    outline:0;
+    border-radius:45px;
+    background-color: rgb(213, 213, 213);
+
+}
+QPushButton:pressed{
+    background-color: rgb(255, 0, 0);
 }
 """
