@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1571</width>
-    <height>1056</height>
+    <width>1542</width>
+    <height>836</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1491,7 +1491,7 @@ border: 1px solid white;
           <item>
            <widget class="StackedWidget" name="stackedWidgetLaser">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="bodyPartPage">
              <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -1784,7 +1784,7 @@ background-color: rgb(0, 170, 255);
                             </property>
                             <property name="icon">
                              <iconset>
-                              <normaloff>images/fAarmpt.png</normaloff>images/fAarmpt.png</iconset>
+                              <normaloff>images/fArmpit.png</normaloff>images/fArmpit.png</iconset>
                             </property>
                             <property name="iconSize">
                              <size>
@@ -2475,19 +2475,251 @@ background-color: rgb(0, 170, 255);
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_34">
                 <property name="leftMargin">
-                 <number>50</number>
-                </property>
-                <property name="topMargin">
                  <number>0</number>
                 </property>
+                <property name="topMargin">
+                 <number>20</number>
+                </property>
                 <property name="rightMargin">
-                 <number>50</number>
+                 <number>0</number>
                 </property>
                 <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_22" stretch="2,0,0,0,2">
+                 <layout class="QHBoxLayout" name="horizontalLayout_22" stretch="1,0,0,0,2,0,0,0,1">
                   <property name="topMargin">
                    <number>0</number>
                   </property>
+                  <item>
+                   <spacer name="horizontalSpacer_33">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="btnDecCooling">
+                    <property name="styleSheet">
+                     <string notr="true">QPushButton{
+outline : 0;
+background-color: rgb(213, 213, 213);
+border-radius: 15px;
+border: 10px solid rgb(213, 213, 213);
+}
+
+QPushButton:pressed{
+background-color: rgb(0, 170, 255);
+border: 10px solid rgb(0, 170, 255);
+}
+</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset>
+                      <normaloff>images/minus.png</normaloff>images/minus.png</iconset>
+                    </property>
+                    <property name="iconSize">
+                     <size>
+                      <width>80</width>
+                      <height>80</height>
+                     </size>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="coolingLayout">
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QPushButton" name="btnCooling1">
+                      <property name="minimumSize">
+                       <size>
+                        <width>80</width>
+                        <height>70</height>
+                       </size>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">QPushButton{
+outline:0;
+background-color: rgb(58, 58, 58);
+border-radius:10px;
+}</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset>
+                        <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
+                      </property>
+                      <property name="iconSize">
+                       <size>
+                        <width>50</width>
+                        <height>50</height>
+                       </size>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="btnCooling2">
+                      <property name="minimumSize">
+                       <size>
+                        <width>80</width>
+                        <height>70</height>
+                       </size>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">QPushButton{
+outline:0;
+background-color: rgb(58, 58, 58);
+border-radius:10px;
+}</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset>
+                        <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
+                      </property>
+                      <property name="iconSize">
+                       <size>
+                        <width>50</width>
+                        <height>50</height>
+                       </size>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="btnCooling3">
+                      <property name="minimumSize">
+                       <size>
+                        <width>80</width>
+                        <height>70</height>
+                       </size>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">QPushButton{
+outline:0;
+background-color: rgb(58, 58, 58);
+border-radius:10px;
+}</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset>
+                        <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
+                      </property>
+                      <property name="iconSize">
+                       <size>
+                        <width>50</width>
+                        <height>50</height>
+                       </size>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="btnCooling4">
+                      <property name="minimumSize">
+                       <size>
+                        <width>80</width>
+                        <height>70</height>
+                       </size>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">QPushButton{
+outline:0;
+background-color: rgb(58, 58, 58);
+border-radius:10px;
+}</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset>
+                        <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
+                      </property>
+                      <property name="iconSize">
+                       <size>
+                        <width>50</width>
+                        <height>50</height>
+                       </size>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="btnCooling5">
+                      <property name="minimumSize">
+                       <size>
+                        <width>80</width>
+                        <height>70</height>
+                       </size>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">QPushButton{
+outline:0;
+background-color: rgb(58, 58, 58);
+border-radius:10px;
+}</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset>
+                        <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
+                      </property>
+                      <property name="iconSize">
+                       <size>
+                        <width>50</width>
+                        <height>50</height>
+                       </size>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="btnIncCooling">
+                    <property name="styleSheet">
+                     <string notr="true">QPushButton{
+outline : 0;
+background-color: rgb(213, 213, 213);
+border-radius: 15px;
+border: 10px solid rgb(213, 213, 213);
+}
+
+QPushButton:pressed{
+background-color: rgb(0, 170, 255);
+border: 10px solid rgb(0, 170, 255);
+}
+</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset>
+                      <normaloff>images/plus.png</normaloff>images/plus.png</iconset>
+                    </property>
+                    <property name="iconSize">
+                     <size>
+                      <width>80</width>
+                      <height>80</height>
+                     </size>
+                    </property>
+                   </widget>
+                  </item>
                   <item>
                    <spacer name="horizontalSpacer_28">
                     <property name="orientation">
@@ -2569,7 +2801,7 @@ border: 10px solid red;
                    </widget>
                   </item>
                   <item>
-                   <spacer name="horizontalSpacer_30">
+                   <spacer name="horizontalSpacer_34">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
@@ -2585,26 +2817,38 @@ border: 10px solid red;
                 </item>
                 <item>
                  <widget class="QFrame" name="horizontalFrame">
-                  <property name="styleSheet">
-                   <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-font: 14pt &quot;Arial&quot;;
-}
-QLabel{
-font: 14pt &quot;Arial&quot;;
-}
-</string>
+                  <property name="enabled">
+                   <bool>true</bool>
                   </property>
-                  <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="1,1">
+                  <property name="styleSheet">
+                   <string notr="true"/>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="1,4,1,1,1">
                    <property name="leftMargin">
-                    <number>11</number>
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
                    </property>
                    <property name="rightMargin">
-                    <number>11</number>
+                    <number>0</number>
                    </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <spacer name="horizontalSpacer_26">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
                    <item>
                     <layout class="QVBoxLayout" name="verticalLayout_28">
                      <property name="bottomMargin">
@@ -2614,6 +2858,12 @@ font: 14pt &quot;Arial&quot;;
                       <layout class="QGridLayout" name="gridLayout_2">
                        <item row="1" column="1">
                         <widget class="QLabel" name="label_21">
+                         <property name="font">
+                          <font>
+                           <family>Arial</family>
+                           <pointsize>14</pointsize>
+                          </font>
+                         </property>
                          <property name="text">
                           <string>Pulse Width</string>
                          </property>
@@ -2622,10 +2872,32 @@ font: 14pt &quot;Arial&quot;;
                          </property>
                         </widget>
                        </item>
-                       <item row="0" column="2">
-                        <widget class="QLineEdit" name="txtEnergy">
+                       <item row="2" column="2">
+                        <widget class="QLineEdit" name="txtFrequency">
                          <property name="enabled">
                           <bool>false</bool>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <family>Arial</family>
+                           <pointsize>14</pointsize>
+                           <weight>50</weight>
+                           <italic>false</italic>
+                           <bold>false</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">QLineEdit{
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
+font: 14pt &quot;Arial&quot;;
+}
+</string>
+                         </property>
+                         <property name="text">
+                          <string>0.0 Hz</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignCenter</set>
@@ -2664,21 +2936,14 @@ QPushButton:pressed{
                          </property>
                         </widget>
                        </item>
-                       <item row="2" column="2">
-                        <widget class="QLineEdit" name="txtFrequency">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignCenter</set>
-                         </property>
-                         <property name="readOnly">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
                        <item row="0" column="1">
                         <widget class="QLabel" name="label_20">
+                         <property name="font">
+                          <font>
+                           <family>Arial</family>
+                           <pointsize>14</pointsize>
+                          </font>
+                         </property>
                          <property name="text">
                           <string>Energy</string>
                          </property>
@@ -2687,10 +2952,32 @@ QPushButton:pressed{
                          </property>
                         </widget>
                        </item>
-                       <item row="1" column="2">
-                        <widget class="QLineEdit" name="txtPulseWidth">
+                       <item row="0" column="2">
+                        <widget class="QLineEdit" name="txtEnergy">
                          <property name="enabled">
                           <bool>false</bool>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <family>Arial</family>
+                           <pointsize>14</pointsize>
+                           <weight>50</weight>
+                           <italic>false</italic>
+                           <bold>false</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">QLineEdit{
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
+font: 14pt &quot;Arial&quot;;
+}
+</string>
+                         </property>
+                         <property name="text">
+                          <string>0.0 J/cm²</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignCenter</set>
@@ -2702,6 +2989,12 @@ QPushButton:pressed{
                        </item>
                        <item row="2" column="1">
                         <widget class="QLabel" name="label_22">
+                         <property name="font">
+                          <font>
+                           <family>Arial</family>
+                           <pointsize>14</pointsize>
+                          </font>
+                         </property>
                          <property name="text">
                           <string>Frequency</string>
                          </property>
@@ -2711,7 +3004,7 @@ QPushButton:pressed{
                         </widget>
                        </item>
                        <item row="1" column="5">
-                        <widget class="QPushButton" name="btnEPFDec">
+                        <widget class="QPushButton" name="btnDecEPF">
                          <property name="styleSheet">
                           <string notr="true">QPushButton{
 outline : 0;
@@ -2741,19 +3034,54 @@ border: 10px solid rgb(0, 170, 255);
                          </property>
                         </widget>
                        </item>
-                       <item row="2" column="0">
-                        <widget class="QPushButton" name="btnFrequency">
+                       <item row="1" column="2">
+                        <widget class="QLineEdit" name="txtPulseWidth">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <family>Arial</family>
+                           <pointsize>14</pointsize>
+                           <weight>50</weight>
+                           <italic>false</italic>
+                           <bold>false</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">QLineEdit{
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
+font: 14pt &quot;Arial&quot;;
+}
+</string>
+                         </property>
+                         <property name="text">
+                          <string>0.0 Ms</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                         <property name="readOnly">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="6">
+                        <widget class="QPushButton" name="btnSaveCase">
                          <property name="styleSheet">
                           <string notr="true">QPushButton{
 outline : 0;
-
 background-color: rgb(213, 213, 213);
 border-radius: 15px;
 border: 10px solid rgb(213, 213, 213);
 }
 
 QPushButton:pressed{
-border: 10px solid  red;
+background-color: rgb(0, 170, 255);
+border: 10px solid rgb(0, 170, 255);
 }
 </string>
                          </property>
@@ -2762,7 +3090,38 @@ border: 10px solid  red;
                          </property>
                          <property name="icon">
                           <iconset>
-                           <normaloff>images/frequency.png</normaloff>images/frequency.png</iconset>
+                           <normaloff>images/save.png</normaloff>images/save.png</iconset>
+                         </property>
+                         <property name="iconSize">
+                          <size>
+                           <width>80</width>
+                           <height>80</height>
+                          </size>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="4">
+                        <widget class="QPushButton" name="btnIncEPF">
+                         <property name="styleSheet">
+                          <string notr="true">QPushButton{
+outline : 0;
+background-color: rgb(213, 213, 213);
+border-radius: 15px;
+border: 10px solid rgb(213, 213, 213);
+}
+
+QPushButton:pressed{
+background-color: rgb(0, 170, 255);
+border: 10px solid rgb(0, 170, 255);
+}
+</string>
+                         </property>
+                         <property name="text">
+                          <string/>
+                         </property>
+                         <property name="icon">
+                          <iconset>
+                           <normaloff>images/up.png</normaloff>images/up.png</iconset>
                          </property>
                          <property name="iconSize">
                           <size>
@@ -2803,19 +3162,19 @@ border: 10px solid  red;
                          </property>
                         </widget>
                        </item>
-                       <item row="1" column="6">
-                        <widget class="QPushButton" name="btnSaveCase">
+                       <item row="2" column="0">
+                        <widget class="QPushButton" name="btnFrequency">
                          <property name="styleSheet">
                           <string notr="true">QPushButton{
 outline : 0;
+
 background-color: rgb(213, 213, 213);
 border-radius: 15px;
 border: 10px solid rgb(213, 213, 213);
 }
 
 QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-border: 10px solid rgb(0, 170, 255);
+border: 10px solid  red;
 }
 </string>
                          </property>
@@ -2824,38 +3183,7 @@ border: 10px solid rgb(0, 170, 255);
                          </property>
                          <property name="icon">
                           <iconset>
-                           <normaloff>images/save.png</normaloff>images/save.png</iconset>
-                         </property>
-                         <property name="iconSize">
-                          <size>
-                           <width>80</width>
-                           <height>80</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="4">
-                        <widget class="QPushButton" name="btnEPFINC">
-                         <property name="styleSheet">
-                          <string notr="true">QPushButton{
-outline : 0;
-background-color: rgb(213, 213, 213);
-border-radius: 15px;
-border: 10px solid rgb(213, 213, 213);
-}
-
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-border: 10px solid rgb(0, 170, 255);
-}
-</string>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="icon">
-                          <iconset>
-                           <normaloff>images/up.png</normaloff>images/up.png</iconset>
+                           <normaloff>images/frequency.png</normaloff>images/frequency.png</iconset>
                          </property>
                          <property name="iconSize">
                           <size>
@@ -2878,10 +3206,23 @@ border: 10px solid rgb(0, 170, 255);
                          </property>
                         </spacer>
                        </item>
+                       <item row="1" column="7">
+                        <spacer name="horizontalSpacer_30">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
                       </layout>
                      </item>
                      <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_9">
+                      <layout class="QHBoxLayout" name="casesLayout">
                        <item>
                         <widget class="QPushButton" name="btnCaseI">
                          <property name="minimumSize">
@@ -2963,7 +3304,7 @@ background-color: rgb(255, 0, 0);
                         </widget>
                        </item>
                        <item>
-                        <widget class="QPushButton" name="btnCaseV">
+                        <widget class="QPushButton" name="btnCaseIII">
                          <property name="minimumSize">
                           <size>
                            <width>100</width>
@@ -3004,7 +3345,7 @@ background-color: rgb(255, 0, 0);
                         </widget>
                        </item>
                        <item>
-                        <widget class="QPushButton" name="btnCaseIII">
+                        <widget class="QPushButton" name="btnCaseIV">
                          <property name="minimumSize">
                           <size>
                            <width>100</width>
@@ -3045,7 +3386,7 @@ background-color: rgb(255, 0, 0);
                         </widget>
                        </item>
                        <item>
-                        <widget class="QPushButton" name="btnCaseIV">
+                        <widget class="QPushButton" name="btnCaseV">
                          <property name="minimumSize">
                           <size>
                            <width>100</width>
@@ -3090,6 +3431,19 @@ background-color: rgb(255, 0, 0);
                     </layout>
                    </item>
                    <item>
+                    <spacer name="horizontalSpacer_32">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_23">
                      <property name="topMargin">
                       <number>0</number>
@@ -3100,372 +3454,6 @@ background-color: rgb(255, 0, 0);
                      <property name="bottomMargin">
                       <number>0</number>
                      </property>
-                     <item>
-                      <layout class="QVBoxLayout" name="verticalLayout_2">
-                       <property name="topMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="rightMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="bottomMargin">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <spacer name="verticalSpacer_32">
-                         <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>20</width>
-                           <height>40</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_24">
-                         <property name="leftMargin">
-                          <number>77</number>
-                         </property>
-                         <property name="topMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="rightMargin">
-                          <number>77</number>
-                         </property>
-                         <item>
-                          <spacer name="horizontalSpacer_32">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item>
-                          <layout class="QVBoxLayout" name="verticalLayout_38">
-                           <property name="topMargin">
-                            <number>0</number>
-                           </property>
-                           <item>
-                            <widget class="QPushButton" name="btnCooling5">
-                             <property name="minimumSize">
-                              <size>
-                               <width>80</width>
-                               <height>70</height>
-                              </size>
-                             </property>
-                             <property name="styleSheet">
-                              <string notr="true">QPushButton{
-outline:0;
-background-color: rgb(58, 58, 58);
-border-radius:10px;
-}</string>
-                             </property>
-                             <property name="text">
-                              <string/>
-                             </property>
-                             <property name="icon">
-                              <iconset>
-                               <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
-                             </property>
-                             <property name="iconSize">
-                              <size>
-                               <width>50</width>
-                               <height>50</height>
-                              </size>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QPushButton" name="btnCooling4">
-                             <property name="minimumSize">
-                              <size>
-                               <width>80</width>
-                               <height>70</height>
-                              </size>
-                             </property>
-                             <property name="styleSheet">
-                              <string notr="true">QPushButton{
-outline:0;
-background-color: rgb(58, 58, 58);
-border-radius:10px;
-}</string>
-                             </property>
-                             <property name="text">
-                              <string/>
-                             </property>
-                             <property name="icon">
-                              <iconset>
-                               <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
-                             </property>
-                             <property name="iconSize">
-                              <size>
-                               <width>50</width>
-                               <height>50</height>
-                              </size>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QPushButton" name="btnCooling3">
-                             <property name="minimumSize">
-                              <size>
-                               <width>80</width>
-                               <height>70</height>
-                              </size>
-                             </property>
-                             <property name="styleSheet">
-                              <string notr="true">QPushButton{
-outline:0;
-background-color: rgb(58, 58, 58);
-border-radius:10px;
-}</string>
-                             </property>
-                             <property name="text">
-                              <string/>
-                             </property>
-                             <property name="icon">
-                              <iconset>
-                               <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
-                             </property>
-                             <property name="iconSize">
-                              <size>
-                               <width>50</width>
-                               <height>50</height>
-                              </size>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QPushButton" name="btnCooling2">
-                             <property name="minimumSize">
-                              <size>
-                               <width>80</width>
-                               <height>70</height>
-                              </size>
-                             </property>
-                             <property name="styleSheet">
-                              <string notr="true">QPushButton{
-outline:0;
-background-color: rgb(58, 58, 58);
-border-radius:10px;
-}</string>
-                             </property>
-                             <property name="text">
-                              <string/>
-                             </property>
-                             <property name="icon">
-                              <iconset>
-                               <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
-                             </property>
-                             <property name="iconSize">
-                              <size>
-                               <width>50</width>
-                               <height>50</height>
-                              </size>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QPushButton" name="btnCooling1">
-                             <property name="minimumSize">
-                              <size>
-                               <width>80</width>
-                               <height>70</height>
-                              </size>
-                             </property>
-                             <property name="styleSheet">
-                              <string notr="true">QPushButton{
-outline:0;
-background-color: rgb(58, 58, 58);
-border-radius:10px;
-}</string>
-                             </property>
-                             <property name="text">
-                              <string/>
-                             </property>
-                             <property name="icon">
-                              <iconset>
-                               <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
-                             </property>
-                             <property name="iconSize">
-                              <size>
-                               <width>50</width>
-                               <height>50</height>
-                              </size>
-                             </property>
-                            </widget>
-                           </item>
-                          </layout>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_33">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_25" stretch="1,0,0,0,0,0,1">
-                         <property name="topMargin">
-                          <number>0</number>
-                         </property>
-                         <item>
-                          <spacer name="horizontalSpacer_34">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item>
-                          <widget class="QPushButton" name="btnDecCooling">
-                           <property name="styleSheet">
-                            <string notr="true">QPushButton{
-outline : 0;
-background-color: rgb(213, 213, 213);
-border-radius: 15px;
-border: 10px solid rgb(213, 213, 213);
-}
-
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-border: 10px solid rgb(0, 170, 255);
-}
-</string>
-                           </property>
-                           <property name="text">
-                            <string/>
-                           </property>
-                           <property name="icon">
-                            <iconset>
-                             <normaloff>images/minus.png</normaloff>images/minus.png</iconset>
-                           </property>
-                           <property name="iconSize">
-                            <size>
-                             <width>80</width>
-                             <height>80</height>
-                            </size>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_36">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item>
-                          <widget class="QLabel" name="label_24">
-                           <property name="text">
-                            <string>Cooling</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_37">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item>
-                          <widget class="QPushButton" name="btnIncCooling">
-                           <property name="styleSheet">
-                            <string notr="true">QPushButton{
-outline : 0;
-background-color: rgb(213, 213, 213);
-border-radius: 15px;
-border: 10px solid rgb(213, 213, 213);
-}
-
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-border: 10px solid rgb(0, 170, 255);
-}
-</string>
-                           </property>
-                           <property name="text">
-                            <string/>
-                           </property>
-                           <property name="icon">
-                            <iconset>
-                             <normaloff>images/plus.png</normaloff>images/plus.png</iconset>
-                           </property>
-                           <property name="iconSize">
-                            <size>
-                             <width>80</width>
-                             <height>80</height>
-                            </size>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_35">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <spacer name="verticalSpacer_34">
-                         <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>20</width>
-                           <height>40</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                      </layout>
-                     </item>
                      <item>
                       <layout class="QVBoxLayout" name="verticalLayout_36">
                        <property name="topMargin">
@@ -3489,19 +3477,6 @@ border: 10px solid rgb(0, 170, 255);
                        </item>
                        <item>
                         <layout class="QHBoxLayout" name="horizontalLayout_18">
-                         <item>
-                          <spacer name="horizontalSpacer_26">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
                          <item>
                           <widget class="QPushButton" name="btnSelectedBodyPart">
                            <property name="styleSheet">
@@ -3530,23 +3505,16 @@ outline:0;
                            </property>
                           </widget>
                          </item>
-                         <item>
-                          <spacer name="horizontalSpacer_27">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
                         </layout>
                        </item>
                        <item>
                         <widget class="QLabel" name="lblSelectedBodyPart">
+                         <property name="font">
+                          <font>
+                           <family>Arial</family>
+                           <pointsize>14</pointsize>
+                          </font>
+                         </property>
                          <property name="text">
                           <string>Face</string>
                          </property>
@@ -3563,19 +3531,6 @@ outline:0;
                          <property name="rightMargin">
                           <number>0</number>
                          </property>
-                         <item>
-                          <spacer name="horizontalSpacer_39">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
                          <item>
                           <layout class="QVBoxLayout" name="verticalLayout_37">
                            <property name="rightMargin">
@@ -3596,6 +3551,12 @@ outline:0;
                            </item>
                            <item>
                             <widget class="QLabel" name="label_23">
+                             <property name="font">
+                              <font>
+                               <family>Arial</family>
+                               <pointsize>14</pointsize>
+                              </font>
+                             </property>
                              <property name="text">
                               <string>Counter</string>
                              </property>
@@ -3606,8 +3567,36 @@ outline:0;
                            </item>
                            <item>
                             <widget class="QLineEdit" name="txtCounter">
+                             <property name="enabled">
+                              <bool>false</bool>
+                             </property>
+                             <property name="font">
+                              <font>
+                               <family>Arial</family>
+                               <pointsize>14</pointsize>
+                               <weight>50</weight>
+                               <italic>false</italic>
+                               <bold>false</bold>
+                              </font>
+                             </property>
+                             <property name="styleSheet">
+                              <string notr="true">QLineEdit{
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
+font: 14pt &quot;Arial&quot;;
+}
+</string>
+                             </property>
+                             <property name="text">
+                              <string>0</string>
+                             </property>
                              <property name="alignment">
                               <set>Qt::AlignCenter</set>
+                             </property>
+                             <property name="readOnly">
+                              <bool>true</bool>
                              </property>
                             </widget>
                            </item>
@@ -3626,29 +3615,6 @@ outline:0;
                            </item>
                           </layout>
                          </item>
-                         <item>
-                          <spacer name="horizontalSpacer_40">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <layout class="QVBoxLayout" name="verticalLayout_35">
-                         <property name="topMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="bottomMargin">
-                          <number>0</number>
-                         </property>
                         </layout>
                        </item>
                        <item>
@@ -3667,6 +3633,19 @@ outline:0;
                       </layout>
                      </item>
                     </layout>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_27">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
                    </item>
                   </layout>
                  </widget>

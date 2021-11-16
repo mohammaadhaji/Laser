@@ -29,6 +29,36 @@ QPushButton:hover:!pressed{
 }
 """
 
+READY_STANDBY_SELECTED = """
+QPushButton {
+    background-color: rgb(213, 213, 213);
+    color: rgb(0, 0, 0);
+    min-width: 170px;
+    min-height: 80px;
+    border-radius: 15px;
+    border: 10px solid red;
+    outline:0;
+}
+QPushButton:pressed{
+    border: 10px solid red;
+}
+"""
+READY_STANDBY_NOT_SELECTED = """
+QPushButton {
+    background-color: rgb(213, 213, 213);
+    color: rgb(0, 0, 0);
+    min-width: 170px;
+    min-height: 80px;
+    border-radius: 15px;
+    border: 10px solid rgb(213, 213, 213);
+    outline:0;
+}
+QPushButton:pressed{
+    border: 10px solid red;
+}
+"""
+
+
 SHIFT_PRESSED = """
 QPushButton{
     min-width:120px;
@@ -59,6 +89,7 @@ QPushButton{
 
 QPushButton:pressed{
     border: 10px solid red;
+}
 """
 
 # EPF: Energy, Pulse Width, Frequency
@@ -69,7 +100,6 @@ QPushButton{
     border-radius: 15px;
     border: 10px solid rgb(213, 213, 213);
 }
-
 QPushButton:pressed{
     border: 10px solid red;
 }

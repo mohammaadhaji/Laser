@@ -4,6 +4,7 @@ from PyQt5.QtCore import *
 from PyQt5 import uic
 from promotions import Action, TableWidgetItem
 from itertools import chain
+from case import *
 from paths import *
 from user import *
 from styles import *
@@ -25,13 +26,24 @@ class MainWin(QMainWindow):
 
     def setupUi(self):
         self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidgetLaser.setCurrentIndex(0)
         self.loginLabelTimer = QTimer()
         self.submitLabelTimer = QTimer()
         self.editLabelTimer = QTimer()
+        self.incEPFTimer = QTimer()
+        self.decEPFTimer = QTimer()
+        self.incEPFTimer.timeout.connect(lambda: self.setEPF('inc'))
+        self.decEPFTimer.timeout.connect(lambda: self.setEPF('dec'))
         self.user = None
         self.sortBySession = False
         self.shift = False
         self.farsi = False
+        self.ready = False
+        self.sex = 'female'
+        self.bodyPart = ''
+        self.case = 'I'
+        self.EPF = 'E'
+        self.cooling = 0
         self.loginLabelTimer.timeout.connect(lambda: self.clearLabel('login'))
         self.submitLabelTimer.timeout.connect(lambda: self.clearLabel('submit'))
         self.editLabelTimer.timeout.connect(lambda: self.clearLabel('edit'))
@@ -67,13 +79,27 @@ class MainWin(QMainWindow):
         self.textEditNote.fIn.connect(lambda: self.keyboard('show'))
         self.txtSearch.fIn.connect(lambda: self.keyboard('show'))
         self.txtSearch.textChanged.connect(self.search)
-        self.btnMale.clicked.connect(lambda : self.selectSex('male'))
-        self.btnFemale.clicked.connect(lambda : self.selectSex('female'))
+        self.btnMale.clicked.connect(lambda: self.setSex('male'))
+        self.btnFemale.clicked.connect(lambda: self.setSex('female'))
+        self.btnEnergy.clicked.connect(lambda: self.selectEPF('E'))
+        self.btnIncEPF.pressed.connect(lambda: self.incEPFTimer.start(100))
+        self.btnIncEPF.released.connect(lambda: self.incEPFTimer.stop())
+        self.btnDecEPF.pressed.connect(lambda: self.decEPFTimer.start(100))
+        self.btnDecEPF.released.connect(lambda: self.decEPFTimer.stop())
+        self.btnPulseWidth.clicked.connect(lambda: self.selectEPF('P'))
+        self.btnFrequency.clicked.connect(lambda: self.selectEPF('F'))
         self.btnMale.clicked.connect(self.stackedWidgetSex.male)
         self.btnFemale.clicked.connect(self.stackedWidgetSex.female)
- 
-        self.bodyPartsSetup()
+        self.btnIncEPF.clicked.connect(lambda: self.setEPF('inc'))
+        self.btnDecEPF.clicked.connect(lambda: self.setEPF('dec'))
+        self.btnDecCooling.clicked.connect(lambda: self.setCooling('dec'))
+        self.btnIncCooling.clicked.connect(lambda: self.setCooling('inc'))
+        self.btnSaveCase.clicked.connect(self.saveCase)
+        self.btnReady.clicked.connect(lambda: self.setReady(True))
+        self.btnStandby.clicked.connect(lambda: self.setReady(False))
+        self.bodyPartsSignals()
         self.keyboardSignals()
+        self.casesSignals()
 
     def setupSensors(self):
         self.waterCirIco = QIcon()
@@ -102,10 +128,10 @@ class MainWin(QMainWindow):
         self.btnTemp.setIcon(self.tempIco)
         self.btnWaterLevel.setIcon(self.waterLvlIco)
         self.btnLock.setIcon(self.lockIco)
-        self.btnWaterCirculation.setIconSize(QSize(70, 70))
-        self.btnTemp.setIconSize(QSize(70, 70))
-        self.btnWaterLevel.setIconSize(QSize(70, 70))
-        self.btnLock.setIconSize(QSize(70, 70))
+        self.btnWaterCirculation.setIconSize(QSize(80, 80))
+        self.btnTemp.setIconSize(QSize(80, 80))
+        self.btnWaterLevel.setIconSize(QSize(80, 80))
+        self.btnLock.setIconSize(QSize(80, 80))
         self.waterCirculanFlag = False
         self.waterCirculanWar = False
         self.waterLevelFlag = False
@@ -114,8 +140,64 @@ class MainWin(QMainWindow):
         self.tempWar = False
         self.lockFlag = True
         self.setTemp(0)
+        self.setLock(True)
 
-    def bodyPartsSetup(self):
+    def setReady(self, ready):
+        if ready:
+            self.ready = True
+            self.btnReady.setStyleSheet(READY_STANDBY_SELECTED)
+            self.btnStandby.setStyleSheet(READY_STANDBY_NOT_SELECTED)
+        
+        else:
+            self.ready = False
+            self.btnReady.setStyleSheet(READY_STANDBY_NOT_SELECTED)
+            self.btnStandby.setStyleSheet(READY_STANDBY_SELECTED)
+
+    def setCooling(self, operation):
+        buttons = layout_widgets(self.coolingLayout)
+        icon = QIcon()
+        if operation == 'inc':
+            if self.cooling < 5:
+                self.cooling += 1
+                for btn in buttons:
+                    coolingNum = int(btn.objectName().split('Cooling')[1])
+                    if coolingNum == self.cooling:
+                        icon.addPixmap(QPixmap(COOLING_ON))
+                        btn.setIcon(icon)
+                        btn.setIconSize(QSize(50, 50))
+        else:
+            if self.cooling >= 1:
+                for btn in buttons:
+                    coolingNum = int(btn.objectName().split('Cooling')[1])
+                    if coolingNum == self.cooling:
+                        icon.addPixmap(QPixmap(COOLING_OFF)) 
+                        btn.setIcon(icon)
+                        btn.setIconSize(QSize(50, 50))
+                        
+                self.cooling -= 1       
+
+    def setEPF(self, operation):
+        if self.EPF == 'E':
+            energy = int(self.txtEnergy.text().split(' ')[0])
+            energy = energy + 1 if operation == 'inc' else energy - 1
+            self.txtEnergy.setText(str(energy) + ' J/cm²')
+        elif self.EPF == 'P':
+            pulseWidth = int(self.txtPulseWidth.text().split(' ')[0])
+            pulseWidth = pulseWidth + 1 if operation == 'inc' else pulseWidth - 1
+            self.txtPulseWidth.setText(str(pulseWidth) + ' Ms')
+        elif self.EPF == 'F':
+            frequency = int(self.txtFrequency.text().split(' ')[0])
+            frequency = frequency + 1 if operation == 'inc' else frequency - 1
+            self.txtFrequency.setText(str(frequency) + ' Hz')
+        
+    def saveCase(self):
+        energy = int(self.txtEnergy.text().split(' ')[0])
+        pulseWidth = int(self.txtPulseWidth.text().split(' ')[0])
+        frequency = int(self.txtFrequency.text().split(' ')[0])
+        case = openCase(self.case)
+        case.save(self.sex, self.bodyPart, (energy, pulseWidth, frequency))
+
+    def bodyPartsSignals(self):
         buttons = chain(
             get_layout_btn(self.fBodyPartsLayout),
             get_layout_btn(self.mBodyPartsLayout)
@@ -123,34 +205,85 @@ class MainWin(QMainWindow):
 
         for btn in buttons:
             btn.clicked.connect(self.stackedWidgetLaser.laser)
+            sex = btn.objectName().split('btn')[1][0].lower()
+            bodyPart = btn.objectName().split('btn')[1][1:].lower()
+            btn.clicked.connect(self.setBodyPart(sex, bodyPart))
+            btn.clicked.connect(self.fillEPF)
+
+    def fillEPF(self):
+        self.loadCase(self.case)
+        
+    def setBodyPart(self, sex, bodyPart):
+        def wrapper():
+            self.bodyPart = bodyPart
+            icon = QIcon()
+            key = sex + ' ' + bodyPart
+            self.lblSelectedBodyPart.setText(bodyPart.capitalize())
+            icon.addPixmap(QPixmap(BODY_PART_ICONS[key]))
+            self.btnSelectedBodyPart.setIcon(icon)
+            self.btnSelectedBodyPart.setIconSize(QSize(180, 170))
+            
+        return wrapper
+
+    def setSex(self, sex):
+        if sex == 'male':
+            self.btnMale.setStyleSheet(SELECTED_SEX)
+            self.btnFemale.setStyleSheet(NOT_SELECTED_SEX)
+            self.sex = 'male'
+        else:
+            self.btnMale.setStyleSheet(NOT_SELECTED_SEX)
+            self.btnFemale.setStyleSheet(SELECTED_SEX)
+            self.sex = 'female'
+
+    def casesSignals(self):
+        buttons = layout_widgets(self.casesLayout)
+
+        for btn in buttons:
+            caseName = btn.objectName().split('Case')[1]
+            btn.clicked.connect(self.setCase(caseName))
+            btn.clicked.connect(self.fillEPF)
+
+    def setCase(self, case):
+        def wrapper():
+            self.case = case
+            buttons = layout_widgets(self.casesLayout)
+            for btn in buttons:
+                btn.setStyleSheet(NOT_SELECTED_CASE)
+                caseName = btn.objectName().split('Case')[1]
+                if caseName == case:
+                    btn.setStyleSheet(SELECTED_CASE)
+
+        return wrapper
+
+    def selectEPF(self, parameter):
+        if parameter == 'E':
+            self.btnEnergy.setStyleSheet(EPF_SELECTED)
+            self.btnPulseWidth.setStyleSheet(EPF_NOT_SELECTED)
+            self.btnFrequency.setStyleSheet(EPF_NOT_SELECTED)
+            self.EPF = 'E'
+        elif parameter == 'P':
+            self.btnEnergy.setStyleSheet(EPF_NOT_SELECTED)
+            self.btnPulseWidth.setStyleSheet(EPF_SELECTED)
+            self.btnFrequency.setStyleSheet(EPF_NOT_SELECTED)
+            self.EPF = 'P'
+        elif parameter == 'F':
+            self.btnEnergy.setStyleSheet(EPF_NOT_SELECTED)
+            self.btnPulseWidth.setStyleSheet(EPF_NOT_SELECTED)
+            self.btnFrequency.setStyleSheet(EPF_SELECTED)
+            self.EPF = 'F'
+
+    def loadCase(self, name):
+        case = openCase(name)
+        enrgy, pl, freq = case.getValue(self.sex, self.bodyPart)
+        self.txtEnergy.setText(str(enrgy) + ' J/cm²')
+        self.txtPulseWidth.setText(str(pl) + ' Ms')
+        self.txtFrequency.setText(str(freq) + ' Hz')
 
     def backLaser(self):
         if self.stackedWidgetLaser.currentIndex() == 0:
             self.stackedWidget.login()
         else:
-            self.stackedWidgetLaser.bodyPart()
-
-    def selectBodyPart(self, button):
-        def wrapper():
-            buttons = chain(
-                get_layout_btn(self.mBodyPartsLayout),
-                get_layout_btn(self.fBodyPartsLayout)
-            )
-
-            for btn in buttons:
-                btn.setStyleSheet(NOT_SELECTED_BODYPART)
-
-            button.setStyleSheet(SELECTED_BODYPART)
-
-        return wrapper
-        
-    def selectSex(self, sex):
-        if sex == 'male':
-            self.btnMale.setStyleSheet(SELECTED_SEX)
-            self.btnFemale.setStyleSheet(NOT_SELECTED_SEX)
-        else:
-            self.btnMale.setStyleSheet(NOT_SELECTED_SEX)
-            self.btnFemale.setStyleSheet(SELECTED_SEX)
+            self.stackedWidgetLaser.bodyPart()      
 
     def blinkSensorsIcon(self, sensor):
         if sensor == 'waterCir':
@@ -206,13 +339,14 @@ class MainWin(QMainWindow):
                 self.tempTimer.start(500)
                 self.tempWar = True
 
-    def setLock(self):
-        self.btnLock.setIcon(self.lockIco)
-        self.lockFlag = True
-
-    def setUnlock(self):
-        self.btnLock.setIcon(self.unlockIco)
-        self.lockFlag = False
+    def setLock(self, lock=True):
+        if lock:
+            self.btnLock.setIcon(self.lockIco)
+            self.lockFlag = True
+        
+        else:
+            self.btnLock.setIcon(self.unlockIco)
+            self.lockFlag = False
 
     def setTemp(self, value):
         self.txtTemp.setText(str(value) + ' °C')
@@ -535,6 +669,11 @@ class MainWin(QMainWindow):
                     self.setLabel('User has been deleted!', 'login')
                     self.user = None
                     return
+                    
+                self.lblInfo.setText(
+                    'Name: ' + self.user.name + '\n\n' +
+                    'Session Number: ' + str(self.user.sessionNumber)
+                )
                 self.user.setCurrentSession('started')
                 self.keyboard('hide')
                 self.stackedWidget.mainLaser()
@@ -545,6 +684,7 @@ class MainWin(QMainWindow):
         self.user.save()
         self.user = None
         self.stackedWidget.login()
+        self.stackedWidgetLaser.setCurrentIndex(0)
 
     def setLabel(self, text, label, sec=5):
         if label == 'login':
