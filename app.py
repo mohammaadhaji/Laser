@@ -53,7 +53,6 @@ class MainWin(QMainWindow):
         self.btnPower.clicked.connect(self.close)
         self.btnLogin.clicked.connect(self.login)
         self.btnSubmit.clicked.connect(self.submit)
-        self.btnNewSession.clicked.connect(self.stackedWidget.newSession)
         self.btnBackNewSession.clicked.connect(self.stackedWidget.login)
         self.btnBackManagement.clicked.connect(self.stackedWidget.login)
         self.btnBackManagement.clicked.connect(lambda: self.txtSearch.clear())
@@ -642,7 +641,9 @@ class MainWin(QMainWindow):
             self.user = loadUser(numberEntered)
 
             if not self.user:
-                self.setLabel('There is no user with this number!', 'login')
+                self.txtNumberSubmit.setText(numberEntered)
+                self.txtNameSubmit.setFocus()
+                self.stackedWidget.newSession()
                 return
 
             self.lblInfo.setText(

@@ -39,7 +39,3 @@ def openCase(name):
         return case
     else:
         return Case(name)
-
-
-# case = openCase('I')
-# case.save('male', 'face', (1, 2, 3))
