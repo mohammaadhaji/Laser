@@ -25,8 +25,21 @@ class MainWin(QMainWindow):
         self.setupSensors()
 
     def setupUi(self):
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(1)
         self.stackedWidgetLaser.setCurrentIndex(0)
+        self.stackedWidgetSex.setCurrentIndex(0)
+        self.stackedWidget.setTransitionDirection(Qt.Vertical)
+        self.stackedWidget.setTransitionSpeed(500)
+        self.stackedWidget.setTransitionEasingCurve(QEasingCurve.OutQuart)
+        self.stackedWidget.setSlideTransition(True)
+        self.stackedWidgetSex.setTransitionDirection(Qt.Vertical)
+        self.stackedWidgetSex.setTransitionSpeed(500)
+        self.stackedWidgetSex.setTransitionEasingCurve(QEasingCurve.OutBack)
+        self.stackedWidgetSex.setSlideTransition(True)
+        self.stackedWidgetLaser.setTransitionDirection(Qt.Horizontal)
+        self.stackedWidgetLaser.setTransitionSpeed(500)
+        self.stackedWidgetLaser.setTransitionEasingCurve(QEasingCurve.OutQuart)
+        self.stackedWidgetLaser.setSlideTransition(True)
         self.loginLabelTimer = QTimer()
         self.submitLabelTimer = QTimer()
         self.editLabelTimer = QTimer()
@@ -53,15 +66,15 @@ class MainWin(QMainWindow):
         self.btnPower.clicked.connect(self.close)
         self.btnLogin.clicked.connect(self.login)
         self.btnSubmit.clicked.connect(self.submit)
-        self.btnBackNewSession.clicked.connect(self.stackedWidget.login)
-        self.btnBackManagement.clicked.connect(self.stackedWidget.login)
+        self.btnBackNewSession.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.loginPage))
+        self.btnBackManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.loginPage))
         self.btnBackManagement.clicked.connect(lambda: self.txtSearch.clear())
         self.btnBackLaser.clicked.connect(self.backLaser)
-        self.btnBackEditUser.clicked.connect(self.stackedWidget.userManagement)
+        self.btnBackEditUser.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.userManagementPage))
         self.btnUserManagement.clicked.connect(self.loadToTabel)
         self.btnSaveInfo.clicked.connect(self.saveUserInfo)
         self.btnDeleteUser.clicked.connect(self.deleteUser)
-        self.btnUserManagement.clicked.connect(self.stackedWidget.userManagement)
+        self.btnUserManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.userManagementPage))
         self.usersTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.usersTable.verticalHeader().setDefaultSectionSize(70)
         self.usersTable.verticalHeader().setVisible(False)
@@ -87,8 +100,8 @@ class MainWin(QMainWindow):
         self.btnDecEPF.released.connect(lambda: self.decEPFTimer.stop())
         self.btnPulseWidth.clicked.connect(lambda: self.selectEPF('P'))
         self.btnFrequency.clicked.connect(lambda: self.selectEPF('F'))
-        self.btnMale.clicked.connect(self.stackedWidgetSex.male)
-        self.btnFemale.clicked.connect(self.stackedWidgetSex.female)
+        self.btnMale.clicked.connect(lambda: self.stackedWidgetSex.setCurrentWidget(self.malePage))
+        self.btnFemale.clicked.connect(lambda: self.stackedWidgetSex.setCurrentWidget(self.femalePage))
         self.btnIncEPF.clicked.connect(lambda: self.setEPF('inc'))
         self.btnDecEPF.clicked.connect(lambda: self.setEPF('dec'))
         self.btnDecCooling.clicked.connect(lambda: self.setCooling('dec'))
@@ -203,7 +216,7 @@ class MainWin(QMainWindow):
         )
 
         for btn in buttons:
-            btn.clicked.connect(self.stackedWidgetLaser.laser)
+            btn.clicked.connect(lambda: self.stackedWidgetLaser.setCurrentWidget(self.laserPage))
             sex = btn.objectName().split('btn')[1][0].lower()
             bodyPart = btn.objectName().split('btn')[1][1:].lower()
             btn.clicked.connect(self.setBodyPart(sex, bodyPart))
@@ -280,9 +293,9 @@ class MainWin(QMainWindow):
 
     def backLaser(self):
         if self.stackedWidgetLaser.currentIndex() == 0:
-            self.stackedWidget.login()
+            self.stackedWidget.setCurrentWidget(self.loginPage)
         else:
-            self.stackedWidgetLaser.bodyPart()      
+            self.stackedWidgetLaser.setCurrentWidget(self.bodyPartPage)      
 
     def blinkSensorsIcon(self, sensor):
         if sensor == 'waterCir':
@@ -505,7 +518,7 @@ class MainWin(QMainWindow):
             row += 1
 
     def edit(self, num):
-        self.stackedWidget.editUser()
+        self.stackedWidget.setCurrentWidget(self.editUserPage)
         self.userInfo = loadUser(num)
         self.txtInfoNumber.setText(self.userInfo.phoneNumber)
         self.txtInfoName.setText(self.userInfo.name)
@@ -626,7 +639,7 @@ class MainWin(QMainWindow):
         self.txtNumber.setText(number)
         self.txtNumberSubmit.clear()
         self.txtNameSubmit.clear()
-        self.stackedWidget.login()
+        self.stackedWidget.setCurrentWidget(self.loginPage)
 
     def login(self):
 
@@ -643,7 +656,8 @@ class MainWin(QMainWindow):
             if not self.user:
                 self.txtNumberSubmit.setText(numberEntered)
                 self.txtNameSubmit.setFocus()
-                self.stackedWidget.newSession()
+                self.stackedWidget.setTransitionDirection(Qt.Vertical)
+                self.stackedWidget.setCurrentWidget(self.newSessionPage)
                 return
 
             self.lblInfo.setText(
@@ -652,7 +666,8 @@ class MainWin(QMainWindow):
             )
             self.user.setCurrentSession('started')
             self.keyboard('hide')
-            self.stackedWidget.mainLaser()
+            self.stackedWidget.setTransitionDirection(Qt.Horizontal)
+            self.stackedWidget.setCurrentWidget(self.laserMainPage)
 
         elif self.user and self.user.currentSession == 'started':
             if not userExists(self.user.phoneNumber):
@@ -677,14 +692,15 @@ class MainWin(QMainWindow):
                 )
                 self.user.setCurrentSession('started')
                 self.keyboard('hide')
-                self.stackedWidget.mainLaser()
+                self.stackedWidget.setTransitionDirection(Qt.Horizontal)
+                self.stackedWidget.setCurrentWidget(self.laserMainPage)
 
     def endSession(self):
         self.user.setCurrentSession('finished')
         self.user.addSession()
         self.user.save()
         self.user = None
-        self.stackedWidget.login()
+        self.stackedWidget.setCurrentWidget(self.loginPage)
         self.stackedWidgetLaser.setCurrentIndex(0)
 
     def setLabel(self, text, label, sec=5):

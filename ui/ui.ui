@@ -38,8 +38,378 @@ border-bottom:2px solid white;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>4</number>
       </property>
+      <widget class="QWidget" name="newSessionPage">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_9">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_10" stretch="1,4,1">
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_11">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_16">
+              <property name="leftMargin">
+               <number>20</number>
+              </property>
+              <property name="topMargin">
+               <number>20</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="btnBackNewSession">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>13</pointsize>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QPushButton {
+outline:0;
+border-radius:50px;
+}
+QPushButton:hover:!pressed{
+border:3px solid white;
+}
+QPushButton:pressed{
+border:3px solid red;
+}
+</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>images/back.png</normaloff>images/back.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>100</width>
+                  <height>100</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_15">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_5">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,1,2">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <spacer name="horizontalSpacer_6">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_22" stretch="0,0,1,2,1,1,1,0,0,2,1">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label_24">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>40</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>New User</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_25">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_2">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>30</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Enter the user information</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_8">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="LineEdit" name="txtNumberSubmit">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>16</pointsize>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"/>
+                </property>
+                <property name="placeholderText">
+                 <string>Number</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_7">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="LineEdit" name="txtNameSubmit">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>16</pointsize>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"/>
+                </property>
+                <property name="placeholderText">
+                 <string>Name</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_15">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLabel" name="lblSubmit">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>14</pointsize>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"/>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_9">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_4">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <spacer name="horizontalSpacer_13">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btnSubmit">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>15</pointsize>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+min-width: 220px;
+min-height: 100px;
+border-radius: 5px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string>Submit</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_14">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_7">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_23">
+            <item>
+             <spacer name="verticalSpacer_6">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="loginPage">
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
@@ -498,8 +868,11 @@ border:3px solid red;
             <property name="leftMargin">
              <number>0</number>
             </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
             <item>
-             <layout class="QVBoxLayout" name="verticalLayout_26">
+             <layout class="QVBoxLayout" name="tblUsersLayout">
               <property name="leftMargin">
                <number>10</number>
               </property>
@@ -802,12 +1175,12 @@ border:3px solid red;
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_12" stretch="2,1">
+           <layout class="QHBoxLayout" name="horizontalLayout_12" stretch="3,2">
             <property name="leftMargin">
              <number>0</number>
             </property>
             <item>
-             <layout class="QVBoxLayout" name="verticalLayout_21" stretch="10">
+             <layout class="QVBoxLayout" name="tblUserLayout" stretch="10">
               <property name="leftMargin">
                <number>20</number>
               </property>
@@ -1451,7 +1824,7 @@ border: 1px solid white;
           <item>
            <widget class="StackedWidget" name="stackedWidgetLaser">
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="bodyPartPage">
              <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3620,376 +3993,6 @@ font: 14pt &quot;Arial&quot;;
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="newSessionPage">
-       <property name="font">
-        <font>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_9">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_10" stretch="1,4,1">
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_11">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_16">
-              <property name="leftMargin">
-               <number>20</number>
-              </property>
-              <property name="topMargin">
-               <number>20</number>
-              </property>
-              <item>
-               <widget class="QPushButton" name="btnBackNewSession">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>13</pointsize>
-                 </font>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QPushButton {
-outline:0;
-border-radius:50px;
-}
-QPushButton:hover:!pressed{
-border:3px solid white;
-}
-QPushButton:pressed{
-border:3px solid red;
-}
-</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset>
-                  <normaloff>images/back.png</normaloff>images/back.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>100</width>
-                  <height>100</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_15">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <spacer name="verticalSpacer_5">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,1,2">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <spacer name="horizontalSpacer_6">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_22" stretch="0,0,1,2,1,1,1,0,0,2,1">
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="QLabel" name="label_24">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>40</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>New User</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_25">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_2">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>30</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Enter the user information</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_8">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="LineEdit" name="txtNumberSubmit">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>16</pointsize>
-                 </font>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true"/>
-                </property>
-                <property name="placeholderText">
-                 <string>Number</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_7">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="LineEdit" name="txtNameSubmit">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>16</pointsize>
-                 </font>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true"/>
-                </property>
-                <property name="placeholderText">
-                 <string>Name</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_15">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QLabel" name="lblSubmit">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>14</pointsize>
-                 </font>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true"/>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_9">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_4">
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <spacer name="horizontalSpacer_13">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="btnSubmit">
-                  <property name="font">
-                   <font>
-                    <family>Arial</family>
-                    <pointsize>15</pointsize>
-                   </font>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">QPushButton {
-background-color: rgb(68, 68, 68);
-min-width: 220px;
-min-height: 100px;
-border-radius: 5px;
-border: 1px solid gray;
-margin: 0 5px 0 5px;
-outline:0;
-}
-QPushButton:hover:!pressed{
-background-color:rgb(77, 77, 77);
-border: 1px solid white;
-}</string>
-                  </property>
-                  <property name="text">
-                   <string>Submit</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_14">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_7">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_23">
-            <item>
-             <spacer name="verticalSpacer_6">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
      </widget>
     </item>
     <item alignment="Qt::AlignHCenter">
@@ -4808,12 +4811,6 @@ min-width:220px;
  </widget>
  <customwidgets>
   <customwidget>
-   <class>StackedWidget</class>
-   <extends>QStackedWidget</extends>
-   <header location="global">promotions.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>LineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">promotions.h</header>
@@ -4822,6 +4819,12 @@ min-width:220px;
    <class>TextEdit</class>
    <extends>QTextEdit</extends>
    <header location="global">promotions.h</header>
+  </customwidget>
+  <customwidget>
+   <class>StackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header location="global">custom_qstacked_widgets.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
