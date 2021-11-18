@@ -74,6 +74,7 @@ class MainWin(QMainWindow):
         self.btnUserManagement.clicked.connect(self.loadToTabel)
         self.btnSaveInfo.clicked.connect(self.saveUserInfo)
         self.btnDeleteUser.clicked.connect(self.deleteUser)
+        self.btnUserManagement.clicked.connect(lambda: self.stackedWidget.setTransitionDirection(Qt.Horizontal))
         self.btnUserManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.userManagementPage))
         self.usersTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.usersTable.verticalHeader().setDefaultSectionSize(70)
