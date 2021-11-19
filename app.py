@@ -17,6 +17,12 @@ def layout_widgets(layout):
 def get_layout_btn(layout):
     return (layout.itemAt(i).widget() for i in range(layout.count()) if isinstance(layout.itemAt(i).widget(), QPushButton)) 
 
+def getDiff(date):
+    today = jdatetime.datetime.today().togregorian()
+    nextSessionDate = date.togregorian()
+    return (nextSessionDate - today).days + 1
+
+
 class MainWin(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWin, self).__init__(*args, **kwargs)
@@ -43,11 +49,21 @@ class MainWin(QMainWindow):
         self.loginLabelTimer = QTimer()
         self.submitLabelTimer = QTimer()
         self.editLabelTimer = QTimer()
+        self.nextSessionLabelTimer = QTimer()
         self.incEPFTimer = QTimer()
         self.decEPFTimer = QTimer()
+        self.incDaysTimer = QTimer()
+        self.decDaysTimer = QTimer()
+        self.loginLabelTimer.timeout.connect(lambda: self.clearLabel('login'))
+        self.submitLabelTimer.timeout.connect(lambda: self.clearLabel('submit'))
+        self.editLabelTimer.timeout.connect(lambda: self.clearLabel('edit'))
+        self.nextSessionLabelTimer.timeout.connect(lambda: self.clearLabel('nextSession'))
         self.incEPFTimer.timeout.connect(lambda: self.setEPF('inc'))
         self.decEPFTimer.timeout.connect(lambda: self.setEPF('dec'))
+        self.incDaysTimer.timeout.connect(lambda: self.incDecDay('inc'))
+        self.decDaysTimer.timeout.connect(lambda: self.incDecDay('dec'))
         self.user = None
+        self.userNextSession = None
         self.sortBySession = False
         self.shift = False
         self.farsi = False
@@ -57,12 +73,9 @@ class MainWin(QMainWindow):
         self.case = 'I'
         self.EPF = 'E'
         self.cooling = 0
-        self.loginLabelTimer.timeout.connect(lambda: self.clearLabel('login'))
-        self.submitLabelTimer.timeout.connect(lambda: self.clearLabel('submit'))
-        self.editLabelTimer.timeout.connect(lambda: self.clearLabel('edit'))
         self.btnSort.clicked.connect(self.sort)
         self.txtNumber.returnPressed.connect(self.login)
-        self.btnEndSession.clicked.connect(self.endSession)
+        self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
         self.btnPower.clicked.connect(self.close)
         self.btnLogin.clicked.connect(self.login)
         self.btnSubmit.clicked.connect(self.submit)
@@ -70,12 +83,16 @@ class MainWin(QMainWindow):
         self.btnBackManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.loginPage))
         self.btnBackManagement.clicked.connect(lambda: self.txtSearch.clear())
         self.btnBackLaser.clicked.connect(self.backLaser)
+        self.btnBackEditUser.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnBackEditUser.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.userManagementPage))
         self.btnUserManagement.clicked.connect(self.loadToTabel)
         self.btnSaveInfo.clicked.connect(self.saveUserInfo)
         self.btnDeleteUser.clicked.connect(self.deleteUser)
-        self.btnUserManagement.clicked.connect(lambda: self.stackedWidget.setTransitionDirection(Qt.Horizontal))
+        self.btnUserManagement.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnUserManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.userManagementPage))
+        self.btnNextSession.clicked.connect(lambda: self.changeAnimation('vertical'))
+        self.btnNextSession.clicked.connect(lambda: self.setNextSession('edit'))
+        self.btnLaterNS.clicked.connect(self.laterNextSession)
         self.usersTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.usersTable.verticalHeader().setDefaultSectionSize(70)
         self.usersTable.verticalHeader().setVisible(False)
@@ -91,6 +108,18 @@ class MainWin(QMainWindow):
         self.txtInfoName.fIn.connect(lambda: self.keyboard('show'))
         self.textEditNote.fIn.connect(lambda: self.keyboard('show'))
         self.txtSearch.fIn.connect(lambda: self.keyboard('show'))
+        self.txtDate.fIn.connect(lambda: self.keyboard('show'))
+        self.txtDays.fIn.connect(lambda: self.keyboard('show'))
+        self.btnLaterNS.clicked.connect(lambda: self.keyboard('hide'))
+        self.btnOkNS.clicked.connect(lambda: self.keyboard('hide'))
+        self.btnDecDay.clicked.connect(lambda: self.incDecDay('dec'))
+        self.btnIncDay.clicked.connect(lambda: self.incDecDay('inc'))
+        self.txtDays.textChanged.connect(self.setDateText)
+        self.txtDate.textChanged.connect(self.setDaysText)
+        self.btnOkNS.clicked.connect(self.saveNextSession)
+        reg_ex = QRegExp("[0-9\(\)]*")
+        input_validator = QRegExpValidator(reg_ex, self.txtDays)
+        self.txtDays.setValidator(input_validator)
         self.txtSearch.textChanged.connect(self.search)
         self.btnMale.clicked.connect(lambda: self.setSex('male'))
         self.btnFemale.clicked.connect(lambda: self.setSex('female'))
@@ -99,6 +128,10 @@ class MainWin(QMainWindow):
         self.btnIncEPF.released.connect(lambda: self.incEPFTimer.stop())
         self.btnDecEPF.pressed.connect(lambda: self.decEPFTimer.start(100))
         self.btnDecEPF.released.connect(lambda: self.decEPFTimer.stop())
+        self.btnIncDay.pressed.connect(lambda: self.incDaysTimer.start(100))
+        self.btnIncDay.released.connect(lambda: self.incDaysTimer.stop())
+        self.btnDecDay.pressed.connect(lambda: self.decDaysTimer.start(100))
+        self.btnDecDay.released.connect(lambda: self.decDaysTimer.stop())
         self.btnPulseWidth.clicked.connect(lambda: self.selectEPF('P'))
         self.btnFrequency.clicked.connect(lambda: self.selectEPF('F'))
         self.btnMale.clicked.connect(lambda: self.stackedWidgetSex.setCurrentWidget(self.malePage))
@@ -113,6 +146,93 @@ class MainWin(QMainWindow):
         self.bodyPartsSignals()
         self.keyboardSignals()
         self.casesSignals()
+
+    def changeAnimation(self, animation):
+        if animation == 'horizontal':
+            self.stackedWidget.setTransitionDirection(Qt.Horizontal)
+
+        elif animation == 'vertical':
+            self.stackedWidget.setTransitionDirection(Qt.Vertical)
+
+    def isDateValid(self):
+        try:
+            text = self.txtDate.text()
+            text = text.replace(' ', '').split('/')
+            year, month, day = tuple([int(x) for x in text])
+            nextSessionDate = jdatetime.datetime(year, month, day)
+            return True, nextSessionDate
+        except Exception:
+            return False, None
+
+    def saveNextSession(self):
+        try:
+            text = self.txtDate.text()
+            text = text.replace(' ', '').split('/')
+            year, month, day = tuple([int(x) for x in text])
+            try:
+                date = jdatetime.datetime(year, month, day)
+                if getDiff(date) <= -1:
+                    self.setLabel('A past date cannot be set.', 'nextSession')
+                    return
+                self.userNextSession.setNextSession(date)
+                self.userNextSession.save()
+                if self.userNextSession.currentSession == 'started':
+                    self.endSession()
+                else:
+                    self.edit(self.userNextSession.phoneNumber)
+            except ValueError as e:
+                self.setLabel(str(e).capitalize() + '.', 'nextSession')
+
+        except Exception:
+            self.setLabel('Invalid date format.', 'nextSession')
+
+    def laterNextSession(self):
+        if self.userNextSession.currentSession == 'started':
+            self.changeAnimation('vertical')
+            self.endSession()
+        else:
+            self.edit(self.userNextSession.phoneNumber)
+
+    def incDecDay(self, operation):
+        if not self.txtDays.text():
+            self.txtDays.setText('1')
+        else:
+            num = int(self.txtDays.text())
+            num = num + 1 if operation == 'inc' else num - 1
+
+            if num in range(0, 10000):
+                self.txtDays.setText(str(num))
+        
+    def setDateText(self, num):
+        if num and int(num) in range(0, 10000):
+            today = jdatetime.datetime.today()
+            afterNday = jdatetime.timedelta(int(num))
+            nextSessionDate = today + afterNday
+            year = str(nextSessionDate.year)
+            month = str(nextSessionDate.month).zfill(2)
+            day = str(nextSessionDate.day).zfill(2)
+            self.txtDate.setText(year + ' / ' + month + ' / ' + day)
+
+    def setDaysText(self):
+        valid, nextSessionDate = self.isDateValid()
+        if valid:
+            diff = getDiff(nextSessionDate)
+            if 0 <= diff < 10000:
+                self.txtDays.setText(str(diff))
+
+    def setNextSession(self, page):
+        if page == 'lazer':
+            self.userNextSession = self.user
+        elif page == 'edit':
+            self.userNextSession = self.userInfo
+            
+        today = jdatetime.datetime.today()
+        year = str(today.year)
+        month = str(today.month).zfill(2)
+        day = str(today.day).zfill(2)
+        self.txtDate.setText(year + ' / ' + month + ' / ' + day)
+        self.changeAnimation('vertical')
+        self.stackedWidget.setCurrentWidget(self.nextSessionPage)
 
     def setupSensors(self):
         self.waterCirIco = QIcon()
@@ -521,6 +641,23 @@ class MainWin(QMainWindow):
     def edit(self, num):
         self.stackedWidget.setCurrentWidget(self.editUserPage)
         self.userInfo = loadUser(num)
+        nextSessionDate = self.userInfo.nextSession
+        if not nextSessionDate:
+            self.txtNextSession.setText('Not Set')
+        else:
+            diff = getDiff(nextSessionDate)
+
+            if diff == 0:
+                self.txtNextSession.setText('Today')
+            elif diff == -1:
+                self.txtNextSession.setText('1 Day passed')
+            elif diff < -1:
+                self.txtNextSession.setText(f'{abs(diff)} Days passed')
+            elif diff == 1:
+                self.txtNextSession.setText('1 Day left')
+            else:
+                self.txtNextSession.setText(f'{diff} Days left')
+
         self.txtInfoNumber.setText(self.userInfo.phoneNumber)
         self.txtInfoName.setText(self.userInfo.name)
         self.textEditNote.setPlainText(self.userInfo.note)
@@ -583,6 +720,10 @@ class MainWin(QMainWindow):
         nameEdit = self.txtInfoName.text()
         noteEdit = self.textEditNote.toPlainText()
 
+        if not numberEdit:
+            self.setLabel('Please fill in the number.', 'edit')
+            return
+
         if not userExists(self.userInfo.phoneNumber):
             self.setLabel('User has been deleted!', 'edit')
             return
@@ -595,6 +736,9 @@ class MainWin(QMainWindow):
                 return
 
             oldNumber = self.userInfo.phoneNumber
+            if self.user and self.user.phoneNumber == oldNumber:
+                self.user.setPhoneNumber(numberEdit)
+
             self.userInfo.setPhoneNumber(numberEdit)
             newNumber = self.userInfo.phoneNumber
             renameUserFile(oldNumber, newNumber)
@@ -604,24 +748,21 @@ class MainWin(QMainWindow):
 
         self.userInfo.setName(nameEdit)
         self.userInfo.setNote(noteEdit)
+
+        if self.user and self.user.phoneNumber == self.userInfo.phoneNumber:
+            self.user.setName(nameEdit)
+            self.user.setNote(noteEdit)
+
         self.userInfo.save()
         self.setLabel("User's info Updated.", 'edit')
         self.loadToTabel()
 
     def deleteUser(self):
-        number = self.userInfo.phoneNumber
-
-        if not userExists(number):
-            self.setLabel('User has been deleted!', 'edit')
-            return
-            
+        number = self.userInfo.phoneNumber        
         deleteUser(number)
-        self.txtInfoNumber.clear()
-        self.txtInfoName.clear()
-        self.textEditNote.clear()
-        self.userInfoTable.setRowCount(0)
-        self.setLabel("User deleted successfully.", 'edit')
         self.loadToTabel()
+        self.changeAnimation('horizontal')
+        self.stackedWidget.setCurrentWidget(self.userManagementPage)
 
     def submit(self):
         number = self.txtNumberSubmit.text()
@@ -657,7 +798,7 @@ class MainWin(QMainWindow):
             if not self.user:
                 self.txtNumberSubmit.setText(numberEntered)
                 self.txtNameSubmit.setFocus()
-                self.stackedWidget.setTransitionDirection(Qt.Vertical)
+                self.changeAnimation('vertical')
                 self.stackedWidget.setCurrentWidget(self.newSessionPage)
                 return
 
@@ -667,7 +808,7 @@ class MainWin(QMainWindow):
             )
             self.user.setCurrentSession('started')
             self.keyboard('hide')
-            self.stackedWidget.setTransitionDirection(Qt.Horizontal)
+            self.changeAnimation('horizontal')
             self.stackedWidget.setCurrentWidget(self.laserMainPage)
 
         elif self.user and self.user.currentSession == 'started':
@@ -693,7 +834,7 @@ class MainWin(QMainWindow):
                 )
                 self.user.setCurrentSession('started')
                 self.keyboard('hide')
-                self.stackedWidget.setTransitionDirection(Qt.Horizontal)
+                self.changeAnimation('horizontal')
                 self.stackedWidget.setCurrentWidget(self.laserMainPage)
 
     def endSession(self):
@@ -720,7 +861,11 @@ class MainWin(QMainWindow):
         elif label == 'edit':
             self.lblEditUser.setText(text)
             self.editLabelTimer.start(sec * 1000)
-        
+
+        elif label == 'nextSession':
+            self.lblNextSession.setText(text)
+            self.nextSessionLabelTimer.start(sec * 1000)
+
     def clearLabel(self, label):
         if label == 'login':
             self.lblLogin.clear()
@@ -732,6 +877,11 @@ class MainWin(QMainWindow):
 
         elif label == 'edit':
             self.lblEditUser.clear()
+            self.editLabelTimer.stop()
+
+        elif label == 'nextSession':
+            self.lblNextSession.clear()
+            self.nextSessionLabelTimer.stop()
                   
 
 def main():

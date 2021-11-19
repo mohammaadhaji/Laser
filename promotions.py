@@ -5,7 +5,6 @@ from paths import EDIT_ICON
 
 
 class Action(QWidget):
-    delete = pyqtSignal(str)
     edit = pyqtSignal(str)
     def __init__(self, parent, number):
         super().__init__(parent)

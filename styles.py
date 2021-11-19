@@ -76,6 +76,7 @@ QPushButton{
 FARSI_PRESSED = """
 QPushButton{
     background-color: rgb(0, 170, 255);
+    color:balck;
 }
 """
 

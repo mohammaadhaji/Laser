@@ -16,12 +16,10 @@ class User:
         self.sessionNumber = 1
         self.sessions = {} 
         self.note = ''
-        self.shot = {
-            'face': 0, 'armpit': 0,
-            'arm': 0, 'body': 0,
-            'bikini': 0, 'leg': 0
-        }
+        bodyParts = ['face', 'arm', 'armpit', 'body', 'bikini', 'leg']
+        self.shot = dict.fromkeys(bodyParts, 0)
         self.currentSession = 'finished'
+        self.nextSession = None
     
     
     def setCurrentSession(self, status):
@@ -38,6 +36,9 @@ class User:
 
     def setNote(self, note):
         self.note = note
+
+    def setNextSession(self, date):
+        self.nextSession = date
 
     def addSession(self):
         session = self.shot.copy()
