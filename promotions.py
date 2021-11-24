@@ -1,3 +1,4 @@
+from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -68,3 +69,20 @@ class TableWidgetItem(QTableWidgetItem):
         self.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
 
+class VideoWidget(QVideoWidget):
+        def Video_Widget(self):
+            self.Video_Player = QVideoWidget(self.centralWidget)
+            self.Video_Player.setObjectName("videoPlayer")
+            self.Video_Player.show()
+
+        def keyPressEvent(self, event):
+            if event.key() == Qt.Key_Escape and self.isFullScreen():
+                self.setFullScreen(False)
+                event.accept()
+            elif event.key() == Qt.Key_Enter and event.modifiers() & Qt.Key_Alt:
+                self.setFullScreen(not self.isFullScreen())
+                event.accept()
+
+        def mouseDoubleClickEvent(self, event):
+            self.setFullScreen(not self.isFullScreen())
+            event.accept()
