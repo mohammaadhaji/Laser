@@ -6,6 +6,7 @@ CURRENT_FILE_DIR = Path(__file__).parent.absolute()
 APP_UI = join(CURRENT_FILE_DIR, 'ui/ui.ui')
 USERS_DIR = join(CURRENT_FILE_DIR, 'users')
 CASES_DIR = join(CURRENT_FILE_DIR, 'cases')
+TUTORIALS_DIR = join(CURRENT_FILE_DIR, 'tutorials')
 EDIT_ICON = join(CURRENT_FILE_DIR, 'ui/images/edit.png')
 WATERCIRCULATION = join(CURRENT_FILE_DIR, 'ui/images/waterCirculation.png')
 WATERCIRCULATIONWARNING = join(CURRENT_FILE_DIR, 'ui/images/waterCirculationWarning.png')
@@ -31,3 +32,5 @@ BODY_PART_ICONS = {
     'm bikini': join(CURRENT_FILE_DIR, 'ui/images/mBikini'),
     'm leg': join(CURRENT_FILE_DIR, 'ui/images/mLeg')
 }
+PLAY_ICON = join(CURRENT_FILE_DIR, 'ui/images/play.png')
+PAUSE_ICON = join(CURRENT_FILE_DIR, 'ui/images/pause.png')

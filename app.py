@@ -1,13 +1,15 @@
 from PyQt5.QtGui import *
+from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5 import uic
-from promotions import Action, TableWidgetItem
-from itertools import chain
+from promotions import *
 from case import *
 from paths import *
 from user import *
 from styles import *
+from itertools import chain
+from pathlib import Path 
 import sys
 
 
@@ -22,12 +24,20 @@ def getDiff(date):
     nextSessionDate = date.togregorian()
     return (nextSessionDate - today).days + 1
 
+def addExtenstion(file):
+    files = os.listdir(TUTORIALS_DIR)
+    files.remove('.gitignore')
+    for f in files:
+        path = os.path.join(TUTORIALS_DIR, f)
+        if file == Path(path).stem:
+            return file + Path(path).suffix
 
 class MainWin(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWin, self).__init__(*args, **kwargs)
         uic.loadUi(APP_UI, self)
         self.setupUi()
+        self.tutorials()
         self.setupSensors()
 
     def setupUi(self):
@@ -90,12 +100,26 @@ class MainWin(QMainWindow):
         self.btnDeleteUser.clicked.connect(self.deleteUser)
         self.btnUserManagement.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnUserManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.userManagementPage))
+        self.btnNotify.clicked.connect(lambda: self.changeAnimation('horizontal'))
+        self.btnNotify.clicked.connect(self.futureSessions)
+        self.btnNotify.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.notifyPage))
+        self.btnBackNotify.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.loginPage))
+        self.btnTutorials.clicked.connect(lambda: self.changeAnimation('horizontal'))
+        self.btnTutorials.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.tutorialPage))
+        self.btnBackTutorials.clicked.connect(self.pause)
+        self.btnBackTutorials.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.loginPage))
         self.btnNextSession.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.btnNextSession.clicked.connect(lambda: self.setNextSession('edit'))
-        self.btnLaterNS.clicked.connect(self.laterNextSession)
+        self.btnCancelNS.clicked.connect(self.cancelNextSession)
         self.usersTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.usersTable.verticalHeader().setDefaultSectionSize(70)
         self.usersTable.verticalHeader().setVisible(False)
+        self.tableToday.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tableToday.verticalHeader().setDefaultSectionSize(70)
+        self.tableToday.verticalHeader().setVisible(False)
+        self.tableTomorrow.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tableTomorrow.verticalHeader().setDefaultSectionSize(70)
+        self.tableTomorrow.verticalHeader().setVisible(False)
         self.userInfoTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         header = self.userInfoTable.horizontalHeader()
         header.setSectionResizeMode(0,  QHeaderView.ResizeToContents)
@@ -110,7 +134,7 @@ class MainWin(QMainWindow):
         self.txtSearch.fIn.connect(lambda: self.keyboard('show'))
         self.txtDate.fIn.connect(lambda: self.keyboard('show'))
         self.txtDays.fIn.connect(lambda: self.keyboard('show'))
-        self.btnLaterNS.clicked.connect(lambda: self.keyboard('hide'))
+        self.btnCancelNS.clicked.connect(lambda: self.keyboard('hide'))
         self.btnOkNS.clicked.connect(lambda: self.keyboard('hide'))
         self.btnDecDay.clicked.connect(lambda: self.incDecDay('dec'))
         self.btnIncDay.clicked.connect(lambda: self.incDecDay('inc'))
@@ -120,6 +144,7 @@ class MainWin(QMainWindow):
         reg_ex = QRegExp("[0-9\(\)]*")
         input_validator = QRegExpValidator(reg_ex, self.txtDays)
         self.txtDays.setValidator(input_validator)
+        self.txtDays.setText('30')
         self.txtSearch.textChanged.connect(self.search)
         self.btnMale.clicked.connect(lambda: self.setSex('male'))
         self.btnFemale.clicked.connect(lambda: self.setSex('female'))
@@ -146,6 +171,80 @@ class MainWin(QMainWindow):
         self.bodyPartsSignals()
         self.keyboardSignals()
         self.casesSignals()
+
+    def tutorials(self):
+        self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+        self.videoWidget = VideoWidget()
+        self.videoLayout.addWidget(self.videoWidget)
+        self.btnPlay.clicked.connect(self.play)
+        self.listWidgetVideos.itemClicked.connect(self.videoSelected)
+        self.positionSlider.setRange(0, 0)
+        self.positionSlider.sliderMoved.connect(self.setPosition)
+        self.mediaPlayer.setVolume(self.sliderVolume.value())
+        self.sliderVolume.valueChanged.connect(self.mediaPlayer.setVolume)
+        self.mediaPlayer.setVideoOutput(self.videoWidget)
+        self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
+        self.mediaPlayer.positionChanged.connect(self.positionChanged)
+        self.mediaPlayer.durationChanged.connect(self.durationChanged)
+        self.playIco = QIcon()
+        self.pauseIco = QIcon()
+        self.playIco.addPixmap(QPixmap(PLAY_ICON))
+        self.pauseIco.addPixmap(QPixmap(PAUSE_ICON))
+        self.btnPlay.setIcon(self.playIco)
+        self.btnPlay.setIconSize(QSize(100, 100))
+        self.length = '00:00:00'
+        self.lblLength.setText(self.length)
+
+        tutoriasl = os.listdir(TUTORIALS_DIR)
+        tutoriasl.remove('.gitignore')
+        for file in tutoriasl:
+            path = os.path.join(TUTORIALS_DIR, file) 
+            name = Path(path).stem
+            self.listWidgetVideos.addItem(name)
+        
+    def videoSelected(self, video):
+        stem = video.text()
+        self.lblTitle.setText(stem)
+        path = join(TUTORIALS_DIR, addExtenstion(stem))
+        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(path)))
+        
+    def play(self):
+        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+            self.mediaPlayer.pause()
+        else:
+            self.mediaPlayer.play()
+
+    def setPosition(self, position):
+        self.mediaPlayer.setPosition(position)
+
+    def mediaStateChanged(self):
+        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+            self.btnPlay.setIcon(self.pauseIco)
+        else:
+            self.btnPlay.setIcon(self.playIco)
+
+    def positionChanged(self, position):
+        self.positionSlider.setValue(position)
+        seconds = int((position/1000) % 60)
+        minutes = int((position/60000) % 60)
+        hours = int((position/3600000) % 24)
+        current = '{:02d}:{:02d}:{:02d} / '.format(hours, minutes, seconds) + self.length
+        self.lblLength.setText(current)
+
+    def durationChanged(self, duration):
+        seconds = int((duration/1000) % 60)
+        minutes = int((duration/60000) % 60)
+        hours = int((duration/3600000) % 24)
+        self.length = '{:02d}:{:02d}:{:02d}'.format(hours, minutes, seconds)
+        self.lblLength.setText('00:00:00 / ' + self.length)
+        self.positionSlider.setRange(0, duration)
+
+    def pause(self):
+        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+            self.mediaPlayer.pause()
+            self.btnPlay.setIcon(self.playIco)
+
+        self.mediaPlayer.setPosition(0)
 
     def changeAnimation(self, animation):
         if animation == 'horizontal':
@@ -186,8 +285,9 @@ class MainWin(QMainWindow):
         except Exception:
             self.setLabel('Invalid date format.', 'nextSession')
 
-    def laterNextSession(self):
+    def cancelNextSession(self):
         if self.userNextSession.currentSession == 'started':
+            self.userNextSession.setNextSession(None)
             self.changeAnimation('vertical')
             self.endSession()
         else:
@@ -226,11 +326,6 @@ class MainWin(QMainWindow):
         elif page == 'edit':
             self.userNextSession = self.userInfo
             
-        today = jdatetime.datetime.today()
-        year = str(today.year)
-        month = str(today.month).zfill(2)
-        day = str(today.day).zfill(2)
-        self.txtDate.setText(year + ' / ' + month + ' / ' + day)
         self.changeAnimation('vertical')
         self.stackedWidget.setCurrentWidget(self.nextSessionPage)
 
@@ -344,7 +439,7 @@ class MainWin(QMainWindow):
             btn.clicked.connect(self.fillEPF)
 
     def fillEPF(self):
-        self.loadCase(self.case)
+        self.loadCase()
         
     def setBodyPart(self, sex, bodyPart):
         def wrapper():
@@ -405,8 +500,8 @@ class MainWin(QMainWindow):
             self.btnFrequency.setStyleSheet(EPF_SELECTED)
             self.EPF = 'F'
 
-    def loadCase(self, name):
-        case = openCase(name)
+    def loadCase(self):
+        case = openCase(self.case)
         enrgy, pl, freq = case.getValue(self.sex, self.bodyPart)
         self.txtEnergy.setText(str(enrgy) + ' J/cm²')
         self.txtPulseWidth.setText(str(pl) + ' Ms')
@@ -715,6 +810,53 @@ class MainWin(QMainWindow):
         self.userInfoTable.setItem(lastRow, 6, leg)
         self.userInfoTable.setItem(lastRow, 7, totalShots)
 
+    def futureSessions(self):
+        users = loadAllUsers()
+        rowToday = 0
+        rowTomorrow = 0
+        for user in users:
+            if user.sessionNumber == 1:
+                nextSession = user.nextSession
+                num = TableWidgetItem(user.phoneNumber)
+                lastSession = TableWidgetItem('First Time')
+                sn = TableWidgetItem(str(user.sessionNumber))
+                if nextSession and getDiff(nextSession) == 0:
+                    self.tableToday.setRowCount(rowToday +1)
+                    self.tableToday.setItem(rowToday, 0, num)
+                    self.tableToday.setItem(rowToday, 1, lastSession)
+                    self.tableToday.setItem(rowToday, 2, sn)
+                    rowToday += 1
+                elif nextSession and getDiff(nextSession) == 1:
+                    self.tableTomorrow.setRowCount(rowTomorrow +1)
+                    self.tableTomorrow.setItem(rowTomorrow, 0, num)
+                    self.tableTomorrow.setItem(rowTomorrow, 1, lastSession)
+                    self.tableTomorrow.setItem(rowTomorrow, 2, sn)
+                    rowTomorrow += 1
+
+            else:
+                nextSession = user.nextSession
+                lastSession = user.sessions[user.sessionNumber -1]['date']
+                lastSession = TableWidgetItem(str(lastSession.date()))
+                num = TableWidgetItem(user.phoneNumber)
+                sn = TableWidgetItem(str(user.sessionNumber))
+                if nextSession and getDiff(nextSession) == 0:
+                    self.tableToday.setRowCount(rowToday +1)
+                    self.tableToday.setItem(rowToday, 0, num)
+                    self.tableToday.setItem(rowToday, 1, lastSession)
+                    self.tableToday.setItem(rowToday, 2, sn)
+                    rowToday += 1
+                elif nextSession and getDiff(nextSession) == 1:
+                    self.tableTomorrow.setRowCount(rowTomorrow +1)
+                    self.tableTomorrow.setItem(rowTomorrow, 0, num)
+                    self.tableTomorrow.setItem(rowTomorrow, 1, lastSession)
+                    self.tableTomorrow.setItem(rowTomorrow, 2, sn)
+                    rowTomorrow += 1
+
+        self.lblToday.setText(f'Today → {rowToday}')
+        self.tableToday.setRowCount(rowToday)
+        self.lblTomorrow.setText(f'Tomorrow → {rowTomorrow}')
+        self.tableTomorrow.setRowCount(rowTomorrow)
+
     def saveUserInfo(self):
         numberEdit = self.txtInfoNumber.text()
         nameEdit = self.txtInfoName.text()
@@ -784,7 +926,6 @@ class MainWin(QMainWindow):
         self.stackedWidget.setCurrentWidget(self.loginPage)
 
     def login(self):
-
         numberEntered = self.txtNumber.text()
 
         if (not self.user) or (self.user.currentSession == 'finished'):

@@ -53,6 +53,8 @@ class User:
         pickle.dump(self, fileHandler)
         fileHandler.close()
 
+    def __str__(self):
+        return '<' + self.name + '> ' + '(' + self.phoneNumber + ')'
 
 def loadUser(number):
     filePath = join(USERS_DIR, number)
