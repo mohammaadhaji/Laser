@@ -2,7 +2,7 @@ from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from paths import EDIT_ICON
+from paths import INFORMATION_ICON
 
 
 class Action(QWidget):
@@ -15,15 +15,16 @@ class Action(QWidget):
                             outline:0;
                         }
                         QPushButton:pressed{
-                            border:3px solid red;
-                        }"""
+                        margin: 10px 0 0 0;
+                        }
+                        """
                     
         layout = QHBoxLayout(self)
         btn_edit = QPushButton(self)
         editIcon = QIcon()
-        editIcon.addPixmap(QPixmap(EDIT_ICON), QIcon.Normal, QIcon.Off)
+        editIcon.addPixmap(QPixmap(INFORMATION_ICON), QIcon.Normal, QIcon.Off)
         btn_edit.setIcon(editIcon)
-        btn_edit.setIconSize(QSize(50, 50))
+        btn_edit.setIconSize(QSize(60, 60))
         btn_edit.setStyleSheet(stylesheet)
         btn_edit.clicked.connect(lambda: self.edit.emit(self.number))
 
@@ -40,8 +41,6 @@ class Action(QWidget):
             QSizePolicy.Minimum
         )
         layout.addItem(spacerItem1)
-
-
 
 class LineEdit(QLineEdit):
     fIn = pyqtSignal()
@@ -68,7 +67,6 @@ class TableWidgetItem(QTableWidgetItem):
         QTableWidgetItem.__init__(self, parent)
         self.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
-
 class VideoWidget(QVideoWidget):
         def Video_Widget(self):
             self.Video_Player = QVideoWidget(self.centralWidget)
@@ -86,3 +84,74 @@ class VideoWidget(QVideoWidget):
         def mouseDoubleClickEvent(self, event):
             self.setFullScreen(not self.isFullScreen())
             event.accept()
+
+class ToggleButton(QCheckBox):
+    def __init__(
+        self,
+        width=120,
+        bgColor="#777",
+        circleColor="#DDD",
+        activeColor="#00BCff",
+        animationCurve=QEasingCurve.Linear,
+    ):
+        QCheckBox.__init__(self)
+        # self.setFixedSize(width, 48)
+        self.setCursor(Qt.PointingHandCursor)
+
+        self._bg_color = bgColor
+        self._circle_color = circleColor
+        self._active_color = activeColor
+        self._circle_position = 3
+        self.animation = QPropertyAnimation(self, b"circle_position")
+
+        self.animation.setEasingCurve(animationCurve)
+        self.animation.setDuration(200)
+        self.stateChanged.connect(self.start_transition)
+
+    @pyqtProperty(int)
+    def circle_position(self):
+        return self._circle_position
+
+    @circle_position.setter
+    def circle_position(self, pos):
+        self._circle_position = pos
+        self.update()
+
+    def start_transition(self, value):
+        self.animation.setStartValue(self.circle_position)
+        if value:
+            self.animation.setEndValue(self.width() - 45)
+        else:
+            self.animation.setEndValue(3)
+        self.animation.start()
+
+    def hitButton(self, pos: QPoint):
+        return self.contentsRect().contains(pos)
+
+    def paintEvent(self, e):
+        p = QPainter(self)
+        p.setRenderHint(QPainter.Antialiasing)
+
+        p.setPen(Qt.NoPen)
+
+        rect = QRect(0, 0, self.width(), self.height())
+
+        if not self.isChecked():
+            p.setBrush(QColor(self._bg_color))
+            p.drawRoundedRect(
+                0, 0, rect.width(), self.height(), self.height() / 2, self.height() / 2
+            )
+        
+            p.setBrush(QColor(self._circle_color))
+            p.drawEllipse(self._circle_position, 3, 42, 42)
+        else:
+            p.setBrush(QColor(self._active_color))
+            p.drawRoundedRect(
+                0, 0, rect.width(), self.height(), self.height() / 2, self.height() / 2
+            )
+
+            p.setBrush(QColor(self._circle_color))
+            p.drawEllipse(self._circle_position, 3, 42, 42)
+
+
+
