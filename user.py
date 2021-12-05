@@ -84,7 +84,8 @@ def deleteUser(number):
 
 def loadAllUsers():
     numbers = os.listdir(USERS_DIR)
-    numbers.remove('.gitignore')
+    if isfile(join(USERS_DIR, '.gitignore')):
+        numbers.remove('.gitignore')
     users = []
     for number in numbers:
         user = loadUser(number)

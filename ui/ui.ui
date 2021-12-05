@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1512</width>
-    <height>751</height>
+    <width>1549</width>
+    <height>1033</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -126,7 +126,7 @@ border:3px solid red;
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>40</pointsize>
+                  <pointsize>50</pointsize>
                  </font>
                 </property>
                 <property name="text">
@@ -220,7 +220,7 @@ border:3px solid red;
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>30</pointsize>
+                  <pointsize>40</pointsize>
                  </font>
                 </property>
                 <property name="text">
@@ -249,7 +249,7 @@ border:3px solid red;
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>16</pointsize>
+                  <pointsize>20</pointsize>
                  </font>
                 </property>
                 <property name="styleSheet">
@@ -281,7 +281,7 @@ border:3px solid red;
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>16</pointsize>
+                  <pointsize>20</pointsize>
                  </font>
                 </property>
                 <property name="styleSheet">
@@ -313,7 +313,7 @@ border:3px solid red;
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>14</pointsize>
+                  <pointsize>16</pointsize>
                  </font>
                 </property>
                 <property name="styleSheet">
@@ -363,7 +363,7 @@ border:3px solid red;
                   <property name="font">
                    <font>
                     <family>Arial</family>
-                    <pointsize>15</pointsize>
+                    <pointsize>20</pointsize>
                    </font>
                   </property>
                   <property name="styleSheet">
@@ -478,6 +478,7 @@ border: 1px solid white;
                  <string notr="true">QPushButton {
 outline:0;
 border-radius:70px;
+border:0px
 }
 
 QPushButton:pressed{
@@ -506,6 +507,7 @@ margin: 20px 0 0 0;
                  <string notr="true">QPushButton {
 outline:0;
 border-radius:70px;
+border:0px
 }
 
 QPushButton:pressed{
@@ -534,6 +536,7 @@ margin: 20px 0 0 0;
                  <string notr="true">QPushButton {
 outline:0;
 border-radius:70px;
+border:0px
 }
 
 QPushButton:pressed{
@@ -562,6 +565,7 @@ margin: 20px 0 0 0;
                  <string notr="true">QPushButton {
 outline:0;
 border-radius:70px;
+border:0px
 }
 
 QPushButton:pressed{
@@ -590,6 +594,7 @@ margin: 20px 0 0 0;
                  <string notr="true">QPushButton {
 outline:0;
 border-radius:70px;
+border:0px
 }
 
 QPushButton:pressed{
@@ -645,7 +650,7 @@ margin: 20px 0 0 0;
               <property name="font">
                <font>
                 <family>Arial</family>
-                <pointsize>30</pointsize>
+                <pointsize>40</pointsize>
                </font>
               </property>
               <property name="text">
@@ -689,7 +694,7 @@ margin: 20px 0 0 0;
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>16</pointsize>
+                  <pointsize>20</pointsize>
                  </font>
                 </property>
                 <property name="layoutDirection">
@@ -742,7 +747,7 @@ margin: 20px 0 0 0;
               <property name="font">
                <font>
                 <family>Arial</family>
-                <pointsize>14</pointsize>
+                <pointsize>16</pointsize>
                </font>
               </property>
               <property name="styleSheet">
@@ -788,7 +793,7 @@ margin: 20px 0 0 0;
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>16</pointsize>
+                  <pointsize>20</pointsize>
                  </font>
                 </property>
                 <property name="styleSheet">
@@ -923,7 +928,7 @@ border:3px solid red;
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>40</pointsize>
+              <pointsize>50</pointsize>
              </font>
             </property>
             <property name="text">
@@ -1429,7 +1434,7 @@ border:3px solid red;
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>40</pointsize>
+                  <pointsize>50</pointsize>
                  </font>
                 </property>
                 <property name="text">
@@ -1843,7 +1848,7 @@ border-radius: 4px;
                     <property name="font">
                      <font>
                       <family>Arial</family>
-                      <pointsize>14</pointsize>
+                      <pointsize>16</pointsize>
                      </font>
                     </property>
                     <property name="text">
@@ -1953,7 +1958,7 @@ border:3px solid red;
               <property name="font">
                <font>
                 <family>Arial</family>
-                <pointsize>40</pointsize>
+                <pointsize>50</pointsize>
                </font>
               </property>
               <property name="text">
@@ -2295,7 +2300,7 @@ border:3px solid red;
               <property name="font">
                <font>
                 <family>Arial</family>
-                <pointsize>40</pointsize>
+                <pointsize>50</pointsize>
                </font>
               </property>
               <property name="text">
@@ -2339,7 +2344,7 @@ border:3px solid red;
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>14</pointsize>
+                  <pointsize>20</pointsize>
                  </font>
                 </property>
                 <property name="layoutDirection">
@@ -2478,7 +2483,7 @@ QScrollBar::handle:vertical {
                   <property name="font">
                    <font>
                     <family>Arial</family>
-                    <pointsize>16</pointsize>
+                    <pointsize>20</pointsize>
                    </font>
                   </property>
                   <property name="text">
@@ -2504,7 +2509,7 @@ QScrollBar::handle:vertical {
                   <property name="font">
                    <font>
                     <family>Arial</family>
-                    <pointsize>16</pointsize>
+                    <pointsize>20</pointsize>
                    </font>
                   </property>
                   <property name="styleSheet">
@@ -2635,7 +2640,7 @@ border:3px solid red;
               <property name="font">
                <font>
                 <family>Arial</family>
-                <pointsize>40</pointsize>
+                <pointsize>50</pointsize>
                </font>
               </property>
               <property name="text">
@@ -2869,7 +2874,7 @@ QScrollBar::handle:vertical {
                <enum>Qt::LeftToRight</enum>
               </property>
               <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
+               <enum>QFrame::NoFrame</enum>
               </property>
               <property name="frameShadow">
                <enum>QFrame::Raised</enum>
@@ -2908,7 +2913,7 @@ QScrollBar::handle:vertical {
                      <property name="font">
                       <font>
                        <family>Arial</family>
-                       <pointsize>14</pointsize>
+                       <pointsize>20</pointsize>
                       </font>
                      </property>
                      <property name="text">
@@ -2924,7 +2929,7 @@ QScrollBar::handle:vertical {
                      <property name="font">
                       <font>
                        <family>Arial</family>
-                       <pointsize>12</pointsize>
+                       <pointsize>20</pointsize>
                       </font>
                      </property>
                      <property name="styleSheet">
@@ -2939,7 +2944,7 @@ padding:10px 10px 10px 10px;</string>
                      <property name="font">
                       <font>
                        <family>Arial</family>
-                       <pointsize>14</pointsize>
+                       <pointsize>20</pointsize>
                       </font>
                      </property>
                      <property name="styleSheet">
@@ -2955,7 +2960,7 @@ padding:10px 10px 10px 10px;</string>
                      <property name="font">
                       <font>
                        <family>Arial</family>
-                       <pointsize>14</pointsize>
+                       <pointsize>20</pointsize>
                       </font>
                      </property>
                      <property name="styleSheet">
@@ -2971,7 +2976,7 @@ padding:10px 10px 10px 10px;</string>
                      <property name="font">
                       <font>
                        <family>Arial</family>
-                       <pointsize>14</pointsize>
+                       <pointsize>20</pointsize>
                       </font>
                      </property>
                      <property name="text">
@@ -3002,7 +3007,7 @@ padding:10px 10px 10px 10px;</string>
                        <property name="font">
                         <font>
                          <family>Arial</family>
-                         <pointsize>14</pointsize>
+                         <pointsize>20</pointsize>
                         </font>
                        </property>
                        <property name="text">
@@ -3040,7 +3045,7 @@ padding:10px 10px 10px 10px;</string>
                       <widget class="QPushButton" name="btnDeleteUser">
                        <property name="font">
                         <font>
-                         <pointsize>16</pointsize>
+                         <pointsize>20</pointsize>
                         </font>
                        </property>
                        <property name="styleSheet">
@@ -3068,7 +3073,7 @@ border: 1px solid white;
                       <widget class="QPushButton" name="btnSaveInfo">
                        <property name="font">
                         <font>
-                         <pointsize>16</pointsize>
+                         <pointsize>20</pointsize>
                         </font>
                        </property>
                        <property name="styleSheet">
@@ -3099,7 +3104,7 @@ border: 1px solid white;
                      <property name="font">
                       <font>
                        <family>Arial</family>
-                       <pointsize>14</pointsize>
+                       <pointsize>20</pointsize>
                       </font>
                      </property>
                      <property name="text">
@@ -3115,7 +3120,7 @@ border: 1px solid white;
                      <property name="font">
                       <font>
                        <family>Arial</family>
-                       <pointsize>14</pointsize>
+                       <pointsize>20</pointsize>
                       </font>
                      </property>
                      <property name="readOnly">
@@ -3130,7 +3135,7 @@ border: 1px solid white;
                    <property name="font">
                     <font>
                      <family>Arial</family>
-                     <pointsize>12</pointsize>
+                     <pointsize>16</pointsize>
                     </font>
                    </property>
                    <property name="text">
@@ -3306,7 +3311,7 @@ margin:0 10px 0 10px;
                    <property name="font">
                     <font>
                      <family>Arial</family>
-                     <pointsize>14</pointsize>
+                     <pointsize>20</pointsize>
                     </font>
                    </property>
                    <property name="styleSheet">
@@ -3351,7 +3356,7 @@ border:1px solid gray;
               <property name="font">
                <font>
                 <family>Arial</family>
-                <pointsize>16</pointsize>
+                <pointsize>20</pointsize>
                </font>
               </property>
               <property name="styleSheet">
@@ -3379,7 +3384,7 @@ border: 1px solid white;
           <item>
            <widget class="StackedWidget" name="stackedWidgetLaser">
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="bodyPartPage">
              <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3578,7 +3583,7 @@ border: 10px solid rgb(255, 255, 255);
                      <string notr="true"/>
                     </property>
                     <property name="currentIndex">
-                     <number>0</number>
+                     <number>1</number>
                     </property>
                     <widget class="QWidget" name="femalePage">
                      <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -3609,7 +3614,7 @@ border: 10px solid rgb(255, 255, 255);
                             <property name="font">
                              <font>
                               <family>Arial</family>
-                              <pointsize>16</pointsize>
+                              <pointsize>20</pointsize>
                              </font>
                             </property>
                             <property name="text">
@@ -3656,7 +3661,7 @@ background-color: rgb(0, 170, 255);
                             <property name="font">
                              <font>
                               <family>Arial</family>
-                              <pointsize>16</pointsize>
+                              <pointsize>20</pointsize>
                              </font>
                             </property>
                             <property name="text">
@@ -3734,7 +3739,7 @@ background-color: rgb(0, 170, 255);
                             <property name="font">
                              <font>
                               <family>Arial</family>
-                              <pointsize>16</pointsize>
+                              <pointsize>20</pointsize>
                              </font>
                             </property>
                             <property name="text">
@@ -3750,7 +3755,7 @@ background-color: rgb(0, 170, 255);
                             <property name="font">
                              <font>
                               <family>Arial</family>
-                              <pointsize>16</pointsize>
+                              <pointsize>20</pointsize>
                              </font>
                             </property>
                             <property name="text">
@@ -3766,7 +3771,7 @@ background-color: rgb(0, 170, 255);
                             <property name="font">
                              <font>
                               <family>Arial</family>
-                              <pointsize>16</pointsize>
+                              <pointsize>20</pointsize>
                              </font>
                             </property>
                             <property name="text">
@@ -3940,7 +3945,7 @@ background-color: rgb(0, 170, 255);
                             <property name="font">
                              <font>
                               <family>Arial</family>
-                              <pointsize>16</pointsize>
+                              <pointsize>20</pointsize>
                              </font>
                             </property>
                             <property name="text">
@@ -3986,7 +3991,7 @@ background-color: rgb(0, 170, 255);
                             <property name="font">
                              <font>
                               <family>Arial</family>
-                              <pointsize>16</pointsize>
+                              <pointsize>20</pointsize>
                              </font>
                             </property>
                             <property name="text">
@@ -4103,7 +4108,7 @@ background-color: rgb(0, 170, 255);
                             <property name="font">
                              <font>
                               <family>Arial</family>
-                              <pointsize>16</pointsize>
+                              <pointsize>20</pointsize>
                              </font>
                             </property>
                             <property name="text">
@@ -4212,7 +4217,7 @@ background-color: rgb(0, 170, 255);
                             <property name="font">
                              <font>
                               <family>Arial</family>
-                              <pointsize>16</pointsize>
+                              <pointsize>20</pointsize>
                              </font>
                             </property>
                             <property name="text">
@@ -4228,7 +4233,7 @@ background-color: rgb(0, 170, 255);
                             <property name="font">
                              <font>
                               <family>Arial</family>
-                              <pointsize>16</pointsize>
+                              <pointsize>20</pointsize>
                              </font>
                             </property>
                             <property name="text">
@@ -4275,7 +4280,7 @@ background-color: rgb(0, 170, 255);
                             <property name="font">
                              <font>
                               <family>Arial</family>
-                              <pointsize>16</pointsize>
+                              <pointsize>20</pointsize>
                              </font>
                             </property>
                             <property name="text">
@@ -4291,7 +4296,7 @@ background-color: rgb(0, 170, 255);
                             <property name="font">
                              <font>
                               <family>Arial</family>
-                              <pointsize>16</pointsize>
+                              <pointsize>20</pointsize>
                              </font>
                             </property>
                             <property name="text">
@@ -5426,7 +5431,7 @@ outline:0;
                          <property name="font">
                           <font>
                            <family>Arial</family>
-                           <pointsize>16</pointsize>
+                           <pointsize>20</pointsize>
                           </font>
                          </property>
                          <property name="text">
@@ -5574,7 +5579,7 @@ outline:0;
       <widget class="QWidget" name="nextSessionPage">
        <layout class="QVBoxLayout" name="verticalLayout_21">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,3,1">
+         <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,3,0,1">
           <property name="bottomMargin">
            <number>0</number>
           </property>
@@ -5598,7 +5603,7 @@ outline:0;
               <property name="font">
                <font>
                 <family>Arial</family>
-                <pointsize>40</pointsize>
+                <pointsize>50</pointsize>
                </font>
               </property>
               <property name="text">
@@ -5658,6 +5663,22 @@ outline:0;
                  <property name="rightMargin">
                   <number>0</number>
                  </property>
+                 <item row="2" column="1">
+                  <widget class="QLabel" name="lblDaysAfter">
+                   <property name="font">
+                    <font>
+                     <family>Arial</family>
+                     <pointsize>30</pointsize>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Next Session After</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="2" column="6">
                   <spacer name="horizontalSpacer_39">
                    <property name="orientation">
@@ -5671,28 +5692,12 @@ outline:0;
                    </property>
                   </spacer>
                  </item>
-                 <item row="2" column="1">
-                  <widget class="QLabel" name="lblDaysAfter">
-                   <property name="font">
-                    <font>
-                     <family>Arial</family>
-                     <pointsize>25</pointsize>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Next Session After</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="2" column="2">
                   <widget class="LineEdit" name="txtDays">
                    <property name="font">
                     <font>
                      <family>Arial</family>
-                     <pointsize>25</pointsize>
+                     <pointsize>30</pointsize>
                      <weight>50</weight>
                      <italic>false</italic>
                      <bold>false</bold>
@@ -5717,25 +5722,12 @@ border:1px solid gray;
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="3">
-                  <widget class="QLabel" name="lblDays">
-                   <property name="font">
-                    <font>
-                     <family>Arial</family>
-                     <pointsize>25</pointsize>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Days</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="2" column="5">
                   <widget class="LineEdit" name="txtDate">
                    <property name="font">
                     <font>
                      <family>Arial</family>
-                     <pointsize>25</pointsize>
+                     <pointsize>30</pointsize>
                     </font>
                    </property>
                    <property name="styleSheet">
@@ -5759,6 +5751,19 @@ border:1px solid gray;
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="3">
+                  <widget class="QLabel" name="lblDays">
+                   <property name="font">
+                    <font>
+                     <family>Arial</family>
+                     <pointsize>30</pointsize>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Days</string>
                    </property>
                   </widget>
                  </item>
@@ -5811,7 +5816,7 @@ border: 10px solid rgb(0, 170, 255);
                    <property name="font">
                     <font>
                      <family>Arial</family>
-                     <pointsize>25</pointsize>
+                     <pointsize>30</pointsize>
                     </font>
                    </property>
                    <property name="text">
@@ -5821,6 +5826,19 @@ border: 10px solid rgb(0, 170, 255);
                     <set>Qt::AlignBottom|Qt::AlignHCenter</set>
                    </property>
                   </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <spacer name="verticalSpacer_2">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
                  </item>
                  <item row="2" column="0">
                   <spacer name="horizontalSpacer_37">
@@ -5867,32 +5885,6 @@ border: 10px solid rgb(0, 170, 255);
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="2">
-                  <spacer name="verticalSpacer_2">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="4" column="2">
-                  <spacer name="verticalSpacer_32">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
                  <item row="3" column="5">
                   <widget class="QLabel" name="lblErrNextSession">
                    <property name="font">
@@ -5909,104 +5901,15 @@ border: 10px solid rgb(0, 170, 255);
                    </property>
                   </widget>
                  </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_19" stretch="3,1,0,1,3">
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <item>
-                  <spacer name="horizontalSpacer_41">
+                 <item row="4" column="2">
+                  <spacer name="verticalSpacer_32">
                    <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
+                    <enum>Qt::Vertical</enum>
                    </property>
                    <property name="sizeHint" stdset="0">
                     <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="btnCancelNS">
-                   <property name="font">
-                    <font>
-                     <family>Arial</family>
-                     <pointsize>16</pointsize>
-                    </font>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">QPushButton {
-background-color: rgb(68, 68, 68);
-
-min-height: 100px;
-border-radius: 5px;
-border: 1px solid gray;
-margin: 0 5px 0 5px;
-outline:0;
-}
-QPushButton:hover:!pressed{
-background-color:rgb(77, 77, 77);
-border: 1px solid white;
-}</string>
-                   </property>
-                   <property name="text">
-                    <string>Cancel</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_43">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="btnOkNS">
-                   <property name="font">
-                    <font>
-                     <family>Arial</family>
-                     <pointsize>16</pointsize>
-                    </font>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">QPushButton {
-background-color: rgb(68, 68, 68);
-
-min-height: 100px;
-border-radius: 5px;
-border: 1px solid gray;
-margin: 0 5px 0 5px;
-outline:0;
-}
-QPushButton:hover:!pressed{
-background-color:rgb(77, 77, 77);
-border: 1px solid white;
-}</string>
-                   </property>
-                   <property name="text">
-                    <string>OK</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_42">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
+                     <width>20</width>
+                     <height>40</height>
                     </size>
                    </property>
                   </spacer>
@@ -6017,6 +5920,108 @@ border: 1px solid white;
              </item>
             </layout>
            </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_19" stretch="3,1,0,1,3">
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <spacer name="horizontalSpacer_41">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnCancelNS">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>20</pointsize>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+
+min-height: 100px;
+border-radius: 5px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+              </property>
+              <property name="text">
+               <string>Cancel</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_43">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnOkNS">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>20</pointsize>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+
+min-height: 100px;
+border-radius: 5px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+              </property>
+              <property name="text">
+               <string>OK</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_42">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -6055,6 +6060,12 @@ border: 1px solid white;
         <height>0</height>
        </size>
       </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <pointsize>13</pointsize>
+       </font>
+      </property>
       <property name="styleSheet">
        <string notr="true">QFrame{
 background-color: rgb(12, 12, 12);
@@ -6064,17 +6075,14 @@ border-top-right-radius: 10px;
 
 QPushButton {
 color: rgb(0, 170, 255);
-max-width:70px;
-min-width:50px;
-max-height:70px;
-min-height:50px;
-width:60px;
-height:60px;
-font: 13pt &quot;MS Shell Dlg 2&quot;;
-	background-color: rgb(35, 35, 35);
+min-width:70px;
+min-height:70px;
+
+background-color: rgb(35, 35, 35);
 border-radius:5px;
 border: 1px solid black;
 outline:0;
+	font: 16pt &quot;Arial&quot;;
 }
 
 QPushButton:pressed{
@@ -6286,6 +6294,12 @@ background-color: rgb(83, 83, 83);
              </item>
              <item>
               <widget class="QPushButton" name="btnBackspace">
+               <property name="minimumSize">
+                <size>
+                 <width>122</width>
+                 <height>72</height>
+                </size>
+               </property>
                <property name="focusPolicy">
                 <enum>Qt::NoFocus</enum>
                </property>
@@ -6295,8 +6309,17 @@ min-width:120px;
 }</string>
                </property>
                <property name="text">
-                <string>Backspace
-← </string>
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>images/backspace.png</normaloff>images/backspace.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>50</width>
+                 <height>50</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -6446,7 +6469,7 @@ min-width:120px;
                <property name="minimumSize">
                 <size>
                  <width>122</width>
-                 <height>62</height>
+                 <height>72</height>
                 </size>
                </property>
                <property name="focusPolicy">
@@ -6467,7 +6490,7 @@ min-width:120px;
                <property name="minimumSize">
                 <size>
                  <width>122</width>
-                 <height>62</height>
+                 <height>72</height>
                 </size>
                </property>
                <property name="focusPolicy">

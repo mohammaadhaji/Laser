@@ -27,7 +27,8 @@ def getDiff(date):
 
 def addExtenstion(file):
     files = os.listdir(TUTORIALS_DIR)
-    files.remove('.gitignore')
+    if isfile(join(TUTORIALS_DIR, '.gitignore')):
+        files.remove('.gitignore')
     for f in files:
         path = os.path.join(TUTORIALS_DIR, f)
         if file == Path(path).stem:
@@ -71,6 +72,7 @@ class MainWin(QMainWindow):
         self.decEPFTimer = QTimer()
         self.incDaysTimer = QTimer()
         self.decDaysTimer = QTimer()
+        self.backspaceTimer = QTimer()
         self.loginLabelTimer.timeout.connect(lambda: self.clearLabel('login'))
         self.submitLabelTimer.timeout.connect(lambda: self.clearLabel('submit'))
         self.editLabelTimer.timeout.connect(lambda: self.clearLabel('edit'))
@@ -79,6 +81,7 @@ class MainWin(QMainWindow):
         self.decEPFTimer.timeout.connect(lambda: self.setEPF('dec'))
         self.incDaysTimer.timeout.connect(lambda: self.incDecDay('inc'))
         self.decDaysTimer.timeout.connect(lambda: self.incDecDay('dec'))
+        self.backspaceTimer.timeout.connect(self.type(lambda: 'backspace'))
         self.user = None
         self.userNextSession = None
         self.sortBySession = False
@@ -168,6 +171,8 @@ class MainWin(QMainWindow):
         self.btnMale.clicked.connect(lambda: self.setSex('male'))
         self.btnFemale.clicked.connect(lambda: self.setSex('female'))
         self.btnEnergy.clicked.connect(lambda: self.selectEPF('E'))
+        self.btnBackspace.pressed.connect(lambda: self.backspaceTimer.start(100))
+        self.btnBackspace.released.connect(lambda: self.backspaceTimer.stop())
         self.btnIncEPF.pressed.connect(lambda: self.incEPFTimer.start(100))
         self.btnIncEPF.released.connect(lambda: self.incEPFTimer.stop())
         self.btnDecEPF.pressed.connect(lambda: self.decEPFTimer.start(100))
@@ -442,10 +447,7 @@ class MainWin(QMainWindow):
             sex = btn.objectName().split('btn')[1][0].lower()
             bodyPart = btn.objectName().split('btn')[1][1:].lower()
             btn.clicked.connect(self.setBodyPart(sex, bodyPart))
-            btn.clicked.connect(self.fillEPF)
-
-    def fillEPF(self):
-        self.loadCase()
+            btn.clicked.connect(self.loadCase)
         
     def setBodyPart(self, sex, bodyPart):
         def wrapper():
@@ -475,7 +477,7 @@ class MainWin(QMainWindow):
         for btn in buttons:
             caseName = btn.objectName().split('Case')[1]
             btn.clicked.connect(self.setCase(caseName))
-            btn.clicked.connect(self.fillEPF)
+            btn.clicked.connect(self.loadCase)
 
     def setCase(self, case):
         def wrapper():
@@ -704,11 +706,11 @@ class MainWin(QMainWindow):
             return
 
         if i == 'hide':
-            height = 300
+            height = 350
             newHeight = 0
         else:
             height = 0
-            newHeight = 300
+            newHeight = 350
 
         self.animation = QPropertyAnimation(self.keyboardFrame, b"maximumHeight")
         self.animation.setDuration(250)
@@ -797,7 +799,7 @@ class MainWin(QMainWindow):
             self.userInfoTable.setItem(sn - 1, 7, totalRow)
 
         lastRow = len(sessions)
-        text = 'Total' if self.language == 0 else 'جمع کل'
+        text = TEXT['total'][self.language]
         lastRowTitle = TableWidgetItem(text)
         font = QFont('Arial', 18)
         font.setBold(True)
@@ -835,7 +837,7 @@ class MainWin(QMainWindow):
             if user.sessionNumber == 1:
                 nextSession = user.nextSession
                 num = TableWidgetItem(user.phoneNumber)
-                text = 'First Time' if self.language == 0 else 'اولین جلسه' 
+                text = TEXT['firstTime'][self.language] 
                 lastSession = TableWidgetItem(text)
                 sn = TableWidgetItem(str(user.sessionNumber))
                 if nextSession and getDiff(nextSession) == 0:
@@ -1114,22 +1116,20 @@ class MainWin(QMainWindow):
         self.txtNameSubmit.setPlaceholderText(TEXT['txtNameSubmit'][self.language])
         self.btnSubmit.setText(TEXT['btnSubmit'][self.language])   
         self.btnEndSession.setText(TEXT['btnEndSession'][self.language])
-        self.btnFemale.setText(TEXT['btnFemale'][self.language])        
-        self.btnMale.setText(TEXT['btnMale'][self.language])
         self.btnFemale.setText(TEXT['btnFemale'][self.language])
         self.btnMale.setText(TEXT['btnMale'][self.language])
-        self.lblFFace.setText(TEXT['lblFFace'][self.language])
-        self.lblFArmpit.setText(TEXT['lblFArmpit'][self.language])
-        self.lblFArm.setText(TEXT['lblFArm'][self.language])
-        self.lblFBody.setText(TEXT['lblFBody'][self.language])
-        self.lblFBikini.setText(TEXT['lblFBikini'][self.language])
-        self.lblFLeg.setText(TEXT['lblFLeg'][self.language])
-        self.lblMFace.setText(TEXT['lblMFace'][self.language])
-        self.lblMArmpit.setText(TEXT['lblMArmpit'][self.language])
-        self.lblMArm.setText(TEXT['lblMArm'][self.language])
-        self.lblMBody.setText(TEXT['lblMBody'][self.language])
-        self.lblMBikini.setText(TEXT['lblMBikini'][self.language])
-        self.lblMLeg.setText(TEXT['lblMLeg'][self.language])
+        self.lblFFace.setText(TEXT['face'][self.language])
+        self.lblFArmpit.setText(TEXT['armpit'][self.language])
+        self.lblFArm.setText(TEXT['arm'][self.language])
+        self.lblFBody.setText(TEXT['body'][self.language])
+        self.lblFBikini.setText(TEXT['bikini'][self.language])
+        self.lblFLeg.setText(TEXT['leg'][self.language])
+        self.lblMFace.setText(TEXT['face'][self.language])
+        self.lblMArmpit.setText(TEXT['armpit'][self.language])
+        self.lblMArm.setText(TEXT['arm'][self.language])
+        self.lblMBody.setText(TEXT['body'][self.language])
+        self.lblMBikini.setText(TEXT['bikini'][self.language])
+        self.lblMLeg.setText(TEXT['leg'][self.language])
         self.lblEnergy.setText(TEXT['lblEnergy'][self.language])
         self.lblFrequency.setText(TEXT['lblFrequency'][self.language])
         self.lblPulseWidth.setText(TEXT['lblPulseWidth'][self.language])

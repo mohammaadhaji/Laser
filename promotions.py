@@ -68,10 +68,8 @@ class TableWidgetItem(QTableWidgetItem):
         self.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
 class VideoWidget(QVideoWidget):
-        def Video_Widget(self):
-            self.Video_Player = QVideoWidget(self.centralWidget)
-            self.Video_Player.setObjectName("videoPlayer")
-            self.Video_Player.show()
+        def __init__(self, parent = None):
+            QVideoWidget.__init__(self, parent)
 
         def keyPressEvent(self, event):
             if event.key() == Qt.Key_Escape and self.isFullScreen():
