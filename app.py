@@ -1,3 +1,4 @@
+from os import spawnl
 from PyQt5.QtGui import *
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtWidgets import *
@@ -9,9 +10,13 @@ from case import *
 from paths import *
 from user import *
 from styles import *
+from uuid import getnode as get_mac
 from itertools import chain
 from pathlib import Path 
+import hashlib
+import time
 import sys
+
 
 
 def layout_widgets(layout):
@@ -34,6 +39,28 @@ def addExtenstion(file):
         if file == Path(path).stem:
             return file + Path(path).suffix
 
+def loadConfigs():
+    configs = {}
+    file = open(CONFIG_FILE, 'r')
+    content = file.read().split('\n')
+
+    for item in content:
+        x = [i.strip() for i in item.split('=')]
+        if len(x) > 1:
+            configs[x[0]] = x[1]
+
+    file.close()
+    return configs
+
+def saveConfigs(configs):
+    file = open(CONFIG_FILE, 'w')
+
+    for item in configs.items():
+        file.write(f'{item[0]} = {item[1]}\n')
+
+    file.close()
+
+
 class MainWin(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWin, self).__init__(*args, **kwargs)
@@ -41,10 +68,21 @@ class MainWin(QMainWindow):
         self.setupUi()
         self.tutorials()
         self.setupSensors()
-        self.checkBoxLang.toggle()
-
+        self.loginIfPaied()
+        
     def setupUi(self):
-        self.stackedWidget.setCurrentIndex(1)
+        self.setStyleSheet("background-color: rgb(77, 74, 78);\n"
+                        "color: rgb(255, 255, 255);")
+        mac = str(get_mac())
+        self.txtID.setText(mac)
+        self.movie = QMovie(LOCK_GIF)
+        self.movie.frameChanged.connect(self.unlock)
+        self.lblLock.setMovie(self.movie)
+        self.movie.start()
+        self.movie.stop()
+        self.lblSplash.setStyleSheet(f'border-image:url({SPLASH[-20:]});')
+        self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
+        self.stackedWidget.setCurrentIndex(0)
         self.stackedWidgetLaser.setCurrentIndex(0)
         self.stackedWidgetSex.setCurrentIndex(0)
         self.stackedWidgetSettings.setCurrentIndex(0)
@@ -64,6 +102,7 @@ class MainWin(QMainWindow):
         self.stackedWidgetSettings.setTransitionSpeed(500)
         self.stackedWidgetSettings.setTransitionEasingCurve(QEasingCurve.OutQuart)
         self.stackedWidgetSettings.setSlideTransition(True)
+        self.configs = loadConfigs()
         self.loginLabelTimer = QTimer()
         self.submitLabelTimer = QTimer()
         self.editLabelTimer = QTimer()
@@ -73,10 +112,12 @@ class MainWin(QMainWindow):
         self.incDaysTimer = QTimer()
         self.decDaysTimer = QTimer()
         self.backspaceTimer = QTimer()
+        self.passwordLabelTimer = QTimer()
         self.loginLabelTimer.timeout.connect(lambda: self.clearLabel('login'))
         self.submitLabelTimer.timeout.connect(lambda: self.clearLabel('submit'))
         self.editLabelTimer.timeout.connect(lambda: self.clearLabel('edit'))
         self.nextSessionLabelTimer.timeout.connect(lambda: self.clearLabel('nextSession'))
+        self.passwordLabelTimer.timeout.connect(lambda: self.clearLabel('password'))
         self.incEPFTimer.timeout.connect(lambda: self.setEPF('inc'))
         self.decEPFTimer.timeout.connect(lambda: self.setEPF('dec'))
         self.incDaysTimer.timeout.connect(lambda: self.incDecDay('inc'))
@@ -92,19 +133,21 @@ class MainWin(QMainWindow):
         self.case = 'I'
         self.EPF = 'E'
         self.cooling = 0
-        self.language = 0 # en = 0, fa = 1
-        self.checkBoxLang.setFixedSize(110, 48)
+        self.language = 0 # 0: en, 1: fa
+        self.btnEnLang.clicked.connect(lambda: self.changeLang('en'))
+        self.btnFaLang.clicked.connect(lambda: self.changeLang('fa'))
+        self.btnEnter.clicked.connect(self.login)
+        self.language = 0 if self.configs['LANGUAGE'] == 'en' else 1
+        self.changeLang(self.configs['LANGUAGE'])
         self.checkBoxReady.setFixedSize(150, 48)
-        self.checkBoxLang._active_color = '#777'
-        self.checkBoxLang.toggled.connect(self.changeLang)
         self.btnSort.clicked.connect(self.sort)
-        self.txtNumber.returnPressed.connect(self.login)
+        self.txtNumber.returnPressed.connect(self.startSession)
         self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
         self.btnPower.clicked.connect(self.close)
-        self.btnLogin.clicked.connect(self.login)
+        self.btnStartSession.clicked.connect(self.startSession)
         self.btnSubmit.clicked.connect(self.submit)
-        self.btnBackNewSession.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.loginPage))
-        self.btnBackManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.loginPage))
+        self.btnBackNewSession.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
+        self.btnBackManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackManagement.clicked.connect(lambda: self.txtSearch.clear())
         self.btnBackLaser.clicked.connect(self.backLaser)
         self.btnBackSettings.clicked.connect(self.backSettings)
@@ -123,11 +166,11 @@ class MainWin(QMainWindow):
         self.btnNotify.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnNotify.clicked.connect(self.futureSessions)
         self.btnNotify.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.notifyPage))
-        self.btnBackNotify.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.loginPage))
+        self.btnBackNotify.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnTutorials.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnTutorials.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.tutorialPage))
         self.btnBackTutorials.clicked.connect(self.pause)
-        self.btnBackTutorials.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.loginPage))
+        self.btnBackTutorials.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnNextSession.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.btnNextSession.clicked.connect(lambda: self.setNextSession('edit'))
         self.btnCancelNS.clicked.connect(self.cancelNextSession)
@@ -156,6 +199,7 @@ class MainWin(QMainWindow):
         self.txtSearch.fIn.connect(lambda: self.keyboard('show'))
         self.txtDate.fIn.connect(lambda: self.keyboard('show'))
         self.txtDays.fIn.connect(lambda: self.keyboard('show'))
+        self.txtPassword.fIn.connect(lambda: self.keyboard('show'))
         self.btnCancelNS.clicked.connect(lambda: self.keyboard('hide'))
         self.btnOkNS.clicked.connect(lambda: self.keyboard('hide'))
         self.btnDecDay.clicked.connect(lambda: self.incDecDay('dec'))
@@ -193,6 +237,40 @@ class MainWin(QMainWindow):
         self.bodyPartsSignals()
         self.keyboardSignals()
         self.casesSignals()
+
+    def login(self):
+        mac = str(get_mac())
+        mac += '@mohammaad_haji'
+        userPass = self.txtPassword.text()
+        password = hashlib.sha256(mac.encode()).hexdigest()
+        if password == userPass:
+            self.keyboard('hide')
+            self.configs['PASSWORD'] = password
+            saveConfigs(self.configs)
+            self.movie.start()
+        else:
+            self.lblPassword.setText('Password is Not correct.')
+            self.setLabel('Password is NOT correct.', 'password', 4)
+
+
+    def loginIfPaied(self):
+        mac = str(get_mac())
+        mac += '@mohammaad_haji'
+        if 'PASSWORD' in self.configs:
+            if hashlib.sha256(mac.encode()).hexdigest() == self.configs['PASSWORD']:
+                self.setStyleSheet("background-color: rgb(32, 74, 135);\n"
+                        "color: rgb(255, 255, 255);")
+                self.stackedWidget.setCurrentIndex(1)
+
+
+    def unlock(self, frameNumber):
+        if frameNumber == self.movie.frameCount() - 1: 
+            self.movie.stop()
+            time.sleep(0.5)
+            self.stackedWidget.setCurrentIndex(1)
+            self.setStyleSheet("background-color: rgb(32, 74, 135);\n"
+                        "color: rgb(255, 255, 255);")
+
 
     def tutorials(self):
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
@@ -517,15 +595,15 @@ class MainWin(QMainWindow):
 
     def backLaser(self):
         if self.stackedWidgetLaser.currentIndex() == 0:
-            self.stackedWidget.setCurrentWidget(self.loginPage)
+            self.stackedWidget.setCurrentWidget(self.mainPage)
         else:
             self.stackedWidgetLaser.setCurrentWidget(self.bodyPartPage)      
 
     def backSettings(self):
         if self.stackedWidgetSettings.currentIndex() == 0:
-            self.stackedWidget.setCurrentWidget(self.loginPage)
+            self.stackedWidget.setCurrentWidget(self.mainPage)
         else:
-            self.stackedWidgetSettings.setCurrentWidget(self.mainPage) 
+            self.stackedWidgetSettings.setCurrentWidget(self.settingsMenuPage) 
 
     def blinkSensorsIcon(self, sensor):
         if sensor == 'waterCir':
@@ -663,7 +741,7 @@ class MainWin(QMainWindow):
             btn.clicked.connect(self.type(btn.text))
 
         self.btnBackspace.clicked.connect(self.type(lambda: 'backspace'))
-        self.btnEnter.clicked.connect(self.type(lambda: 'enter'))
+        self.btnReturn.clicked.connect(self.type(lambda: 'enter'))
         self.btnSpace.clicked.connect(self.type(lambda: '   '))
         self.btnShift.clicked.connect(self.shiftPressed)
         self.btnFa.clicked.connect(self.farsiPressed)
@@ -953,9 +1031,9 @@ class MainWin(QMainWindow):
         self.txtNumber.setText(number)
         self.txtNumberSubmit.clear()
         self.txtNameSubmit.clear()
-        self.stackedWidget.setCurrentWidget(self.loginPage)
+        self.stackedWidget.setCurrentWidget(self.mainPage)
 
-    def login(self):
+    def startSession(self):
         numberEntered = self.txtNumber.text()
 
         if (not self.user) or (self.user.currentSession == 'finished'):
@@ -984,10 +1062,7 @@ class MainWin(QMainWindow):
                     self.user = None
                     return
             elif numberEntered != self.user.phoneNumber:
-                if self.language == 0:
-                    text = f'{TEXT["sssionNotOver"][self.language]} <{self.user.name}> ({self.user.phoneNumber})'
-                else:
-                    text = f'({self.user.phoneNumber}) <{self.user.name}> {TEXT["sssionNotOver"][self.language]}'
+                text = f'{TEXT["sssionNotOver"][self.language]} ({self.user.phoneNumber})'
 
                 self.setLabel(text, 'login')
                 return
@@ -1007,7 +1082,7 @@ class MainWin(QMainWindow):
         self.user.addSession()
         self.user.save()
         self.user = None
-        self.stackedWidget.setCurrentWidget(self.loginPage)
+        self.stackedWidget.setCurrentWidget(self.mainPage)
         self.stackedWidgetLaser.setCurrentIndex(0)
 
     def setLabel(self, text, label, sec=5):
@@ -1031,6 +1106,10 @@ class MainWin(QMainWindow):
             self.lblErrNextSession.setText(text)
             self.nextSessionLabelTimer.start(sec * 1000)
 
+        elif label == 'password':
+            self.lblPassword.setText(text)
+            self.passwordLabelTimer.start(sec * 1000)
+
     def clearLabel(self, label):
         if label == 'login':
             self.lblLogin.clear()
@@ -1048,21 +1127,34 @@ class MainWin(QMainWindow):
             self.lblErrNextSession.clear()
             self.nextSessionLabelTimer.stop()
 
-    def changeLang(self):
+        elif label == 'password':
+            self.lblPassword.clear()
+            self.passwordLabelTimer.stop()
+
+    def changeLang(self, lang):
         global app
-        if self.checkBoxLang.isChecked():
+        if lang == 'fa':
             app.setStyleSheet('*{font-family:"Tahoma"}')
             self.lblEn.setStyleSheet("font-family:'Arial'")
-            self.language = 1
             self.userInfoFrame.setLayoutDirection(Qt.RightToLeft)
             self.nextSessionFrame.setLayoutDirection(Qt.RightToLeft)
+            icon = QPixmap(SELECTED_LANG_ICON)
+            self.lblFaSelected.setPixmap(icon.scaled(70, 70))
+            self.lblEnSelected.clear()
+            self.configs['LANGUAGE'] = 'fa'
+            self.language = 1
         else:
             app.setStyleSheet('*{font-family:"Arial"}')
             self.lblFa.setStyleSheet("font-family:'Tahoma'")
             self.userInfoFrame.setLayoutDirection(Qt.LeftToRight)
             self.nextSessionFrame.setLayoutDirection(Qt.LeftToRight)
+            icon = QPixmap(SELECTED_LANG_ICON)
+            self.lblEnSelected.setPixmap(icon.scaled(70, 70))
+            self.lblFaSelected.clear()
+            self.configs['LANGUAGE'] = 'en'
             self.language = 0
 
+        saveConfigs(self.configs)
         self.lblLanguage.setText(TEXT['lblLanguage'][self.language])
         self.lblSettingsHeader.setText(TEXT['lblSettingsHeader'][self.language])
         self.btnHwSettings.setText(TEXT['btnHwSettings'][self.language])
@@ -1070,7 +1162,7 @@ class MainWin(QMainWindow):
         self.btnUiSettings.setText(TEXT['btnUiSettings'][self.language])
         self.lblUserNumber.setText(TEXT['lblUserNumber'][self.language])
         self.txtNumber.setPlaceholderText(TEXT['txtNumber'][self.language])
-        self.btnLogin.setText(TEXT['btnLogin'][self.language])
+        self.btnStartSession.setText(TEXT['btnStartSession'][self.language])
         self.lblHeaderTutorials.setText(TEXT['lblHeaderTutorials'][self.language])        
         self.lblVideos.setText(TEXT['lblVideos'][self.language])
         self.lblTitle.setText(TEXT['lblTitle'][self.language])

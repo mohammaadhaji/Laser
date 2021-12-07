@@ -152,4 +152,8 @@ class ToggleButton(QCheckBox):
             p.drawEllipse(self._circle_position, 3, 42, 42)
 
 
+class Label(QLabel):
+    clicked=pyqtSignal()
 
+    def mousePressEvent(self, ev):
+        self.clicked.emit()

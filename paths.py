@@ -18,6 +18,12 @@ LOCK = join(CURRENT_FILE_DIR, 'ui/images/lock.png')
 UNLOCK = join(CURRENT_FILE_DIR, 'ui/images/unlock.png')
 COOLING_OFF = join(CURRENT_FILE_DIR, 'ui/images/coolingOff.png')
 COOLING_ON = join(CURRENT_FILE_DIR, 'ui/images/coolingOn.png')
+PLAY_ICON = join(CURRENT_FILE_DIR, 'ui/images/play.png')
+PAUSE_ICON = join(CURRENT_FILE_DIR, 'ui/images/pause.png')
+SELECTED_LANG_ICON = join(CURRENT_FILE_DIR, 'ui/images/downArrow.png')
+CONFIG_FILE = join(CURRENT_FILE_DIR, 'config.txt')
+SPLASH = join(CURRENT_FILE_DIR, 'ui/images/splash.jpg')
+LOCK_GIF = join(CURRENT_FILE_DIR, 'ui/images/lock.gif')
 BODY_PART_ICONS = {
     'f face': join(CURRENT_FILE_DIR, 'ui/images/fFace'),
     'f armpit': join(CURRENT_FILE_DIR, 'ui/images/fArmpit'),
@@ -32,5 +38,3 @@ BODY_PART_ICONS = {
     'm bikini': join(CURRENT_FILE_DIR, 'ui/images/mBikini'),
     'm leg': join(CURRENT_FILE_DIR, 'ui/images/mLeg')
 }
-PLAY_ICON = join(CURRENT_FILE_DIR, 'ui/images/play.png')
-PAUSE_ICON = join(CURRENT_FILE_DIR, 'ui/images/pause.png')
