@@ -1,0 +1,13 @@
+LANGUAGE = en
+LOCK = 0
+PASS_LENGHT = 5
+PASSWORD = dc03c
+ID = 2202951549432390
+SerialNumber = 
+TotalShotCounter = 
+LaserDiodeEnergy = 
+LaserBarType = 
+LaserWavelength = 
+DriverVersion = 
+MainControlVersion = 
+ProductionDate = 

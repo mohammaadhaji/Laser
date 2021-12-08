@@ -25,6 +25,9 @@ def layout_widgets(layout):
 def get_layout_btn(layout):
     return (layout.itemAt(i).widget() for i in range(layout.count()) if isinstance(layout.itemAt(i).widget(), QPushButton)) 
 
+def get_layout_txt(layout):
+    return (layout.itemAt(i).widget() for i in range(layout.count()) if isinstance(layout.itemAt(i).widget(), QLineEdit)) 
+
 def getDiff(date):
     today = jdatetime.datetime.today().togregorian()
     nextSessionDate = date.togregorian()
@@ -68,13 +71,14 @@ class MainWin(QMainWindow):
         self.setupUi()
         self.tutorials()
         self.setupSensors()
-        self.loginIfPaied()
+        if self.configs['LOCK'] == '1':
+            self.setStyleSheet("background-color: rgb(77, 74, 78);\n"
+                        "color: rgb(255, 255, 255);")
+            self.stackedWidget.setCurrentIndex(0)
+            self.loginIfPaied()
+
         
     def setupUi(self):
-        self.setStyleSheet("background-color: rgb(77, 74, 78);\n"
-                        "color: rgb(255, 255, 255);")
-        mac = str(get_mac())
-        self.txtID.setText(mac)
         self.movie = QMovie(LOCK_GIF)
         self.movie.frameChanged.connect(self.unlock)
         self.lblLock.setMovie(self.movie)
@@ -82,7 +86,7 @@ class MainWin(QMainWindow):
         self.movie.stop()
         self.lblSplash.setStyleSheet(f'border-image:url({SPLASH[-20:]});')
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(1)
         self.stackedWidgetLaser.setCurrentIndex(0)
         self.stackedWidgetSex.setCurrentIndex(0)
         self.stackedWidgetSettings.setCurrentIndex(0)
@@ -107,22 +111,26 @@ class MainWin(QMainWindow):
         self.submitLabelTimer = QTimer()
         self.editLabelTimer = QTimer()
         self.nextSessionLabelTimer = QTimer()
+        self.hwUpdatedLabel = QTimer()
         self.incEPFTimer = QTimer()
         self.decEPFTimer = QTimer()
         self.incDaysTimer = QTimer()
         self.decDaysTimer = QTimer()
         self.backspaceTimer = QTimer()
         self.passwordLabelTimer = QTimer()
+        self.hwWrongPassTimer = QTimer()
         self.loginLabelTimer.timeout.connect(lambda: self.clearLabel('login'))
         self.submitLabelTimer.timeout.connect(lambda: self.clearLabel('submit'))
         self.editLabelTimer.timeout.connect(lambda: self.clearLabel('edit'))
         self.nextSessionLabelTimer.timeout.connect(lambda: self.clearLabel('nextSession'))
+        self.hwUpdatedLabel.timeout.connect(lambda: self.clearLabel('hw'))
         self.passwordLabelTimer.timeout.connect(lambda: self.clearLabel('password'))
         self.incEPFTimer.timeout.connect(lambda: self.setEPF('inc'))
         self.decEPFTimer.timeout.connect(lambda: self.setEPF('dec'))
         self.incDaysTimer.timeout.connect(lambda: self.incDecDay('inc'))
         self.decDaysTimer.timeout.connect(lambda: self.incDecDay('dec'))
         self.backspaceTimer.timeout.connect(self.type(lambda: 'backspace'))
+        self.hwWrongPassTimer.timeout.connect(self.hwWrongPass)
         self.user = None
         self.userNextSession = None
         self.sortBySession = False
@@ -157,7 +165,9 @@ class MainWin(QMainWindow):
         self.btnSettings.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.settingsPage))
         self.btnUiSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.uiPage))
         self.btnUmSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.uMPage))        
-        self.btnHwSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.hWPage))
+        # self.btnHwSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.hWPage))
+        self.btnEnterHw.clicked.connect(self.loginHw)
+        self.btnHwSettings.clicked.connect(lambda: self.hwPass('show'))
         self.btnUserManagement.clicked.connect(self.loadToTabel)
         self.btnSaveInfo.clicked.connect(self.saveUserInfo)
         self.btnDeleteUser.clicked.connect(self.deleteUser)
@@ -200,6 +210,15 @@ class MainWin(QMainWindow):
         self.txtDate.fIn.connect(lambda: self.keyboard('show'))
         self.txtDays.fIn.connect(lambda: self.keyboard('show'))
         self.txtPassword.fIn.connect(lambda: self.keyboard('show'))
+        self.txtHwPass.fIn.connect(lambda: self.keyboard('show'))
+        self.txtSerialNumber.fIn.connect(lambda: self.keyboard('show'))
+        self.txtTotalShotCounter.fIn.connect(lambda: self.keyboard('show'))
+        self.txtLaserDiodeEnergy.fIn.connect(lambda: self.keyboard('show'))
+        self.txtLaserBarType.fIn.connect(lambda: self.keyboard('show'))
+        self.txtLaserWavelength.fIn.connect(lambda: self.keyboard('show'))
+        self.txtDriverVersion.fIn.connect(lambda: self.keyboard('show'))
+        self.txtMainControlVersion.fIn.connect(lambda: self.keyboard('show'))
+        self.txtProductionDate.fIn.connect(lambda: self.keyboard('show'))
         self.btnCancelNS.clicked.connect(lambda: self.keyboard('hide'))
         self.btnOkNS.clicked.connect(lambda: self.keyboard('hide'))
         self.btnDecDay.clicked.connect(lambda: self.incDecDay('dec'))
@@ -234,34 +253,127 @@ class MainWin(QMainWindow):
         self.btnDecCooling.clicked.connect(lambda: self.setCooling('dec'))
         self.btnIncCooling.clicked.connect(lambda: self.setCooling('inc'))
         self.btnSaveCase.clicked.connect(self.saveCase)
+        self.btnSaveHw.clicked.connect(self.saveHwSettings)
         self.bodyPartsSignals()
         self.keyboardSignals()
         self.casesSignals()
+        self.appendID('0')
+        self.txtID.setText(self.configs['ID'])
+
+    def appendID(self, i):
+        self.configs['ID'] = str(get_mac()) + i
+        saveConfigs(self.configs)
 
     def login(self):
-        mac = str(get_mac())
-        mac += '@mohammaad_haji'
+        id = self.configs['ID']
+        id += '@mohammaad_haji'
         userPass = self.txtPassword.text()
-        password = hashlib.sha256(mac.encode()).hexdigest()
+        lenght = int(self.configs['PASS_LENGHT'])
+        password = hashlib.sha256(id.encode()).hexdigest()[:lenght]
         if password == userPass:
             self.keyboard('hide')
             self.configs['PASSWORD'] = password
+            self.configs['LOCK'] = 0
             saveConfigs(self.configs)
             self.movie.start()
         else:
-            self.lblPassword.setText('Password is Not correct.')
-            self.setLabel('Password is NOT correct.', 'password', 4)
+            self.setLabel('Password is not correct.', 'password', 4)
 
+    def loginHw(self):
+        password = self.txtHwPass.text()
+        txts = get_layout_txt(self.hwLayout)
+
+        if password == '1':
+            for txt in txts:
+                txt.setReadOnly(False)
+                txt.setDisabled(False)
+
+            self.txtRpiVersion.setReadOnly(True)
+            self.txtMonitor.setReadOnly(True)
+            self.txtOsSpecification.setReadOnly(True)
+            self.txtRpiVersion.setDisabled(True)
+            self.txtMonitor.setDisabled(True)            
+            self.txtOsSpecification.setDisabled(True)
+            self.keyboard('hide')
+            self.readHwInfo()
+            self.btnSaveHw.setVisible(True)
+            self.txtHwPass.clear()
+            self.stackedWidgetSettings.setCurrentWidget(self.hWPage)
+
+        elif password == '0':
+            for txt in txts:
+                txt.setReadOnly(True)
+                txt.setDisabled(True)
+
+            self.keyboard('hide')
+            self.readHwInfo()
+            self.btnSaveHw.setVisible(False)
+            self.txtHwPass.clear()
+            self.stackedWidgetSettings.setCurrentWidget(self.hWPage)
+
+        else:
+            self.txtHwPass.setStyleSheet(TXT_HW_WRONG_PASS)
+            self.hwWrongPassTimer.start(4000)
+
+    def hwWrongPass(self):
+        self.hwWrongPassTimer.stop()
+        self.txtHwPass.setStyleSheet(TXT_HW_PASS)
+
+    def readHwInfo(self):
+        os_specification = ''
+        rpi_version = ''
+
+        if isfile('/etc/os-release'):
+            file = open('/etc/os-release', 'r')
+            for line in file:
+                if line.startswith('PRETTY_NAME'):
+                    os_specification = line.split('=')[1].replace('"','')
+            file.close() 
+
+        else:
+            os_specification = 'Unknown'
+        
+        if isfile('/proc/device-tree/model'):
+            file = open('/proc/device-tree/model', 'r')
+            rpi_version = file.read()
+            file.close()
+
+        else:
+            rpi_version = 'Unknown'
+
+        self.txtOsSpecification.setText(os_specification)
+        self.txtRpiVersion.setText(rpi_version)
+        self.txtSerialNumber.setText(self.configs['SerialNumber'])                
+        self.txtTotalShotCounter.setText(self.configs['TotalShotCounter'])                
+        self.txtLaserDiodeEnergy.setText(self.configs['LaserDiodeEnergy'])                
+        self.txtLaserBarType.setText(self.configs['LaserBarType'])                
+        self.txtLaserWavelength.setText(self.configs['LaserWavelength'])                
+        self.txtDriverVersion.setText(self.configs['DriverVersion'])                
+        self.txtMainControlVersion.setText(self.configs['MainControlVersion'])                
+        self.txtProductionDate.setText(self.configs['ProductionDate'])                        
+
+    def saveHwSettings(self):
+        self.configs['SerialNumber'] = self.txtSerialNumber.text()            
+        self.configs['TotalShotCounter'] = self.txtTotalShotCounter.text()            
+        self.configs['LaserDiodeEnergy'] = self.txtLaserDiodeEnergy.text()            
+        self.configs['LaserBarType'] = self.txtLaserBarType.text()            
+        self.configs['LaserWavelength'] = self.txtLaserWavelength.text()            
+        self.configs['DriverVersion'] = self.txtDriverVersion.text()            
+        self.configs['MainControlVersion'] = self.txtMainControlVersion.text()            
+        self.configs['ProductionDate'] = self.txtProductionDate.text()
+        self.setLabel(TEXT['lblSaveHw'][self.language], 'hw', 2)                
+        saveConfigs(self.configs)
 
     def loginIfPaied(self):
-        mac = str(get_mac())
-        mac += '@mohammaad_haji'
+        id = self.configs['ID']
+        id += '@mohammaad_haji'
         if 'PASSWORD' in self.configs:
-            if hashlib.sha256(mac.encode()).hexdigest() == self.configs['PASSWORD']:
+            lenght = int(self.configs['PASS_LENGHT'])
+            password = hashlib.sha256(id.encode()).hexdigest()[:lenght]
+            if password == self.configs['PASSWORD']:
                 self.setStyleSheet("background-color: rgb(32, 74, 135);\n"
                         "color: rgb(255, 255, 255);")
                 self.stackedWidget.setCurrentIndex(1)
-
 
     def unlock(self, frameNumber):
         if frameNumber == self.movie.frameCount() - 1: 
@@ -270,7 +382,6 @@ class MainWin(QMainWindow):
             self.stackedWidget.setCurrentIndex(1)
             self.setStyleSheet("background-color: rgb(32, 74, 135);\n"
                         "color: rgb(255, 255, 255);")
-
 
     def tutorials(self):
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
@@ -600,6 +711,7 @@ class MainWin(QMainWindow):
             self.stackedWidgetLaser.setCurrentWidget(self.bodyPartPage)      
 
     def backSettings(self):
+        self.hwPass('hide') 
         if self.stackedWidgetSettings.currentIndex() == 0:
             self.stackedWidget.setCurrentWidget(self.mainPage)
         else:
@@ -792,6 +904,28 @@ class MainWin(QMainWindow):
 
         self.animation = QPropertyAnimation(self.keyboardFrame, b"maximumHeight")
         self.animation.setDuration(250)
+        self.animation.setStartValue(height)
+        self.animation.setEndValue(newHeight)
+        self.animation.setEasingCurve(QEasingCurve.InOutQuart)
+        self.animation.start()
+
+    def hwPass(self, i):
+        height = self.hwPassFrame.height()
+        if i == 'hide' and height == 0:
+            return
+
+        if i == 'show' and height > 0:
+            return
+
+        if i == 'hide':
+            height = 90
+            newHeight = 0
+        else:
+            height = 0
+            newHeight = 90
+
+        self.animation = QPropertyAnimation(self.hwPassFrame, b"maximumHeight")
+        self.animation.setDuration(500)
         self.animation.setStartValue(height)
         self.animation.setEndValue(newHeight)
         self.animation.setEasingCurve(QEasingCurve.InOutQuart)
@@ -1110,6 +1244,10 @@ class MainWin(QMainWindow):
             self.lblPassword.setText(text)
             self.passwordLabelTimer.start(sec * 1000)
 
+        elif label == 'hw':
+            self.lblSaveHw.setText(text)
+            self.hwUpdatedLabel.start(sec * 1000)
+
     def clearLabel(self, label):
         if label == 'login':
             self.lblLogin.clear()
@@ -1131,6 +1269,10 @@ class MainWin(QMainWindow):
             self.lblPassword.clear()
             self.passwordLabelTimer.stop()
 
+        elif label == 'hw':
+            self.lblSaveHw.clear()
+            self.hwUpdatedLabel.stop()
+
     def changeLang(self, lang):
         global app
         if lang == 'fa':
@@ -1138,6 +1280,7 @@ class MainWin(QMainWindow):
             self.lblEn.setStyleSheet("font-family:'Arial'")
             self.userInfoFrame.setLayoutDirection(Qt.RightToLeft)
             self.nextSessionFrame.setLayoutDirection(Qt.RightToLeft)
+            self.hwFrame.setLayoutDirection(Qt.RightToLeft)
             icon = QPixmap(SELECTED_LANG_ICON)
             self.lblFaSelected.setPixmap(icon.scaled(70, 70))
             self.lblEnSelected.clear()
@@ -1148,6 +1291,7 @@ class MainWin(QMainWindow):
             self.lblFa.setStyleSheet("font-family:'Tahoma'")
             self.userInfoFrame.setLayoutDirection(Qt.LeftToRight)
             self.nextSessionFrame.setLayoutDirection(Qt.LeftToRight)
+            self.hwFrame.setLayoutDirection(Qt.LeftToRight)
             icon = QPixmap(SELECTED_LANG_ICON)
             self.lblEnSelected.setPixmap(icon.scaled(70, 70))
             self.lblFaSelected.clear()
@@ -1186,7 +1330,7 @@ class MainWin(QMainWindow):
         self.lblNextSession.setText(TEXT['lblNextSession'][self.language])
         self.lblHeaderUserInfo.setText(TEXT['lblHeaderUserInfo'][self.language])
         self.btnNextSession.setText(TEXT['btnNextSession'][self.language])
-        self.btnSaveInfo.setText(TEXT['btnSaveInfo'][self.language])
+        self.btnSaveInfo.setText(TEXT['save'][self.language])
         self.btnDeleteUser.setText(TEXT['btnDeleteUser'][self.language])
         self.userInfoTable.horizontalHeaderItem(0).setText(TEXT['userInfoTable0'][self.language])        
         self.userInfoTable.horizontalHeaderItem(1).setText(TEXT['userInfoTable1'][self.language])        
@@ -1228,7 +1372,20 @@ class MainWin(QMainWindow):
         self.lblCounter.setText(TEXT['lblCounter'][self.language])
         self.lblReady.setText(TEXT['lblReady'][self.language])    
         self.lblStandby.setText(TEXT['lblStandby'][self.language])            
-
+        self.lblSerialNumber.setText(TEXT['lblSerialNumber'][self.language])
+        self.lblTotalShotCounter.setText(TEXT['lblTotalShotCounter'][self.language])
+        self.lblLaserDiodeEnergy.setText(TEXT['lblLaserDiodeEnergy'][self.language])
+        self.lblLaserBarType.setText(TEXT['lblLaserBarType'][self.language])
+        self.lblLaserWavelength.setText(TEXT['lblLaserWavelength'][self.language])
+        self.lblDriverVersion.setText(TEXT['lblDriverVersion'][self.language])
+        self.lblMainControlVersion.setText(TEXT['lblMainControlVersion'][self.language])
+        self.lblOsSpecification.setText(TEXT['lblOsSpecification'][self.language])
+        self.lblMonitor.setText(TEXT['lblMonitor'][self.language])
+        self.lblProductionDate.setText(TEXT['lblProductionDate'][self.language])
+        self.lblRpiVersion.setText(TEXT['lblRpiVersion'][self.language])
+        self.btnEnterHw.setText(TEXT['enter'][self.language])
+        self.txtHwPass.setPlaceholderText(TEXT['txtHwPass'][self.language])
+        self.btnSaveHw.setText(TEXT['save'][self.language])
 
 app = QApplication(sys.argv)
 mainWin = MainWin()

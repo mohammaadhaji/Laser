@@ -99,3 +99,24 @@ QPushButton:pressed{
     background-color: rgb(255, 0, 0);
 }
 """
+
+TXT_HW_PASS = """
+QLineEdit{
+    border-radius:10px;
+    border:2px solid gray;
+    padding:10px 10px 10px 10px;
+}
+QLineEdit:focus{
+    border:2px solid white;
+}
+"""
+TXT_HW_WRONG_PASS = """
+QLineEdit{
+    border-radius:10px;
+    border:3px solid red;
+    padding:10px 10px 10px 10px;
+}
+QLineEdit:focus{
+    border:2px solid white;
+}
+"""
