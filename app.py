@@ -307,8 +307,13 @@ class MainWin(QMainWindow):
         if frameNumber == self.movie.frameCount() - 1: 
             self.movie.stop()
             time.sleep(0.5)
-            self.stackedWidget.setCurrentIndex(1)
-            self.setStyleSheet(APP_BG)
+            if platform.system() == 'Windows':
+                self.stackedWidget.setCurrentIndex(1)
+                self.setStyleSheet(APP_BG)
+            else:
+                os.chdir(CURRENT_FILE_DIR)
+                os.system('python3 app.py -platform linuxfb')
+                self.close()
 
     def loginHw(self):
         password = self.txtHwPass.text()
