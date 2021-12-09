@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1549</width>
-    <height>843</height>
+    <height>753</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -53,7 +53,7 @@ font-family:&quot;Times New Roman&quot;;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="loginPage">
        <property name="styleSheet">
@@ -79,13 +79,159 @@ font-family:&quot;Times New Roman&quot;;
            </widget>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_59" stretch="0,0">
+           <layout class="QVBoxLayout" name="verticalLayout_59" stretch="0,0,0">
             <property name="topMargin">
              <number>0</number>
             </property>
             <property name="bottomMargin">
              <number>0</number>
             </property>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_50">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <spacer name="horizontalSpacer_77">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_62">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>25</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>License ID</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="txtID">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>25</pointsize>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">QLineEdit{
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
+
+}
+</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_40">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_2">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>25</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Password</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="LineEdit" name="txtPassword">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>25</pointsize>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">QLineEdit{
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
+
+}
+</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                  <property name="placeholderText">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_78">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_26" stretch="1,2,1">
               <property name="leftMargin">
@@ -119,111 +265,21 @@ font-family:&quot;Times New Roman&quot;;
                  <number>0</number>
                 </property>
                 <item>
-                 <layout class="QVBoxLayout" name="verticalLayout_62">
-                  <property name="leftMargin">
-                   <number>30</number>
+                 <widget class="QLabel" name="label_3">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>16</pointsize>
+                   </font>
                   </property>
-                  <item>
-                   <widget class="QLabel" name="label">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>25</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Your ID</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLineEdit" name="txtID">
-                    <property name="enabled">
-                     <bool>true</bool>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>25</pointsize>
-                     </font>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-
-}
-</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                    <property name="readOnly">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="verticalSpacer_40">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_2">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>25</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Password</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="LineEdit" name="txtPassword">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>25</pointsize>
-                     </font>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-
-}
-</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                    <property name="placeholderText">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
+                  <property name="text">
+                   <string>You laser machine has benn locked for maintenance purpose. For more information contact to Behdad Beauty company.
+Telephone +98 922 491 6671</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
                 </item>
                 <item>
                  <spacer name="verticalSpacer_44">

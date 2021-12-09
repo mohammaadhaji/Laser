@@ -72,13 +72,13 @@ class MainWin(QMainWindow):
         self.tutorials()
         self.setupSensors()
         if self.configs['LOCK'] == '1':
-            self.setStyleSheet("background-color: rgb(77, 74, 78);\n"
-                        "color: rgb(255, 255, 255);")
+            self.setStyleSheet(APP_LOCK_BG)
             self.stackedWidget.setCurrentIndex(0)
             self.loginIfPaied()
 
         
     def setupUi(self):
+        # self.setCursor(Qt.BlankCursor)
         self.movie = QMovie(LOCK_GIF)
         self.movie.frameChanged.connect(self.unlock)
         self.lblLock.setMovie(self.movie)
@@ -371,8 +371,7 @@ class MainWin(QMainWindow):
             lenght = int(self.configs['PASS_LENGHT'])
             password = hashlib.sha256(id.encode()).hexdigest()[:lenght]
             if password == self.configs['PASSWORD']:
-                self.setStyleSheet("background-color: rgb(32, 74, 135);\n"
-                        "color: rgb(255, 255, 255);")
+                self.setStyleSheet(APP_BG)
                 self.stackedWidget.setCurrentIndex(1)
 
     def unlock(self, frameNumber):
@@ -380,8 +379,7 @@ class MainWin(QMainWindow):
             self.movie.stop()
             time.sleep(0.5)
             self.stackedWidget.setCurrentIndex(1)
-            self.setStyleSheet("background-color: rgb(32, 74, 135);\n"
-                        "color: rgb(255, 255, 255);")
+            self.setStyleSheet(APP_BG)
 
     def tutorials(self):
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)

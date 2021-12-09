@@ -120,3 +120,12 @@ QLineEdit:focus{
     border:2px solid white;
 }
 """
+
+APP_LOCK_BG = """
+background-color: rgb(77, 74, 78);
+"""
+
+APP_BG = """
+background-color: rgb(32, 74, 135);
+color: rgb(255, 255, 255);
+"""
