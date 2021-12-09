@@ -1,4 +1,3 @@
-from os import spawnl
 from PyQt5.QtGui import *
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtWidgets import *
@@ -12,7 +11,8 @@ from user import *
 from styles import *
 from uuid import getnode as get_mac
 from itertools import chain
-from pathlib import Path 
+from pathlib import Path
+import platform
 import hashlib
 import time
 import sys
@@ -63,6 +63,18 @@ def saveConfigs(configs):
 
     file.close()
 
+
+def getID():
+    id = ''
+    if isfile('/proc/cpuinfo'):
+        file = open('/proc/cpuinfo')
+        for line in file:
+            if line.startswith('Serial'):
+                id = line.split(':')[1].strip()
+    else:
+        id = str(get_mac())
+
+    return id
 
 class MainWin(QMainWindow):
     def __init__(self, *args, **kwargs):
@@ -151,7 +163,7 @@ class MainWin(QMainWindow):
         self.btnSort.clicked.connect(self.sort)
         self.txtNumber.returnPressed.connect(self.startSession)
         self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
-        self.btnPower.clicked.connect(self.close)
+        self.btnPower.clicked.connect(lambda: os.system('poweroff'))
         self.btnStartSession.clicked.connect(self.startSession)
         self.btnSubmit.clicked.connect(self.submit)
         self.btnBackNewSession.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
@@ -165,7 +177,6 @@ class MainWin(QMainWindow):
         self.btnSettings.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.settingsPage))
         self.btnUiSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.uiPage))
         self.btnUmSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.uMPage))        
-        # self.btnHwSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.hWPage))
         self.btnEnterHw.clicked.connect(self.loginHw)
         self.btnHwSettings.clicked.connect(lambda: self.hwPass('show'))
         self.btnUserManagement.clicked.connect(self.loadToTabel)
@@ -254,6 +265,9 @@ class MainWin(QMainWindow):
         self.btnIncCooling.clicked.connect(lambda: self.setCooling('inc'))
         self.btnSaveCase.clicked.connect(self.saveCase)
         self.btnSaveHw.clicked.connect(self.saveHwSettings)
+        self.btnResetCounter.clicked.connect(self.resetTotalShot)
+        self.shortcut = QShortcut(QKeySequence("Ctrl+x"), self)
+        self.shortcut.activated.connect(self.close)
         self.bodyPartsSignals()
         self.keyboardSignals()
         self.casesSignals()
@@ -261,7 +275,7 @@ class MainWin(QMainWindow):
         self.txtID.setText(self.configs['ID'])
 
     def appendID(self, i):
-        self.configs['ID'] = str(get_mac()) + i
+        self.configs['ID'] = getID() + i
         saveConfigs(self.configs)
 
     def login(self):
@@ -278,11 +292,27 @@ class MainWin(QMainWindow):
             self.movie.start()
         else:
             self.setLabel('Password is not correct.', 'password', 4)
+            
+    def loginIfPaied(self):
+        id = self.configs['ID']
+        id += '@mohammaad_haji'
+        if 'PASSWORD' in self.configs:
+            lenght = int(self.configs['PASS_LENGHT'])
+            password = hashlib.sha256(id.encode()).hexdigest()[:lenght]
+            if password == self.configs['PASSWORD']:
+                self.setStyleSheet(APP_BG)
+                self.stackedWidget.setCurrentIndex(1)
+
+    def unlock(self, frameNumber):
+        if frameNumber == self.movie.frameCount() - 1: 
+            self.movie.stop()
+            time.sleep(0.5)
+            self.stackedWidget.setCurrentIndex(1)
+            self.setStyleSheet(APP_BG)
 
     def loginHw(self):
         password = self.txtHwPass.text()
         txts = get_layout_txt(self.hwLayout)
-
         if password == '1':
             for txt in txts:
                 txt.setReadOnly(False)
@@ -291,12 +321,17 @@ class MainWin(QMainWindow):
             self.txtRpiVersion.setReadOnly(True)
             self.txtMonitor.setReadOnly(True)
             self.txtOsSpecification.setReadOnly(True)
+            self.txtTotalShotCounter.setReadOnly(True)
             self.txtRpiVersion.setDisabled(True)
             self.txtMonitor.setDisabled(True)            
             self.txtOsSpecification.setDisabled(True)
+            self.txtTotalShotCounter.setDisabled(True)
             self.keyboard('hide')
             self.readHwInfo()
             self.btnSaveHw.setVisible(True)
+            self.btnResetCounter.setVisible(True)
+            self.txtRpiVersion.setVisible(True)
+            self.lblRpiVersion.setVisible(True)            
             self.txtHwPass.clear()
             self.stackedWidgetSettings.setCurrentWidget(self.hWPage)
 
@@ -308,6 +343,9 @@ class MainWin(QMainWindow):
             self.keyboard('hide')
             self.readHwInfo()
             self.btnSaveHw.setVisible(False)
+            self.btnResetCounter.setVisible(False)
+            self.txtRpiVersion.setVisible(False)
+            self.lblRpiVersion.setVisible(False)
             self.txtHwPass.clear()
             self.stackedWidgetSettings.setCurrentWidget(self.hWPage)
 
@@ -320,19 +358,8 @@ class MainWin(QMainWindow):
         self.txtHwPass.setStyleSheet(TXT_HW_PASS)
 
     def readHwInfo(self):
-        os_specification = ''
         rpi_version = ''
-
-        if isfile('/etc/os-release'):
-            file = open('/etc/os-release', 'r')
-            for line in file:
-                if line.startswith('PRETTY_NAME'):
-                    os_specification = line.split('=')[1].replace('"','')
-            file.close() 
-
-        else:
-            os_specification = 'Unknown'
-        
+       
         if isfile('/proc/device-tree/model'):
             file = open('/proc/device-tree/model', 'r')
             rpi_version = file.read()
@@ -341,10 +368,16 @@ class MainWin(QMainWindow):
         else:
             rpi_version = 'Unknown'
 
-        self.txtOsSpecification.setText(os_specification)
+        if platform.system() == 'Windows':
+            self.txtOsSpecification.setText(platform.platform())
+        
+        else:
+            os = platform.platform().split('-with')[0]
+            self.txtOsSpecification.setText(os)
+            
         self.txtRpiVersion.setText(rpi_version)
         self.txtSerialNumber.setText(self.configs['SerialNumber'])                
-        self.txtTotalShotCounter.setText(self.configs['TotalShotCounter'])                
+        self.txtTotalShotCounter.setText(str(self.configs['TotalShotCounter']))              
         self.txtLaserDiodeEnergy.setText(self.configs['LaserDiodeEnergy'])                
         self.txtLaserBarType.setText(self.configs['LaserBarType'])                
         self.txtLaserWavelength.setText(self.configs['LaserWavelength'])                
@@ -364,22 +397,11 @@ class MainWin(QMainWindow):
         self.setLabel(TEXT['lblSaveHw'][self.language], 'hw', 2)                
         saveConfigs(self.configs)
 
-    def loginIfPaied(self):
-        id = self.configs['ID']
-        id += '@mohammaad_haji'
-        if 'PASSWORD' in self.configs:
-            lenght = int(self.configs['PASS_LENGHT'])
-            password = hashlib.sha256(id.encode()).hexdigest()[:lenght]
-            if password == self.configs['PASSWORD']:
-                self.setStyleSheet(APP_BG)
-                self.stackedWidget.setCurrentIndex(1)
+    def resetTotalShot(self):
+        self.txtTotalShotCounter.setText('0')
+        self.configs['TotalShotCounter'] = 0
+        saveConfigs(self.configs)
 
-    def unlock(self, frameNumber):
-        if frameNumber == self.movie.frameCount() - 1: 
-            self.movie.stop()
-            time.sleep(0.5)
-            self.stackedWidget.setCurrentIndex(1)
-            self.setStyleSheet(APP_BG)
 
     def tutorials(self):
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
@@ -1056,7 +1078,7 @@ class MainWin(QMainWindow):
                     self.tableToday.setItem(rowToday, 1, lastSession)
                     self.tableToday.setItem(rowToday, 2, sn)
                     rowToday += 1
-                elif nextSession and getDiff(nextSession) == 1:
+                elif nextSession and getDiff(nextSession) == 2:
                     self.tableTomorrow.setRowCount(rowTomorrow +1)
                     self.tableTomorrow.setItem(rowTomorrow, 0, num)
                     self.tableTomorrow.setItem(rowTomorrow, 1, lastSession)
@@ -1075,7 +1097,7 @@ class MainWin(QMainWindow):
                     self.tableToday.setItem(rowToday, 1, lastSession)
                     self.tableToday.setItem(rowToday, 2, sn)
                     rowToday += 1
-                elif nextSession and getDiff(nextSession) == 1:
+                elif nextSession and getDiff(nextSession) == 2:
                     self.tableTomorrow.setRowCount(rowTomorrow +1)
                     self.tableTomorrow.setItem(rowTomorrow, 0, num)
                     self.tableTomorrow.setItem(rowTomorrow, 1, lastSession)
