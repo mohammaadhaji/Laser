@@ -53,7 +53,7 @@ font-family:&quot;Times New Roman&quot;;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>10</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="UUIDPage">
        <layout class="QVBoxLayout" name="verticalLayout_66">
@@ -171,7 +171,7 @@ border:1px solid gray;
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="txtPassUUID">
+             <widget class="LineEdit" name="txtPassUUID">
               <property name="font">
                <font>
                 <family>Arial</family>

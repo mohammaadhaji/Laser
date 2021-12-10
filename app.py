@@ -290,6 +290,7 @@ class MainWin(QMainWindow):
         self.txtDriverVersion.fIn.connect(lambda: self.keyboard('show'))
         self.txtMainControlVersion.fIn.connect(lambda: self.keyboard('show'))
         self.txtProductionDate.fIn.connect(lambda: self.keyboard('show'))
+        self.txtPassUUID.fIn.connect(lambda: self.keyboard('show'))
         self.btnCancelNS.clicked.connect(lambda: self.keyboard('hide'))
         self.btnOkNS.clicked.connect(lambda: self.keyboard('hide'))
         self.btnDecDay.clicked.connect(lambda: self.incDecDay('dec'))
@@ -797,7 +798,6 @@ class MainWin(QMainWindow):
 
         for btn in buttons:
             caseName = btn.objectName().split('Case')[1]
-            print(caseName)
             btn.clicked.connect(self.setCase(caseName))
             btn.clicked.connect(self.loadCase)
 
