@@ -129,3 +129,27 @@ APP_BG = """
 background-color: rgb(32, 74, 135);
 color: rgb(255, 255, 255);
 """
+
+READY_SELECTED = """
+QPushButton {
+    background-color: rgb(213, 213, 213);
+    color: rgb(0, 0, 0);
+    min-width: 170px;
+    min-height: 80px;
+    border-radius: 15px;
+    border: 10px solid red;
+    outline:0;
+}
+"""
+
+READY_NOT_SELECTED = """
+QPushButton {
+    background-color: rgb(213, 213, 213);
+    color: rgb(0, 0, 0);
+    min-width: 170px;
+    min-height: 80px;
+    border-radius: 15px;
+    border: 10px solid rgb(213, 213, 213);
+    outline:0;
+}
+"""

@@ -66,7 +66,7 @@ class Ui_Form(object):
             self.txtID.setFocus()
             return
         id += '@mohammaad_haji'
-        lenght = 5
+        lenght = 10
         password = hashlib.sha256(id.encode()).hexdigest()[:lenght]
         self.txtPass.setText(password)
 

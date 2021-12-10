@@ -3,21 +3,25 @@ from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5 import uic
-from lang import TEXT
 from promotions import *
-from case import *
-from paths import *
-from user import *
 from styles import *
+from paths import *
+from lang import *
+from case import *
+from user import *
+from hash import *
 from uuid import getnode as get_mac
 from itertools import chain
 from pathlib import Path
 import platform
 import hashlib
+import pickle
+import random 
 import time
 import sys
 
-
+def get_grpbox_txt(layout):
+    return (w for w in layout.children() if isinstance(w, QLineEdit))
 
 def layout_widgets(layout):
     return (layout.itemAt(i).widget() for i in range(layout.count())) 
@@ -55,6 +59,59 @@ def loadConfigs():
     file.close()
     return configs
 
+
+def randBinNumber(n):
+    number = ""
+    for _ in range(n):         
+        temp = str(random.randint(0, 1))
+        number += temp
+    return number
+
+
+def loadLIC():
+    if not isfile(LIC):
+        exit(1)
+
+    file = open(LIC, 'rb')
+    try:
+        lic = pickle.load(file)
+        return lic
+    except Exception:
+        file.close()
+        
+        UID0 = randBinNumber(32)
+        UID1 = randBinNumber(32)
+        UID2 = randBinNumber(32)
+
+        LIC32 = (int(UID0, 2) ^ int(UID1, 2)) + (int(UID0, 2) ^ int(UID2, 2))
+        LIC32 = bin(LIC32 & 0xFFFFFFFF)[2:].zfill(32)
+
+        LicID = int(LIC32[:16], 2) ^ int(LIC32[16:], 2) & 0xFFFF
+
+        LICENSE1 = (LicID - LicID % 10) + 1
+        LICENSE2 = (LicID - LicID % 10) + 2
+        LICENSE3 = (LicID - LicID % 10) + 3
+
+        lic = {
+            'KEY': UNLOCK_KEY[random.randrange(0, 100)],
+            'LICENSE1': LICENSE1,
+            'LICENSE2': LICENSE2,
+            'LICENSE3': LICENSE3,
+            'LOCK_COUNTER': 1
+        }
+
+        file = open(LIC, 'wb')
+        pickle.dump(lic, file)
+        file.close()
+        return lic
+
+
+def saveLIC(lic):
+    file = open(LIC, 'wb')
+    pickle.dump(lic, file)
+    file.close()
+
+
 def saveConfigs(configs):
     file = open(CONFIG_FILE, 'w')
 
@@ -76,6 +133,7 @@ def getID():
 
     return id
 
+
 class MainWin(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWin, self).__init__(*args, **kwargs)
@@ -83,22 +141,23 @@ class MainWin(QMainWindow):
         self.setupUi()
         self.tutorials()
         self.setupSensors()
-        if self.configs['LOCK'] == '1':
+        if self.lic['KEY'] in LOCK_KEY:
             self.setStyleSheet(APP_LOCK_BG)
-            self.stackedWidget.setCurrentIndex(0)
-            self.loginIfPaied()
-
+            self.stackedWidget.setCurrentWidget(self.loginPage)
         
     def setupUi(self):
-        # self.setCursor(Qt.BlankCursor)
+        self.lic = loadLIC()
+        self.configs = loadConfigs()
+        if self.configs['HIDE_CURSOR'] == '1':
+            self.setCursor(Qt.BlankCursor)
         self.movie = QMovie(LOCK_GIF)
         self.movie.frameChanged.connect(self.unlock)
         self.lblLock.setMovie(self.movie)
         self.movie.start()
         self.movie.stop()
-        self.lblSplash.setStyleSheet(f'border-image:url({SPLASH[-20:]});')
+        self.lblSplash.setStyleSheet(f'border-image:url({SPLASH[-21:]});')
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentWidget(self.UUIDPage)
         self.stackedWidgetLaser.setCurrentIndex(0)
         self.stackedWidgetSex.setCurrentIndex(0)
         self.stackedWidgetSettings.setCurrentIndex(0)
@@ -118,12 +177,11 @@ class MainWin(QMainWindow):
         self.stackedWidgetSettings.setTransitionSpeed(500)
         self.stackedWidgetSettings.setTransitionEasingCurve(QEasingCurve.OutQuart)
         self.stackedWidgetSettings.setSlideTransition(True)
-        self.configs = loadConfigs()
         self.loginLabelTimer = QTimer()
         self.submitLabelTimer = QTimer()
         self.editLabelTimer = QTimer()
         self.nextSessionLabelTimer = QTimer()
-        self.hwUpdatedLabel = QTimer()
+        self.hwUpdatedLabelTimer = QTimer()
         self.incEPFTimer = QTimer()
         self.decEPFTimer = QTimer()
         self.incDaysTimer = QTimer()
@@ -131,12 +189,14 @@ class MainWin(QMainWindow):
         self.backspaceTimer = QTimer()
         self.passwordLabelTimer = QTimer()
         self.hwWrongPassTimer = QTimer()
+        self.uuidPassLabelTimer = QTimer()
         self.loginLabelTimer.timeout.connect(lambda: self.clearLabel('login'))
         self.submitLabelTimer.timeout.connect(lambda: self.clearLabel('submit'))
         self.editLabelTimer.timeout.connect(lambda: self.clearLabel('edit'))
         self.nextSessionLabelTimer.timeout.connect(lambda: self.clearLabel('nextSession'))
-        self.hwUpdatedLabel.timeout.connect(lambda: self.clearLabel('hw'))
+        self.hwUpdatedLabelTimer.timeout.connect(lambda: self.clearLabel('hw'))
         self.passwordLabelTimer.timeout.connect(lambda: self.clearLabel('password'))
+        self.uuidPassLabelTimer.timeout.connect(lambda: self.clearLabel('uuid'))
         self.incEPFTimer.timeout.connect(lambda: self.setEPF('inc'))
         self.decEPFTimer.timeout.connect(lambda: self.setEPF('dec'))
         self.incDaysTimer.timeout.connect(lambda: self.incDecDay('inc'))
@@ -153,13 +213,13 @@ class MainWin(QMainWindow):
         self.case = 'I'
         self.EPF = 'E'
         self.cooling = 0
+        self.ready = False
         self.language = 0 # 0: en, 1: fa
         self.btnEnLang.clicked.connect(lambda: self.changeLang('en'))
         self.btnFaLang.clicked.connect(lambda: self.changeLang('fa'))
         self.btnEnter.clicked.connect(self.login)
         self.language = 0 if self.configs['LANGUAGE'] == 'en' else 1
         self.changeLang(self.configs['LANGUAGE'])
-        self.checkBoxReady.setFixedSize(150, 48)
         self.btnSort.clicked.connect(self.sort)
         self.txtNumber.returnPressed.connect(self.startSession)
         self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
@@ -199,14 +259,14 @@ class MainWin(QMainWindow):
         self.usersTable.verticalHeader().setDefaultSectionSize(75)
         self.usersTable.horizontalHeader().setFixedHeight(60)
         self.usersTable.verticalHeader().setVisible(False)
-        self.tableToday.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.tableToday.verticalHeader().setDefaultSectionSize(70)
-        self.tableToday.horizontalHeader().setFixedHeight(60)
-        self.tableToday.verticalHeader().setVisible(False)
         self.tableTomorrow.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tableTomorrow.verticalHeader().setDefaultSectionSize(70)
         self.tableTomorrow.horizontalHeader().setFixedHeight(60)
         self.tableTomorrow.verticalHeader().setVisible(False)
+        self.tableAfterTomorrow.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tableAfterTomorrow.verticalHeader().setDefaultSectionSize(70)
+        self.tableAfterTomorrow.horizontalHeader().setFixedHeight(60)
+        self.tableAfterTomorrow.verticalHeader().setVisible(False)
         self.userInfoTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.userInfoTable.verticalHeader().setDefaultSectionSize(70)
         self.userInfoTable.horizontalHeader().setFixedHeight(60)
@@ -240,6 +300,7 @@ class MainWin(QMainWindow):
         reg_ex = QRegExp("[0-9\(\)]*")
         input_validator = QRegExpValidator(reg_ex, self.txtDays)
         self.txtDays.setValidator(input_validator)
+        self.txtPassword.setValidator(input_validator)
         self.txtDays.setText('30')
         self.txtSearch.textChanged.connect(self.search)
         self.btnMale.clicked.connect(lambda: self.setSex('male'))
@@ -266,38 +327,68 @@ class MainWin(QMainWindow):
         self.btnSaveCase.clicked.connect(self.saveCase)
         self.btnSaveHw.clicked.connect(self.saveHwSettings)
         self.btnResetCounter.clicked.connect(self.resetTotalShot)
+        self.btnReady.clicked.connect(lambda: self.setReady(True))
+        self.btnStandby.clicked.connect(lambda: self.setReady(False))
+        self.btnUnqEnter.clicked.connect(self.unlockUUID)
         self.shortcut = QShortcut(QKeySequence("Ctrl+x"), self)
         self.shortcut.activated.connect(self.close)
         self.bodyPartsSignals()
         self.keyboardSignals()
         self.casesSignals()
-        self.appendID('0')
-        self.txtID.setText(self.configs['ID'])
+        self.unlockUUID()
 
-    def appendID(self, i):
-        self.configs['ID'] = getID() + i
-        saveConfigs(self.configs)
+    def unlockUUID(self):
+        user_pass = self.txtPassUUID.text()
+        hwid = getID()
+        self.txtUUID.setText(hwid)
+        hwid += '@mohammaad_haji'
+        if hashlib.sha256(hwid.encode()).hexdigest()[:10] == self.configs['PASSWORD']:
+            self.stackedWidget.setCurrentIndex(2)
+            return
+
+        else:
+            if hashlib.sha256(hwid.encode()).hexdigest()[:10] == user_pass:
+                self.stackedWidget.setCurrentIndex(2)
+                self.configs['PASSWORD'] = user_pass
+                saveConfigs(self.configs)
+
+            else:
+                self.setLabel('Password is not correct.', 'uuid', 4)
 
     def login(self):
-        id = self.configs['ID']
-        id += '@mohammaad_haji'
-        userPass = self.txtPassword.text()
-        lenght = int(self.configs['PASS_LENGHT'])
-        password = hashlib.sha256(id.encode()).hexdigest()[:lenght]
-        if password == userPass:
-            self.keyboard('hide')
-            self.configs['PASSWORD'] = password
-            self.configs['LOCK'] = 0
-            saveConfigs(self.configs)
-            self.movie.start()
-        else:
-            self.setLabel('Password is not correct.', 'password', 4)
-            
+        userPass = self.txtPassword.text().strip()
+        UnlockPass = [0xABCD, 0xBCDE, 0xCDEF]
+        for i in range(1, 4):
+
+            if self.lic['LOCK_COUNTER'] == i:
+                if int(userPass) ^ int(self.lic[f'LICENSE{i}']) == UnlockPass[i - 1]:
+                    self.lic['KEY'] = UNLOCK_KEY[random.randrange(0, 100)]
+                    if self.lic['LOCK_COUNTER'] == 3:
+                        self.lic['LOCK_COUNTER'] = 'Done'
+                    else:
+                        self.lic['LOCK_COUNTER'] = i + 1
+                    saveLIC(self.lic)
+                    self.keyboard('hide')
+                    self.movie.start()
+                    self.txtPassword.clear()
+                    return
+                else:
+                    self.setLabel('Password is not correct.', 'password', 4)
+
+    def lockDevice(self):
+        if not self.lic['LOCK_COUNTER'] == 'Done':
+            self.setStyleSheet(APP_LOCK_BG)
+            self.lic['KEY'] = LOCK_KEY[random.randrange(0, 100)]
+            saveLIC(self.lic)
+            self.stackedWidget.setCurrentIndex(0)
+            licenseID = self.lic[f'LICENSE{self.lic["LOCK_COUNTER"]}']
+            self.txtID.setText(str(licenseID))
+        
     def loginIfPaied(self):
         id = self.configs['ID']
         id += '@mohammaad_haji'
         if 'PASSWORD' in self.configs:
-            lenght = int(self.configs['PASS_LENGHT'])
+            lenght = 15
             password = hashlib.sha256(id.encode()).hexdigest()[:lenght]
             if password == self.configs['PASSWORD']:
                 self.setStyleSheet(APP_BG)
@@ -306,18 +397,21 @@ class MainWin(QMainWindow):
     def unlock(self, frameNumber):
         if frameNumber == self.movie.frameCount() - 1: 
             self.movie.stop()
-            time.sleep(0.5)
+            os.chdir(CURRENT_FILE_DIR)
             if platform.system() == 'Windows':
-                self.stackedWidget.setCurrentIndex(1)
-                self.setStyleSheet(APP_BG)
+                os.system('python app.py')
             else:
-                os.chdir(CURRENT_FILE_DIR)
                 os.system('python3 app.py -platform linuxfb')
-                self.close()
+            self.close()   
 
     def loginHw(self):
         password = self.txtHwPass.text()
-        txts = get_layout_txt(self.hwLayout)
+        txts = chain(
+            get_grpbox_txt(self.grpbProduction),
+            get_grpbox_txt(self.grpbDriver),
+            get_grpbox_txt(self.grpbLaser)
+        )
+
         if password == '1':
             for txt in txts:
                 txt.setReadOnly(False)
@@ -333,8 +427,9 @@ class MainWin(QMainWindow):
             self.txtTotalShotCounter.setDisabled(True)
             self.keyboard('hide')
             self.readHwInfo()
-            self.btnSaveHw.setVisible(True)
-            self.btnResetCounter.setVisible(True)
+            # self.btnSaveHw.setVisible(True)
+            # self.btnResetCounter.setVisible(True)
+            self.hwbtnsFrame.show()
             self.txtRpiVersion.setVisible(True)
             self.lblRpiVersion.setVisible(True)            
             self.txtHwPass.clear()
@@ -347,8 +442,9 @@ class MainWin(QMainWindow):
 
             self.keyboard('hide')
             self.readHwInfo()
-            self.btnSaveHw.setVisible(False)
-            self.btnResetCounter.setVisible(False)
+            # self.btnSaveHw.setVisible(False)
+            # self.btnResetCounter.setVisible(False)
+            self.hwbtnsFrame.hide()
             self.txtRpiVersion.setVisible(False)
             self.lblRpiVersion.setVisible(False)
             self.txtHwPass.clear()
@@ -388,7 +484,8 @@ class MainWin(QMainWindow):
         self.txtLaserWavelength.setText(self.configs['LaserWavelength'])                
         self.txtDriverVersion.setText(self.configs['DriverVersion'])                
         self.txtMainControlVersion.setText(self.configs['MainControlVersion'])                
-        self.txtProductionDate.setText(self.configs['ProductionDate'])                        
+        self.txtProductionDate.setText(self.configs['ProductionDate']) 
+        self.txtGuiVersion.setText(self.configs['GuiVersion'])
 
     def saveHwSettings(self):
         self.configs['SerialNumber'] = self.txtSerialNumber.text()            
@@ -406,7 +503,6 @@ class MainWin(QMainWindow):
         self.txtTotalShotCounter.setText('0')
         self.configs['TotalShotCounter'] = 0
         saveConfigs(self.configs)
-
 
     def tutorials(self):
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
@@ -606,6 +702,17 @@ class MainWin(QMainWindow):
         self.setTemp(0)
         self.setLock(True)
 
+    def setReady(self, ready):
+        if ready:
+            self.ready = True
+            self.btnStandby.setStyleSheet(READY_NOT_SELECTED)
+            self.btnReady.setStyleSheet(READY_SELECTED)
+
+        else:
+            self.ready = False
+            self.btnStandby.setStyleSheet(READY_SELECTED)
+            self.btnReady.setStyleSheet(READY_NOT_SELECTED)
+
     def setCooling(self, operation):
         buttons = layout_widgets(self.coolingLayout)
         icon = QIcon()
@@ -686,17 +793,18 @@ class MainWin(QMainWindow):
             self.sex = 'female'
 
     def casesSignals(self):
-        buttons = layout_widgets(self.casesLayout)
+        buttons = get_layout_btn(self.casesLayout)
 
         for btn in buttons:
             caseName = btn.objectName().split('Case')[1]
+            print(caseName)
             btn.clicked.connect(self.setCase(caseName))
             btn.clicked.connect(self.loadCase)
 
     def setCase(self, case):
         def wrapper():
             self.case = case
-            buttons = layout_widgets(self.casesLayout)
+            buttons = get_layout_btn(self.casesLayout)
             for btn in buttons:
                 btn.setStyleSheet(NOT_SELECTED_CASE)
                 caseName = btn.objectName().split('Case')[1]
@@ -1068,59 +1176,65 @@ class MainWin(QMainWindow):
 
     def futureSessions(self):
         users = loadAllUsers()
-        rowToday = 0
         rowTomorrow = 0
+        rowAfterTomorrow = 0
         for user in users:
             if user.sessionNumber == 1:
                 nextSession = user.nextSession
                 num = TableWidgetItem(user.phoneNumber)
+                name = TableWidgetItem(user.name)
                 text = TEXT['firstTime'][self.language] 
                 lastSession = TableWidgetItem(text)
                 sn = TableWidgetItem(str(user.sessionNumber))
-                if nextSession and getDiff(nextSession) == 0:
-                    self.tableToday.setRowCount(rowToday +1)
-                    self.tableToday.setItem(rowToday, 0, num)
-                    self.tableToday.setItem(rowToday, 1, lastSession)
-                    self.tableToday.setItem(rowToday, 2, sn)
-                    rowToday += 1
-                elif nextSession and getDiff(nextSession) == 2:
+                if nextSession and getDiff(nextSession) == 1:
                     self.tableTomorrow.setRowCount(rowTomorrow +1)
                     self.tableTomorrow.setItem(rowTomorrow, 0, num)
-                    self.tableTomorrow.setItem(rowTomorrow, 1, lastSession)
+                    self.tableTomorrow.setItem(rowTomorrow, 1, name)
                     self.tableTomorrow.setItem(rowTomorrow, 2, sn)
+                    # self.tableTomorrow.setItem(rowTomorrow, 2, lastSession)
                     rowTomorrow += 1
+                elif nextSession and getDiff(nextSession) == 2:
+                    self.tableAfterTomorrow.setRowCount(rowAfterTomorrow +1)
+                    self.tableAfterTomorrow.setItem(rowAfterTomorrow, 0, num)
+                    self.tableAfterTomorrow.setItem(rowAfterTomorrow, 1, name)
+                    self.tableAfterTomorrow.setItem(rowAfterTomorrow, 2, sn)
+                    # self.tableAfterTomorrow.setItem(rowAfterTomorrow, 2, lastSession)
+                    rowAfterTomorrow += 1
 
             else:
                 nextSession = user.nextSession
                 lastSession = user.sessions[user.sessionNumber -1]['date']
                 lastSession = TableWidgetItem(str(lastSession.date()))
                 num = TableWidgetItem(user.phoneNumber)
+                name = TableWidgetItem(user.name)
                 sn = TableWidgetItem(str(user.sessionNumber))
-                if nextSession and getDiff(nextSession) == 0:
-                    self.tableToday.setRowCount(rowToday +1)
-                    self.tableToday.setItem(rowToday, 0, num)
-                    self.tableToday.setItem(rowToday, 1, lastSession)
-                    self.tableToday.setItem(rowToday, 2, sn)
-                    rowToday += 1
-                elif nextSession and getDiff(nextSession) == 2:
+                if nextSession and getDiff(nextSession) == 1:
                     self.tableTomorrow.setRowCount(rowTomorrow +1)
                     self.tableTomorrow.setItem(rowTomorrow, 0, num)
-                    self.tableTomorrow.setItem(rowTomorrow, 1, lastSession)
+                    self.tableTomorrow.setItem(rowTomorrow, 1, name)
                     self.tableTomorrow.setItem(rowTomorrow, 2, sn)
+                    # self.tableTomorrow.setItem(rowTomorrow, 2, lastSession)
                     rowTomorrow += 1
+                elif nextSession and getDiff(nextSession) == 2:
+                    self.tableAfterTomorrow.setRowCount(rowAfterTomorrow +1)
+                    self.tableAfterTomorrow.setItem(rowAfterTomorrow, 0, num)
+                    self.tableAfterTomorrow.setItem(rowAfterTomorrow, 1, name)
+                    self.tableAfterTomorrow.setItem(rowAfterTomorrow, 2, sn)
+                    # self.tableAfterTomorrow.setItem(rowAfterTomorrow, 2, lastSession)
+                    rowAfterTomorrow += 1
 
         if self.language == 1:
-            textToday = f'{rowToday} → امروز'
             textTomorrow = f'{rowTomorrow} → فردا'
+            textAfterTomorrow = f'{rowAfterTomorrow} → پس فردا'
         
         else:
-            textToday = f'Today → {rowToday}'
             textTomorrow = f'Tomorrow → {rowTomorrow}'
+            textAfterTomorrow = f'Day After Tomorrow → {rowAfterTomorrow}'
 
-        self.lblToday.setText(textToday)
         self.lblTomorrow.setText(textTomorrow)
-        self.tableToday.setRowCount(rowToday)
+        self.lblAfterTomorrow.setText(textAfterTomorrow)
         self.tableTomorrow.setRowCount(rowTomorrow)
+        self.tableAfterTomorrow.setRowCount(rowAfterTomorrow)
 
     def saveUserInfo(self):
         numberEdit = self.txtEditNumber.text()
@@ -1271,7 +1385,11 @@ class MainWin(QMainWindow):
 
         elif label == 'hw':
             self.lblSaveHw.setText(text)
-            self.hwUpdatedLabel.start(sec * 1000)
+            self.hwUpdatedLabelTimer.start(sec * 1000)
+
+        elif label == 'uuid':
+            self.lblPassUUID.setText(text)
+            self.uuidPassLabelTimer.start(sec * 1000)
 
     def clearLabel(self, label):
         if label == 'login':
@@ -1296,7 +1414,11 @@ class MainWin(QMainWindow):
 
         elif label == 'hw':
             self.lblSaveHw.clear()
-            self.hwUpdatedLabel.stop()
+            self.hwUpdatedLabelTimer.stop()
+
+        elif label == 'uuid':
+            self.lblPassUUID.clear()
+            self.uuidPassLabelTimer.stop()
 
     def changeLang(self, lang):
         global app
@@ -1336,12 +1458,12 @@ class MainWin(QMainWindow):
         self.lblVideos.setText(TEXT['lblVideos'][self.language])
         self.lblTitle.setText(TEXT['lblTitle'][self.language])
         self.lblHeaderFsessions.setText(TEXT['lblHeaderFsessions'][self.language])
-        self.tableToday.horizontalHeaderItem(0).setText(TEXT['tbFsessions0'][self.language])
-        self.tableToday.horizontalHeaderItem(1).setText(TEXT['tbFsessions1'][self.language])
-        self.tableToday.horizontalHeaderItem(2).setText(TEXT['tbFsessions2'][self.language])
         self.tableTomorrow.horizontalHeaderItem(0).setText(TEXT['tbFsessions0'][self.language])
         self.tableTomorrow.horizontalHeaderItem(1).setText(TEXT['tbFsessions1'][self.language])
         self.tableTomorrow.horizontalHeaderItem(2).setText(TEXT['tbFsessions2'][self.language])
+        self.tableAfterTomorrow.horizontalHeaderItem(0).setText(TEXT['tbFsessions0'][self.language])
+        self.tableAfterTomorrow.horizontalHeaderItem(1).setText(TEXT['tbFsessions1'][self.language])
+        self.tableAfterTomorrow.horizontalHeaderItem(2).setText(TEXT['tbFsessions2'][self.language])
         self.lblHeaderUm.setText(TEXT['lblHeaderUm'][self.language])
         self.usersTable.horizontalHeaderItem(0).setText(TEXT['usersTable0'][self.language])
         self.usersTable.horizontalHeaderItem(1).setText(TEXT['usersTable1'][self.language])
@@ -1395,8 +1517,8 @@ class MainWin(QMainWindow):
         self.lblFrequency.setText(TEXT['lblFrequency'][self.language])
         self.lblPulseWidth.setText(TEXT['lblPulseWidth'][self.language])
         self.lblCounter.setText(TEXT['lblCounter'][self.language])
-        self.lblReady.setText(TEXT['lblReady'][self.language])    
-        self.lblStandby.setText(TEXT['lblStandby'][self.language])            
+        self.btnReady.setText(TEXT['btnReady'][self.language])    
+        self.btnStandby.setText(TEXT['btnStandby'][self.language])            
         self.lblSerialNumber.setText(TEXT['lblSerialNumber'][self.language])
         self.lblTotalShotCounter.setText(TEXT['lblTotalShotCounter'][self.language])
         self.lblLaserDiodeEnergy.setText(TEXT['lblLaserDiodeEnergy'][self.language])
@@ -1411,6 +1533,10 @@ class MainWin(QMainWindow):
         self.btnEnterHw.setText(TEXT['enter'][self.language])
         self.txtHwPass.setPlaceholderText(TEXT['txtHwPass'][self.language])
         self.btnSaveHw.setText(TEXT['save'][self.language])
+        self.btnResetCounter.setText(TEXT['btnResetCounter'][self.language])
+        self.grpbProduction.setTitle(TEXT['grpbProduction'][self.language])
+        self.grpbLaser.setTitle(TEXT['grpbLaser'][self.language])
+        self.grpbDriver.setTitle(TEXT['grpbDriver'][self.language])        
 
 app = QApplication(sys.argv)
 mainWin = MainWin()

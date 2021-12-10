@@ -21,9 +21,10 @@ COOLING_ON = join(CURRENT_FILE_DIR, 'ui/images/coolingOn.png')
 PLAY_ICON = join(CURRENT_FILE_DIR, 'ui/images/play.png')
 PAUSE_ICON = join(CURRENT_FILE_DIR, 'ui/images/pause.png')
 SELECTED_LANG_ICON = join(CURRENT_FILE_DIR, 'ui/images/downArrow.png')
-CONFIG_FILE = join(CURRENT_FILE_DIR, 'configs.txt')
-SPLASH = join(CURRENT_FILE_DIR, 'ui/images/splash.jpg')
+CONFIG_FILE = join(CURRENT_FILE_DIR, 'configs')
+SPLASH = join(CURRENT_FILE_DIR, 'ui/images/splash.jpeg')
 LOCK_GIF = join(CURRENT_FILE_DIR, 'ui/images/lock.gif')
+LIC = join(CURRENT_FILE_DIR, 'driver')
 BODY_PART_ICONS = {
     'f face': join(CURRENT_FILE_DIR, 'ui/images/fFace'),
     'f armpit': join(CURRENT_FILE_DIR, 'ui/images/fArmpit'),

@@ -1,8 +1,6 @@
+PASSWORD = 70071b98ef
 LANGUAGE = en
-LOCK = 0
-PASS_LENGHT = 5
-PASSWORD = dc03c
-ID = 2202951549432390
+HIDE_CURSOR = 0
 SerialNumber = 
 TotalShotCounter = 0
 LaserDiodeEnergy = 
@@ -11,3 +9,4 @@ LaserWavelength =
 DriverVersion = 
 MainControlVersion = 
 ProductionDate = 
+GuiVersion = v1.0
