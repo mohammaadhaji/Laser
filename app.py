@@ -336,9 +336,9 @@ class MainWin(QMainWindow):
         self.bodyPartsSignals()
         self.keyboardSignals()
         self.casesSignals()
-        self.unlockUUID()
+        self.unlockUUID(True)
 
-    def unlockUUID(self):
+    def unlockUUID(self, auto=False):
         user_pass = self.txtPassUUID.text()
         hwid = getID()
         self.txtUUID.setText(hwid)
@@ -354,7 +354,8 @@ class MainWin(QMainWindow):
                 saveConfigs(self.configs)
 
             else:
-                self.setLabel('Password is not correct.', 'uuid', 4)
+                if not auto:
+                    self.setLabel('Password is not correct.', 'uuid', 4)
 
     def login(self):
         userPass = self.txtPassword.text().strip()
