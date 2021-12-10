@@ -352,7 +352,7 @@ class MainWin(QMainWindow):
                 self.stackedWidget.setCurrentIndex(2)
                 self.configs['PASSWORD'] = user_pass
                 saveConfigs(self.configs)
-
+                self.keyboard('hide')
             else:
                 if not auto:
                     self.setLabel('Password is not correct.', 'uuid', 4)
