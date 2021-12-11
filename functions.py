@@ -20,7 +20,7 @@ def linux_set_time(time_tuple):
     import subprocess
     import shlex
 
-    time_string = datetime(*time_tuple).isoformat()
+    time_string = datetime.datetime(*time_tuple).isoformat()
 
     subprocess.call(shlex.split("timedatectl set-ntp false")) 
     subprocess.call(shlex.split("sudo date -s '%s'" % time_string))
