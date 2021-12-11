@@ -1,3 +1,4 @@
+from datetime import date
 from PyQt5.QtGui import *
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtWidgets import *
@@ -10,128 +11,14 @@ from lang import *
 from case import *
 from user import *
 from hash import *
-from uuid import getnode as get_mac
+from functions import *
 from itertools import chain
 from pathlib import Path
+import jdatetime 
 import platform
 import hashlib
-import pickle
 import random 
-import time
 import sys
-
-def get_grpbox_txt(layout):
-    return (w for w in layout.children() if isinstance(w, QLineEdit))
-
-def layout_widgets(layout):
-    return (layout.itemAt(i).widget() for i in range(layout.count())) 
-
-def get_layout_btn(layout):
-    return (layout.itemAt(i).widget() for i in range(layout.count()) if isinstance(layout.itemAt(i).widget(), QPushButton)) 
-
-def get_layout_txt(layout):
-    return (layout.itemAt(i).widget() for i in range(layout.count()) if isinstance(layout.itemAt(i).widget(), QLineEdit)) 
-
-def getDiff(date):
-    today = jdatetime.datetime.today().togregorian()
-    nextSessionDate = date.togregorian()
-    return (nextSessionDate - today).days + 1
-
-def addExtenstion(file):
-    files = os.listdir(TUTORIALS_DIR)
-    if isfile(join(TUTORIALS_DIR, '.gitignore')):
-        files.remove('.gitignore')
-    for f in files:
-        path = os.path.join(TUTORIALS_DIR, f)
-        if file == Path(path).stem:
-            return file + Path(path).suffix
-
-def loadConfigs():
-    configs = {}
-    file = open(CONFIG_FILE, 'r')
-    content = file.read().split('\n')
-
-    for item in content:
-        x = [i.strip() for i in item.split('=')]
-        if len(x) > 1:
-            configs[x[0]] = x[1]
-
-    file.close()
-    return configs
-
-
-def randBinNumber(n):
-    number = ""
-    for _ in range(n):         
-        temp = str(random.randint(0, 1))
-        number += temp
-    return number
-
-
-def loadLIC():
-    if not isfile(LIC):
-        exit(1)
-
-    file = open(LIC, 'rb')
-    try:
-        lic = pickle.load(file)
-        return lic
-    except Exception:
-        file.close()
-        
-        UID0 = randBinNumber(32)
-        UID1 = randBinNumber(32)
-        UID2 = randBinNumber(32)
-
-        LIC32 = (int(UID0, 2) ^ int(UID1, 2)) + (int(UID0, 2) ^ int(UID2, 2))
-        LIC32 = bin(LIC32 & 0xFFFFFFFF)[2:].zfill(32)
-
-        LicID = int(LIC32[:16], 2) ^ int(LIC32[16:], 2) & 0xFFFF
-
-        LICENSE1 = (LicID - LicID % 10) + 1
-        LICENSE2 = (LicID - LicID % 10) + 2
-        LICENSE3 = (LicID - LicID % 10) + 3
-
-        lic = {
-            'KEY': UNLOCK_KEY[random.randrange(0, 100)],
-            'LICENSE1': LICENSE1,
-            'LICENSE2': LICENSE2,
-            'LICENSE3': LICENSE3,
-            'LOCK_COUNTER': 1
-        }
-
-        file = open(LIC, 'wb')
-        pickle.dump(lic, file)
-        file.close()
-        return lic
-
-
-def saveLIC(lic):
-    file = open(LIC, 'wb')
-    pickle.dump(lic, file)
-    file.close()
-
-
-def saveConfigs(configs):
-    file = open(CONFIG_FILE, 'w')
-
-    for item in configs.items():
-        file.write(f'{item[0]} = {item[1]}\n')
-
-    file.close()
-
-
-def getID():
-    id = ''
-    if isfile('/proc/cpuinfo'):
-        file = open('/proc/cpuinfo')
-        for line in file:
-            if line.startswith('Serial'):
-                id = line.split(':')[1].strip()
-    else:
-        id = str(get_mac())
-
-    return id
 
 
 class MainWin(QMainWindow):
@@ -161,6 +48,7 @@ class MainWin(QMainWindow):
         self.stackedWidgetLaser.setCurrentIndex(0)
         self.stackedWidgetSex.setCurrentIndex(0)
         self.stackedWidgetSettings.setCurrentIndex(0)
+        self.hwStackedWidget.setCurrentIndex(0)
         self.stackedWidget.setTransitionDirection(Qt.Vertical)
         self.stackedWidget.setTransitionSpeed(500)
         self.stackedWidget.setTransitionEasingCurve(QEasingCurve.OutQuart)
@@ -177,6 +65,10 @@ class MainWin(QMainWindow):
         self.stackedWidgetSettings.setTransitionSpeed(500)
         self.stackedWidgetSettings.setTransitionEasingCurve(QEasingCurve.OutQuart)
         self.stackedWidgetSettings.setSlideTransition(True)
+        self.hwStackedWidget.setTransitionDirection(Qt.Vertical)
+        self.hwStackedWidget.setTransitionSpeed(500)
+        self.hwStackedWidget.setTransitionEasingCurve(QEasingCurve.OutQuart)
+        self.hwStackedWidget.setSlideTransition(True)
         self.loginLabelTimer = QTimer()
         self.submitLabelTimer = QTimer()
         self.editLabelTimer = QTimer()
@@ -190,6 +82,15 @@ class MainWin(QMainWindow):
         self.passwordLabelTimer = QTimer()
         self.hwWrongPassTimer = QTimer()
         self.uuidPassLabelTimer = QTimer()
+        self.clockTimer = QTimer()
+        self.dateTimer = QTimer()
+        self.clockTimer.timeout.connect(self.time)
+        # self.txtSysDate.setText(jdatetime.datetime.now().strftime("%Y / %m / %d"))
+        # self.dateTimer.timeout.connect(
+        #     lambda: self.txtSysDate.setText(jdatetime.datetime.now().strftime("%Y / %m / %d"))
+        # )
+        self.clockTimer.start(1000)
+        self.dateTimer.start(8.64e+7)
         self.loginLabelTimer.timeout.connect(lambda: self.clearLabel('login'))
         self.submitLabelTimer.timeout.connect(lambda: self.clearLabel('submit'))
         self.editLabelTimer.timeout.connect(lambda: self.clearLabel('edit'))
@@ -272,6 +173,10 @@ class MainWin(QMainWindow):
         self.userInfoTable.verticalHeader().setDefaultSectionSize(70)
         self.userInfoTable.horizontalHeader().setFixedHeight(60)
         self.userInfoTable.verticalHeader().setVisible(False)
+        self.tableLock.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tableLock.verticalHeader().setDefaultSectionSize(70)
+        self.tableLock.horizontalHeader().setFixedHeight(60)
+        self.tableLock.verticalHeader().setVisible(False)
         self.txtNumber.fIn.connect(lambda: self.keyboard('show'))
         self.txtNumberSubmit.fIn.connect(lambda: self.keyboard('show'))
         self.txtNameSubmit.fIn.connect(lambda: self.keyboard('show'))
@@ -292,6 +197,15 @@ class MainWin(QMainWindow):
         self.txtMainControlVersion.fIn.connect(lambda: self.keyboard('show'))
         self.txtProductionDate.fIn.connect(lambda: self.keyboard('show'))
         self.txtPassUUID.fIn.connect(lambda: self.keyboard('show'))
+        self.txtGuiVersion.fIn.connect(lambda: self.keyboard('show'))
+        self.txtEditMinute.fIn.connect(lambda: self.keyboard('show'))
+        self.txtEditHour.fIn.connect(lambda: self.keyboard('show'))
+        self.txtEditYear.fIn.connect(lambda: self.keyboard('show'))
+        self.txtEditMonth.fIn.connect(lambda: self.keyboard('show'))
+        self.txtEditDay.fIn.connect(lambda: self.keyboard('show'))
+        self.txtLockYear.fIn.connect(lambda: self.keyboard('show'))
+        self.txtLockMonth.fIn.connect(lambda: self.keyboard('show'))
+        self.txtLockDay.fIn.connect(lambda: self.keyboard('show'))
         self.btnCancelNS.clicked.connect(lambda: self.keyboard('hide'))
         self.btnOkNS.clicked.connect(lambda: self.keyboard('hide'))
         self.btnDecDay.clicked.connect(lambda: self.incDecDay('dec'))
@@ -300,9 +214,14 @@ class MainWin(QMainWindow):
         self.txtDate.textChanged.connect(self.setDaysText)
         self.btnOkNS.clicked.connect(self.saveNextSession)
         reg_ex = QRegExp("[0-9\(\)]*")
+        ms_ex = QRegExp("[0-5]?[0-9]")
+        h_ex = QRegExp("/\b2[0-3]\b|\b[0-1]?[0-9]\b/")
         input_validator = QRegExpValidator(reg_ex, self.txtDays)
+        input_validator_2 = QRegExpValidator(ms_ex, self.txtEditMinute)
         self.txtDays.setValidator(input_validator)
         self.txtPassword.setValidator(input_validator)
+        self.txtEditMinute.setValidator(input_validator_2)
+        self.txtEditHour.setValidator(input_validator)
         self.txtDays.setText('30')
         self.txtSearch.textChanged.connect(self.search)
         self.btnMale.clicked.connect(lambda: self.setSex('male'))
@@ -332,12 +251,34 @@ class MainWin(QMainWindow):
         self.btnReady.clicked.connect(lambda: self.setReady(True))
         self.btnStandby.clicked.connect(lambda: self.setReady(False))
         self.btnUnqEnter.clicked.connect(self.unlockUUID)
+        self.btnHwinfo.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.infoPage))
+        self.btnSystemLock.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.lockSettingsPage))
         self.shortcut = QShortcut(QKeySequence("Ctrl+x"), self)
         self.shortcut.activated.connect(self.close)
         self.bodyPartsSignals()
         self.keyboardSignals()
         self.casesSignals()
         self.unlockUUID(True)
+
+    def time(self, edit=False):
+        hour = "{:02d}".format(jdatetime.datetime.now().hour) 
+        minute = "{:02d}".format(jdatetime.datetime.now().minute)
+        year = str(jdatetime.datetime.now().year)
+        month = "{:02d}".format(jdatetime.datetime.now().month)
+        day = "{:02d}".format(jdatetime.datetime.now().day)
+        self.txtSysClock.setText(jdatetime.datetime.now().strftime('%H : %M : %S'))
+        self.txtSysDate.setText(jdatetime.datetime.now().strftime('%Y / %m / %d'))
+
+        if edit:
+            self.txtLockYear.setText(year)
+            self.txtLockMonth.setText(month)
+            self.txtLockDay.setText(day)
+            self.txtEditYear.setText(year)
+            self.txtEditMonth.setText(month)
+            self.txtEditDay.setText(day)
+            self.txtEditHour.setText(hour)
+            self.txtEditMinute.setText(minute)
+
 
     def unlockUUID(self, auto=False):
         user_pass = self.txtPassUUID.text()
@@ -410,10 +351,10 @@ class MainWin(QMainWindow):
     def loginHw(self):
         password = self.txtHwPass.text()
         txts = chain(
-            get_layout_txt(self.prodGridLayout),
-            get_layout_txt(self.laserGridLayout),
-            get_layout_txt(self.driverGridLayout),
-            get_layout_txt(self.embeddGridLayout)
+            get_layout_widget(self.prodGridLayout, QLineEdit),
+            get_layout_widget(self.laserGridLayout, QLineEdit),
+            get_layout_widget(self.driverGridLayout, QLineEdit),
+            get_layout_widget(self.embeddGridLayout, QLineEdit)
         )
 
         if password == '1':
@@ -431,6 +372,7 @@ class MainWin(QMainWindow):
             self.txtTotalShotCounter.setDisabled(True)
             self.keyboard('hide')
             self.readHwInfo()
+            self.time(edit=True)
             self.hwbtnsFrame.show()
             self.txtRpiVersion.setVisible(True)
             self.lblRpiVersion.setVisible(True)            
@@ -496,7 +438,25 @@ class MainWin(QMainWindow):
         self.configs['DriverVersion'] = self.txtDriverVersion.text()            
         self.configs['MainControlVersion'] = self.txtMainControlVersion.text()            
         self.configs['ProductionDate'] = self.txtProductionDate.text()
-        self.setLabel(TEXT['lblSaveHw'][self.language], 'hw', 2)                
+        self.configs['GuiVersion'] = self.txtGuiVersion.text()  
+        self.setLabel(TEXT['lblSaveHw'][self.language], 'hw', 2)
+        year = int(self.txtEditYear.text())
+        month = int(self.txtEditMonth.text())
+        day = int(self.txtEditDay.text())
+        miladi = jdatetime.datetime(year, month, day).togregorian()
+        year = miladi.year
+        month = miladi.month
+        day = miladi.day
+        hour = int(self.txtEditHour.text())
+        minute = int(self.txtEditMinute.text())
+        second = jdatetime.datetime.now().second
+        milisecond = 0
+        time = (year, month, day, hour, minute, second, milisecond)
+
+        if platform.system() == 'Windows':
+            win_set_time(time)
+        else:
+            linux_set_time(time)
         saveConfigs(self.configs)
 
     def resetTotalShot(self):
@@ -759,8 +719,8 @@ class MainWin(QMainWindow):
 
     def bodyPartsSignals(self):
         buttons = chain(
-            get_layout_btn(self.fBodyPartsLayout),
-            get_layout_btn(self.mBodyPartsLayout)
+            get_layout_widget(self.fBodyPartsLayout, QPushButton),
+            get_layout_widget(self.mBodyPartsLayout, QPushButton)
         )
 
         for btn in buttons:
@@ -793,7 +753,7 @@ class MainWin(QMainWindow):
             self.sex = 'female'
 
     def casesSignals(self):
-        buttons = get_layout_btn(self.casesLayout)
+        buttons = get_layout_widget(self.casesLayout, QPushButton)
 
         for btn in buttons:
             caseName = btn.objectName().split('Case')[1]
@@ -803,7 +763,7 @@ class MainWin(QMainWindow):
     def setCase(self, case):
         def wrapper():
             self.case = case
-            buttons = get_layout_btn(self.casesLayout)
+            buttons = get_layout_widget(self.casesLayout, QPushButton)
             for btn in buttons:
                 btn.setStyleSheet(NOT_SELECTED_CASE)
                 caseName = btn.objectName().split('Case')[1]

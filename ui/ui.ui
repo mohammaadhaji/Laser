@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1527</width>
-    <height>1096</height>
+    <height>756</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -53,7 +53,7 @@ font-family:&quot;Times New Roman&quot;;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>8</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="UUIDPage">
        <layout class="QVBoxLayout" name="verticalLayout_66">
@@ -2187,6 +2187,9 @@ QPushButton:pressed{
             </property>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_47">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
               <property name="topMargin">
                <number>0</number>
               </property>
@@ -2194,30 +2197,49 @@ QPushButton:pressed{
                <number>0</number>
               </property>
               <item>
-               <widget class="QScrollArea" name="scrollArea">
-                <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
+               <widget class="StackedWidget" name="hwStackedWidget">
+                <property name="currentIndex">
+                 <number>1</number>
                 </property>
-                <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="widgetResizable">
-                 <bool>true</bool>
-                </property>
-                <widget class="QWidget" name="scrollAreaWidgetContents">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>0</y>
-                   <width>1201</width>
-                   <height>920</height>
-                  </rect>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_73">
+                <widget class="QWidget" name="infoPage">
+                 <layout class="QVBoxLayout" name="verticalLayout_71">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
                   <item>
-                   <widget class="QFrame" name="hwFrame">
-                    <property name="styleSheet">
-                     <string notr="true">QLineEdit{
+                   <widget class="QScrollArea" name="scrollArea">
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="verticalScrollBarPolicy">
+                     <enum>Qt::ScrollBarAsNeeded</enum>
+                    </property>
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="scrollAreaWidgetContents">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>1201</width>
+                       <height>920</height>
+                      </rect>
+                     </property>
+                     <layout class="QVBoxLayout" name="verticalLayout_73">
+                      <item>
+                       <widget class="QFrame" name="hwFrame">
+                        <property name="styleSheet">
+                         <string notr="true">QLineEdit{
 color: rgb(255, 255, 255);
 background-color: rgb(58, 58, 58);
 border-radius:5px;
@@ -2225,52 +2247,52 @@ border:1px solid gray;
 }
 
 </string>
-                    </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_54" stretch="0,0">
-                     <property name="leftMargin">
-                      <number>20</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>1</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>20</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>1</number>
-                     </property>
-                     <item>
-                      <layout class="QVBoxLayout" name="verticalLayout_64">
-                       <property name="topMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="rightMargin">
-                        <number>5</number>
-                       </property>
-                       <property name="bottomMargin">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <layout class="QVBoxLayout" name="verticalLayout_86">
-                         <property name="spacing">
-                          <number>0</number>
+                        </property>
+                        <layout class="QHBoxLayout" name="horizontalLayout_54" stretch="0,0">
+                         <property name="leftMargin">
+                          <number>20</number>
                          </property>
                          <property name="topMargin">
-                          <number>0</number>
+                          <number>1</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>20</number>
                          </property>
                          <property name="bottomMargin">
-                          <number>5</number>
+                          <number>1</number>
                          </property>
                          <item>
-                          <widget class="QLabel" name="lblProducion">
-                           <property name="font">
-                            <font>
-                             <family>Arial</family>
-                             <pointsize>20</pointsize>
-                            </font>
+                          <layout class="QVBoxLayout" name="verticalLayout_64">
+                           <property name="topMargin">
+                            <number>0</number>
                            </property>
-                           <property name="styleSheet">
-                            <string notr="true">QLabel {
+                           <property name="rightMargin">
+                            <number>5</number>
+                           </property>
+                           <property name="bottomMargin">
+                            <number>0</number>
+                           </property>
+                           <item>
+                            <layout class="QVBoxLayout" name="verticalLayout_86">
+                             <property name="spacing">
+                              <number>0</number>
+                             </property>
+                             <property name="topMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="bottomMargin">
+                              <number>5</number>
+                             </property>
+                             <item>
+                              <widget class="QLabel" name="lblProducion">
+                               <property name="font">
+                                <font>
+                                 <family>Arial</family>
+                                 <pointsize>20</pointsize>
+                                </font>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">QLabel {
         qproperty-alignment: AlignCenter;
 	border: 1px solid #FF17365D;
 	border-top-left-radius: 15px;
@@ -2278,18 +2300,18 @@ border:1px solid gray;
 	background-color: #FF17365D;
 	padding: 5px 0px;
 	color: rgb(255, 255, 255);
-	max-height: 35px;	
+	max-height: 40px;	
 }</string>
-                           </property>
-                           <property name="text">
-                            <string>Production</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QFrame" name="frame_3">
-                           <property name="styleSheet">
-                            <string notr="true">QFrame {
+                               </property>
+                               <property name="text">
+                                <string>Production</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QFrame" name="frame_3">
+                               <property name="styleSheet">
+                                <string notr="true">QFrame {
 	border: 3px solid #FF17365D;
 	border-bottom-left-radius: 15px;
 	border-bottom-right-radius: 15px;
@@ -2297,201 +2319,201 @@ border:1px solid gray;
 QLabel{
 border:0px;
 }</string>
-                           </property>
-                           <property name="frameShape">
-                            <enum>QFrame::StyledPanel</enum>
-                           </property>
-                           <property name="frameShadow">
-                            <enum>QFrame::Raised</enum>
-                           </property>
-                           <layout class="QVBoxLayout" name="verticalLayout_63">
-                            <item>
-                             <layout class="QGridLayout" name="prodGridLayout">
-                              <property name="leftMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="topMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="rightMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="bottomMargin">
-                               <number>0</number>
-                              </property>
-                              <item row="1" column="1">
-                               <widget class="LineEdit" name="txtSerialNumber">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="alignment">
-                                 <set>Qt::AlignCenter</set>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="3" column="0">
-                               <widget class="QLabel" name="lblTotalShotCounter">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="styleSheet">
-                                 <string notr="true">QLabel {
+                               </property>
+                               <property name="frameShape">
+                                <enum>QFrame::StyledPanel</enum>
+                               </property>
+                               <property name="frameShadow">
+                                <enum>QFrame::Raised</enum>
+                               </property>
+                               <layout class="QVBoxLayout" name="verticalLayout_63">
+                                <item>
+                                 <layout class="QGridLayout" name="prodGridLayout">
+                                  <property name="leftMargin">
+                                   <number>0</number>
+                                  </property>
+                                  <property name="topMargin">
+                                   <number>0</number>
+                                  </property>
+                                  <property name="rightMargin">
+                                   <number>0</number>
+                                  </property>
+                                  <property name="bottomMargin">
+                                   <number>0</number>
+                                  </property>
+                                  <item row="1" column="1">
+                                   <widget class="LineEdit" name="txtSerialNumber">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="3" column="0">
+                                   <widget class="QLabel" name="lblTotalShotCounter">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="styleSheet">
+                                     <string notr="true">QLabel {
 
 }</string>
-                                </property>
-                                <property name="text">
-                                 <string>Total Shot Counter</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="3" column="1">
-                               <widget class="LineEdit" name="txtTotalShotCounter">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="alignment">
-                                 <set>Qt::AlignCenter</set>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="5" column="0">
-                               <widget class="QLabel" name="lblProductionDate">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="styleSheet">
-                                 <string notr="true">QLabel {
+                                    </property>
+                                    <property name="text">
+                                     <string>Total Shot Counter</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="3" column="1">
+                                   <widget class="LineEdit" name="txtTotalShotCounter">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="5" column="0">
+                                   <widget class="QLabel" name="lblProductionDate">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="styleSheet">
+                                     <string notr="true">QLabel {
 
 }</string>
-                                </property>
-                                <property name="text">
-                                 <string>Production Date</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="5" column="1">
-                               <widget class="LineEdit" name="txtProductionDate">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="alignment">
-                                 <set>Qt::AlignCenter</set>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="4" column="1">
-                               <spacer name="verticalSpacer_43">
-                                <property name="orientation">
-                                 <enum>Qt::Vertical</enum>
-                                </property>
-                                <property name="sizeHint" stdset="0">
-                                 <size>
-                                  <width>20</width>
-                                  <height>40</height>
-                                 </size>
-                                </property>
-                               </spacer>
-                              </item>
-                              <item row="2" column="1">
-                               <spacer name="verticalSpacer_42">
-                                <property name="orientation">
-                                 <enum>Qt::Vertical</enum>
-                                </property>
-                                <property name="sizeHint" stdset="0">
-                                 <size>
-                                  <width>20</width>
-                                  <height>40</height>
-                                 </size>
-                                </property>
-                               </spacer>
-                              </item>
-                              <item row="0" column="1">
-                               <spacer name="verticalSpacer_60">
-                                <property name="orientation">
-                                 <enum>Qt::Vertical</enum>
-                                </property>
-                                <property name="sizeHint" stdset="0">
-                                 <size>
-                                  <width>20</width>
-                                  <height>40</height>
-                                 </size>
-                                </property>
-                               </spacer>
-                              </item>
-                              <item row="6" column="1">
-                               <spacer name="verticalSpacer_61">
-                                <property name="orientation">
-                                 <enum>Qt::Vertical</enum>
-                                </property>
-                                <property name="sizeHint" stdset="0">
-                                 <size>
-                                  <width>20</width>
-                                  <height>40</height>
-                                 </size>
-                                </property>
-                               </spacer>
-                              </item>
-                              <item row="1" column="0">
-                               <widget class="QLabel" name="lblSerialNumber">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="styleSheet">
-                                 <string notr="true">QLabel {
+                                    </property>
+                                    <property name="text">
+                                     <string>Production Date</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="5" column="1">
+                                   <widget class="LineEdit" name="txtProductionDate">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="4" column="1">
+                                   <spacer name="verticalSpacer_43">
+                                    <property name="orientation">
+                                     <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                     <size>
+                                      <width>20</width>
+                                      <height>40</height>
+                                     </size>
+                                    </property>
+                                   </spacer>
+                                  </item>
+                                  <item row="2" column="1">
+                                   <spacer name="verticalSpacer_42">
+                                    <property name="orientation">
+                                     <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                     <size>
+                                      <width>20</width>
+                                      <height>40</height>
+                                     </size>
+                                    </property>
+                                   </spacer>
+                                  </item>
+                                  <item row="0" column="1">
+                                   <spacer name="verticalSpacer_60">
+                                    <property name="orientation">
+                                     <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                     <size>
+                                      <width>20</width>
+                                      <height>40</height>
+                                     </size>
+                                    </property>
+                                   </spacer>
+                                  </item>
+                                  <item row="6" column="1">
+                                   <spacer name="verticalSpacer_61">
+                                    <property name="orientation">
+                                     <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                     <size>
+                                      <width>20</width>
+                                      <height>40</height>
+                                     </size>
+                                    </property>
+                                   </spacer>
+                                  </item>
+                                  <item row="1" column="0">
+                                   <widget class="QLabel" name="lblSerialNumber">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="styleSheet">
+                                     <string notr="true">QLabel {
 
 }</string>
-                                </property>
-                                <property name="text">
-                                 <string>Serial Number</string>
-                                </property>
-                               </widget>
-                              </item>
-                             </layout>
-                            </item>
-                           </layout>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <layout class="QVBoxLayout" name="verticalLayout_87">
-                         <property name="spacing">
-                          <number>0</number>
-                         </property>
-                         <property name="topMargin">
-                          <number>5</number>
-                         </property>
-                         <property name="bottomMargin">
-                          <number>0</number>
-                         </property>
-                         <item>
-                          <widget class="QLabel" name="lblLaser">
-                           <property name="font">
-                            <font>
-                             <family>Arial</family>
-                             <pointsize>20</pointsize>
-                            </font>
-                           </property>
-                           <property name="styleSheet">
-                            <string notr="true">QLabel {
+                                    </property>
+                                    <property name="text">
+                                     <string>Serial Number</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                 </layout>
+                                </item>
+                               </layout>
+                              </widget>
+                             </item>
+                            </layout>
+                           </item>
+                           <item>
+                            <layout class="QVBoxLayout" name="verticalLayout_87">
+                             <property name="spacing">
+                              <number>0</number>
+                             </property>
+                             <property name="topMargin">
+                              <number>5</number>
+                             </property>
+                             <property name="bottomMargin">
+                              <number>0</number>
+                             </property>
+                             <item>
+                              <widget class="QLabel" name="lblLaser">
+                               <property name="font">
+                                <font>
+                                 <family>Arial</family>
+                                 <pointsize>20</pointsize>
+                                </font>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">QLabel {
         qproperty-alignment: AlignCenter;
 	border: 1px solid #FF17365D;
 	border-top-left-radius: 15px;
@@ -2499,18 +2521,18 @@ border:0px;
 	background-color: #FF17365D;
 	padding: 5px 0px;
 	color: rgb(255, 255, 255);
-	max-height: 35px;	
+	max-height: 40px;	
 }</string>
-                           </property>
-                           <property name="text">
-                            <string>Laser</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QFrame" name="frame_4">
-                           <property name="styleSheet">
-                            <string notr="true">QFrame {
+                               </property>
+                               <property name="text">
+                                <string>Laser</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QFrame" name="frame_4">
+                               <property name="styleSheet">
+                                <string notr="true">QFrame {
 	border: 3px solid #FF17365D;
 	border-bottom-left-radius: 15px;
 	border-bottom-right-radius: 15px;
@@ -2518,196 +2540,196 @@ border:0px;
 QLabel{
 border:0px;
 }</string>
-                           </property>
-                           <property name="frameShape">
-                            <enum>QFrame::StyledPanel</enum>
-                           </property>
-                           <property name="frameShadow">
-                            <enum>QFrame::Raised</enum>
-                           </property>
-                           <layout class="QVBoxLayout" name="verticalLayout_88">
-                            <item>
-                             <layout class="QGridLayout" name="laserGridLayout">
-                              <property name="topMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="rightMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="bottomMargin">
-                               <number>0</number>
-                              </property>
-                              <item row="2" column="1">
-                               <spacer name="verticalSpacer_54">
-                                <property name="orientation">
-                                 <enum>Qt::Vertical</enum>
-                                </property>
-                                <property name="sizeHint" stdset="0">
-                                 <size>
-                                  <width>20</width>
-                                  <height>40</height>
-                                 </size>
-                                </property>
-                               </spacer>
-                              </item>
-                              <item row="4" column="1">
-                               <spacer name="verticalSpacer_55">
-                                <property name="orientation">
-                                 <enum>Qt::Vertical</enum>
-                                </property>
-                                <property name="sizeHint" stdset="0">
-                                 <size>
-                                  <width>20</width>
-                                  <height>40</height>
-                                 </size>
-                                </property>
-                               </spacer>
-                              </item>
-                              <item row="0" column="1">
-                               <spacer name="verticalSpacer_62">
-                                <property name="orientation">
-                                 <enum>Qt::Vertical</enum>
-                                </property>
-                                <property name="sizeHint" stdset="0">
-                                 <size>
-                                  <width>20</width>
-                                  <height>40</height>
-                                 </size>
-                                </property>
-                               </spacer>
-                              </item>
-                              <item row="6" column="1">
-                               <spacer name="verticalSpacer_63">
-                                <property name="orientation">
-                                 <enum>Qt::Vertical</enum>
-                                </property>
-                                <property name="sizeHint" stdset="0">
-                                 <size>
-                                  <width>20</width>
-                                  <height>40</height>
-                                 </size>
-                                </property>
-                               </spacer>
-                              </item>
-                              <item row="1" column="0">
-                               <widget class="QLabel" name="lblLaserDiodeEnergy">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="text">
-                                 <string>Laser Diode Energy</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="1" column="1">
-                               <widget class="LineEdit" name="txtLaserDiodeEnergy">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="alignment">
-                                 <set>Qt::AlignCenter</set>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="3" column="1">
-                               <widget class="LineEdit" name="txtLaserBarType">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="alignment">
-                                 <set>Qt::AlignCenter</set>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="5" column="1">
-                               <widget class="LineEdit" name="txtLaserWavelength">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="text">
-                                 <string>764nm-808nm-1064nm</string>
-                                </property>
-                                <property name="alignment">
-                                 <set>Qt::AlignCenter</set>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="3" column="0">
-                               <widget class="QLabel" name="lblLaserWavelength">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="text">
-                                 <string>Laser Wavelength</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="5" column="0">
-                               <widget class="QLabel" name="lblLaserBarType">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="text">
-                                 <string>Laser Bar Type</string>
-                                </property>
-                               </widget>
-                              </item>
-                             </layout>
-                            </item>
-                           </layout>
-                          </widget>
+                               </property>
+                               <property name="frameShape">
+                                <enum>QFrame::StyledPanel</enum>
+                               </property>
+                               <property name="frameShadow">
+                                <enum>QFrame::Raised</enum>
+                               </property>
+                               <layout class="QVBoxLayout" name="verticalLayout_88">
+                                <item>
+                                 <layout class="QGridLayout" name="laserGridLayout">
+                                  <property name="topMargin">
+                                   <number>0</number>
+                                  </property>
+                                  <property name="rightMargin">
+                                   <number>0</number>
+                                  </property>
+                                  <property name="bottomMargin">
+                                   <number>0</number>
+                                  </property>
+                                  <item row="2" column="1">
+                                   <spacer name="verticalSpacer_54">
+                                    <property name="orientation">
+                                     <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                     <size>
+                                      <width>20</width>
+                                      <height>40</height>
+                                     </size>
+                                    </property>
+                                   </spacer>
+                                  </item>
+                                  <item row="4" column="1">
+                                   <spacer name="verticalSpacer_55">
+                                    <property name="orientation">
+                                     <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                     <size>
+                                      <width>20</width>
+                                      <height>40</height>
+                                     </size>
+                                    </property>
+                                   </spacer>
+                                  </item>
+                                  <item row="0" column="1">
+                                   <spacer name="verticalSpacer_62">
+                                    <property name="orientation">
+                                     <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                     <size>
+                                      <width>20</width>
+                                      <height>40</height>
+                                     </size>
+                                    </property>
+                                   </spacer>
+                                  </item>
+                                  <item row="6" column="1">
+                                   <spacer name="verticalSpacer_63">
+                                    <property name="orientation">
+                                     <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                     <size>
+                                      <width>20</width>
+                                      <height>40</height>
+                                     </size>
+                                    </property>
+                                   </spacer>
+                                  </item>
+                                  <item row="1" column="0">
+                                   <widget class="QLabel" name="lblLaserDiodeEnergy">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="text">
+                                     <string>Laser Diode Energy</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="1" column="1">
+                                   <widget class="LineEdit" name="txtLaserDiodeEnergy">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="3" column="1">
+                                   <widget class="LineEdit" name="txtLaserBarType">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="5" column="1">
+                                   <widget class="LineEdit" name="txtLaserWavelength">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="text">
+                                     <string>764nm-808nm-1064nm</string>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="3" column="0">
+                                   <widget class="QLabel" name="lblLaserWavelength">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="text">
+                                     <string>Laser Wavelength</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="5" column="0">
+                                   <widget class="QLabel" name="lblLaserBarType">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="text">
+                                     <string>Laser Bar Type</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                 </layout>
+                                </item>
+                               </layout>
+                              </widget>
+                             </item>
+                            </layout>
+                           </item>
+                          </layout>
                          </item>
-                        </layout>
-                       </item>
-                      </layout>
-                     </item>
-                     <item>
-                      <layout class="QVBoxLayout" name="verticalLayout_67" stretch="0,0">
-                       <property name="leftMargin">
-                        <number>5</number>
-                       </property>
-                       <property name="topMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="bottomMargin">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <layout class="QVBoxLayout" name="verticalLayout_69">
-                         <property name="spacing">
-                          <number>0</number>
-                         </property>
-                         <property name="bottomMargin">
-                          <number>5</number>
-                         </property>
                          <item>
-                          <widget class="QLabel" name="lblDriver">
-                           <property name="font">
-                            <font>
-                             <family>Arial</family>
-                             <pointsize>20</pointsize>
-                            </font>
+                          <layout class="QVBoxLayout" name="verticalLayout_67" stretch="0,0">
+                           <property name="leftMargin">
+                            <number>5</number>
                            </property>
-                           <property name="styleSheet">
-                            <string notr="true">QLabel {
+                           <property name="topMargin">
+                            <number>0</number>
+                           </property>
+                           <property name="bottomMargin">
+                            <number>0</number>
+                           </property>
+                           <item>
+                            <layout class="QVBoxLayout" name="verticalLayout_69">
+                             <property name="spacing">
+                              <number>0</number>
+                             </property>
+                             <property name="bottomMargin">
+                              <number>5</number>
+                             </property>
+                             <item>
+                              <widget class="QLabel" name="lblDriver">
+                               <property name="font">
+                                <font>
+                                 <family>Arial</family>
+                                 <pointsize>20</pointsize>
+                                </font>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">QLabel {
         qproperty-alignment: AlignCenter;
 	border: 1px solid #FF17365D;
 	border-top-left-radius: 15px;
@@ -2715,18 +2737,18 @@ border:0px;
 	background-color: #FF17365D;
 	padding: 5px 0px;
 	color: rgb(255, 255, 255);
-	max-height: 35px;	
+	max-height: 40px;	
 }</string>
-                           </property>
-                           <property name="text">
-                            <string>Driver</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QFrame" name="frame_5">
-                           <property name="styleSheet">
-                            <string notr="true">QFrame {
+                               </property>
+                               <property name="text">
+                                <string>Driver</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QFrame" name="frame_5">
+                               <property name="styleSheet">
+                                <string notr="true">QFrame {
 	border: 3px solid #FF17365D;
 	border-bottom-left-radius: 15px;
 	border-bottom-right-radius: 15px;
@@ -2734,141 +2756,141 @@ border:0px;
 QLabel{
 border:0px;
 }</string>
-                           </property>
-                           <property name="frameShape">
-                            <enum>QFrame::StyledPanel</enum>
-                           </property>
-                           <property name="frameShadow">
-                            <enum>QFrame::Raised</enum>
-                           </property>
-                           <layout class="QVBoxLayout" name="verticalLayout_89">
-                            <item>
-                             <layout class="QGridLayout" name="driverGridLayout">
-                              <property name="rightMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="bottomMargin">
-                               <number>0</number>
-                              </property>
-                              <item row="2" column="1">
-                               <spacer name="verticalSpacer_56">
-                                <property name="orientation">
-                                 <enum>Qt::Vertical</enum>
-                                </property>
-                                <property name="sizeHint" stdset="0">
-                                 <size>
-                                  <width>20</width>
-                                  <height>40</height>
-                                 </size>
-                                </property>
-                               </spacer>
-                              </item>
-                              <item row="0" column="1">
-                               <spacer name="verticalSpacer_64">
-                                <property name="orientation">
-                                 <enum>Qt::Vertical</enum>
-                                </property>
-                                <property name="sizeHint" stdset="0">
-                                 <size>
-                                  <width>20</width>
-                                  <height>40</height>
-                                 </size>
-                                </property>
-                               </spacer>
-                              </item>
-                              <item row="1" column="1">
-                               <widget class="LineEdit" name="txtDriverVersion">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="alignment">
-                                 <set>Qt::AlignCenter</set>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="3" column="1">
-                               <widget class="LineEdit" name="txtMainControlVersion">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="alignment">
-                                 <set>Qt::AlignCenter</set>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="1" column="0">
-                               <widget class="QLabel" name="lblDriverVersion">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="text">
-                                 <string>Driver Version</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="3" column="0">
-                               <widget class="QLabel" name="lblMainControlVersion">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="text">
-                                 <string>Main Control Version</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="4" column="1">
-                               <spacer name="verticalSpacer_65">
-                                <property name="orientation">
-                                 <enum>Qt::Vertical</enum>
-                                </property>
-                                <property name="sizeHint" stdset="0">
-                                 <size>
-                                  <width>20</width>
-                                  <height>40</height>
-                                 </size>
-                                </property>
-                               </spacer>
-                              </item>
-                             </layout>
-                            </item>
-                           </layout>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <layout class="QVBoxLayout" name="verticalLayout_70">
-                         <property name="spacing">
-                          <number>0</number>
-                         </property>
-                         <property name="topMargin">
-                          <number>5</number>
-                         </property>
-                         <property name="bottomMargin">
-                          <number>0</number>
-                         </property>
-                         <item>
-                          <widget class="QLabel" name="lblEmbedded">
-                           <property name="font">
-                            <font>
-                             <family>Arial</family>
-                             <pointsize>20</pointsize>
-                            </font>
-                           </property>
-                           <property name="styleSheet">
-                            <string notr="true">QLabel {
+                               </property>
+                               <property name="frameShape">
+                                <enum>QFrame::StyledPanel</enum>
+                               </property>
+                               <property name="frameShadow">
+                                <enum>QFrame::Raised</enum>
+                               </property>
+                               <layout class="QVBoxLayout" name="verticalLayout_89">
+                                <item>
+                                 <layout class="QGridLayout" name="driverGridLayout">
+                                  <property name="rightMargin">
+                                   <number>0</number>
+                                  </property>
+                                  <property name="bottomMargin">
+                                   <number>0</number>
+                                  </property>
+                                  <item row="2" column="1">
+                                   <spacer name="verticalSpacer_56">
+                                    <property name="orientation">
+                                     <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                     <size>
+                                      <width>20</width>
+                                      <height>40</height>
+                                     </size>
+                                    </property>
+                                   </spacer>
+                                  </item>
+                                  <item row="0" column="1">
+                                   <spacer name="verticalSpacer_64">
+                                    <property name="orientation">
+                                     <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                     <size>
+                                      <width>20</width>
+                                      <height>40</height>
+                                     </size>
+                                    </property>
+                                   </spacer>
+                                  </item>
+                                  <item row="1" column="1">
+                                   <widget class="LineEdit" name="txtDriverVersion">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="3" column="1">
+                                   <widget class="LineEdit" name="txtMainControlVersion">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="1" column="0">
+                                   <widget class="QLabel" name="lblDriverVersion">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="text">
+                                     <string>Driver Version</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="3" column="0">
+                                   <widget class="QLabel" name="lblMainControlVersion">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="text">
+                                     <string>Main Control Version</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="4" column="1">
+                                   <spacer name="verticalSpacer_65">
+                                    <property name="orientation">
+                                     <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                     <size>
+                                      <width>20</width>
+                                      <height>40</height>
+                                     </size>
+                                    </property>
+                                   </spacer>
+                                  </item>
+                                 </layout>
+                                </item>
+                               </layout>
+                              </widget>
+                             </item>
+                            </layout>
+                           </item>
+                           <item>
+                            <layout class="QVBoxLayout" name="verticalLayout_70">
+                             <property name="spacing">
+                              <number>0</number>
+                             </property>
+                             <property name="topMargin">
+                              <number>5</number>
+                             </property>
+                             <property name="bottomMargin">
+                              <number>0</number>
+                             </property>
+                             <item>
+                              <widget class="QLabel" name="lblEmbedded">
+                               <property name="font">
+                                <font>
+                                 <family>Arial</family>
+                                 <pointsize>20</pointsize>
+                                </font>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">QLabel {
         qproperty-alignment: AlignCenter;
 	border: 1px solid #FF17365D;
 	border-top-left-radius: 15px;
@@ -2876,18 +2898,18 @@ border:0px;
 	background-color: #FF17365D;
 	padding: 5px 0px;
 	color: rgb(255, 255, 255);
-	max-height: 35px;	
+	max-height: 40px;	
 }</string>
-                           </property>
-                           <property name="text">
-                            <string>Embedded System</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QFrame" name="frame_6">
-                           <property name="styleSheet">
-                            <string notr="true">QFrame {
+                               </property>
+                               <property name="text">
+                                <string>Embedded System</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QFrame" name="frame_6">
+                               <property name="styleSheet">
+                                <string notr="true">QFrame {
 	border: 3px solid #FF17365D;
 	border-bottom-left-radius: 15px;
 	border-bottom-right-radius: 15px;
@@ -2895,208 +2917,984 @@ border:0px;
 QLabel{
 border:0px;
 }</string>
-                           </property>
-                           <property name="frameShape">
-                            <enum>QFrame::StyledPanel</enum>
-                           </property>
-                           <property name="frameShadow">
-                            <enum>QFrame::Raised</enum>
-                           </property>
-                           <layout class="QVBoxLayout" name="verticalLayout_90">
-                            <item>
-                             <layout class="QGridLayout" name="embeddGridLayout">
-                              <property name="topMargin">
-                               <number>0</number>
-                              </property>
-                              <item row="3" column="1">
-                               <widget class="QLineEdit" name="txtOsSpecification">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="alignment">
-                                 <set>Qt::AlignCenter</set>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="7" column="1">
-                               <widget class="QLineEdit" name="txtRpiVersion">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="focusPolicy">
-                                 <enum>Qt::NoFocus</enum>
-                                </property>
-                                <property name="alignment">
-                                 <set>Qt::AlignCenter</set>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="1" column="1">
-                               <widget class="QLineEdit" name="txtMonitor">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="alignment">
-                                 <set>Qt::AlignCenter</set>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="5" column="0">
-                               <widget class="QLabel" name="lblGuiVersion">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="text">
-                                 <string>GUI Version</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="1" column="0">
-                               <widget class="QLabel" name="lblMonitor">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="text">
-                                 <string>Monitor</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="3" column="0">
-                               <widget class="QLabel" name="lblOsSpecification">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="text">
-                                 <string>OS Specification</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="5" column="1">
-                               <widget class="QLineEdit" name="txtGuiVersion">
-                                <property name="enabled">
-                                 <bool>false</bool>
-                                </property>
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="alignment">
-                                 <set>Qt::AlignCenter</set>
-                                </property>
-                                <property name="readOnly">
-                                 <bool>true</bool>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="7" column="0">
-                               <widget class="QLabel" name="lblRpiVersion">
-                                <property name="font">
-                                 <font>
-                                  <family>Arial</family>
-                                  <pointsize>20</pointsize>
-                                 </font>
-                                </property>
-                                <property name="text">
-                                 <string>RPi Version</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="2" column="1">
-                               <spacer name="verticalSpacer_57">
-                                <property name="orientation">
-                                 <enum>Qt::Vertical</enum>
-                                </property>
-                                <property name="sizeHint" stdset="0">
-                                 <size>
-                                  <width>20</width>
-                                  <height>40</height>
-                                 </size>
-                                </property>
-                               </spacer>
-                              </item>
-                              <item row="4" column="1">
-                               <spacer name="verticalSpacer_58">
-                                <property name="orientation">
-                                 <enum>Qt::Vertical</enum>
-                                </property>
-                                <property name="sizeHint" stdset="0">
-                                 <size>
-                                  <width>20</width>
-                                  <height>40</height>
-                                 </size>
-                                </property>
-                               </spacer>
-                              </item>
-                              <item row="6" column="1">
-                               <spacer name="verticalSpacer_59">
-                                <property name="orientation">
-                                 <enum>Qt::Vertical</enum>
-                                </property>
-                                <property name="sizeHint" stdset="0">
-                                 <size>
-                                  <width>20</width>
-                                  <height>40</height>
-                                 </size>
-                                </property>
-                               </spacer>
-                              </item>
-                              <item row="0" column="1">
-                               <spacer name="verticalSpacer_66">
-                                <property name="orientation">
-                                 <enum>Qt::Vertical</enum>
-                                </property>
-                                <property name="sizeHint" stdset="0">
-                                 <size>
-                                  <width>20</width>
-                                  <height>40</height>
-                                 </size>
-                                </property>
-                               </spacer>
-                              </item>
-                              <item row="8" column="1">
-                               <spacer name="verticalSpacer_67">
-                                <property name="orientation">
-                                 <enum>Qt::Vertical</enum>
-                                </property>
-                                <property name="sizeHint" stdset="0">
-                                 <size>
-                                  <width>20</width>
-                                  <height>40</height>
-                                 </size>
-                                </property>
-                               </spacer>
-                              </item>
-                             </layout>
-                            </item>
-                           </layout>
-                          </widget>
+                               </property>
+                               <property name="frameShape">
+                                <enum>QFrame::StyledPanel</enum>
+                               </property>
+                               <property name="frameShadow">
+                                <enum>QFrame::Raised</enum>
+                               </property>
+                               <layout class="QVBoxLayout" name="verticalLayout_90">
+                                <item>
+                                 <layout class="QGridLayout" name="embeddGridLayout">
+                                  <property name="topMargin">
+                                   <number>0</number>
+                                  </property>
+                                  <item row="7" column="1">
+                                   <widget class="QLineEdit" name="txtRpiVersion">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="focusPolicy">
+                                     <enum>Qt::NoFocus</enum>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="1" column="1">
+                                   <widget class="QLineEdit" name="txtMonitor">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="3" column="1">
+                                   <widget class="QLineEdit" name="txtOsSpecification">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="1" column="0">
+                                   <widget class="QLabel" name="lblMonitor">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="text">
+                                     <string>Monitor</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="5" column="0">
+                                   <widget class="QLabel" name="lblGuiVersion">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="text">
+                                     <string>GUI Version</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="3" column="0">
+                                   <widget class="QLabel" name="lblOsSpecification">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="text">
+                                     <string>OS Specification</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="2" column="1">
+                                   <spacer name="verticalSpacer_57">
+                                    <property name="orientation">
+                                     <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                     <size>
+                                      <width>20</width>
+                                      <height>40</height>
+                                     </size>
+                                    </property>
+                                   </spacer>
+                                  </item>
+                                  <item row="7" column="0">
+                                   <widget class="QLabel" name="lblRpiVersion">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="text">
+                                     <string>RPi Version</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="5" column="1">
+                                   <widget class="LineEdit" name="txtGuiVersion">
+                                    <property name="enabled">
+                                     <bool>false</bool>
+                                    </property>
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
+                                    </property>
+                                    <property name="readOnly">
+                                     <bool>true</bool>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="0" column="1">
+                                   <spacer name="verticalSpacer_66">
+                                    <property name="orientation">
+                                     <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                     <size>
+                                      <width>20</width>
+                                      <height>40</height>
+                                     </size>
+                                    </property>
+                                   </spacer>
+                                  </item>
+                                  <item row="6" column="1">
+                                   <spacer name="verticalSpacer_59">
+                                    <property name="orientation">
+                                     <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                     <size>
+                                      <width>20</width>
+                                      <height>40</height>
+                                     </size>
+                                    </property>
+                                   </spacer>
+                                  </item>
+                                  <item row="8" column="1">
+                                   <spacer name="verticalSpacer_67">
+                                    <property name="orientation">
+                                     <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                     <size>
+                                      <width>20</width>
+                                      <height>40</height>
+                                     </size>
+                                    </property>
+                                   </spacer>
+                                  </item>
+                                  <item row="4" column="1">
+                                   <spacer name="verticalSpacer_58">
+                                    <property name="orientation">
+                                     <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                     <size>
+                                      <width>20</width>
+                                      <height>40</height>
+                                     </size>
+                                    </property>
+                                   </spacer>
+                                  </item>
+                                 </layout>
+                                </item>
+                               </layout>
+                              </widget>
+                             </item>
+                            </layout>
+                           </item>
+                          </layout>
                          </item>
                         </layout>
-                       </item>
-                      </layout>
-                     </item>
-                    </layout>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
                    </widget>
+                  </item>
+                 </layout>
+                </widget>
+                <widget class="QWidget" name="lockSettingsPage">
+                 <layout class="QHBoxLayout" name="horizontalLayout_58" stretch="1,2,0,3,1">
+                  <property name="leftMargin">
+                   <number>11</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>11</number>
+                  </property>
+                  <item>
+                   <spacer name="horizontalSpacer_91">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <layout class="QVBoxLayout" name="verticalLayout_72" stretch="2,0,4,2">
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <spacer name="verticalSpacer_68">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>40</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <layout class="QHBoxLayout" name="horizontalLayout_56">
+                      <item>
+                       <widget class="QLabel" name="lblLockYear">
+                        <property name="font">
+                         <font>
+                          <family>Arial</family>
+                          <pointsize>20</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>Define a Lock</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="LineEdit" name="txtLockYear">
+                        <property name="maximumSize">
+                         <size>
+                          <width>130</width>
+                          <height>16777215</height>
+                         </size>
+                        </property>
+                        <property name="font">
+                         <font>
+                          <family>Arial</family>
+                          <pointsize>20</pointsize>
+                         </font>
+                        </property>
+                        <property name="styleSheet">
+                         <string notr="true">QLineEdit{
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
+}
+
+</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="lblLockMonth">
+                        <property name="font">
+                         <font>
+                          <family>Arial</family>
+                          <pointsize>20</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>/</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="LineEdit" name="txtLockMonth">
+                        <property name="maximumSize">
+                         <size>
+                          <width>75</width>
+                          <height>16777215</height>
+                         </size>
+                        </property>
+                        <property name="font">
+                         <font>
+                          <family>Arial</family>
+                          <pointsize>20</pointsize>
+                         </font>
+                        </property>
+                        <property name="styleSheet">
+                         <string notr="true">QLineEdit{
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
+}
+
+</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="lblLockDay">
+                        <property name="font">
+                         <font>
+                          <family>Arial</family>
+                          <pointsize>20</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>/</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="LineEdit" name="txtLockDay">
+                        <property name="maximumSize">
+                         <size>
+                          <width>75</width>
+                          <height>16777215</height>
+                         </size>
+                        </property>
+                        <property name="font">
+                         <font>
+                          <family>Arial</family>
+                          <pointsize>20</pointsize>
+                         </font>
+                        </property>
+                        <property name="styleSheet">
+                         <string notr="true">QLineEdit{
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
+}
+
+</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="btnAddLock">
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>0</height>
+                         </size>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>16777215</width>
+                          <height>16777215</height>
+                         </size>
+                        </property>
+                        <property name="font">
+                         <font>
+                          <family>Arial</family>
+                          <pointsize>20</pointsize>
+                         </font>
+                        </property>
+                        <property name="styleSheet">
+                         <string notr="true">QPushButton {
+outline:0;
+border-radius:40px;
+}
+
+QPushButton:pressed{
+border:3px solid white;
+}
+</string>
+                        </property>
+                        <property name="text">
+                         <string/>
+                        </property>
+                        <property name="icon">
+                         <iconset>
+                          <normaloff>images/add.png</normaloff>images/add.png</iconset>
+                        </property>
+                        <property name="iconSize">
+                         <size>
+                          <width>80</width>
+                          <height>80</height>
+                         </size>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer_66">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <widget class="QTableWidget" name="tableLock">
+                      <property name="styleSheet">
+                       <string notr="true">QHeaderView::section
+{
+    background-color:lightblue;
+	color:black;
+} 
+ 
+QWidget {
+background-color: rgb(255, 255, 255);
+color:black;
+}
+
+QHeaderView::section
+{
+    background-color:lightblue;
+	color:black;
+} 
+ 
+QWidget {
+background-color: rgb(255, 255, 255);
+color:black;
+}
+QScrollBar:vertical { 
+    width: 30px; 
+}
+QScrollBar::handle:vertical {
+    background: rgb(126, 126, 126);
+}</string>
+                      </property>
+                      <column>
+                       <property name="text">
+                        <string>Date</string>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <family>Arial</family>
+                         <pointsize>18</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Status</string>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <family>Arial</family>
+                         <pointsize>18</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Paid</string>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <family>Arial</family>
+                         <pointsize>18</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Remove</string>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <family>Arial</family>
+                         <pointsize>18</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </column>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="verticalSpacer_69">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>40</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_93">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <layout class="QVBoxLayout" name="verticalLayout_74" stretch="0,0,0">
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <spacer name="verticalSpacer_70">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>40</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <layout class="QFormLayout" name="formLayout">
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <item row="0" column="0">
+                       <widget class="QLabel" name="lblSysClock">
+                        <property name="font">
+                         <font>
+                          <family>Arial</family>
+                          <pointsize>20</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>System Clock</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="1">
+                       <widget class="QLineEdit" name="txtSysClock">
+                        <property name="enabled">
+                         <bool>false</bool>
+                        </property>
+                        <property name="font">
+                         <font>
+                          <family>Arial</family>
+                          <pointsize>20</pointsize>
+                         </font>
+                        </property>
+                        <property name="styleSheet">
+                         <string notr="true">QLineEdit{
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
+}
+
+</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                        <property name="readOnly">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="0">
+                       <widget class="QLabel" name="lblSysDate">
+                        <property name="font">
+                         <font>
+                          <family>Arial</family>
+                          <pointsize>20</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>System Date</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="1">
+                       <widget class="QLineEdit" name="txtSysDate">
+                        <property name="enabled">
+                         <bool>false</bool>
+                        </property>
+                        <property name="font">
+                         <font>
+                          <family>Arial</family>
+                          <pointsize>20</pointsize>
+                         </font>
+                        </property>
+                        <property name="styleSheet">
+                         <string notr="true">QLineEdit{
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
+}
+
+</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                        <property name="readOnly">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="2" column="1">
+                       <spacer name="verticalSpacer_73">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item row="3" column="0">
+                       <widget class="QLabel" name="lblEditClock">
+                        <property name="font">
+                         <font>
+                          <family>Arial</family>
+                          <pointsize>20</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>Clock</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="3" column="1">
+                       <layout class="QHBoxLayout" name="horizontalLayout_57">
+                        <property name="spacing">
+                         <number>7</number>
+                        </property>
+                        <item>
+                         <spacer name="horizontalSpacer_70">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                        <item>
+                         <widget class="LineEdit" name="txtEditHour">
+                          <property name="maximumSize">
+                           <size>
+                            <width>75</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="font">
+                           <font>
+                            <family>Arial</family>
+                            <pointsize>20</pointsize>
+                           </font>
+                          </property>
+                          <property name="styleSheet">
+                           <string notr="true">QLineEdit{
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
+}
+
+</string>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="label_10">
+                          <property name="font">
+                           <font>
+                            <family>Arial</family>
+                            <pointsize>20</pointsize>
+                           </font>
+                          </property>
+                          <property name="text">
+                           <string>:</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="LineEdit" name="txtEditMinute">
+                          <property name="maximumSize">
+                           <size>
+                            <width>75</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="font">
+                           <font>
+                            <family>Arial</family>
+                            <pointsize>20</pointsize>
+                           </font>
+                          </property>
+                          <property name="styleSheet">
+                           <string notr="true">QLineEdit{
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
+}
+
+</string>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <spacer name="horizontalSpacer_71">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                       </layout>
+                      </item>
+                      <item row="4" column="0">
+                       <widget class="QLabel" name="lblEditDate">
+                        <property name="font">
+                         <font>
+                          <family>Arial</family>
+                          <pointsize>20</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>Date</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="4" column="1">
+                       <layout class="QHBoxLayout" name="horizontalLayout_59">
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <spacer name="horizontalSpacer_94">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                        <item>
+                         <widget class="LineEdit" name="txtEditYear">
+                          <property name="maximumSize">
+                           <size>
+                            <width>130</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="font">
+                           <font>
+                            <family>Arial</family>
+                            <pointsize>20</pointsize>
+                           </font>
+                          </property>
+                          <property name="styleSheet">
+                           <string notr="true">QLineEdit{
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
+}
+
+</string>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="label_4">
+                          <property name="font">
+                           <font>
+                            <family>Arial</family>
+                            <pointsize>20</pointsize>
+                           </font>
+                          </property>
+                          <property name="text">
+                           <string>/</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="LineEdit" name="txtEditMonth">
+                          <property name="maximumSize">
+                           <size>
+                            <width>75</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="font">
+                           <font>
+                            <family>Arial</family>
+                            <pointsize>20</pointsize>
+                           </font>
+                          </property>
+                          <property name="styleSheet">
+                           <string notr="true">QLineEdit{
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
+}
+
+</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="label_5">
+                          <property name="font">
+                           <font>
+                            <family>Arial</family>
+                            <pointsize>20</pointsize>
+                           </font>
+                          </property>
+                          <property name="text">
+                           <string>/</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="LineEdit" name="txtEditDay">
+                          <property name="maximumSize">
+                           <size>
+                            <width>75</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="font">
+                           <font>
+                            <family>Arial</family>
+                            <pointsize>20</pointsize>
+                           </font>
+                          </property>
+                          <property name="styleSheet">
+                           <string notr="true">QLineEdit{
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
+}
+
+</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <spacer name="horizontalSpacer_95">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <spacer name="verticalSpacer_71">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>40</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_92">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                  </layout>
                 </widget>
@@ -3182,6 +3980,64 @@ border: 1px solid white;
                    </property>
                    <property name="text">
                     <string>Reset Counter</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btnHwinfo">
+                   <property name="font">
+                    <font>
+                     <family>Arial</family>
+                     <pointsize>20</pointsize>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+color:white;
+min-width: 200px;
+min-height: 100px;
+border-radius: 5px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                   </property>
+                   <property name="text">
+                    <string>Information</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btnSystemLock">
+                   <property name="font">
+                    <font>
+                     <family>Arial</family>
+                     <pointsize>20</pointsize>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+color:white;
+min-width: 200px;
+min-height: 100px;
+border-radius: 5px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                   </property>
+                   <property name="text">
+                    <string>Lock &amp;&amp; Time</string>
                    </property>
                   </widget>
                  </item>
@@ -8395,7 +9251,7 @@ background-color: rgb(83, 83, 83);
                   <enum>Qt::NoFocus</enum>
                  </property>
                  <property name="text">
-                  <string>$
+                  <string>%
 پ</string>
                  </property>
                 </widget>
@@ -8714,7 +9570,7 @@ min-width:120px;
                   <enum>Qt::NoFocus</enum>
                  </property>
                  <property name="text">
-                  <string>%
+                  <string>.
 و</string>
                  </property>
                 </widget>
