@@ -225,6 +225,7 @@ class MainWin(QMainWindow):
         self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
         self.btnPower.clicked.connect(lambda: os.system('poweroff'))
         self.btnStartSession.clicked.connect(self.startSession)
+        self.btnSubmit.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnSubmit.clicked.connect(self.submit)
         self.btnBackNewSession.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
@@ -409,9 +410,10 @@ class MainWin(QMainWindow):
     def loginHw(self):
         password = self.txtHwPass.text()
         txts = chain(
-            get_grpbox_txt(self.grpbProduction),
-            get_grpbox_txt(self.grpbDriver),
-            get_grpbox_txt(self.grpbLaser)
+            get_layout_txt(self.prodGridLayout),
+            get_layout_txt(self.laserGridLayout),
+            get_layout_txt(self.driverGridLayout),
+            get_layout_txt(self.embeddGridLayout)
         )
 
         if password == '1':
@@ -429,8 +431,6 @@ class MainWin(QMainWindow):
             self.txtTotalShotCounter.setDisabled(True)
             self.keyboard('hide')
             self.readHwInfo()
-            # self.btnSaveHw.setVisible(True)
-            # self.btnResetCounter.setVisible(True)
             self.hwbtnsFrame.show()
             self.txtRpiVersion.setVisible(True)
             self.lblRpiVersion.setVisible(True)            
@@ -444,8 +444,6 @@ class MainWin(QMainWindow):
 
             self.keyboard('hide')
             self.readHwInfo()
-            # self.btnSaveHw.setVisible(False)
-            # self.btnResetCounter.setVisible(False)
             self.hwbtnsFrame.hide()
             self.txtRpiVersion.setVisible(False)
             self.lblRpiVersion.setVisible(False)
@@ -742,15 +740,15 @@ class MainWin(QMainWindow):
         if self.EPF == 'E':
             energy = int(self.txtEnergy.text().split(' ')[0])
             energy = energy + 1 if operation == 'inc' else energy - 1
-            self.txtEnergy.setText(str(energy) + ' J/cm²')
+            self.txtEnergy.setText(str(energy) + '   J/cm²')
         elif self.EPF == 'P':
             pulseWidth = int(self.txtPulseWidth.text().split(' ')[0])
             pulseWidth = pulseWidth + 1 if operation == 'inc' else pulseWidth - 1
-            self.txtPulseWidth.setText(str(pulseWidth) + ' Ms')
+            self.txtPulseWidth.setText(str(pulseWidth) + '   Ms')
         elif self.EPF == 'F':
             frequency = int(self.txtFrequency.text().split(' ')[0])
             frequency = frequency + 1 if operation == 'inc' else frequency - 1
-            self.txtFrequency.setText(str(frequency) + ' Hz')
+            self.txtFrequency.setText(str(frequency) + '   Hz')
         
     def saveCase(self):
         energy = int(self.txtEnergy.text().split(' ')[0])
@@ -834,9 +832,9 @@ class MainWin(QMainWindow):
     def loadCase(self):
         case = openCase(self.case)
         enrgy, pl, freq = case.getValue(self.sex, self.bodyPart)
-        self.txtEnergy.setText(str(enrgy) + ' J/cm²')
-        self.txtPulseWidth.setText(str(pl) + ' Ms')
-        self.txtFrequency.setText(str(freq) + ' Hz')
+        self.txtEnergy.setText(str(enrgy) + '   J/cm²')
+        self.txtPulseWidth.setText(str(pl) + '   Ms')
+        self.txtFrequency.setText(str(freq) + '   Hz')
 
     def backLaser(self):
         if self.stackedWidgetLaser.currentIndex() == 0:
@@ -1305,7 +1303,7 @@ class MainWin(QMainWindow):
         self.txtNumber.setText(number)
         self.txtNumberSubmit.clear()
         self.txtNameSubmit.clear()
-        self.stackedWidget.setCurrentWidget(self.mainPage)
+        self.startSession()
 
     def startSession(self):
         numberEntered = self.txtNumber.text()
@@ -1518,6 +1516,8 @@ class MainWin(QMainWindow):
         self.lblFrequency.setText(TEXT['lblFrequency'][self.language])
         self.lblPulseWidth.setText(TEXT['lblPulseWidth'][self.language])
         self.lblCounter.setText(TEXT['lblCounter'][self.language])
+        self.lblSkinGrade.setText(TEXT['lblSkinGrade'][self.language])
+        self.lblCooling.setText(TEXT['lblCooling'][self.language])
         self.btnReady.setText(TEXT['btnReady'][self.language])    
         self.btnStandby.setText(TEXT['btnStandby'][self.language])            
         self.lblSerialNumber.setText(TEXT['lblSerialNumber'][self.language])
@@ -1531,13 +1531,15 @@ class MainWin(QMainWindow):
         self.lblMonitor.setText(TEXT['lblMonitor'][self.language])
         self.lblProductionDate.setText(TEXT['lblProductionDate'][self.language])
         self.lblRpiVersion.setText(TEXT['lblRpiVersion'][self.language])
+        self.lblGuiVersion.setText(TEXT['lblGuiVersion'][self.language])
         self.btnEnterHw.setText(TEXT['enter'][self.language])
         self.txtHwPass.setPlaceholderText(TEXT['txtHwPass'][self.language])
         self.btnSaveHw.setText(TEXT['save'][self.language])
         self.btnResetCounter.setText(TEXT['btnResetCounter'][self.language])
-        self.grpbProduction.setTitle(TEXT['grpbProduction'][self.language])
-        self.grpbLaser.setTitle(TEXT['grpbLaser'][self.language])
-        self.grpbDriver.setTitle(TEXT['grpbDriver'][self.language])        
+        self.lblProducion.setText(TEXT['lblProducion'][self.language])
+        self.lblLaser.setText(TEXT['lblLaser'][self.language])
+        self.lblDriver.setText(TEXT['lblDriver'][self.language])        
+        self.lblEmbedded.setText(TEXT['lblEmbedded'][self.language])        
 
 app = QApplication(sys.argv)
 mainWin = MainWin()

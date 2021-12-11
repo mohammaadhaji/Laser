@@ -95,8 +95,11 @@ TEXT = {
     'txtHwPass': ['Password', 'رمز عبور'],
     'lblSaveHw': ['Updated.', 'بروزرسانی شد.'],
     'btnResetCounter': ['Reset Counter', 'ریست شمارنده'],
-    'grpbProduction': ['Production', 'تولید'],
-    'grpbLaser': ['Laser', 'لیزر'],
-    'grpbDriver': ['Driver', 'درایور'],
+    'lblProducion': ['Production', 'تولید'],
+    'lblLaser': ['Laser', 'لیزر'],
+    'lblDriver': ['Driver', 'درایور'],
+    'lblEmbedded': ['Embedded System', 'سیستم تعبیه شده'],
+    'lblSkinGrade': ['Skin Grade', 'گرید پوستی'],
+    'lblCooling': ['Cooling', 'سرمایش'],
     
 }
