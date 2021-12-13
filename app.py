@@ -335,7 +335,7 @@ class MainWin(QMainWindow):
         
         license = self.license[f'LICENSE{numOfLocks + 1}']
         Lock(date, license)
-        nextDate = date + jdatetime.timedelta(60) 
+        nextDate = date + jdatetime.timedelta(120) 
         self.txtLockYear.setText(str(nextDate.year))
         self.txtLockMonth.setText(str(nextDate.month))
         self.txtLockDay.setText(str(nextDate.day))        

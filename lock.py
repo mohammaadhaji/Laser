@@ -1,6 +1,6 @@
 from itertools import count
 from paths import LOCK_DIR
-from functions import getDiff, loadLIC
+from functions import getDiff, randID
 from os.path import join, isfile
 import pickle
 import os
@@ -8,7 +8,7 @@ import os
 
 class Lock:
     def __init__(self, date, license=1):
-        self.name = 'dll' + str(len(os.listdir(LOCK_DIR)))
+        self.name = randID()
         self.date = date
         self.paid = False
         self.license = license

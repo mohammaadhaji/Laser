@@ -3,6 +3,7 @@ import datetime, jdatetime
 from os.path import isfile
 from uuid import getnode as get_mac
 import random
+import uuid
 import platform
 import pickle
 import os
@@ -86,6 +87,13 @@ def randBinNumber(n):
         temp = str(random.randint(0, 1))
         number += temp
     return number
+
+
+def randID(string_length=5):
+    random = str(uuid.uuid4())
+    random = random.upper() 
+    random = random.replace("-","")
+    return random[0:string_length]
 
 
 def loadLIC():
