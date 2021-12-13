@@ -117,5 +117,7 @@ TEXT = {
     'maxLock': ['A maximum of 3 locks can be defined.', 'حداکثر 3 قفل می تواند تعریف شود.'],
     'yes': ['Yes', 'بله'],
     'no': ['No', 'خیر'],
+    'lblCurrentUser': ['Name', 'نام'],
+    'lblCurrentSnumber': ['S Number', 'شماره جلسه']
 
 }

@@ -125,7 +125,6 @@ class MainWin(QMainWindow):
         self.btnBackNewSession.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackManagement.clicked.connect(lambda: self.txtSearch.clear())
-        self.btnBackLaser.clicked.connect(self.backLaser)
         self.btnBackSettings.clicked.connect(self.backSettings)
         self.btnBackEditUser.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnBackEditUser.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.userManagementPage))
@@ -171,6 +170,8 @@ class MainWin(QMainWindow):
         self.tableLock.verticalHeader().setDefaultSectionSize(70)
         self.tableLock.horizontalHeader().setFixedHeight(60)
         self.tableLock.verticalHeader().setVisible(False)
+        header = self.userInfoTable.horizontalHeader()
+        header.setSectionResizeMode(0,  QHeaderView.ResizeToContents)
         self.txtNumber.fIn.connect(lambda: self.keyboard('show'))
         self.txtNumberSubmit.fIn.connect(lambda: self.keyboard('show'))
         self.txtNameSubmit.fIn.connect(lambda: self.keyboard('show'))
@@ -210,7 +211,6 @@ class MainWin(QMainWindow):
         reg_ex = QRegExp("[0-9\(\)]*")
         input_validator = QRegExpValidator(reg_ex, self.txtDays)
         self.txtDays.setValidator(input_validator)
-        self.txtPassword.setValidator(input_validator)
         self.txtEditMinute.setValidator(input_validator)
         self.txtEditHour.setValidator(input_validator)
         self.txtLockYear.setValidator(input_validator)        
@@ -251,6 +251,10 @@ class MainWin(QMainWindow):
         self.btnHwinfo.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.infoPage))
         self.btnSystemLock.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.lockSettingsPage))
         self.btnAddLock.clicked.connect(self.addLock)
+        self.btnBackLaser.clicked.connect(lambda: self.changeAnimation('horizontal'))
+        self.btnBackLaser.clicked.connect(lambda: self.stackedWidgetLaser.setCurrentWidget(self.bodyPartPage))
+        self.btnBackLaser.clicked.connect(lambda: self.btnBackLaser.setVisible(False))
+        self.btnBackLaser.setVisible(False)
         self.shortcut = QShortcut(QKeySequence("Ctrl+x"), self)
         self.shortcut.activated.connect(self.close)
         self.loadLocksTable()
@@ -331,6 +335,10 @@ class MainWin(QMainWindow):
         
         license = self.license[f'LICENSE{numOfLocks + 1}']
         Lock(date, license)
+        nextDate = date + jdatetime.timedelta(60) 
+        self.txtLockYear.setText(str(nextDate.year))
+        self.txtLockMonth.setText(str(nextDate.month))
+        self.txtLockDay.setText(str(nextDate.day))        
         self.loadLocksTable()
 
 
@@ -406,7 +414,6 @@ class MainWin(QMainWindow):
 
     def unlockLIC(self, auto=False):
         userPass = self.txtPassword.text().strip()
-        userPass = 0 if userPass == '' else int(userPass)
         locks = loadLocks()
 
         if self.checkUUID():
@@ -419,7 +426,7 @@ class MainWin(QMainWindow):
                 self.stackedWidget.setCurrentWidget(self.splashPage)
             
             for lock in locks:
-                if lock.checkPassword(int(userPass)):
+                if lock.checkPassword(userPass):
                     self.keyboard('hide')
                     self.movie.start()
                     self.txtPassword.clear()
@@ -441,7 +448,7 @@ class MainWin(QMainWindow):
                 os.system('python app.py')
             else:
                 os.system('python3 app.py -platform linuxfb')
-            self.close()   
+            exit(0)  
 
     def loginHw(self):
         password = self.txtHwPass.text()
@@ -842,6 +849,7 @@ class MainWin(QMainWindow):
 
         for btn in buttons:
             btn.clicked.connect(lambda: self.stackedWidgetLaser.setCurrentWidget(self.laserPage))
+            btn.clicked.connect(lambda: self.btnBackLaser.setVisible(True))
             sex = btn.objectName().split('btn')[1][0].lower()
             bodyPart = btn.objectName().split('btn')[1][1:].lower()
             btn.clicked.connect(self.setBodyPart(sex, bodyPart))
@@ -912,12 +920,6 @@ class MainWin(QMainWindow):
         self.txtEnergy.setText(str(enrgy) + '   J/cm²')
         self.txtPulseWidth.setText(str(pl) + '   Ms')
         self.txtFrequency.setText(str(freq) + '   Hz')
-
-    def backLaser(self):
-        if self.stackedWidgetLaser.currentIndex() == 0:
-            self.stackedWidget.setCurrentWidget(self.mainPage)
-        else:
-            self.stackedWidgetLaser.setCurrentWidget(self.bodyPartPage)      
 
     def backSettings(self):
         self.hwPass('hide') 
@@ -1429,6 +1431,8 @@ class MainWin(QMainWindow):
                 return
 
             self.user.setCurrentSession('started')
+            self.txtCurrentUser.setText(self.user.name)
+            self.txtCurrentSnumber.setText(str(self.user.sessionNumber))
             self.keyboard('hide')
             self.changeAnimation('horizontal')
             self.stackedWidget.setCurrentWidget(self.laserMainPage)
@@ -1468,6 +1472,8 @@ class MainWin(QMainWindow):
                     return
                     
                 self.user.setCurrentSession('started')
+                self.txtCurrentUser.setText(self.user.name)
+                self.txtCurrentSnumber.setText(str(self.user.sessionNumber))
                 self.keyboard('hide')
                 self.changeAnimation('horizontal')
                 self.stackedWidget.setCurrentWidget(self.laserMainPage)
@@ -1479,6 +1485,7 @@ class MainWin(QMainWindow):
         self.user = None
         self.stackedWidget.setCurrentWidget(self.mainPage)
         self.stackedWidgetLaser.setCurrentIndex(0)
+        self.btnBackLaser.setVisible(False)
 
     def setLabel(self, text, label, timer, sec=5):
         label.setText(text)
@@ -1496,6 +1503,7 @@ class MainWin(QMainWindow):
             self.userInfoFrame.setLayoutDirection(Qt.RightToLeft)
             self.nextSessionFrame.setLayoutDirection(Qt.RightToLeft)
             self.hwFrame.setLayoutDirection(Qt.RightToLeft)
+            self.currentUserFrame.setLayoutDirection(Qt.RightToLeft)
             icon = QPixmap(SELECTED_LANG_ICON)
             self.lblFaSelected.setPixmap(icon.scaled(70, 70))
             self.lblEnSelected.clear()
@@ -1507,6 +1515,7 @@ class MainWin(QMainWindow):
             self.userInfoFrame.setLayoutDirection(Qt.LeftToRight)
             self.nextSessionFrame.setLayoutDirection(Qt.LeftToRight)
             self.hwFrame.setLayoutDirection(Qt.LeftToRight)
+            self.currentUserFrame.setLayoutDirection(Qt.LeftToRight)
             icon = QPixmap(SELECTED_LANG_ICON)
             self.lblEnSelected.setPixmap(icon.scaled(70, 70))
             self.lblFaSelected.clear()
@@ -1620,7 +1629,8 @@ class MainWin(QMainWindow):
         self.tableLock.horizontalHeaderItem(1).setText(TEXT['tableLock1'][self.language])
         self.tableLock.horizontalHeaderItem(2).setText(TEXT['tableLock2'][self.language])
         self.tableLock.horizontalHeaderItem(3).setText(TEXT['tableLock3'][self.language])
-
+        self.lblCurrentUser.setText(TEXT['lblCurrentUser'][self.language])        
+        self.lblCurrentSnumber.setText(TEXT['lblCurrentSnumber'][self.language])
 
 app = QApplication(sys.argv)
 mainWin = MainWin()

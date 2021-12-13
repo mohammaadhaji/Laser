@@ -22,9 +22,10 @@ class Lock:
         self.paid = paid
 
     def checkPassword(self, password):
-        if password ^ self.license == self.unlockPass:
-            self.paid = True
-            self.save()
+        if password.isnumeric():
+            if int(password) ^ self.license == self.unlockPass:
+                self.paid = True
+                self.save()
 
         return self.paid
 
