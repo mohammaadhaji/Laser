@@ -1,3 +1,4 @@
+import subprocess
 from paths import *
 import datetime, jdatetime
 from os.path import isfile
@@ -7,6 +8,7 @@ import uuid
 import platform
 import pickle
 import os
+import re
 
 
 
@@ -67,20 +69,6 @@ def addExtenstion(file):
             return file + Path(path).suffix
 
 
-def loadConfigs():
-    configs = {}
-    file = open(CONFIG_FILE, 'r')
-    content = file.read().split('\n')
-
-    for item in content:
-        x = [i.strip() for i in item.split('=')]
-        if len(x) > 1:
-            configs[x[0]] = x[1]
-
-    file.close()
-    return configs
-
-
 def randBinNumber(n):
     number = ""
     for _ in range(n):         
@@ -96,60 +84,84 @@ def randID(string_length=5):
     return random[0:string_length]
 
 
-def loadLIC():
-    if not isfile(LIC):
-        print('s')
+def genLicense():   
+    UID0 = randBinNumber(32)
+    UID1 = randBinNumber(32)
+    UID2 = randBinNumber(32)
+
+    LIC32 = (int(UID0, 2) ^ int(UID1, 2)) + (int(UID0, 2) ^ int(UID2, 2))
+    LIC32 = bin(LIC32 & 0xFFFFFFFF)[2:].zfill(32)
+
+    LicID = int(LIC32[:16], 2) ^ int(LIC32[16:], 2) & 0xFFFF
+
+    LICENSE1 = (LicID - LicID % 10) + 1
+    LICENSE2 = (LicID - LicID % 10) + 2
+    LICENSE3 = (LicID - LicID % 10) + 3
+
+    lic = {
+        'LICENSE1': LICENSE1,
+        'LICENSE2': LICENSE2,
+        'LICENSE3': LICENSE3,
+    }
+    return lic
+
+
+def loadConfigs():
+    if not isfile(CONFIG_FILE):
+        print("Don't be an asshole")
         exit(1)
-
-    file = open(LIC, 'rb')
+    
+    file = open(CONFIG_FILE, 'rb')
     try:
-        lic = pickle.load(file)
-        return lic
+        configs = pickle.load(file)
+        if len(configs) == 0:
+            file.close()
+            file = open(CONFIG_FILE, 'wb')
+            configs['LICENSE'] = genLicense()
+            configs['PASSWORD'] = ''
+            configs['LANGUAGE'] = 'en'
+            configs['SerialNumber'] = ''
+            configs['TotalShotCounter'] = 0
+            configs['LaserDiodeEnergy'] = ''
+            configs['LaserBarType'] = ''
+            configs['LaserWavelength'] = ''
+            configs['DriverVersion'] = ''
+            configs['MainControlVersion'] = ''
+            configs['FirmwareVersion'] = ''
+            configs['ProductionDate'] = ''
+            configs['GuiVersion'] = 'v1.0'
+            configs['LOCK'] = []
+            pickle.dump(configs, file)
+            file.close()
+
+        return configs
+
     except Exception:
-        file.close()
-        
-        UID0 = randBinNumber(32)
-        UID1 = randBinNumber(32)
-        UID2 = randBinNumber(32)
-
-        LIC32 = (int(UID0, 2) ^ int(UID1, 2)) + (int(UID0, 2) ^ int(UID2, 2))
-        LIC32 = bin(LIC32 & 0xFFFFFFFF)[2:].zfill(32)
-
-        LicID = int(LIC32[:16], 2) ^ int(LIC32[16:], 2) & 0xFFFF
-
-        LICENSE1 = (LicID - LicID % 10) + 1
-        LICENSE2 = (LicID - LicID % 10) + 2
-        LICENSE3 = (LicID - LicID % 10) + 3
-
-        lic = {
-            'LICENSE1': LICENSE1,
-            'LICENSE2': LICENSE2,
-            'LICENSE3': LICENSE3,
-        }
-
-        file = open(LIC, 'wb')
-        pickle.dump(lic, file)
-        file.close()
-        return lic
+        print("Don't be an asshole")
+        exit(1)
 
 
 def saveConfigs(configs):
-    file = open(CONFIG_FILE, 'w')
-
-    for item in configs.items():
-        file.write(f'{item[0]} = {item[1]}\n')
-
+    file = open(CONFIG_FILE, 'wb')
+    pickle.dump(configs, file)
     file.close()
 
 
 def getID():
     id = ''
-    if isfile('/proc/cpuinfo'):
-        file = open('/proc/cpuinfo')
-        for line in file:
-            if line.startswith('Serial'):
-                id = line.split(':')[1].strip()
+    if platform.system() == 'Linux':
+        r = subprocess.check_output('blkid -s UUID -o value')
+        r = re.sub('[^a-zA-Z0-9]', '', str(r)).upper()
+        if len(r) >= 10:
+            id = r[:10]
+        else:
+            id = r
+    
     else:
-        id = str(get_mac())
+        r = str(get_mac()).upper()
+        if len(r) >= 10:
+            id = r[:10]
+        else:
+            id = r
 
     return id

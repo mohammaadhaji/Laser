@@ -16,9 +16,7 @@ from pathlib import Path
 import jdatetime 
 import platform
 import hashlib
-import random 
 import sys
-import time
 
 
 class MainWin(QMainWindow):
@@ -30,10 +28,9 @@ class MainWin(QMainWindow):
         self.setupSensors()
         
     def setupUi(self):
-        self.license = loadLIC()
         self.configs = loadConfigs()
-        if self.configs['HIDE_CURSOR'] == '1':
-            self.setCursor(Qt.BlankCursor)
+        self.license = self.configs['LICENSE']
+        # self.setCursor(Qt.BlankCursor)
         self.movie = QMovie(LOCK_GIF)
         self.movie.frameChanged.connect(self.unlock)
         self.lblLock.setMovie(self.movie)
@@ -290,6 +287,32 @@ class MainWin(QMainWindow):
             self.txtEditHour.setText(hour)
             self.txtEditMinute.setText(minute)
 
+    def getLock(self, name):
+        for lock in self.configs['LOCK']:
+            if lock.name == name:
+                return lock
+
+    def getLocks(self):
+        locks = []
+        for lock in self.configs['LOCK']:
+            if not lock.paid and lock.getStatus() <= 0:
+                locks.append(lock)
+
+        locks.sort(key=lambda x: x.date)
+        return locks
+
+    def anyLockBefor(self, date):
+        for lock in self.configs['LOCK']:
+            if (date - lock.date).days <= 0:
+                return True
+    
+        return False
+
+    def removeLock(self, date):
+        for lock in self.configs['LOCK']:
+            if (date - lock.date).days == 0:
+                self.configs['LOCK'].remove(lock)
+
     def addLock(self):
         try:
             year = int(self.txtLockYear.text())
@@ -312,7 +335,7 @@ class MainWin(QMainWindow):
                 )
             return
 
-        numOfLocks = countLocks()
+        numOfLocks = len(self.configs['LOCK'])
 
         if numOfLocks == 3:
             self.setLabel(
@@ -330,7 +353,7 @@ class MainWin(QMainWindow):
                 )
             return
 
-        if anyLockBefor(date):
+        if self.anyLockBefor(date):
             self.setLabel(
                     TEXT['anyLockBefor'][self.language], 
                     self.lblLockError, 
@@ -340,7 +363,9 @@ class MainWin(QMainWindow):
 
         
         license = self.license[f'LICENSE{numOfLocks + 1}']
-        Lock(date, license)
+        lock = Lock(date, license)
+        self.configs['LOCK'].append(lock)
+        saveConfigs(self.configs)
         nextDate = date + jdatetime.timedelta(120) 
         self.txtLockYear.setText(str(nextDate.year))
         self.txtLockMonth.setText(str(nextDate.month))
@@ -349,7 +374,8 @@ class MainWin(QMainWindow):
 
 
     def loadLocksTable(self):
-        locks = loadAllLocks()
+        self.configs['LOCK'].sort(key=lambda x: x.date)
+        locks = self.configs['LOCK']
         self.tableLock.setRowCount(len(locks))
         for i, lock in enumerate(locks):
             date = TableWidgetItem(str(lock.date.date()))
@@ -386,7 +412,12 @@ class MainWin(QMainWindow):
         index = self.tableLock.indexAt(button.pos())
         if index.isValid():
             year, month, day = self.tableLock.item(index.row(), 0).text().split('-')
-            removeLock(jdatetime.datetime(int(year), int(month), int(day)))
+            date = jdatetime.datetime(int(year), int(month), int(day))
+            for lock in self.configs['LOCK']:
+                if (date - lock.date).days == 0:
+                    self.configs['LOCK'].remove(lock)
+                    saveConfigs(self.configs)
+
             self.loadLocksTable()
 
 
@@ -420,7 +451,7 @@ class MainWin(QMainWindow):
 
     def unlockLIC(self, auto=False):
         userPass = self.txtPassword.text().strip()
-        locks = loadLocks()
+        locks = self.getLocks()
 
         if self.checkUUID():
         
@@ -433,6 +464,7 @@ class MainWin(QMainWindow):
             
             for lock in locks:
                 if lock.checkPassword(userPass):
+                    saveConfigs(self.configs)
                     self.keyboard('hide')
                     self.movie.start()
                     self.txtPassword.clear()
@@ -1642,8 +1674,6 @@ class MainWin(QMainWindow):
         self.lblCurrentUser.setText(TEXT['lblCurrentUser'][self.language])        
         self.lblCurrentSnumber.setText(TEXT['lblCurrentSnumber'][self.language])
 
-if platform.system() == 'Linux':
-    os.environ['QT_QPA_PLATFORM'] = 'linuxfb'
 
 app = QApplication(sys.argv)
 mainWin = MainWin()
