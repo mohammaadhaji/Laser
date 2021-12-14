@@ -1,5 +1,5 @@
 PASSWORD = 70071b98ef
-LANGUAGE = en
+LANGUAGE = fa
 HIDE_CURSOR = 0
 SerialNumber = 
 TotalShotCounter = 0
@@ -8,5 +8,6 @@ LaserBarType =
 LaserWavelength = 
 DriverVersion = 
 MainControlVersion = 
+FirmwareVersion = 
 ProductionDate = 
 GuiVersion = v1.0

@@ -18,6 +18,7 @@ import platform
 import hashlib
 import random 
 import sys
+import time
 
 
 class MainWin(QMainWindow):
@@ -114,7 +115,10 @@ class MainWin(QMainWindow):
         self.btnFaLang.clicked.connect(lambda: self.changeLang('fa'))
         self.btnEnter.clicked.connect(self.unlockLIC)
         self.language = 0 if self.configs['LANGUAGE'] == 'en' else 1
-        self.changeLang(self.configs['LANGUAGE'])
+        icon = QPixmap(SELECTED_LANG_ICON)
+        self.lblEnSelected.setPixmap(icon.scaled(70, 70))
+        if self.configs['LANGUAGE'] == 'fa':
+            self.changeLang(self.configs['LANGUAGE'])
         self.btnSort.clicked.connect(self.sort)
         self.txtNumber.returnPressed.connect(self.startSession)
         self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
@@ -190,6 +194,7 @@ class MainWin(QMainWindow):
         self.txtLaserWavelength.fIn.connect(lambda: self.keyboard('show'))
         self.txtDriverVersion.fIn.connect(lambda: self.keyboard('show'))
         self.txtMainControlVersion.fIn.connect(lambda: self.keyboard('show'))
+        self.txtFirmwareVersion.fIn.connect(lambda: self.keyboard('show'))
         self.txtProductionDate.fIn.connect(lambda: self.keyboard('show'))
         self.txtPassUUID.fIn.connect(lambda: self.keyboard('show'))
         self.txtGuiVersion.fIn.connect(lambda: self.keyboard('show'))
@@ -275,9 +280,10 @@ class MainWin(QMainWindow):
 
         if second == 0 or edit:
             if edit:
-                self.txtLockYear.setText(year)
-                self.txtLockMonth.setText(month)
-                self.txtLockDay.setText(day)
+                nextDate = jdatetime.datetime.today() + jdatetime.timedelta(120) 
+                self.txtLockYear.setText(str(nextDate.year))
+                self.txtLockMonth.setText(str(nextDate.month))
+                self.txtLockDay.setText(str(nextDate.day))
             self.txtEditYear.setText(year)
             self.txtEditMonth.setText(month)
             self.txtEditDay.setText(day)
@@ -419,11 +425,11 @@ class MainWin(QMainWindow):
         if self.checkUUID():
         
             if len(locks) > 0:
-                self.stackedWidget.setCurrentWidget(self.loginPage)
+                self.stackedWidget.setCurrentIndex(self.stackedWidget.indexOf(self.loginPage))
                 self.txtID.setText(str(locks[0].license))
                 self.setStyleSheet(APP_LOCK_BG)
             else:
-                self.stackedWidget.setCurrentWidget(self.splashPage)
+                self.stackedWidget.setCurrentIndex(self.stackedWidget.indexOf(self.splashPage))
             
             for lock in locks:
                 if lock.checkPassword(userPass):
@@ -475,6 +481,7 @@ class MainWin(QMainWindow):
             self.txtTotalShotCounter.setDisabled(True)
             self.keyboard('hide')
             self.readHwInfo()
+            self.loadLocksTable()
             self.hwbtnsFrame.show()
             self.txtRpiVersion.setVisible(True)
             self.lblRpiVersion.setVisible(True)            
@@ -528,6 +535,7 @@ class MainWin(QMainWindow):
         self.txtLaserWavelength.setText(self.configs['LaserWavelength'])                
         self.txtDriverVersion.setText(self.configs['DriverVersion'])                
         self.txtMainControlVersion.setText(self.configs['MainControlVersion'])                
+        self.txtFirmwareVersion.setText(self.configs['FirmwareVersion'])
         self.txtProductionDate.setText(self.configs['ProductionDate']) 
         self.txtGuiVersion.setText(self.configs['GuiVersion'])
 
@@ -539,6 +547,7 @@ class MainWin(QMainWindow):
         self.configs['LaserWavelength'] = self.txtLaserWavelength.text()            
         self.configs['DriverVersion'] = self.txtDriverVersion.text()            
         self.configs['MainControlVersion'] = self.txtMainControlVersion.text()            
+        self.configs['FirmwareVersion'] = self.txtFirmwareVersion.text()
         self.configs['ProductionDate'] = self.txtProductionDate.text()
         self.configs['GuiVersion'] = self.txtGuiVersion.text()  
         saveConfigs(self.configs)
@@ -1605,6 +1614,7 @@ class MainWin(QMainWindow):
         self.lblLaserWavelength.setText(TEXT['lblLaserWavelength'][self.language])
         self.lblDriverVersion.setText(TEXT['lblDriverVersion'][self.language])
         self.lblMainControlVersion.setText(TEXT['lblMainControlVersion'][self.language])
+        self.lblFirmwareVersion.setText(TEXT['lblFirmwareVersion'][self.language])
         self.lblOsSpecification.setText(TEXT['lblOsSpecification'][self.language])
         self.lblMonitor.setText(TEXT['lblMonitor'][self.language])
         self.lblProductionDate.setText(TEXT['lblProductionDate'][self.language])

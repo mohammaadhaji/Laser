@@ -53,7 +53,7 @@ font-family:&quot;Times New Roman&quot;;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>9</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="UUIDPage">
        <layout class="QVBoxLayout" name="verticalLayout_66">
@@ -546,7 +546,7 @@ border:1px solid gray;
                    </font>
                   </property>
                   <property name="text">
-                   <string>You laser machine has been locked for maintenance purpose. For more information contact to Behdad Beauty company.
+                   <string>Your laser machine has been locked for maintenance purpose. For more information contact to Behdad Beauty company.
 Telephone +98 922 491 6671</string>
                   </property>
                   <property name="alignment">
@@ -2199,7 +2199,7 @@ QPushButton:pressed{
               <item>
                <widget class="StackedWidget" name="hwStackedWidget">
                 <property name="currentIndex">
-                 <number>1</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="infoPage">
                  <layout class="QVBoxLayout" name="verticalLayout_71">
@@ -2231,8 +2231,8 @@ QPushButton:pressed{
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>958</width>
-                       <height>661</height>
+                       <width>1180</width>
+                       <height>737</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_73">
@@ -2702,7 +2702,7 @@ border:0px;
                           </layout>
                          </item>
                          <item>
-                          <layout class="QVBoxLayout" name="verticalLayout_67" stretch="0,0">
+                          <layout class="QVBoxLayout" name="verticalLayout_67" stretch="1,1">
                            <property name="leftMargin">
                             <number>5</number>
                            </property>
@@ -2772,6 +2772,19 @@ border:0px;
                                   <property name="bottomMargin">
                                    <number>0</number>
                                   </property>
+                                  <item row="3" column="1">
+                                   <widget class="LineEdit" name="txtMainControlVersion">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
+                                    </property>
+                                   </widget>
+                                  </item>
                                   <item row="2" column="1">
                                    <spacer name="verticalSpacer_56">
                                     <property name="orientation">
@@ -2811,16 +2824,16 @@ border:0px;
                                     </property>
                                    </widget>
                                   </item>
-                                  <item row="3" column="1">
-                                   <widget class="LineEdit" name="txtMainControlVersion">
+                                  <item row="3" column="0">
+                                   <widget class="QLabel" name="lblMainControlVersion">
                                     <property name="font">
                                      <font>
                                       <family>Arial</family>
                                       <pointsize>20</pointsize>
                                      </font>
                                     </property>
-                                    <property name="alignment">
-                                     <set>Qt::AlignCenter</set>
+                                    <property name="text">
+                                     <string>Main Control Version</string>
                                     </property>
                                    </widget>
                                   </item>
@@ -2837,8 +2850,21 @@ border:0px;
                                     </property>
                                    </widget>
                                   </item>
-                                  <item row="3" column="0">
-                                   <widget class="QLabel" name="lblMainControlVersion">
+                                  <item row="6" column="1">
+                                   <spacer name="verticalSpacer_65">
+                                    <property name="orientation">
+                                     <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                     <size>
+                                      <width>20</width>
+                                      <height>40</height>
+                                     </size>
+                                    </property>
+                                   </spacer>
+                                  </item>
+                                  <item row="5" column="0">
+                                   <widget class="QLabel" name="lblFirmwareVersion">
                                     <property name="font">
                                      <font>
                                       <family>Arial</family>
@@ -2846,12 +2872,25 @@ border:0px;
                                      </font>
                                     </property>
                                     <property name="text">
-                                     <string>Main Control Version</string>
+                                     <string>Firmware Version</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="5" column="1">
+                                   <widget class="LineEdit" name="txtFirmwareVersion">
+                                    <property name="font">
+                                     <font>
+                                      <family>Arial</family>
+                                      <pointsize>20</pointsize>
+                                     </font>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignCenter</set>
                                     </property>
                                    </widget>
                                   </item>
                                   <item row="4" column="1">
-                                   <spacer name="verticalSpacer_65">
+                                   <spacer name="verticalSpacer_77">
                                     <property name="orientation">
                                      <enum>Qt::Vertical</enum>
                                     </property>

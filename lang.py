@@ -86,6 +86,7 @@ TEXT = {
     'lblLaserWavelength': ['Laser Wavelength', 'طول موج لیزر'],
     'lblDriverVersion': ['Driver Version', 'ورژن درایور'],
     'lblMainControlVersion': ['Main Control Version', 'ورژن برد کنترل'],
+    'lblFirmwareVersion': ['Firmware Version', 'ورژن فریموور'],
     'lblProductionDate': ['Production Date', 'تاریخ تولید'],
     'lblOsSpecification': ['OS Specification', 'سیستم عامل'],
     'lblMonitor': ['Monitor', 'نمایشگر'],
