@@ -1642,6 +1642,9 @@ class MainWin(QMainWindow):
         self.lblCurrentUser.setText(TEXT['lblCurrentUser'][self.language])        
         self.lblCurrentSnumber.setText(TEXT['lblCurrentSnumber'][self.language])
 
+if platform.system() == 'Linux':
+    os.environ['QT_QPA_PLATFORM'] = 'linuxfb'
+
 app = QApplication(sys.argv)
 mainWin = MainWin()
 mainWin.showFullScreen()
