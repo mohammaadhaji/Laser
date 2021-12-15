@@ -140,7 +140,7 @@ def saveConfigs(configs):
 def getID():
     id = ''
     if platform.system() == 'Linux':
-        r = subprocess.check_output('blkid -s UUID -o value')
+        r = subprocess.check_output('blkid -s UUID -o value', shell=True)
         r = re.sub('[^a-zA-Z0-9]', '', str(r)).upper()
         if len(r) >= 10:
             id = r[:10]
