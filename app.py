@@ -308,11 +308,6 @@ class MainWin(QMainWindow):
     
         return False
 
-    def removeLock(self, date):
-        for lock in self.configs['LOCK']:
-            if (date - lock.date).days == 0:
-                self.configs['LOCK'].remove(lock)
-
     def addLock(self):
         try:
             year = int(self.txtLockYear.text())

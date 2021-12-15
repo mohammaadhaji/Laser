@@ -11,16 +11,6 @@ import os
 import re
 
 
-
-def win_set_time(datetime_obj: datetime): 
-    import win32api  
-    utc_datetime = datetime_obj.astimezone().astimezone(datetime.timezone.utc).replace(tzinfo=None)
-    day_of_week = utc_datetime.isocalendar()[2]
-    win32api.SetSystemTime(utc_datetime.year, utc_datetime.month, day_of_week, 
-    utc_datetime.day, utc_datetime.hour, utc_datetime.minute, utc_datetime.second,
-    int(utc_datetime.microsecond / 1000))
-
-
 def setSystemTime(time):
     if platform.system() == 'Windows':
         import win32api
