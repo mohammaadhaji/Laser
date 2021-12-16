@@ -4,19 +4,16 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5 import uic
 from promotions import *
+from functions import *
 from styles import *
 from paths import *
 from lang import *
 from case import *
 from user import *
 from lock import *
-from functions import *
 from itertools import chain
 from pathlib import Path
-import jdatetime 
-import platform
-import hashlib
-import sys
+import jdatetime, platform, hashlib, math, sys
 
 
 class MainWin(QMainWindow):
@@ -24,8 +21,6 @@ class MainWin(QMainWindow):
         super(MainWin, self).__init__(*args, **kwargs)
         uic.loadUi(APP_UI, self)
         self.setupUi()
-        self.tutorials()
-        self.setupSensors()
         
     def setupUi(self):
         self.configs = loadConfigs()
@@ -38,6 +33,41 @@ class MainWin(QMainWindow):
         self.movie.stop()
         self.lblSplash.setStyleSheet(f'border-image:url({SPLASH[-21:]});')
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
+        self.time(edit=True)
+        self.initPages()
+        self.initTimers()
+        self.initButtons()
+        self.initTables()
+        self.initTextboxes()
+        self.user = None
+        self.userNextSession = None
+        self.sortBySession = False
+        self.shift = False
+        self.farsi = False
+        self.sex = 'female'
+        self.bodyPart = ''
+        self.case = 'I'
+        self.cooling = 0
+        self.energy = MIN_ENRGEY
+        self.pulseWidth = MIN_PULSE_WIDTH
+        self.frequency = MIN_FREQUENCY
+        self.ready = False
+        self.language = 0 if self.configs['LANGUAGE'] == 'en' else 1
+        icon = QPixmap(SELECTED_LANG_ICON)
+        self.lblEnSelected.setPixmap(icon.scaled(70, 70))
+        if self.configs['LANGUAGE'] == 'fa':
+            self.changeLang(self.configs['LANGUAGE'])
+        self.shortcut = QShortcut(QKeySequence("Ctrl+x"), self)
+        self.shortcut.activated.connect(self.close)
+        self.loadLocksTable()
+        self.bodyPartsSignals()
+        self.keyboardSignals()
+        self.casesSignals()
+        self.unlockLIC(auto=True)
+        self.tutorials()
+        self.initSensors()
+
+    def initPages(self):
         self.stackedWidget.setCurrentWidget(self.splashPage)
         self.stackedWidgetLaser.setCurrentIndex(0)
         self.stackedWidgetSex.setCurrentIndex(0)
@@ -62,13 +92,13 @@ class MainWin(QMainWindow):
         self.hwStackedWidget.setTransitionSpeed(500)
         self.hwStackedWidget.setTransitionEasingCurve(QEasingCurve.OutQuart)
         self.hwStackedWidget.setSlideTransition(True)
+
+    def initTimers(self):
         self.loginLabelTimer = QTimer()
         self.submitLabelTimer = QTimer()
         self.editLabelTimer = QTimer()
         self.nextSessionLabelTimer = QTimer()
         self.hwUpdatedLabelTimer = QTimer()
-        self.incEPFTimer = QTimer()
-        self.decEPFTimer = QTimer()
         self.incDaysTimer = QTimer()
         self.decDaysTimer = QTimer()
         self.backspaceTimer = QTimer()
@@ -78,46 +108,76 @@ class MainWin(QMainWindow):
         self.sysTimeStatusLabelTimer = QTimer()
         self.lockErrorLabel = QTimer()
         self.systemTimeTimer = QTimer()
+        self.readyErrorTimer =  QTimer()
+        self.monitorSensorsTimer = QTimer()
         self.systemTimeTimer.timeout.connect(self.time)
         self.systemTimeTimer.start(1000)
-        self.time(edit=True)
-        self.loginLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblLogin, self.loginLabelTimer))
-        self.submitLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblSubmit, self.submitLabelTimer))
-        self.editLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblEditUser, self.editLabelTimer))
-        self.nextSessionLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblErrNextSession, self.nextSessionLabelTimer))
-        self.hwUpdatedLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblSaveHw, self.hwUpdatedLabelTimer))
-        self.passwordLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblPassword, self.passwordLabelTimer))
-        self.uuidPassLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblPassUUID, self.uuidPassLabelTimer))
-        self.sysTimeStatusLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblSystemTimeStatus, self.sysTimeStatusLabelTimer))
-        self.lockErrorLabel.timeout.connect(lambda: self.clearLabel(self.lblLockError, timer=self.lockErrorLabel))
-        self.incEPFTimer.timeout.connect(lambda: self.setEPF('inc'))
-        self.decEPFTimer.timeout.connect(lambda: self.setEPF('dec'))
+        self.loginLabelTimer.timeout.connect(
+            lambda: self.clearLabel(self.lblLogin, self.loginLabelTimer)
+        )
+        self.submitLabelTimer.timeout.connect(
+            lambda: self.clearLabel(self.lblSubmit, self.submitLabelTimer)
+        )
+        self.editLabelTimer.timeout.connect(
+            lambda: self.clearLabel(self.lblEditUser, self.editLabelTimer)
+        )
+        self.nextSessionLabelTimer.timeout.connect(
+            lambda: self.clearLabel(self.lblErrNextSession, self.nextSessionLabelTimer)
+        )
+        self.hwUpdatedLabelTimer.timeout.connect(
+            lambda: self.clearLabel(self.lblSaveHw, self.hwUpdatedLabelTimer)
+        )
+        self.passwordLabelTimer.timeout.connect(
+            lambda: self.clearLabel(self.lblPassword, self.passwordLabelTimer)
+        )
+        self.uuidPassLabelTimer.timeout.connect(
+            lambda: self.clearLabel(self.lblPassUUID, self.uuidPassLabelTimer)
+        )
+        self.sysTimeStatusLabelTimer.timeout.connect(
+            lambda: self.clearLabel(self.lblSystemTimeStatus, self.sysTimeStatusLabelTimer)
+        )
+        self.lockErrorLabel.timeout.connect(
+            lambda: self.clearLabel(self.lblLockError, self.lockErrorLabel)
+        )
+        self.readyErrorTimer.timeout.connect(
+            lambda: self.clearLabel(self.lblReadyError, self.readyErrorTimer)
+        )
         self.incDaysTimer.timeout.connect(lambda: self.incDecDay('inc'))
         self.decDaysTimer.timeout.connect(lambda: self.incDecDay('dec'))
         self.backspaceTimer.timeout.connect(self.type(lambda: 'backspace'))
         self.hwWrongPassTimer.timeout.connect(self.hwWrongPass)
-        self.user = None
-        self.userNextSession = None
-        self.sortBySession = False
-        self.shift = False
-        self.farsi = False
-        self.sex = 'female'
-        self.bodyPart = ''
-        self.case = 'I'
-        self.EPF = 'E'
-        self.cooling = 0
-        self.ready = False
-        self.language = 0 # 0: en, 1: fa
+        self.monitorSensorsTimer.timeout.connect(self.monitorSensors)
+        self.monitorSensorsTimer.start(1000)
+
+    def initTables(self):
+        self.usersTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.usersTable.verticalHeader().setDefaultSectionSize(75)
+        self.usersTable.horizontalHeader().setFixedHeight(60)
+        self.usersTable.verticalHeader().setVisible(False)
+        self.tableTomorrow.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tableTomorrow.verticalHeader().setDefaultSectionSize(70)
+        self.tableTomorrow.horizontalHeader().setFixedHeight(60)
+        self.tableTomorrow.verticalHeader().setVisible(False)
+        self.tableAfterTomorrow.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tableAfterTomorrow.verticalHeader().setDefaultSectionSize(70)
+        self.tableAfterTomorrow.horizontalHeader().setFixedHeight(60)
+        self.tableAfterTomorrow.verticalHeader().setVisible(False)
+        self.userInfoTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.userInfoTable.verticalHeader().setDefaultSectionSize(70)
+        self.userInfoTable.horizontalHeader().setFixedHeight(60)
+        self.userInfoTable.verticalHeader().setVisible(False)
+        self.tableLock.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tableLock.verticalHeader().setDefaultSectionSize(70)
+        self.tableLock.horizontalHeader().setFixedHeight(60)
+        self.tableLock.verticalHeader().setVisible(False)
+        header = self.userInfoTable.horizontalHeader()
+        header.setSectionResizeMode(0,  QHeaderView.ResizeToContents)
+
+    def initButtons(self):
         self.btnEnLang.clicked.connect(lambda: self.changeLang('en'))
         self.btnFaLang.clicked.connect(lambda: self.changeLang('fa'))
         self.btnEnter.clicked.connect(self.unlockLIC)
-        self.language = 0 if self.configs['LANGUAGE'] == 'en' else 1
-        icon = QPixmap(SELECTED_LANG_ICON)
-        self.lblEnSelected.setPixmap(icon.scaled(70, 70))
-        if self.configs['LANGUAGE'] == 'fa':
-            self.changeLang(self.configs['LANGUAGE'])
         self.btnSort.clicked.connect(self.sort)
-        self.txtNumber.returnPressed.connect(self.startSession)
         self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
         self.btnPower.clicked.connect(lambda: os.system('poweroff'))
         self.btnStartSession.clicked.connect(self.startSession)
@@ -151,28 +211,52 @@ class MainWin(QMainWindow):
         self.btnNextSession.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.btnNextSession.clicked.connect(lambda: self.setNextSession('edit'))
         self.btnCancelNS.clicked.connect(self.cancelNextSession)
-        self.usersTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.usersTable.verticalHeader().setDefaultSectionSize(75)
-        self.usersTable.horizontalHeader().setFixedHeight(60)
-        self.usersTable.verticalHeader().setVisible(False)
-        self.tableTomorrow.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.tableTomorrow.verticalHeader().setDefaultSectionSize(70)
-        self.tableTomorrow.horizontalHeader().setFixedHeight(60)
-        self.tableTomorrow.verticalHeader().setVisible(False)
-        self.tableAfterTomorrow.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.tableAfterTomorrow.verticalHeader().setDefaultSectionSize(70)
-        self.tableAfterTomorrow.horizontalHeader().setFixedHeight(60)
-        self.tableAfterTomorrow.verticalHeader().setVisible(False)
-        self.userInfoTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.userInfoTable.verticalHeader().setDefaultSectionSize(70)
-        self.userInfoTable.horizontalHeader().setFixedHeight(60)
-        self.userInfoTable.verticalHeader().setVisible(False)
-        self.tableLock.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.tableLock.verticalHeader().setDefaultSectionSize(70)
-        self.tableLock.horizontalHeader().setFixedHeight(60)
-        self.tableLock.verticalHeader().setVisible(False)
-        header = self.userInfoTable.horizontalHeader()
-        header.setSectionResizeMode(0,  QHeaderView.ResizeToContents)
+        self.btnCancelNS.clicked.connect(lambda: self.keyboard('hide'))
+        self.btnOkNS.clicked.connect(lambda: self.keyboard('hide'))
+        self.btnDecDay.clicked.connect(lambda: self.incDecDay('dec'))
+        self.btnIncDay.clicked.connect(lambda: self.incDecDay('inc'))
+        self.btnOkNS.clicked.connect(self.saveNextSession)
+        self.btnMale.clicked.connect(lambda: self.setSex('male'))
+        self.btnFemale.clicked.connect(lambda: self.setSex('female'))
+        self.btnBackspace.pressed.connect(lambda: self.backspaceTimer.start(100))
+        self.btnBackspace.released.connect(lambda: self.backspaceTimer.stop())
+        self.btnIncDay.pressed.connect(lambda: self.incDaysTimer.start(100))
+        self.btnIncDay.released.connect(lambda: self.incDaysTimer.stop())
+        self.btnDecDay.pressed.connect(lambda: self.decDaysTimer.start(100))
+        self.btnDecDay.released.connect(lambda: self.decDaysTimer.stop())
+        self.btnIncE.clicked.connect(lambda: self.setEnergy('inc'))
+        self.btnDecE.clicked.connect(lambda: self.setEnergy('dec'))
+        self.sliderEnergy.sliderMoved.connect(self.sldrSetEnergy)
+        self.btnIncP.clicked.connect(lambda: self.setPulseWidth('inc'))
+        self.btnDecP.clicked.connect(lambda: self.setPulseWidth('dec'))
+        self.sliderPulseWidth.sliderMoved.connect(self.sldrSetPulseWidth)
+        self.btnIncF.clicked.connect(lambda: self.setFrequency('inc'))
+        self.btnDecF.clicked.connect(lambda: self.setFrequency('dec'))
+        self.sliderFrequency.sliderMoved.connect(self.sldrSetFrequency)
+        self.sliderFrequency.sliderReleased.connect(self.freqSldrReleasd)
+        self.btnMale.clicked.connect(lambda: self.stackedWidgetSex.setCurrentWidget(self.malePage))
+        self.btnFemale.clicked.connect(lambda: self.stackedWidgetSex.setCurrentWidget(self.femalePage))
+        self.btnDecCooling.clicked.connect(lambda: self.setCooling('dec'))
+        self.btnIncCooling.clicked.connect(lambda: self.setCooling('inc'))
+        self.btnSaveCase.clicked.connect(self.saveCase)
+        self.btnSaveCase.pressed.connect(lambda: self.sliderChgColor('pressed'))
+        self.btnSaveCase.released.connect(lambda: self.sliderChgColor('released'))
+        self.btnSaveHw.clicked.connect(self.saveHwSettings)
+        self.btnResetCounter.clicked.connect(self.resetTotalShot)
+        self.btnReady.clicked.connect(lambda: self.setReady(True))
+        self.btnStandby.clicked.connect(lambda: self.setReady(False))
+        self.btnUnqEnter.clicked.connect(self.unlockUUID)
+        self.btnHwinfo.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.infoPage))
+        self.btnSystemLock.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.lockSettingsPage))
+        self.btnAddLock.clicked.connect(self.addLock)
+        self.btnBackLaser.clicked.connect(lambda: self.changeAnimation('horizontal'))
+        self.btnBackLaser.clicked.connect(lambda: self.stackedWidgetLaser.setCurrentWidget(self.bodyPartPage))
+        self.btnBackLaser.clicked.connect(lambda: self.btnBackLaser.setVisible(False))
+        self.btnBackLaser.clicked.connect(lambda: self.setReady(False))
+        self.btnBackLaser.setVisible(False)
+
+    def initTextboxes(self):
+        self.txtNumber.returnPressed.connect(self.startSession)
         self.txtNumber.fIn.connect(lambda: self.keyboard('show'))
         self.txtNumberSubmit.fIn.connect(lambda: self.keyboard('show'))
         self.txtNameSubmit.fIn.connect(lambda: self.keyboard('show'))
@@ -203,13 +287,8 @@ class MainWin(QMainWindow):
         self.txtLockYear.fIn.connect(lambda: self.keyboard('show'))
         self.txtLockMonth.fIn.connect(lambda: self.keyboard('show'))
         self.txtLockDay.fIn.connect(lambda: self.keyboard('show'))
-        self.btnCancelNS.clicked.connect(lambda: self.keyboard('hide'))
-        self.btnOkNS.clicked.connect(lambda: self.keyboard('hide'))
-        self.btnDecDay.clicked.connect(lambda: self.incDecDay('dec'))
-        self.btnIncDay.clicked.connect(lambda: self.incDecDay('inc'))
         self.txtDays.textChanged.connect(self.setDateText)
         self.txtDate.textChanged.connect(self.setDaysText)
-        self.btnOkNS.clicked.connect(self.saveNextSession)
         reg_ex = QRegExp("[0-9\(\)]*")
         input_validator = QRegExpValidator(reg_ex, self.txtDays)
         self.txtDays.setValidator(input_validator)
@@ -223,47 +302,69 @@ class MainWin(QMainWindow):
         self.txtEditYear.setValidator(input_validator)        
         self.txtDays.setText('30')
         self.txtSearch.textChanged.connect(self.search)
-        self.btnMale.clicked.connect(lambda: self.setSex('male'))
-        self.btnFemale.clicked.connect(lambda: self.setSex('female'))
-        self.btnEnergy.clicked.connect(lambda: self.selectEPF('E'))
-        self.btnBackspace.pressed.connect(lambda: self.backspaceTimer.start(100))
-        self.btnBackspace.released.connect(lambda: self.backspaceTimer.stop())
-        self.btnIncEPF.pressed.connect(lambda: self.incEPFTimer.start(100))
-        self.btnIncEPF.released.connect(lambda: self.incEPFTimer.stop())
-        self.btnDecEPF.pressed.connect(lambda: self.decEPFTimer.start(100))
-        self.btnDecEPF.released.connect(lambda: self.decEPFTimer.stop())
-        self.btnIncDay.pressed.connect(lambda: self.incDaysTimer.start(100))
-        self.btnIncDay.released.connect(lambda: self.incDaysTimer.stop())
-        self.btnDecDay.pressed.connect(lambda: self.decDaysTimer.start(100))
-        self.btnDecDay.released.connect(lambda: self.decDaysTimer.stop())
-        self.btnPulseWidth.clicked.connect(lambda: self.selectEPF('P'))
-        self.btnFrequency.clicked.connect(lambda: self.selectEPF('F'))
-        self.btnMale.clicked.connect(lambda: self.stackedWidgetSex.setCurrentWidget(self.malePage))
-        self.btnFemale.clicked.connect(lambda: self.stackedWidgetSex.setCurrentWidget(self.femalePage))
-        self.btnIncEPF.clicked.connect(lambda: self.setEPF('inc'))
-        self.btnDecEPF.clicked.connect(lambda: self.setEPF('dec'))
-        self.btnDecCooling.clicked.connect(lambda: self.setCooling('dec'))
-        self.btnIncCooling.clicked.connect(lambda: self.setCooling('inc'))
-        self.btnSaveCase.clicked.connect(self.saveCase)
-        self.btnSaveHw.clicked.connect(self.saveHwSettings)
-        self.btnResetCounter.clicked.connect(self.resetTotalShot)
-        self.btnReady.clicked.connect(lambda: self.setReady(True))
-        self.btnStandby.clicked.connect(lambda: self.setReady(False))
-        self.btnUnqEnter.clicked.connect(self.unlockUUID)
-        self.btnHwinfo.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.infoPage))
-        self.btnSystemLock.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.lockSettingsPage))
-        self.btnAddLock.clicked.connect(self.addLock)
-        self.btnBackLaser.clicked.connect(lambda: self.changeAnimation('horizontal'))
-        self.btnBackLaser.clicked.connect(lambda: self.stackedWidgetLaser.setCurrentWidget(self.bodyPartPage))
-        self.btnBackLaser.clicked.connect(lambda: self.btnBackLaser.setVisible(False))
-        self.btnBackLaser.setVisible(False)
-        self.shortcut = QShortcut(QKeySequence("Ctrl+x"), self)
-        self.shortcut.activated.connect(self.close)
-        self.loadLocksTable()
-        self.bodyPartsSignals()
-        self.keyboardSignals()
-        self.casesSignals()
-        self.unlockLIC(auto=True)
+
+    def initSensors(self):
+        self.waterflowIco = QIcon()
+        self.waterflowWarIco = QIcon()
+        self.waterLvlIco = QIcon()
+        self.waterLvlWarIco = QIcon()
+        self.tempIco = QIcon()
+        self.tempWarIco = QIcon()
+        self.lockIco = QIcon()
+        self.unlockIco = QIcon()
+        self.waterflowIco.addPixmap(QPixmap(WATERFLOW))
+        self.waterflowWarIco.addPixmap(QPixmap(WATERFLOW_WARNING))
+        self.waterLvlIco.addPixmap(QPixmap(WATERLEVEL))
+        self.waterLvlWarIco.addPixmap(QPixmap(WATERLEVEL_WARNING))
+        self.tempIco.addPixmap(QPixmap(TEMP))
+        self.tempWarIco.addPixmap(QPixmap(TEMP_WARNING))
+        self.lockIco.addPixmap(QPixmap(LOCK))
+        self.unlockIco.addPixmap(QPixmap(UNLOCK))
+        self.waterflowTimer = QTimer()
+        self.waterLevelTimer = QTimer()
+        self.tempTimer = QTimer()
+        self.waterflowTimer.timeout.connect(lambda: self.blinkSensorsIcon('waterflow'))
+        self.waterLevelTimer.timeout.connect(lambda: self.blinkSensorsIcon('waterLevel'))
+        self.tempTimer.timeout.connect(lambda: self.blinkSensorsIcon('temp'))
+        self.btnWaterflow.setIcon(self.waterflowIco)
+        self.btnTemp.setIcon(self.tempIco)
+        self.btnWaterLevel.setIcon(self.waterLvlIco)
+        self.btnLock.setIcon(self.lockIco)
+        self.btnWaterflow.setIconSize(QSize(80, 80))
+        self.btnTemp.setIconSize(QSize(80, 80))
+        self.btnWaterLevel.setIconSize(QSize(80, 80))
+        self.btnLock.setIconSize(QSize(80, 80))
+        self.waterflowFlag = False
+        self.waterflowWar = False
+        self.waterLevelFlag = False
+        self.waterLevelWar = False
+        self.tempFlag = False
+        self.tempWar = False
+        self.lockFlag = True
+        self.waterLevelError = False
+        self.waterflowError = False
+        self.temperature = 0
+        self.setTemp(5)
+        self.setWaterflowError(False)
+        self.setWaterLevelError(False)
+        self.setLock(False)
+
+    def monitorSensors(self):
+        if not 5 <= self.temperature <= 40:
+            if self.ready:
+                self.setReady(False)
+
+        elif self.waterflowError:
+            if self.ready:
+                self.setReady(False)
+        
+        elif self.waterLevelError:
+            if self.ready:
+                self.setReady(False)
+        
+        elif self.lockFlag:
+            if self.ready:
+                self.setReady(False)
 
     def time(self, edit=False):
         hour = "{:02d}".format(jdatetime.datetime.now().hour) 
@@ -286,11 +387,6 @@ class MainWin(QMainWindow):
             self.txtEditDay.setText(day)
             self.txtEditHour.setText(hour)
             self.txtEditMinute.setText(minute)
-
-    def getLock(self, name):
-        for lock in self.configs['LOCK']:
-            if lock.name == name:
-                return lock
 
     def getLocks(self):
         locks = []
@@ -367,7 +463,6 @@ class MainWin(QMainWindow):
         self.txtLockDay.setText(str(nextDate.day))        
         self.loadLocksTable()
 
-
     def loadLocksTable(self):
         self.configs['LOCK'].sort(key=lambda x: x.date)
         locks = self.configs['LOCK']
@@ -401,7 +496,6 @@ class MainWin(QMainWindow):
             btnDelete.clicked.connect(self.removeLock)
             self.tableLock.setCellWidget(i, 3, btnDelete)
 
-
     def removeLock(self):
         button = qApp.focusWidget()
         index = self.tableLock.indexAt(button.pos())
@@ -414,7 +508,6 @@ class MainWin(QMainWindow):
                     saveConfigs(self.configs)
 
             self.loadLocksTable()
-
 
     def unlockUUID(self):
         user_pass = self.txtPassUUID.text()
@@ -775,63 +868,63 @@ class MainWin(QMainWindow):
     def setNextSession(self, page):
         if page == 'lazer':
             self.userNextSession = self.user
+            self.setReady(False)
         elif page == 'edit':
             self.userNextSession = self.userInfo
             
         self.changeAnimation('vertical')
         self.stackedWidget.setCurrentWidget(self.nextSessionPage)
 
-    def setupSensors(self):
-        self.waterCirIco = QIcon()
-        self.waterCirWarIco = QIcon()
-        self.waterLvlIco = QIcon()
-        self.waterLvlWarIco = QIcon()
-        self.tempIco = QIcon()
-        self.tempWarIco = QIcon()
-        self.lockIco = QIcon()
-        self.unlockIco = QIcon()
-        self.waterCirIco.addPixmap(QPixmap(WATERCIRCULATION))
-        self.waterCirWarIco.addPixmap(QPixmap(WATERCIRCULATIONWARNING))
-        self.waterLvlIco.addPixmap(QPixmap(WATERLEVEL))
-        self.waterLvlWarIco.addPixmap(QPixmap(WATERLEVELWARNING))
-        self.tempIco.addPixmap(QPixmap(TEMP))
-        self.tempWarIco.addPixmap(QPixmap(TEMPWARNING))
-        self.lockIco.addPixmap(QPixmap(LOCK))
-        self.unlockIco.addPixmap(QPixmap(UNLOCK))
-        self.waterCirTimer = QTimer()
-        self.waterLevelTimer = QTimer()
-        self.tempTimer = QTimer()
-        self.waterCirTimer.timeout.connect(lambda: self.blinkSensorsIcon('waterCir'))
-        self.waterLevelTimer.timeout.connect(lambda: self.blinkSensorsIcon('waterLevel'))
-        self.tempTimer.timeout.connect(lambda: self.blinkSensorsIcon('temp'))
-        self.btnWaterCirculation.setIcon(self.waterCirIco)
-        self.btnTemp.setIcon(self.tempIco)
-        self.btnWaterLevel.setIcon(self.waterLvlIco)
-        self.btnLock.setIcon(self.lockIco)
-        self.btnWaterCirculation.setIconSize(QSize(80, 80))
-        self.btnTemp.setIconSize(QSize(80, 80))
-        self.btnWaterLevel.setIconSize(QSize(80, 80))
-        self.btnLock.setIconSize(QSize(80, 80))
-        self.waterCirculanFlag = False
-        self.waterCirculanWar = False
-        self.waterLevelFlag = False
-        self.waterLevelWar = False
-        self.tempFlag = False
-        self.tempWar = False
-        self.lockFlag = True
-        self.setTemp(0)
-        self.setLock(True)
-
     def setReady(self, ready):
         if ready:
+            if not 5 <= self.temperature <= 40:
+                self.setLabel(
+                    TEXT['tempError'][self.language],
+                    self.lblReadyError,
+                    self.readyErrorTimer, 4
+                )
+                return
+
+            if self.waterflowError:
+                self.setLabel(
+                    TEXT['waterflowError'][self.language],
+                    self.lblReadyError,
+                    self.readyErrorTimer, 4
+                )
+                return
+            
+            if self.waterLevelError:
+                self.setLabel(
+                    TEXT['waterLevelError'][self.language],
+                    self.lblReadyError,
+                    self.readyErrorTimer, 4
+                )
+                return
+            
+            if self.lockFlag:
+                self.setLabel(
+                    TEXT['interLockError'][self.language],
+                    self.lblReadyError,
+                    self.readyErrorTimer, 4
+                )
+                return
+
             self.ready = True
             self.btnStandby.setStyleSheet(READY_NOT_SELECTED)
             self.btnReady.setStyleSheet(READY_SELECTED)
+            self.sliderEnergy.setStyleSheet(SLIDER_DISABLED)
+            self.sliderFrequency.setStyleSheet(SLIDER_DISABLED)
+            self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED)
+            self.epfSkinGradeLayout.setEnabled(False)
 
         else:
             self.ready = False
             self.btnStandby.setStyleSheet(READY_SELECTED)
             self.btnReady.setStyleSheet(READY_NOT_SELECTED)
+            self.epfSkinGradeLayout.setEnabled(True)
+            self.sliderEnergy.setStyleSheet(SLIDER)
+            self.sliderFrequency.setStyleSheet(SLIDER)
+            self.sliderPulseWidth.setStyleSheet(SLIDER)
 
     def setCooling(self, operation):
         buttons = layout_widgets(self.coolingLayout)
@@ -856,26 +949,79 @@ class MainWin(QMainWindow):
                         
                 self.cooling -= 1       
 
-    def setEPF(self, operation):
-        if self.EPF == 'E':
-            energy = int(self.txtEnergy.text().split(' ')[0])
-            energy = energy + 1 if operation == 'inc' else energy - 1
-            self.txtEnergy.setText(str(energy) + '   J/cm²')
-        elif self.EPF == 'P':
-            pulseWidth = int(self.txtPulseWidth.text().split(' ')[0])
-            pulseWidth = pulseWidth + 1 if operation == 'inc' else pulseWidth - 1
-            self.txtPulseWidth.setText(str(pulseWidth) + '   Ms')
-        elif self.EPF == 'F':
-            frequency = int(self.txtFrequency.text().split(' ')[0])
-            frequency = frequency + 1 if operation == 'inc' else frequency - 1
-            self.txtFrequency.setText(str(frequency) + '   Hz')
+    def sliderChgColor(self, i):
+        if i == 'pressed':
+            self.sliderEnergy.setStyleSheet(SLIDER_SAVED)
+            self.sliderFrequency.setStyleSheet(SLIDER_SAVED)
+            self.sliderPulseWidth.setStyleSheet(SLIDER_SAVED)
+        else:
+            self.sliderEnergy.setStyleSheet(SLIDER)            
+            self.sliderFrequency.setStyleSheet(SLIDER)            
+            self.sliderPulseWidth.setStyleSheet(SLIDER)                
+
+    def setEnergy(self, operation):
+        e = self.energy
+        e = e + 1 if operation == 'inc' else e - 1
+        if MIN_ENRGEY <= e <= MAX_ENERGY:
+            self.energy = e
+            self.sliderEnergy.setValue(e)
+            self.lblEnergyValue.setText(str(e))
+
+    def sldrSetEnergy(self, value):
+        self.energy = value
+        self.lblEnergyValue.setText(str(value))
+
+    def setPulseWidth(self, operation):
+        pl = self.pulseWidth
+        pl = pl + 1 if operation == 'inc' else pl - 1
+        if MIN_PULSE_WIDTH <= pl <= MAX_PULSE_WIDTH:
+            self.pulseWidth = pl
+            self.sliderPulseWidth.setValue(pl)
+            self.lblPulseWidthValue.setText(str(pl))
+            maxF_pl = 1000 / (2 * self.pulseWidth)
+            maxF_pl_con = MAX_FREQUENCY >= maxF_pl
+            if maxF_pl_con and self.frequency >= maxF_pl:
+                self.frequency = math.floor(maxF_pl)
+                self.sliderFrequency.setValue(self.frequency)
+                self.lblFrequencyValue.setText(str(self.frequency))
+
+    def sldrSetPulseWidth(self, value):
+        self.pulseWidth = value
+        self.lblPulseWidthValue.setText(str(value))
+        maxF_pl = 1000 / (2 * self.pulseWidth)
+        maxF_pl_con = MAX_FREQUENCY >= maxF_pl
+        if maxF_pl_con and self.frequency >= maxF_pl:
+            self.frequency = math.floor(maxF_pl)
+            self.sliderFrequency.setValue(self.frequency)
+            self.lblFrequencyValue.setText(str(self.frequency))
+
+    def setFrequency(self, operation):
+        freq = self.frequency
+        freq = freq + 1 if operation == 'inc' else freq - 1
+        freqCon = MIN_FREQUENCY <= freq <= MAX_FREQUENCY
+        freqPlCon = freq <= 1000 / (2 * self.pulseWidth)
+        if freqCon and freqPlCon:
+            self.frequency = freq
+            self.sliderFrequency.setValue(freq)
+            self.lblFrequencyValue.setText(str(freq))
+                 
+    def sldrSetFrequency(self, value):
+        freqCon = MIN_FREQUENCY <= value <= MAX_FREQUENCY
+        freqPlCon = value <= 1000 / (2 * self.pulseWidth)
+        if freqCon and freqPlCon:
+            self.frequency = value
+            self.lblFrequencyValue.setText(str(value))
+            self.sliderFrequency.setValue(value)
+            self.lblFrequencyValue.setText(str(value))
+
+    def freqSldrReleasd(self):
+        self.sliderFrequency.setValue(self.frequency)
         
     def saveCase(self):
-        energy = int(self.txtEnergy.text().split(' ')[0])
-        pulseWidth = int(self.txtPulseWidth.text().split(' ')[0])
-        frequency = int(self.txtFrequency.text().split(' ')[0])
         case = openCase(self.case)
-        case.save(self.sex, self.bodyPart, (energy, pulseWidth, frequency))
+        case.save(
+            self.sex, self.bodyPart, (self.energy, self.pulseWidth, self.frequency)
+        )
 
     def bodyPartsSignals(self):
         buttons = chain(
@@ -952,10 +1098,16 @@ class MainWin(QMainWindow):
 
     def loadCase(self):
         case = openCase(self.case)
-        enrgy, pl, freq = case.getValue(self.sex, self.bodyPart)
-        self.txtEnergy.setText(str(enrgy) + '   J/cm²')
-        self.txtPulseWidth.setText(str(pl) + '   Ms')
-        self.txtFrequency.setText(str(freq) + '   Hz')
+        energy, pl, freq = case.getValue(self.sex, self.bodyPart)
+        self.energy = energy
+        self.pulseWidth = pl
+        self.frequency = freq
+        self.sliderEnergy.setValue(energy)
+        self.sliderPulseWidth.setValue(pl)
+        self.sliderFrequency.setValue(freq)
+        self.lblEnergyValue.setText(str(energy))
+        self.lblPulseWidthValue.setText(str(pl))
+        self.lblFrequencyValue.setText(str(freq))
 
     def backSettings(self):
         self.hwPass('hide') 
@@ -965,12 +1117,12 @@ class MainWin(QMainWindow):
             self.stackedWidgetSettings.setCurrentWidget(self.settingsMenuPage) 
 
     def blinkSensorsIcon(self, sensor):
-        if sensor == 'waterCir':
-            self.waterCirculanFlag = not self.waterCirculanFlag
-            if self.waterCirculanFlag:
-                self.btnWaterCirculation.setIcon(self.waterCirWarIco)
+        if sensor == 'waterflow':
+            self.waterflowFlag = not self.waterflowFlag
+            if self.waterflowFlag:
+                self.btnWaterflow.setIcon(self.waterflowWarIco)
             else:
-                self.btnWaterCirculation.setIcon(self.waterCirIco)
+                self.btnWaterflow.setIcon(self.waterflowIco)
 
         elif sensor == 'waterLevel':
             self.waterLevelFlag = not self.waterLevelFlag
@@ -987,10 +1139,10 @@ class MainWin(QMainWindow):
                 self.btnTemp.setIcon(self.tempIco)
 
     def stopSensorWarning(self, sensor):
-        if sensor == 'waterCir':
-            self.waterCirTimer.stop()
-            self.waterCirculanWar = False
-            self.btnTemp.setIcon(self.tempIco)
+        if sensor == 'waterflow':
+            self.waterflowTimer.stop()
+            self.waterflowWar = False
+            self.btnWaterflow.setIcon(self.waterflowIco)
             
         elif sensor == 'waterLevel':
             self.waterLevelTimer.stop()
@@ -1003,10 +1155,10 @@ class MainWin(QMainWindow):
             self.btnTemp.setIcon(self.tempIco)
 
     def startSensorWarning(self, sensor):
-        if sensor == 'waterCir':
-            if not self.tempWar:
-                self.tempTimer.start(500)
-                self.tempWar = True
+        if sensor == 'waterflow':
+            if not self.waterflowWar:
+                self.waterflowTimer.start(500)
+                self.waterflowWar = True
 
         elif sensor == 'waterLevel':
             if not self.waterLevelWar:
@@ -1029,10 +1181,25 @@ class MainWin(QMainWindow):
 
     def setTemp(self, value):
         self.txtTemp.setText(str(value) + ' °C')
+        self.temperature = value
         if not (5 <= value <= 40):
             self.startSensorWarning('temp')
         else:
             self.stopSensorWarning('temp')
+
+    def setWaterflowError(self, status):
+        self.waterflowError = status
+        if self.waterflowError:
+            self.startSensorWarning('waterflow')
+        else:
+            self.stopSensorWarning('waterflow')
+
+    def setWaterLevelError(self, status):
+        self.waterLevelError = status
+        if self.waterLevelError:
+            self.startSensorWarning('waterLevel')
+        else:
+            self.stopSensorWarning('waterLevel')
 
     def search(self):
         name = self.txtSearch.text().lower()
@@ -1404,7 +1571,7 @@ class MainWin(QMainWindow):
         self.setLabel(
                 TEXT['userUpdated'][self.language],
                 self.lblEditUser,
-                self.editLabelTimer
+                self.editLabelTimer, 3
             )
         self.loadToTabel()
 

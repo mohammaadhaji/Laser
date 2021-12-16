@@ -1,6 +1,4 @@
 from functions import getDiff, randID
-from os.path import join, isfile
-import os
 
 
 class Lock:

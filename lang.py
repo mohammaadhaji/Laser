@@ -65,10 +65,10 @@ TEXT = {
     'btnEndSession': ['End Session', 'پایان جلسه'],
     'btnFemale': ['Female', ' زن '],
     'btnMale': [' Male    ',' مرد '],
-    'lblEnergy': ['Energy', 'انرژی'],
-    'lblFrequency': ['Frequency', 'فرکانس'],
-    'lblPulseWidth': ['Pulse Width', 'پهنای پالس'],
-    'lblCounter': ['Counter', 'شمارنده'],
+    'lblEnergy': ['Energy   →', '→   انرژی'],
+    'lblFrequency': ['Frequency   →', '→   فرکانس'],
+    'lblPulseWidth': ['Pulse Width   →', '→   پهنای پالس'],
+    'lblCounter': ['Counter   →', '→   شمارنده'],
     'face': ['Face', 'صورت'],
     'armpit': ['Armpit', 'زیربغل'],
     'arm': ['Arm', 'بازو'],
@@ -119,6 +119,9 @@ TEXT = {
     'yes': ['Yes', 'بله'],
     'no': ['No', 'خیر'],
     'lblCurrentUser': ['Name', 'نام'],
-    'lblCurrentSnumber': ['S Number', 'شماره جلسه']
-
+    'lblCurrentSnumber': ['S Number', 'شماره جلسه'],
+    'tempError': ['Temperature Sensor Error', 'خطای سنسور دما'],
+    'waterflowError': ['Water Flow Sensor Error', 'خطای سنسور جریان آب'],
+    'waterLevelError': ['Water Level Sensor Error', 'خطای سنسور سطح آب'],
+    'interLockError': ['Inter Lock Swith Error', 'خطای سوئیچ قفل داخلی'],
 }

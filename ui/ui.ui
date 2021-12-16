@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1527</width>
-    <height>756</height>
+    <width>1595</width>
+    <height>909</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -53,7 +53,7 @@ font-family:&quot;Times New Roman&quot;;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>10</number>
       </property>
       <widget class="QWidget" name="UUIDPage">
        <layout class="QVBoxLayout" name="verticalLayout_66">
@@ -1370,6 +1370,9 @@ margin: 20px 0 0 0;
                 <property name="styleSheet">
                  <string notr="true"/>
                 </property>
+                <property name="text">
+                 <string>1</string>
+                </property>
                 <property name="alignment">
                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
@@ -2231,7 +2234,7 @@ QPushButton:pressed{
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1180</width>
+                       <width>1248</width>
                        <height>737</height>
                       </rect>
                      </property>
@@ -5754,7 +5757,14 @@ padding:10px 10px 10px 10px;</string>
                       </font>
                      </property>
                      <property name="styleSheet">
-                      <string notr="true"/>
+                      <string notr="true">QLineEdit{
+border-radius:10px;
+border:2px solid gray;
+padding:10px 10px 10px 10px;
+}
+QLineEdit:focus{
+border:2px solid white;
+}</string>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
@@ -5773,7 +5783,14 @@ padding:10px 10px 10px 10px;</string>
                       </font>
                      </property>
                      <property name="styleSheet">
-                      <string notr="true"/>
+                      <string notr="true">QLineEdit{
+border-radius:10px;
+border:2px solid gray;
+padding:10px 10px 10px 10px;
+}
+QLineEdit:focus{
+border:2px solid white;
+}</string>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
@@ -5937,6 +5954,16 @@ border: 1px solid white;
                        <family>Arial</family>
                        <pointsize>20</pointsize>
                       </font>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">QLineEdit{
+border-radius:10px;
+border:2px solid gray;
+padding:10px 10px 10px 10px;
+}
+QLineEdit:focus{
+border:2px solid white;
+}</string>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
@@ -6119,7 +6146,7 @@ margin:0 10px 0 10px;
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="btnWaterCirculation">
+                  <widget class="QPushButton" name="btnWaterflow">
                    <property name="text">
                     <string/>
                    </property>
@@ -6219,7 +6246,7 @@ border: 1px solid white;
           <item>
            <widget class="StackedWidget" name="stackedWidgetLaser">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="bodyPartPage">
              <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -7365,278 +7392,120 @@ background-color: rgb(0, 170, 255);
                <number>11</number>
               </property>
               <item>
-               <layout class="QVBoxLayout" name="verticalLayout_34">
-                <property name="leftMargin">
-                 <number>0</number>
+               <widget class="QScrollArea" name="scrollArea_2">
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
                 </property>
-                <property name="topMargin">
-                 <number>20</number>
+                <property name="widgetResizable">
+                 <bool>true</bool>
                 </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_22" stretch="1,0,0,0,0,0,0,0,0,0,1,0,0,1">
+                <widget class="QWidget" name="scrollAreaWidgetContents_3">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>1528</width>
+                   <height>899</height>
+                  </rect>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_80">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
                   <property name="topMargin">
                    <number>0</number>
                   </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
                   <item>
-                   <spacer name="horizontalSpacer_33">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
+                   <layout class="QVBoxLayout" name="verticalLayout_34">
+                    <property name="leftMargin">
+                     <number>0</number>
                     </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
+                    <property name="topMargin">
+                     <number>20</number>
                     </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="lblCooling">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>20</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Cooling</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_75">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <widget class="Line" name="line_4">
-                    <property name="styleSheet">
-                     <string notr="true">background-color: rgb(255, 255, 255);</string>
-                    </property>
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_87">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="btnDecCooling">
-                    <property name="styleSheet">
-                     <string notr="true">QPushButton{
-outline : 0;
-background-color: rgb(213, 213, 213);
-border-radius: 15px;
-border: 10px solid rgb(213, 213, 213);
-}
-
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-border: 10px solid rgb(0, 170, 255);
-}
-</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset>
-                      <normaloff>images/minus.png</normaloff>images/minus.png</iconset>
-                    </property>
-                    <property name="iconSize">
-                     <size>
-                      <width>80</width>
-                      <height>80</height>
-                     </size>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="coolingLayout">
                     <property name="rightMargin">
                      <number>0</number>
                     </property>
                     <item>
-                     <widget class="QPushButton" name="btnCooling1">
-                      <property name="minimumSize">
-                       <size>
-                        <width>80</width>
-                        <height>70</height>
-                       </size>
+                     <layout class="QHBoxLayout" name="horizontalLayout_22" stretch="2,0,0,0,0,0,0,0,0,0,3,1,2,1">
+                      <property name="topMargin">
+                       <number>0</number>
                       </property>
-                      <property name="styleSheet">
-                       <string notr="true">QPushButton{
-outline:0;
-background-color: rgb(58, 58, 58);
-border-radius:10px;
-}</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="icon">
-                       <iconset>
-                        <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
-                      </property>
-                      <property name="iconSize">
-                       <size>
-                        <width>50</width>
-                        <height>50</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="btnCooling2">
-                      <property name="minimumSize">
-                       <size>
-                        <width>80</width>
-                        <height>70</height>
-                       </size>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">QPushButton{
-outline:0;
-background-color: rgb(58, 58, 58);
-border-radius:10px;
-}</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="icon">
-                       <iconset>
-                        <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
-                      </property>
-                      <property name="iconSize">
-                       <size>
-                        <width>50</width>
-                        <height>50</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="btnCooling3">
-                      <property name="minimumSize">
-                       <size>
-                        <width>80</width>
-                        <height>70</height>
-                       </size>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">QPushButton{
-outline:0;
-background-color: rgb(58, 58, 58);
-border-radius:10px;
-}</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="icon">
-                       <iconset>
-                        <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
-                      </property>
-                      <property name="iconSize">
-                       <size>
-                        <width>50</width>
-                        <height>50</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="btnCooling4">
-                      <property name="minimumSize">
-                       <size>
-                        <width>80</width>
-                        <height>70</height>
-                       </size>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">QPushButton{
-outline:0;
-background-color: rgb(58, 58, 58);
-border-radius:10px;
-}</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="icon">
-                       <iconset>
-                        <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
-                      </property>
-                      <property name="iconSize">
-                       <size>
-                        <width>50</width>
-                        <height>50</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="btnCooling5">
-                      <property name="minimumSize">
-                       <size>
-                        <width>80</width>
-                        <height>70</height>
-                       </size>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">QPushButton{
-outline:0;
-background-color: rgb(58, 58, 58);
-border-radius:10px;
-}</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="icon">
-                       <iconset>
-                        <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
-                      </property>
-                      <property name="iconSize">
-                       <size>
-                        <width>50</width>
-                        <height>50</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="btnIncCooling">
-                    <property name="styleSheet">
-                     <string notr="true">QPushButton{
+                      <item>
+                       <spacer name="horizontalSpacer_33">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="lblCooling">
+                        <property name="font">
+                         <font>
+                          <family>Arial</family>
+                          <pointsize>20</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>Cooling</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer_75">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="Line" name="line_4">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(255, 255, 255);</string>
+                        </property>
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer_87">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="btnDecCooling">
+                        <property name="styleSheet">
+                         <string notr="true">QPushButton{
 outline : 0;
 background-color: rgb(213, 213, 213);
 border-radius: 15px;
@@ -7648,648 +7517,1072 @@ background-color: rgb(0, 170, 255);
 border: 10px solid rgb(0, 170, 255);
 }
 </string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset>
-                      <normaloff>images/plus.png</normaloff>images/plus.png</iconset>
-                    </property>
-                    <property name="iconSize">
-                     <size>
-                      <width>80</width>
-                      <height>80</height>
-                     </size>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_88">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <widget class="Line" name="line_5">
-                    <property name="styleSheet">
-                     <string notr="true">background-color: rgb(255, 255, 255);</string>
-                    </property>
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_28">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="lblCounter">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>20</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Counter</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLineEdit" name="txtCounter">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>20</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                     </font>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
+                        </property>
+                        <property name="text">
+                         <string/>
+                        </property>
+                        <property name="icon">
+                         <iconset>
+                          <normaloff>images/minus.png</normaloff>images/minus.png</iconset>
+                        </property>
+                        <property name="iconSize">
+                         <size>
+                          <width>80</width>
+                          <height>80</height>
+                         </size>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <layout class="QHBoxLayout" name="coolingLayout">
+                        <property name="rightMargin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QPushButton" name="btnCooling1">
+                          <property name="minimumSize">
+                           <size>
+                            <width>80</width>
+                            <height>70</height>
+                           </size>
+                          </property>
+                          <property name="styleSheet">
+                           <string notr="true">QPushButton{
+outline:0;
 background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-}
-</string>
-                    </property>
-                    <property name="text">
-                     <string>0</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                    <property name="readOnly">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_34">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <widget class="QFrame" name="horizontalFrame">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>3</pointsize>
-                   </font>
-                  </property>
-                  <property name="layoutDirection">
-                   <enum>Qt::LeftToRight</enum>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true"/>
-                  </property>
-                  <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="2,0,2,0,2">
-                   <property name="leftMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="rightMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="bottomMargin">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <spacer name="horizontalSpacer_26">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_28">
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <spacer name="verticalSpacer_53">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item>
-                      <layout class="QGridLayout" name="gridLayout_2">
-                       <item row="1" column="1">
-                        <widget class="QLabel" name="lblPulseWidth">
-                         <property name="font">
-                          <font>
-                           <family>Arial</family>
-                           <pointsize>20</pointsize>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>Pulse Width</string>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="2">
-                        <widget class="QLineEdit" name="txtFrequency">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="font">
-                          <font>
-                           <family>Arial</family>
-                           <pointsize>20</pointsize>
-                           <weight>50</weight>
-                           <italic>false</italic>
-                           <bold>false</bold>
-                          </font>
-                         </property>
-                         <property name="styleSheet">
-                          <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-
-}
-</string>
-                         </property>
-                         <property name="text">
-                          <string>0.0   Hz</string>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignCenter</set>
-                         </property>
-                         <property name="readOnly">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="0">
-                        <widget class="QPushButton" name="btnEnergy">
-                         <property name="styleSheet">
-                          <string notr="true">QPushButton{
-    outline : 0;
-    background-color: rgb(213, 213, 213);
-    border-radius: 15px;
-    border: 10px solid red;
-}
-
-QPushButton:pressed{
-    border: 10px solid red;
+border-radius:10px;
 }</string>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="icon">
-                          <iconset>
-                           <normaloff>images/energy.png</normaloff>images/energy.png</iconset>
-                         </property>
-                         <property name="iconSize">
-                          <size>
-                           <width>80</width>
-                           <height>80</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="1">
-                        <widget class="QLabel" name="lblEnergy">
-                         <property name="font">
-                          <font>
-                           <family>Arial</family>
-                           <pointsize>20</pointsize>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>Energy</string>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="5">
-                        <widget class="QPushButton" name="btnDecEPF">
-                         <property name="styleSheet">
-                          <string notr="true">QPushButton{
-outline : 0;
-background-color: rgb(213, 213, 213);
-border-radius: 15px;
-border: 10px solid rgb(213, 213, 213);
-}
-
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-border: 10px solid rgb(0, 170, 255);
-}
-</string>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="icon">
-                          <iconset>
-                           <normaloff>images/down.png</normaloff>images/down.png</iconset>
-                         </property>
-                         <property name="iconSize">
-                          <size>
-                           <width>80</width>
-                           <height>80</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="2">
-                        <widget class="QLineEdit" name="txtEnergy">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="font">
-                          <font>
-                           <family>Arial</family>
-                           <pointsize>20</pointsize>
-                           <weight>50</weight>
-                           <italic>false</italic>
-                           <bold>false</bold>
-                          </font>
-                         </property>
-                         <property name="styleSheet">
-                          <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                          <property name="icon">
+                           <iconset>
+                            <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
+                          </property>
+                          <property name="iconSize">
+                           <size>
+                            <width>50</width>
+                            <height>50</height>
+                           </size>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="btnCooling2">
+                          <property name="minimumSize">
+                           <size>
+                            <width>80</width>
+                            <height>70</height>
+                           </size>
+                          </property>
+                          <property name="styleSheet">
+                           <string notr="true">QPushButton{
+outline:0;
 background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-
-}
-</string>
-                         </property>
-                         <property name="text">
-                          <string>0.0   J/cm²</string>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignCenter</set>
-                         </property>
-                         <property name="readOnly">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="1">
-                        <widget class="QLabel" name="lblFrequency">
-                         <property name="font">
-                          <font>
-                           <family>Arial</family>
-                           <pointsize>20</pointsize>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>Frequency</string>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="4">
-                        <widget class="QPushButton" name="btnIncEPF">
-                         <property name="styleSheet">
-                          <string notr="true">QPushButton{
-outline : 0;
-background-color: rgb(213, 213, 213);
-border-radius: 15px;
-border: 10px solid rgb(213, 213, 213);
-}
-
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-border: 10px solid rgb(0, 170, 255);
-}
-</string>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="icon">
-                          <iconset>
-                           <normaloff>images/up.png</normaloff>images/up.png</iconset>
-                         </property>
-                         <property name="iconSize">
-                          <size>
-                           <width>80</width>
-                           <height>80</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="6">
-                        <widget class="QPushButton" name="btnSaveCase">
-                         <property name="styleSheet">
-                          <string notr="true">QPushButton{
-outline : 0;
-background-color: rgb(213, 213, 213);
-border-radius: 15px;
-border: 10px solid rgb(213, 213, 213);
-}
-
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-border: 10px solid rgb(0, 170, 255);
-}
-</string>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="icon">
-                          <iconset>
-                           <normaloff>images/save.png</normaloff>images/save.png</iconset>
-                         </property>
-                         <property name="iconSize">
-                          <size>
-                           <width>80</width>
-                           <height>80</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="2">
-                        <widget class="QLineEdit" name="txtPulseWidth">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="font">
-                          <font>
-                           <family>Arial</family>
-                           <pointsize>20</pointsize>
-                           <weight>50</weight>
-                           <italic>false</italic>
-                           <bold>false</bold>
-                          </font>
-                         </property>
-                         <property name="styleSheet">
-                          <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
+border-radius:10px;
+}</string>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                          <property name="icon">
+                           <iconset>
+                            <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
+                          </property>
+                          <property name="iconSize">
+                           <size>
+                            <width>50</width>
+                            <height>50</height>
+                           </size>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="btnCooling3">
+                          <property name="minimumSize">
+                           <size>
+                            <width>80</width>
+                            <height>70</height>
+                           </size>
+                          </property>
+                          <property name="styleSheet">
+                           <string notr="true">QPushButton{
+outline:0;
 background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-
-}
-</string>
-                         </property>
-                         <property name="text">
-                          <string>0.0   Ms</string>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignCenter</set>
-                         </property>
-                         <property name="readOnly">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="0">
-                        <widget class="QPushButton" name="btnFrequency">
-                         <property name="styleSheet">
-                          <string notr="true">QPushButton{
+border-radius:10px;
+}</string>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                          <property name="icon">
+                           <iconset>
+                            <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
+                          </property>
+                          <property name="iconSize">
+                           <size>
+                            <width>50</width>
+                            <height>50</height>
+                           </size>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="btnCooling4">
+                          <property name="minimumSize">
+                           <size>
+                            <width>80</width>
+                            <height>70</height>
+                           </size>
+                          </property>
+                          <property name="styleSheet">
+                           <string notr="true">QPushButton{
+outline:0;
+background-color: rgb(58, 58, 58);
+border-radius:10px;
+}</string>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                          <property name="icon">
+                           <iconset>
+                            <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
+                          </property>
+                          <property name="iconSize">
+                           <size>
+                            <width>50</width>
+                            <height>50</height>
+                           </size>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="btnCooling5">
+                          <property name="minimumSize">
+                           <size>
+                            <width>80</width>
+                            <height>70</height>
+                           </size>
+                          </property>
+                          <property name="styleSheet">
+                           <string notr="true">QPushButton{
+outline:0;
+background-color: rgb(58, 58, 58);
+border-radius:10px;
+}</string>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                          <property name="icon">
+                           <iconset>
+                            <normaloff>images/coolingOff.png</normaloff>images/coolingOff.png</iconset>
+                          </property>
+                          <property name="iconSize">
+                           <size>
+                            <width>50</width>
+                            <height>50</height>
+                           </size>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="btnIncCooling">
+                        <property name="styleSheet">
+                         <string notr="true">QPushButton{
 outline : 0;
-
 background-color: rgb(213, 213, 213);
 border-radius: 15px;
 border: 10px solid rgb(213, 213, 213);
 }
 
 QPushButton:pressed{
-border: 10px solid  red;
+background-color: rgb(0, 170, 255);
+border: 10px solid rgb(0, 170, 255);
 }
 </string>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="icon">
-                          <iconset>
-                           <normaloff>images/frequency.png</normaloff>images/frequency.png</iconset>
-                         </property>
-                         <property name="iconSize">
-                          <size>
-                           <width>80</width>
-                           <height>80</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="7">
-                        <spacer name="horizontalSpacer_30">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="1" column="3">
-                        <spacer name="horizontalSpacer_38">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="1" column="0">
-                        <widget class="QPushButton" name="btnPulseWidth">
-                         <property name="styleSheet">
-                          <string notr="true">QPushButton{
-outline : 0;
-
-background-color: rgb(213, 213, 213);
-border-radius: 15px;
-border: 10px solid rgb(213, 213, 213);
-}
-
-QPushButton:pressed{
-border: 10px solid  red;
-}
-</string>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="icon">
-                          <iconset>
-                           <normaloff>images/pulse.png</normaloff>images/pulse.png</iconset>
-                         </property>
-                         <property name="iconSize">
-                          <size>
-                           <width>80</width>
-                           <height>80</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item>
-                      <spacer name="verticalSpacer_46">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="text">
+                         <string/>
+                        </property>
+                        <property name="icon">
+                         <iconset>
+                          <normaloff>images/plus.png</normaloff>images/plus.png</iconset>
+                        </property>
+                        <property name="iconSize">
+                         <size>
+                          <width>80</width>
+                          <height>80</height>
+                         </size>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer_88">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="Line" name="line_5">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(255, 255, 255);</string>
+                        </property>
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer_28">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="lblCounter">
+                        <property name="font">
+                         <font>
+                          <family>Arial</family>
+                          <pointsize>20</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>Counter   →</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="lblCounterValue">
+                        <property name="font">
+                         <font>
+                          <family>Arial</family>
+                          <pointsize>45</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>0</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer_34">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <widget class="QFrame" name="horizontalFrame">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>3</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::LeftToRight</enum>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true"/>
+                      </property>
+                      <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="2,0,2,0,2">
+                       <property name="leftMargin">
+                        <number>0</number>
                        </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_53" stretch="0,3,0,0,0">
                        <property name="topMargin">
                         <number>0</number>
                        </property>
                        <property name="rightMargin">
                         <number>0</number>
                        </property>
+                       <property name="bottomMargin">
+                        <number>0</number>
+                       </property>
                        <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_55">
-                         <property name="leftMargin">
-                          <number>0</number>
+                        <spacer name="horizontalSpacer_26">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
                          </property>
-                         <item>
-                          <widget class="QLabel" name="lblSkinGrade">
-                           <property name="font">
-                            <font>
-                             <family>Arial</family>
-                             <pointsize>20</pointsize>
-                            </font>
-                           </property>
-                           <property name="text">
-                            <string>Skin Grade</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_86">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item>
-                          <widget class="Line" name="line_3">
-                           <property name="styleSheet">
-                            <string notr="true">background-color: rgb(255, 255, 255);</string>
-                           </property>
-                           <property name="orientation">
-                            <enum>Qt::Vertical</enum>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_76">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                        </layout>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
                        </item>
                        <item>
-                        <layout class="QHBoxLayout" name="casesLayout" stretch="1,0,1,0,1,0,1,0,1">
-                         <item>
-                          <widget class="QPushButton" name="btnCaseI">
-                           <property name="minimumSize">
-                            <size>
-                             <width>100</width>
-                             <height>100</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>100</width>
-                             <height>100</height>
-                            </size>
-                           </property>
-                           <property name="styleSheet">
-                            <string notr="true">QPushButton {
+                        <widget class="QFrame" name="epfSkinGradeLayout">
+                         <property name="styleSheet">
+                          <string notr="true">QLabel:disabled{
+color:rgb(188, 188, 188);
+}
+</string>
+                         </property>
+                         <layout class="QVBoxLayout" name="verticalLayout_28">
+                          <property name="spacing">
+                           <number>0</number>
+                          </property>
+                          <property name="bottomMargin">
+                           <number>1</number>
+                          </property>
+                          <item>
+                           <spacer name="verticalSpacer_53">
+                            <property name="orientation">
+                             <enum>Qt::Vertical</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>20</width>
+                              <height>40</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                          <item>
+                           <layout class="QVBoxLayout" name="energyLayout">
+                            <property name="spacing">
+                             <number>0</number>
+                            </property>
+                            <item>
+                             <layout class="QHBoxLayout" name="horizontalLayout_65" stretch="2,1,1,1,2">
+                              <property name="bottomMargin">
+                               <number>0</number>
+                              </property>
+                              <item>
+                               <spacer name="horizontalSpacer_30">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="lblEnergy">
+                                <property name="enabled">
+                                 <bool>true</bool>
+                                </property>
+                                <property name="font">
+                                 <font>
+                                  <family>Arial</family>
+                                  <pointsize>20</pointsize>
+                                 </font>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true">QLabel:disabled{
+color:rgb(188, 188, 188);
+}</string>
+                                </property>
+                                <property name="text">
+                                 <string>Energy   →</string>
+                                </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignCenter</set>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="lblEnergyValue">
+                                <property name="font">
+                                 <font>
+                                  <family>Arial</family>
+                                  <pointsize>40</pointsize>
+                                 </font>
+                                </property>
+                                <property name="text">
+                                 <string>0</string>
+                                </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignCenter</set>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="label_12">
+                                <property name="font">
+                                 <font>
+                                  <family>Arial</family>
+                                  <pointsize>20</pointsize>
+                                 </font>
+                                </property>
+                                <property name="text">
+                                 <string>J/cm²</string>
+                                </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignCenter</set>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_38">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                             </layout>
+                            </item>
+                            <item>
+                             <layout class="QHBoxLayout" name="horizontalLayout_62">
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <item>
+                               <widget class="QPushButton" name="btnDecE">
+                                <property name="styleSheet">
+                                 <string notr="true">QPushButton{
+outline : 0;
+border: 0;
+}
+
+QPushButton:pressed{
+margin-right:20px;
+}
+</string>
+                                </property>
+                                <property name="text">
+                                 <string/>
+                                </property>
+                                <property name="icon">
+                                 <iconset>
+                                  <normaloff>images/dec.png</normaloff>images/dec.png</iconset>
+                                </property>
+                                <property name="iconSize">
+                                 <size>
+                                  <width>100</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QSlider" name="sliderEnergy">
+                                <property name="enabled">
+                                 <bool>true</bool>
+                                </property>
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>0</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true">QSlider::groove:horizontal {
+    border-radius: 1px;
+    height: 3px;
+    margin: 0px;
+    background-color: rgb(52, 59, 72);
+}
+QSlider::groove:horizontal:hover {
+    background-color: rgb(55, 62, 76);
+}
+QSlider::handle:horizontal {
+    background-color: rgb(85, 170, 255);
+    border: none;
+    height: 80px;
+    width: 80px;
+    border-radius: 40px;
+    margin: -40px 0;
+    padding: -40px 0px;
+}
+QSlider::handle:horizontal:hover {
+    background-color: rgb(155, 180, 255);
+}
+QSlider::handle:horizontal:pressed {
+    background-color: rgb(65, 255, 195);
+}</string>
+                                </property>
+                                <property name="minimum">
+                                 <number>3</number>
+                                </property>
+                                <property name="maximum">
+                                 <number>200</number>
+                                </property>
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="invertedAppearance">
+                                 <bool>false</bool>
+                                </property>
+                                <property name="invertedControls">
+                                 <bool>false</bool>
+                                </property>
+                                <property name="tickPosition">
+                                 <enum>QSlider::NoTicks</enum>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QPushButton" name="btnIncE">
+                                <property name="styleSheet">
+                                 <string notr="true">QPushButton{
+outline : 0;
+border: 0;
+}
+
+QPushButton:pressed{
+margin-left:20px;
+}
+</string>
+                                </property>
+                                <property name="text">
+                                 <string/>
+                                </property>
+                                <property name="icon">
+                                 <iconset>
+                                  <normaloff>images/inc.png</normaloff>images/inc.png</iconset>
+                                </property>
+                                <property name="iconSize">
+                                 <size>
+                                  <width>100</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </item>
+                           </layout>
+                          </item>
+                          <item>
+                           <layout class="QVBoxLayout" name="pulseWidthLayout">
+                            <property name="spacing">
+                             <number>0</number>
+                            </property>
+                            <item>
+                             <layout class="QHBoxLayout" name="horizontalLayout_66" stretch="2,1,1,1,2">
+                              <property name="bottomMargin">
+                               <number>0</number>
+                              </property>
+                              <item>
+                               <spacer name="horizontalSpacer_98">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="lblPulseWidth">
+                                <property name="font">
+                                 <font>
+                                  <family>Arial</family>
+                                  <pointsize>20</pointsize>
+                                 </font>
+                                </property>
+                                <property name="text">
+                                 <string>Pulse Width   →</string>
+                                </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignCenter</set>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="lblPulseWidthValue">
+                                <property name="font">
+                                 <font>
+                                  <family>Arial</family>
+                                  <pointsize>40</pointsize>
+                                 </font>
+                                </property>
+                                <property name="text">
+                                 <string>0</string>
+                                </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignCenter</set>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="label_13">
+                                <property name="font">
+                                 <font>
+                                  <family>Arial</family>
+                                  <pointsize>20</pointsize>
+                                 </font>
+                                </property>
+                                <property name="text">
+                                 <string>mS</string>
+                                </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignCenter</set>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_100">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                             </layout>
+                            </item>
+                            <item>
+                             <layout class="QHBoxLayout" name="horizontalLayout_63">
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <item>
+                               <widget class="QPushButton" name="btnDecP">
+                                <property name="styleSheet">
+                                 <string notr="true">QPushButton{
+outline : 0;
+border: 0;
+}
+
+QPushButton:pressed{
+margin-right:20px;
+}
+</string>
+                                </property>
+                                <property name="text">
+                                 <string/>
+                                </property>
+                                <property name="icon">
+                                 <iconset>
+                                  <normaloff>images/dec.png</normaloff>images/dec.png</iconset>
+                                </property>
+                                <property name="iconSize">
+                                 <size>
+                                  <width>100</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QSlider" name="sliderPulseWidth">
+                                <property name="enabled">
+                                 <bool>true</bool>
+                                </property>
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>0</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true">QSlider::groove:horizontal {
+    border-radius: 1px;
+    height: 3px;
+    margin: 0px;
+    background-color: rgb(52, 59, 72);
+}
+QSlider::groove:horizontal:hover {
+    background-color: rgb(55, 62, 76);
+}
+QSlider::handle:horizontal {
+    background-color: rgb(85, 170, 255);
+    border: none;
+    height: 80px;
+    width: 80px;
+    border-radius: 40px;
+    margin: -40px 0;
+    padding: -40px 0px;
+}
+QSlider::handle:horizontal:hover {
+    background-color: rgb(155, 180, 255);
+}
+QSlider::handle:horizontal:pressed {
+    background-color: rgb(65, 255, 195);
+}</string>
+                                </property>
+                                <property name="minimum">
+                                 <number>3</number>
+                                </property>
+                                <property name="maximum">
+                                 <number>200</number>
+                                </property>
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QPushButton" name="btnIncP">
+                                <property name="styleSheet">
+                                 <string notr="true">QPushButton{
+outline : 0;
+border: 0;
+}
+
+QPushButton:pressed{
+margin-left:20px;
+}
+</string>
+                                </property>
+                                <property name="text">
+                                 <string/>
+                                </property>
+                                <property name="icon">
+                                 <iconset>
+                                  <normaloff>images/inc.png</normaloff>images/inc.png</iconset>
+                                </property>
+                                <property name="iconSize">
+                                 <size>
+                                  <width>100</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </item>
+                           </layout>
+                          </item>
+                          <item>
+                           <layout class="QVBoxLayout" name="frequencyLayout">
+                            <property name="spacing">
+                             <number>0</number>
+                            </property>
+                            <item>
+                             <layout class="QHBoxLayout" name="horizontalLayout_67" stretch="2,1,1,1,2">
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <item>
+                               <spacer name="horizontalSpacer_101">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="lblFrequency">
+                                <property name="font">
+                                 <font>
+                                  <family>Arial</family>
+                                  <pointsize>20</pointsize>
+                                 </font>
+                                </property>
+                                <property name="text">
+                                 <string>Frequency   →</string>
+                                </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignCenter</set>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="lblFrequencyValue">
+                                <property name="font">
+                                 <font>
+                                  <family>Arial</family>
+                                  <pointsize>40</pointsize>
+                                 </font>
+                                </property>
+                                <property name="text">
+                                 <string>0</string>
+                                </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignCenter</set>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="label_14">
+                                <property name="font">
+                                 <font>
+                                  <family>Arial</family>
+                                  <pointsize>20</pointsize>
+                                 </font>
+                                </property>
+                                <property name="text">
+                                 <string>   Hz</string>
+                                </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_103">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                             </layout>
+                            </item>
+                            <item>
+                             <layout class="QHBoxLayout" name="horizontalLayout_64">
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <item>
+                               <widget class="QPushButton" name="btnDecF">
+                                <property name="styleSheet">
+                                 <string notr="true">QPushButton{
+outline : 0;
+border: 0;
+}
+
+QPushButton:pressed{
+margin-right:20px;
+}
+</string>
+                                </property>
+                                <property name="text">
+                                 <string/>
+                                </property>
+                                <property name="icon">
+                                 <iconset>
+                                  <normaloff>images/dec.png</normaloff>images/dec.png</iconset>
+                                </property>
+                                <property name="iconSize">
+                                 <size>
+                                  <width>100</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QSlider" name="sliderFrequency">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>0</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true">QSlider::groove:horizontal {
+    border-radius: 1px;
+    height: 3px;
+    margin: 0px;
+    background-color: rgb(52, 59, 72);
+}
+QSlider::groove:horizontal:hover {
+    background-color: rgb(55, 62, 76);
+}
+QSlider::handle:horizontal {
+    background-color: rgb(85, 170, 255);
+    border: none;
+    height: 80px;
+    width: 80px;
+    border-radius: 40px;
+    margin: -40px 0;
+    padding: -40px 0px;
+}
+QSlider::handle:horizontal:hover {
+    background-color: rgb(155, 180, 255);
+}
+QSlider::handle:horizontal:pressed {
+    background-color: rgb(65, 255, 195);
+}</string>
+                                </property>
+                                <property name="minimum">
+                                 <number>1</number>
+                                </property>
+                                <property name="maximum">
+                                 <number>10</number>
+                                </property>
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QPushButton" name="btnIncF">
+                                <property name="styleSheet">
+                                 <string notr="true">QPushButton{
+outline : 0;
+border: 0;
+}
+
+QPushButton:pressed{
+margin-left:20px;
+}
+</string>
+                                </property>
+                                <property name="text">
+                                 <string/>
+                                </property>
+                                <property name="icon">
+                                 <iconset>
+                                  <normaloff>images/inc.png</normaloff>images/inc.png</iconset>
+                                </property>
+                                <property name="iconSize">
+                                 <size>
+                                  <width>100</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </item>
+                           </layout>
+                          </item>
+                          <item>
+                           <spacer name="verticalSpacer_46">
+                            <property name="orientation">
+                             <enum>Qt::Vertical</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>20</width>
+                              <height>40</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                          <item>
+                           <layout class="QHBoxLayout" name="skinGradeLayout" stretch="0,3,0,0,0,0">
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <item>
+                             <layout class="QHBoxLayout" name="horizontalLayout_55">
+                              <property name="leftMargin">
+                               <number>0</number>
+                              </property>
+                              <item>
+                               <widget class="QLabel" name="lblSkinGrade">
+                                <property name="font">
+                                 <font>
+                                  <family>Arial</family>
+                                  <pointsize>20</pointsize>
+                                 </font>
+                                </property>
+                                <property name="text">
+                                 <string>Skin Grade</string>
+                                </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignCenter</set>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_86">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="Line" name="line_3">
+                                <property name="styleSheet">
+                                 <string notr="true">background-color: rgb(255, 255, 255);</string>
+                                </property>
+                                <property name="orientation">
+                                 <enum>Qt::Vertical</enum>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_76">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                             </layout>
+                            </item>
+                            <item>
+                             <layout class="QHBoxLayout" name="casesLayout" stretch="1,0,1,0,1,0,1,0,1">
+                              <item>
+                               <widget class="QPushButton" name="btnCaseI">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>100</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>100</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true">QPushButton {
     outline:0;
     border-radius:45px;
     background-color: rgb(255, 0, 0);
@@ -8297,51 +8590,51 @@ border: 10px solid  red;
 QPushButton:pressed{
     background-color: rgb(255, 0, 0);
 }</string>
-                           </property>
-                           <property name="text">
-                            <string/>
-                           </property>
-                           <property name="icon">
-                            <iconset>
-                             <normaloff>images/I.png</normaloff>images/I.png</iconset>
-                           </property>
-                           <property name="iconSize">
-                            <size>
-                             <width>80</width>
-                             <height>80</height>
-                            </size>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_85">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item>
-                          <widget class="QPushButton" name="btnCaseII">
-                           <property name="minimumSize">
-                            <size>
-                             <width>100</width>
-                             <height>100</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>100</width>
-                             <height>100</height>
-                            </size>
-                           </property>
-                           <property name="styleSheet">
-                            <string notr="true">QPushButton {
+                                </property>
+                                <property name="text">
+                                 <string/>
+                                </property>
+                                <property name="icon">
+                                 <iconset>
+                                  <normaloff>images/I.png</normaloff>images/I.png</iconset>
+                                </property>
+                                <property name="iconSize">
+                                 <size>
+                                  <width>80</width>
+                                  <height>80</height>
+                                 </size>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_85">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QPushButton" name="btnCaseII">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>100</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>100</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true">QPushButton {
 outline:0;
 border-radius:45px;
 background-color: rgb(213, 213, 213);
@@ -8351,51 +8644,51 @@ QPushButton:pressed{
 background-color: rgb(255, 0, 0);
 }
 </string>
-                           </property>
-                           <property name="text">
-                            <string/>
-                           </property>
-                           <property name="icon">
-                            <iconset>
-                             <normaloff>images/II.png</normaloff>images/II.png</iconset>
-                           </property>
-                           <property name="iconSize">
-                            <size>
-                             <width>80</width>
-                             <height>80</height>
-                            </size>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_84">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item>
-                          <widget class="QPushButton" name="btnCaseIII">
-                           <property name="minimumSize">
-                            <size>
-                             <width>100</width>
-                             <height>100</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>100</width>
-                             <height>100</height>
-                            </size>
-                           </property>
-                           <property name="styleSheet">
-                            <string notr="true">QPushButton {
+                                </property>
+                                <property name="text">
+                                 <string/>
+                                </property>
+                                <property name="icon">
+                                 <iconset>
+                                  <normaloff>images/II.png</normaloff>images/II.png</iconset>
+                                </property>
+                                <property name="iconSize">
+                                 <size>
+                                  <width>80</width>
+                                  <height>80</height>
+                                 </size>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_84">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QPushButton" name="btnCaseIII">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>100</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>100</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true">QPushButton {
 outline:0;
 border-radius:45px;
 background-color: rgb(213, 213, 213);
@@ -8405,51 +8698,51 @@ QPushButton:pressed{
 background-color: rgb(255, 0, 0);
 }
 </string>
-                           </property>
-                           <property name="text">
-                            <string/>
-                           </property>
-                           <property name="icon">
-                            <iconset>
-                             <normaloff>images/III.png</normaloff>images/III.png</iconset>
-                           </property>
-                           <property name="iconSize">
-                            <size>
-                             <width>80</width>
-                             <height>80</height>
-                            </size>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_83">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item>
-                          <widget class="QPushButton" name="btnCaseIV">
-                           <property name="minimumSize">
-                            <size>
-                             <width>100</width>
-                             <height>100</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>100</width>
-                             <height>100</height>
-                            </size>
-                           </property>
-                           <property name="styleSheet">
-                            <string notr="true">QPushButton {
+                                </property>
+                                <property name="text">
+                                 <string/>
+                                </property>
+                                <property name="icon">
+                                 <iconset>
+                                  <normaloff>images/III.png</normaloff>images/III.png</iconset>
+                                </property>
+                                <property name="iconSize">
+                                 <size>
+                                  <width>80</width>
+                                  <height>80</height>
+                                 </size>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_83">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QPushButton" name="btnCaseIV">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>100</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>100</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true">QPushButton {
 outline:0;
 border-radius:45px;
 background-color: rgb(213, 213, 213);
@@ -8459,51 +8752,51 @@ QPushButton:pressed{
 background-color: rgb(255, 0, 0);
 }
 </string>
-                           </property>
-                           <property name="text">
-                            <string/>
-                           </property>
-                           <property name="icon">
-                            <iconset>
-                             <normaloff>images/IV.png</normaloff>images/IV.png</iconset>
-                           </property>
-                           <property name="iconSize">
-                            <size>
-                             <width>80</width>
-                             <height>80</height>
-                            </size>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_82">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item>
-                          <widget class="QPushButton" name="btnCaseV">
-                           <property name="minimumSize">
-                            <size>
-                             <width>100</width>
-                             <height>100</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>100</width>
-                             <height>100</height>
-                            </size>
-                           </property>
-                           <property name="styleSheet">
-                            <string notr="true">QPushButton {
+                                </property>
+                                <property name="text">
+                                 <string/>
+                                </property>
+                                <property name="icon">
+                                 <iconset>
+                                  <normaloff>images/IV.png</normaloff>images/IV.png</iconset>
+                                </property>
+                                <property name="iconSize">
+                                 <size>
+                                  <width>80</width>
+                                  <height>80</height>
+                                 </size>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_82">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QPushButton" name="btnCaseV">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>100</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>100</width>
+                                  <height>100</height>
+                                 </size>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true">QPushButton {
 outline:0;
 border-radius:45px;
 background-color: rgb(213, 213, 213);
@@ -8513,49 +8806,111 @@ QPushButton:pressed{
 background-color: rgb(255, 0, 0);
 }
 </string>
-                           </property>
-                           <property name="text">
-                            <string/>
-                           </property>
-                           <property name="icon">
-                            <iconset>
-                             <normaloff>images/V.png</normaloff>images/V.png</iconset>
-                           </property>
-                           <property name="iconSize">
-                            <size>
-                             <width>80</width>
-                             <height>80</height>
-                            </size>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <spacer name="horizontalSpacer_89">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item>
-                        <widget class="Line" name="line_6">
-                         <property name="styleSheet">
-                          <string notr="true">background-color: rgb(255, 255, 255);</string>
-                         </property>
-                         <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
+                                </property>
+                                <property name="text">
+                                 <string/>
+                                </property>
+                                <property name="icon">
+                                 <iconset>
+                                  <normaloff>images/V.png</normaloff>images/V.png</iconset>
+                                </property>
+                                <property name="iconSize">
+                                 <size>
+                                  <width>80</width>
+                                  <height>80</height>
+                                 </size>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </item>
+                            <item>
+                             <spacer name="horizontalSpacer_89">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item>
+                             <widget class="Line" name="line_6">
+                              <property name="styleSheet">
+                               <string notr="true">background-color: rgb(255, 255, 255);</string>
+                              </property>
+                              <property name="orientation">
+                               <enum>Qt::Vertical</enum>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <spacer name="horizontalSpacer_90">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item>
+                             <widget class="QPushButton" name="btnSaveCase">
+                              <property name="styleSheet">
+                               <string notr="true">QPushButton{
+outline : 0;
+background-color: rgb(213, 213, 213);
+border-radius: 15px;
+border: 10px solid rgb(213, 213, 213);
+}
+
+QPushButton:pressed{
+background-color: rgb(0, 170, 255);
+border: 10px solid rgb(0, 170, 255);
+}
+</string>
+                              </property>
+                              <property name="text">
+                               <string/>
+                              </property>
+                              <property name="icon">
+                               <iconset>
+                                <normaloff>images/save.png</normaloff>images/save.png</iconset>
+                              </property>
+                              <property name="iconSize">
+                               <size>
+                                <width>80</width>
+                                <height>80</height>
+                               </size>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </item>
+                          <item>
+                           <spacer name="verticalSpacer_52">
+                            <property name="orientation">
+                             <enum>Qt::Vertical</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>20</width>
+                              <height>40</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                         </layout>
                         </widget>
                        </item>
                        <item>
-                        <spacer name="horizontalSpacer_90">
+                        <spacer name="horizontalSpacer_32">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
                          </property>
@@ -8567,93 +8922,63 @@ background-color: rgb(255, 0, 0);
                          </property>
                         </spacer>
                        </item>
-                      </layout>
-                     </item>
-                     <item>
-                      <spacer name="verticalSpacer_52">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_32">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_23">
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <layout class="QVBoxLayout" name="verticalLayout_36">
-                       <property name="topMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="bottomMargin">
-                        <number>0</number>
-                       </property>
                        <item>
-                        <spacer name="verticalSpacer_35">
-                         <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>20</width>
-                           <height>40</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_18">
-                         <property name="leftMargin">
+                        <layout class="QHBoxLayout" name="horizontalLayout_23">
+                         <property name="topMargin">
                           <number>0</number>
                          </property>
                          <property name="rightMargin">
                           <number>0</number>
                          </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
                          <item>
-                          <spacer name="horizontalSpacer_68">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
+                          <layout class="QVBoxLayout" name="verticalLayout_36" stretch="3,1,1,1,1,1,1,2">
+                           <property name="topMargin">
+                            <number>0</number>
                            </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
+                           <property name="bottomMargin">
+                            <number>0</number>
                            </property>
-                          </spacer>
-                         </item>
-                         <item>
-                          <widget class="QPushButton" name="btnSelectedBodyPart">
-                           <property name="styleSheet">
-                            <string notr="true">QPushButton {
+                           <item>
+                            <spacer name="verticalSpacer_35">
+                             <property name="orientation">
+                              <enum>Qt::Vertical</enum>
+                             </property>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>20</width>
+                               <height>40</height>
+                              </size>
+                             </property>
+                            </spacer>
+                           </item>
+                           <item>
+                            <layout class="QHBoxLayout" name="horizontalLayout_18">
+                             <property name="leftMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="rightMargin">
+                              <number>0</number>
+                             </property>
+                             <item>
+                              <spacer name="horizontalSpacer_68">
+                               <property name="orientation">
+                                <enum>Qt::Horizontal</enum>
+                               </property>
+                               <property name="sizeHint" stdset="0">
+                                <size>
+                                 <width>40</width>
+                                 <height>20</height>
+                                </size>
+                               </property>
+                              </spacer>
+                             </item>
+                             <item>
+                              <widget class="QPushButton" name="btnSelectedBodyPart">
+                               <property name="styleSheet">
+                                <string notr="true">QPushButton {
 background-color: rgb(213, 213, 213);
 color: rgb(0, 0, 0);
 
@@ -8662,81 +8987,113 @@ border-radius: 15px;
 outline:0;
 }
 </string>
-                           </property>
-                           <property name="text">
-                            <string/>
-                           </property>
-                           <property name="icon">
-                            <iconset>
-                             <normaloff>images/fFace.png</normaloff>images/fFace.png</iconset>
-                           </property>
-                           <property name="iconSize">
-                            <size>
-                             <width>180</width>
-                             <height>170</height>
-                            </size>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_69">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="lblSelectedBodyPart">
-                         <property name="font">
-                          <font>
-                           <family>Arial</family>
-                           <pointsize>20</pointsize>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>Face</string>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignCenter</set>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <spacer name="verticalSpacer_30">
-                         <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>20</width>
-                           <height>40</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_48">
-                         <property name="topMargin">
-                          <number>55</number>
-                         </property>
-                         <item>
-                          <widget class="QPushButton" name="btnStandby">
-                           <property name="font">
-                            <font>
-                             <family>Arial</family>
-                             <pointsize>20</pointsize>
-                            </font>
-                           </property>
-                           <property name="styleSheet">
-                            <string notr="true">QPushButton {
+                               </property>
+                               <property name="text">
+                                <string/>
+                               </property>
+                               <property name="icon">
+                                <iconset>
+                                 <normaloff>images/fFace.png</normaloff>images/fFace.png</iconset>
+                               </property>
+                               <property name="iconSize">
+                                <size>
+                                 <width>180</width>
+                                 <height>170</height>
+                                </size>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <spacer name="horizontalSpacer_69">
+                               <property name="orientation">
+                                <enum>Qt::Horizontal</enum>
+                               </property>
+                               <property name="sizeHint" stdset="0">
+                                <size>
+                                 <width>40</width>
+                                 <height>20</height>
+                                </size>
+                               </property>
+                              </spacer>
+                             </item>
+                            </layout>
+                           </item>
+                           <item>
+                            <widget class="QLabel" name="lblSelectedBodyPart">
+                             <property name="font">
+                              <font>
+                               <family>Arial</family>
+                               <pointsize>20</pointsize>
+                              </font>
+                             </property>
+                             <property name="text">
+                              <string>Face</string>
+                             </property>
+                             <property name="alignment">
+                              <set>Qt::AlignCenter</set>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <spacer name="verticalSpacer_30">
+                             <property name="orientation">
+                              <enum>Qt::Vertical</enum>
+                             </property>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>20</width>
+                               <height>40</height>
+                              </size>
+                             </property>
+                            </spacer>
+                           </item>
+                           <item>
+                            <widget class="QLabel" name="lblReadyError">
+                             <property name="font">
+                              <font>
+                               <family>Arial</family>
+                               <pointsize>16</pointsize>
+                              </font>
+                             </property>
+                             <property name="text">
+                              <string/>
+                             </property>
+                             <property name="alignment">
+                              <set>Qt::AlignCenter</set>
+                             </property>
+                             <property name="wordWrap">
+                              <bool>true</bool>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <spacer name="verticalSpacer_78">
+                             <property name="orientation">
+                              <enum>Qt::Vertical</enum>
+                             </property>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>20</width>
+                               <height>40</height>
+                              </size>
+                             </property>
+                            </spacer>
+                           </item>
+                           <item>
+                            <layout class="QHBoxLayout" name="horizontalLayout_48">
+                             <property name="topMargin">
+                              <number>0</number>
+                             </property>
+                             <item>
+                              <widget class="QPushButton" name="btnStandby">
+                               <property name="font">
+                                <font>
+                                 <family>Arial</family>
+                                 <pointsize>20</pointsize>
+                                </font>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">QPushButton {
 background-color: rgb(213, 213, 213);
 color: rgb(0, 0, 0);
 min-width: 170px;
@@ -8745,36 +9102,41 @@ border-radius: 15px;
 border: 10px solid red;
 outline:0;
 }
+QPushButton:pressed{
+background-color: rgb(0, 170, 255);
+border: 10px solid red;
+}
+
 </string>
-                           </property>
-                           <property name="text">
-                            <string>Standby</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_31">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item>
-                          <widget class="QPushButton" name="btnReady">
-                           <property name="font">
-                            <font>
-                             <family>Arial</family>
-                             <pointsize>20</pointsize>
-                            </font>
-                           </property>
-                           <property name="styleSheet">
-                            <string notr="true">QPushButton {
+                               </property>
+                               <property name="text">
+                                <string>Standby</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <spacer name="horizontalSpacer_31">
+                               <property name="orientation">
+                                <enum>Qt::Horizontal</enum>
+                               </property>
+                               <property name="sizeHint" stdset="0">
+                                <size>
+                                 <width>40</width>
+                                 <height>20</height>
+                                </size>
+                               </property>
+                              </spacer>
+                             </item>
+                             <item>
+                              <widget class="QPushButton" name="btnReady">
+                               <property name="font">
+                                <font>
+                                 <family>Arial</family>
+                                 <pointsize>20</pointsize>
+                                </font>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">QPushButton {
 background-color: rgb(213, 213, 213);
 color: rgb(0, 0, 0);
 min-width: 170px;
@@ -8783,49 +9145,58 @@ border-radius: 15px;
 border: 10px solid rgb(213, 213, 213);
 outline:0;
 }
+
+QPushButton:pressed{
+background-color: rgb(0, 170, 255);
+border: 10px solid rgb(0, 170, 255);
+}
 </string>
-                           </property>
-                           <property name="text">
-                            <string>Ready</string>
-                           </property>
-                          </widget>
+                               </property>
+                               <property name="text">
+                                <string>Ready</string>
+                               </property>
+                              </widget>
+                             </item>
+                            </layout>
+                           </item>
+                           <item>
+                            <spacer name="verticalSpacer_24">
+                             <property name="orientation">
+                              <enum>Qt::Vertical</enum>
+                             </property>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>20</width>
+                               <height>40</height>
+                              </size>
+                             </property>
+                            </spacer>
+                           </item>
+                          </layout>
                          </item>
                         </layout>
                        </item>
                        <item>
-                        <spacer name="verticalSpacer_24">
+                        <spacer name="horizontalSpacer_27">
                          <property name="orientation">
-                          <enum>Qt::Vertical</enum>
+                          <enum>Qt::Horizontal</enum>
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
-                           <width>20</width>
-                           <height>40</height>
+                           <width>40</width>
+                           <height>20</height>
                           </size>
                          </property>
                         </spacer>
                        </item>
                       </layout>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_27">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-               </layout>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
               </item>
              </layout>
             </widget>

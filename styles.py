@@ -141,6 +141,10 @@ QPushButton {
     border: 10px solid red;
     outline:0;
 }
+QPushButton:pressed{
+    background-color: rgb(0, 170, 255);
+    border: 10px solid red;
+}
 """
 
 READY_NOT_SELECTED = """
@@ -153,6 +157,10 @@ QPushButton {
     border: 10px solid rgb(213, 213, 213);
     outline:0;
 }
+QPushButton:pressed{
+    background-color: rgb(0, 170, 255);
+    border: 10px solid rgb(0, 170, 255);
+}
 """
 
 ACTION_BTN = """
@@ -162,5 +170,86 @@ QPushButton {
 }
     QPushButton:pressed{
     margin: 10px 0 0 0;
+}
+"""
+
+SLIDER = """
+QSlider::groove:horizontal {
+    border-radius: 1px;
+    height: 3px;
+    margin: 0px;
+    background-color: rgb(52, 59, 72);
+}
+QSlider::groove:horizontal:hover {
+    background-color: rgb(55, 62, 76);
+}
+QSlider::handle:horizontal {
+    background-color: rgb(85, 170, 255);
+    border: none;
+    height: 80px;
+    width: 80px;
+    border-radius: 40px;
+    margin: -40px 0;
+    padding: -40px 0px;
+}
+QSlider::handle:horizontal:hover {
+    background-color: rgb(155, 180, 255);
+}
+QSlider::handle:horizontal:pressed {
+    background-color: rgb(65, 255, 195);
+}
+"""
+
+SLIDER_SAVED = """
+QSlider::groove:horizontal {
+    border-radius: 1px;
+    height: 3px;
+    margin: 0px;
+    background-color: rgb(52, 59, 72);
+}
+QSlider::groove:horizontal:hover {
+    background-color: rgb(55, 62, 76);
+}
+QSlider::handle:horizontal {
+    background-color: white;
+    border: none;
+    height: 80px;
+    width: 80px;
+    border-radius: 40px;
+    margin: -40px 0;
+    padding: -40px 0px;
+}
+QSlider::handle:horizontal:hover {
+    background-color: rgb(155, 180, 255);
+}
+QSlider::handle:horizontal:pressed {
+    background-color: rgb(65, 255, 195);
+}
+"""
+
+SLIDER_DISABLED = """
+QSlider::groove:horizontal {
+    border-radius: 1px;
+    height: 3px;
+    margin: 0px;
+    background-color: rgb(52, 59, 72);
+}
+QSlider::groove:horizontal:hover {
+    background-color: rgb(55, 62, 76);
+}
+QSlider::handle:horizontal {
+    background-color: rgb(157, 157, 157);
+    border: none;
+    height: 80px;
+    width: 80px;
+    border-radius: 40px;
+    margin: -40px 0;
+    padding: -40px 0px;
+}
+QSlider::handle:horizontal:hover {
+    background-color: rgb(155, 180, 255);
+}
+QSlider::handle:horizontal:pressed {
+    background-color: rgb(65, 255, 195);
 }
 """

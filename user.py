@@ -1,8 +1,6 @@
 from os.path import join, isfile
 from paths import USERS_DIR
-import jdatetime
-import pickle
-import os
+import jdatetime, pickle, os
 
 
 class User:

@@ -2,13 +2,19 @@ from paths import CASES_DIR
 from os.path import join, isfile
 import pickle
 
+MAX_ENERGY = 200
+MIN_ENRGEY = 3
+MAX_FREQUENCY = 10
+MIN_FREQUENCY = 1
+MAX_PULSE_WIDTH = 200
+MIN_PULSE_WIDTH = 3
 
 class Case:
     def __init__(self, name):
         self.name = name
         bodyParts = ['face', 'arm', 'armpit', 'body', 'bikini', 'leg']
-        self.male = dict.fromkeys(bodyParts, (0, 0, 0))
-        self.female  = dict.fromkeys(bodyParts, (0, 0, 0))
+        self.male = dict.fromkeys(bodyParts, (MIN_ENRGEY, MIN_PULSE_WIDTH, MIN_FREQUENCY))
+        self.female  = dict.fromkeys(bodyParts, (MIN_ENRGEY, MIN_PULSE_WIDTH, MIN_FREQUENCY))
 
     def getValue(self, sex, bodyPart):
         if sex == 'male':

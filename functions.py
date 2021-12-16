@@ -1,14 +1,9 @@
-import subprocess
-from paths import *
-import datetime, jdatetime
-from os.path import isfile
 from uuid import getnode as get_mac
-import random
-import uuid
-import platform
-import pickle
-import os
-import re
+from paths import *
+from os.path import isfile
+import datetime, jdatetime
+import subprocess, platform, pickle
+import random, uuid, os, re
 
 
 def setSystemTime(time):
