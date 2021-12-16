@@ -1371,7 +1371,7 @@ margin: 20px 0 0 0;
                  <string notr="true"/>
                 </property>
                 <property name="text">
-                 <string>1</string>
+                 <string/>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -7949,7 +7949,7 @@ color:rgb(188, 188, 188);
                                  <string>J/cm²</string>
                                 </property>
                                 <property name="alignment">
-                                 <set>Qt::AlignCenter</set>
+                                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                                 </property>
                                </widget>
                               </item>
@@ -8030,9 +8030,6 @@ QSlider::handle:horizontal {
     border-radius: 40px;
     margin: -40px 0;
     padding: -40px 0px;
-}
-QSlider::handle:horizontal:hover {
-    background-color: rgb(155, 180, 255);
 }
 QSlider::handle:horizontal:pressed {
     background-color: rgb(65, 255, 195);
@@ -8157,7 +8154,7 @@ margin-left:20px;
                                  <string>mS</string>
                                 </property>
                                 <property name="alignment">
-                                 <set>Qt::AlignCenter</set>
+                                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                                 </property>
                                </widget>
                               </item>
@@ -8238,9 +8235,6 @@ QSlider::handle:horizontal {
     border-radius: 40px;
     margin: -40px 0;
     padding: -40px 0px;
-}
-QSlider::handle:horizontal:hover {
-    background-color: rgb(155, 180, 255);
 }
 QSlider::handle:horizontal:pressed {
     background-color: rgb(65, 255, 195);
@@ -8353,7 +8347,7 @@ margin-left:20px;
                                  </font>
                                 </property>
                                 <property name="text">
-                                 <string>   Hz</string>
+                                 <string>Hz</string>
                                 </property>
                                 <property name="alignment">
                                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -8434,9 +8428,6 @@ QSlider::handle:horizontal {
     border-radius: 40px;
     margin: -40px 0;
     padding: -40px 0px;
-}
-QSlider::handle:horizontal:hover {
-    background-color: rgb(155, 180, 255);
 }
 QSlider::handle:horizontal:pressed {
     background-color: rgb(65, 255, 195);

@@ -51,32 +51,6 @@ QPushButton{
 }
 """
 
-EPF_SELECTED = """
-QPushButton{
-    outline : 0;
-    background-color: rgb(213, 213, 213);
-    border-radius: 15px;
-    border: 10px solid red;
-}
-
-QPushButton:pressed{
-    border: 10px solid red;
-}
-"""
-
-# EPF: Energy, Pulse Width, Frequency
-EPF_NOT_SELECTED = """ 
-QPushButton{
-    outline : 0;
-    background-color: rgb(213, 213, 213);
-    border-radius: 15px;
-    border: 10px solid rgb(213, 213, 213);
-}
-QPushButton:pressed{
-    border: 10px solid red;
-}
-"""
-
 SELECTED_CASE = """
 QPushButton {
     outline:0;
@@ -219,9 +193,6 @@ QSlider::handle:horizontal {
     margin: -40px 0;
     padding: -40px 0px;
 }
-QSlider::handle:horizontal:hover {
-    background-color: rgb(155, 180, 255);
-}
 QSlider::handle:horizontal:pressed {
     background-color: rgb(65, 255, 195);
 }
@@ -245,9 +216,6 @@ QSlider::handle:horizontal {
     border-radius: 40px;
     margin: -40px 0;
     padding: -40px 0px;
-}
-QSlider::handle:horizontal:hover {
-    background-color: rgb(155, 180, 255);
 }
 QSlider::handle:horizontal:pressed {
     background-color: rgb(65, 255, 195);

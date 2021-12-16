@@ -1841,8 +1841,3 @@ app = QApplication(sys.argv)
 mainWin = MainWin()
 mainWin.showFullScreen()
 sys.exit(app.exec_())
-
-
-
-
-
