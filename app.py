@@ -3,6 +3,7 @@ from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5 import uic
+from communication import SerialThread, WRITE, REPORT
 from promotions import *
 from functions import *
 from styles import *
@@ -13,7 +14,7 @@ from user import *
 from lock import *
 from itertools import chain
 from pathlib import Path
-import jdatetime, platform, hashlib, math, sys
+import jdatetime, datetime, platform, hashlib, math, sys
 
 
 class MainWin(QMainWindow):
@@ -23,9 +24,32 @@ class MainWin(QMainWindow):
         self.setupUi()
         
     def setupUi(self):
-        self.configs = loadConfigs()
-        self.license = self.configs['LICENSE']
         # self.setCursor(Qt.BlankCursor)
+        self.configs = loadConfigs()
+        self.serialT = SerialThread()
+        self.serialT.sensorFlags.connect(self.setSensors)
+        self.serialT.tempValue.connect(self.setTemp)
+        self.serialT.shot.connect(self.shot)
+        self.serialT.serialNumber.connect(self.txtSerialNumber.setText)
+        self.serialT.productionDate.connect(self.txtProductionDate.setText)
+        self.serialT.laserEnergy.connect(self.txtLaserDiodeEnergy.setText)
+        self.serialT.firmwareVesion.connect(self.txtFirmwareVersion.setText)
+        self.serialT.readCooling.connect(
+            lambda: self.serialT.laserPage({'cooling': self.cooling})
+        )
+        self.serialT.readEnergy.connect(
+            lambda: self.serialT.laserPage({'energy': self.energy})
+        )
+        self.serialT.readPulseWidht.connect(
+            lambda: self.serialT.laserPage({'pulseWidht': self.pulseWidth})
+        )
+        self.serialT.readFrequency.connect(
+            lambda: self.serialT.laserPage({'frequency': self.frequency})
+        )
+        self.serialT.sysDate.connect(self.receiveDate)
+        self.serialT.sysClock.connect(self.adjustTime)
+        self.serialT.start()          
+        self.license = self.configs['LICENSE']
         self.movie = QMovie(LOCK_GIF)
         self.movie.frameChanged.connect(self.unlock)
         self.lblLock.setMovie(self.movie)
@@ -51,10 +75,17 @@ class MainWin(QMainWindow):
         self.energy = MIN_ENRGEY
         self.pulseWidth = MIN_PULSE_WIDTH
         self.frequency = MIN_FREQUENCY
+        self.currentCounter = 0
+        self.receivedTime = ()
+        self.startupEditTime = False
         self.ready = False
         self.language = 0 if self.configs['LANGUAGE'] == 'en' else 1
         icon = QPixmap(SELECTED_LANG_ICON)
         self.lblEnSelected.setPixmap(icon.scaled(70, 70))
+        icon = QPixmap(SPARK_ICON)
+        self.lblSpark.setPixmap(icon.scaled(120, 120))
+        self.lblSpark.setVisible(False)
+        self.lblLasing.setVisible(False)
         if self.configs['LANGUAGE'] == 'fa':
             self.changeLang(self.configs['LANGUAGE'])
         self.shortcut = QShortcut(QKeySequence("Ctrl+x"), self)
@@ -63,9 +94,9 @@ class MainWin(QMainWindow):
         self.bodyPartsSignals()
         self.keyboardSignals()
         self.casesSignals()
-        self.unlockLIC(auto=True)
         self.tutorials()
         self.initSensors()
+        self.serialT.readTime()
 
     def initPages(self):
         self.stackedWidget.setCurrentWidget(self.splashPage)
@@ -110,6 +141,7 @@ class MainWin(QMainWindow):
         self.systemTimeTimer = QTimer()
         self.readyErrorTimer =  QTimer()
         self.monitorSensorsTimer = QTimer()
+        self.sparkTimer = QTimer()
         self.systemTimeTimer.timeout.connect(self.time)
         self.systemTimeTimer.start(1000)
         self.loginLabelTimer.timeout.connect(
@@ -146,6 +178,7 @@ class MainWin(QMainWindow):
         self.decDaysTimer.timeout.connect(lambda: self.incDecDay('dec'))
         self.backspaceTimer.timeout.connect(self.type(lambda: 'backspace'))
         self.hwWrongPassTimer.timeout.connect(self.hwWrongPass)
+        self.sparkTimer.timeout.connect(self.hideSpark)
         self.monitorSensorsTimer.timeout.connect(self.monitorSensors)
         self.monitorSensorsTimer.start(1000)
 
@@ -179,7 +212,8 @@ class MainWin(QMainWindow):
         self.btnEnter.clicked.connect(self.unlockLIC)
         self.btnSort.clicked.connect(self.sort)
         self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
-        self.btnPower.clicked.connect(lambda: os.system('poweroff'))
+        self.btnEndSession.clicked.connect(self.serialT.mainPage)
+        self.btnPower.clicked.connect(self.powerOff)
         self.btnStartSession.clicked.connect(self.startSession)
         self.btnSubmit.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnSubmit.clicked.connect(self.submit)
@@ -247,12 +281,15 @@ class MainWin(QMainWindow):
         self.btnStandby.clicked.connect(lambda: self.setReady(False))
         self.btnUnqEnter.clicked.connect(self.unlockUUID)
         self.btnHwinfo.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.infoPage))
+        self.btnHwinfo.clicked.connect(lambda: self.enterSettingPage(REPORT))
         self.btnSystemLock.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.lockSettingsPage))
+        self.btnSystemLock.clicked.connect(lambda: self.serialT.lockPage(REPORT))
         self.btnAddLock.clicked.connect(self.addLock)
         self.btnBackLaser.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnBackLaser.clicked.connect(lambda: self.stackedWidgetLaser.setCurrentWidget(self.bodyPartPage))
         self.btnBackLaser.clicked.connect(lambda: self.btnBackLaser.setVisible(False))
         self.btnBackLaser.clicked.connect(lambda: self.setReady(False))
+        self.btnBackLaser.clicked.connect(self.serialT.selectionPage)
         self.btnBackLaser.setVisible(False)
 
     def initTextboxes(self):
@@ -312,6 +349,7 @@ class MainWin(QMainWindow):
         self.tempWarIco = QIcon()
         self.lockIco = QIcon()
         self.unlockIco = QIcon()
+        self.lockWarIco = QIcon()
         self.waterflowIco.addPixmap(QPixmap(WATERFLOW))
         self.waterflowWarIco.addPixmap(QPixmap(WATERFLOW_WARNING))
         self.waterLvlIco.addPixmap(QPixmap(WATERLEVEL))
@@ -320,12 +358,19 @@ class MainWin(QMainWindow):
         self.tempWarIco.addPixmap(QPixmap(TEMP_WARNING))
         self.lockIco.addPixmap(QPixmap(LOCK))
         self.unlockIco.addPixmap(QPixmap(UNLOCK))
+        self.lockWarIco.addPixmap(QPixmap(LOCK_WARNING))
         self.waterflowTimer = QTimer()
         self.waterLevelTimer = QTimer()
+        self.physicalDamageTimer = QTimer()
+        self.overHeatTimer = QTimer()
+        self.interLockTimer = QTimer()
         self.tempTimer = QTimer()
         self.waterflowTimer.timeout.connect(lambda: self.blinkSensorsIcon('waterflow'))
         self.waterLevelTimer.timeout.connect(lambda: self.blinkSensorsIcon('waterLevel'))
         self.tempTimer.timeout.connect(lambda: self.blinkSensorsIcon('temp'))
+        self.physicalDamageTimer.timeout.connect(lambda: self.blinkSensorsIcon('physicalDamage'))
+        self.overHeatTimer.timeout.connect(lambda: self.blinkSensorsIcon('overHeat'))
+        self.interLockTimer.timeout.connect(lambda: self.blinkSensorsIcon('interLock'))
         self.btnWaterflow.setIcon(self.waterflowIco)
         self.btnTemp.setIcon(self.tempIco)
         self.btnWaterLevel.setIcon(self.waterLvlIco)
@@ -334,20 +379,74 @@ class MainWin(QMainWindow):
         self.btnTemp.setIconSize(QSize(80, 80))
         self.btnWaterLevel.setIconSize(QSize(80, 80))
         self.btnLock.setIconSize(QSize(80, 80))
+        self.btnPhysicalDamage.setVisible(False)
+        self.btnOverHeat.setVisible(False)
         self.waterflowFlag = False
         self.waterflowWar = False
+        self.physicalDamageFlag = False
+        self.physicalDamageWar = False
+        self.overHeatFlag = False
+        self.overHeatWar = False
         self.waterLevelFlag = False
         self.waterLevelWar = False
         self.tempFlag = False
         self.tempWar = False
-        self.lockFlag = True
+        self.lockFlag = False
+        self.lockWar = False
+        self.interLockError = False
         self.waterLevelError = False
         self.waterflowError = False
+        self.physicalDamage = False
+        self.overHeatError = False
         self.temperature = 0
-        self.setTemp(5)
+        self.setTemp(0)
         self.setWaterflowError(False)
         self.setWaterLevelError(False)
         self.setLock(False)
+
+    def receiveDate(self, date):
+        self.receivedTime += date
+
+    def adjustTime(self, clock):
+        self.receivedTime += clock + (0,)
+        try:
+            if not self.startupEditTime:
+                setSystemTime(self.receivedTime)
+                self.startupEditTime = True
+                nextDate = jdatetime.datetime.now() + jdatetime.timedelta(120) 
+                self.txtLockYear.setText(str(nextDate.year))
+                self.txtLockMonth.setText(str(nextDate.month))
+                self.txtLockDay.setText(str(nextDate.day)) 
+                self.unlockLIC(auto=True)
+        except Exception:
+            pass
+
+
+    def powerOff(self):
+        if platform.system() == 'Windows':
+            self.close()
+        else:
+            os.system('poweroff')
+
+    def setSensors(self, flags):
+        self.setLock(flags[0])
+        self.setWaterLevelError(flags[1])
+        self.setWaterflowError(flags[2])
+        self.setOverHeatError(flags[3])
+        self.setPhysicalDamage(flags[4])
+
+    def shot(self):
+        self.currentCounter += 1
+        self.user.incShot(self.bodyPart)
+        self.lblCounterValue.setText(str(self.currentCounter))
+        self.sparkTimer.start(1000/self.frequency + 50)
+        self.lblSpark.setVisible(True)
+        self.lblLasing.setVisible(True)
+
+    def hideSpark(self):
+        self.sparkTimer.stop()
+        self.lblLasing.setVisible(False)
+        self.lblSpark.setVisible(False)
 
     def monitorSensors(self):
         if not 5 <= self.temperature <= 40:
@@ -362,19 +461,28 @@ class MainWin(QMainWindow):
             if self.ready:
                 self.setReady(False)
         
-        elif self.lockFlag:
+        elif self.interLockError:
+            if self.ready:
+                self.setReady(False)
+
+        elif self.overHeatError:
+            if self.ready:
+                self.setReady(False)
+
+        elif self.physicalDamage:
             if self.ready:
                 self.setReady(False)
 
     def time(self, edit=False):
-        hour = "{:02d}".format(jdatetime.datetime.now().hour) 
-        minute = "{:02d}".format(jdatetime.datetime.now().minute)
-        second = jdatetime.datetime.now().second
-        year = str(jdatetime.datetime.now().year)
-        month = "{:02d}".format(jdatetime.datetime.now().month)
-        day = "{:02d}".format(jdatetime.datetime.now().day)
-        self.txtSysClock.setText(jdatetime.datetime.now().strftime('%H : %M : %S'))
-        self.txtSysDate.setText(jdatetime.datetime.now().strftime('%Y / %m / %d'))
+        now = jdatetime.datetime.now()
+        hour = "{:02d}".format(now.hour) 
+        minute = "{:02d}".format(now.minute)
+        second = now.second
+        year = str(now.year)
+        month = "{:02d}".format(now.month)
+        day = "{:02d}".format(now.day)
+        self.txtSysClock.setText(now.strftime('%H : %M : %S'))
+        self.txtSysDate.setText(now.strftime('%Y / %m / %d'))
 
         if second == 0 or edit:
             if edit:
@@ -607,6 +715,7 @@ class MainWin(QMainWindow):
             self.lblRpiVersion.setVisible(True)            
             self.txtHwPass.clear()
             self.stackedWidgetSettings.setCurrentWidget(self.hWPage)
+            self.enterSettingPage(REPORT)
 
         elif password == '0':
             for txt in txts:
@@ -620,6 +729,7 @@ class MainWin(QMainWindow):
             self.lblRpiVersion.setVisible(False)
             self.txtHwPass.clear()
             self.stackedWidgetSettings.setCurrentWidget(self.hWPage)
+            self.enterSettingPage(REPORT)
 
         else:
             self.txtHwPass.setStyleSheet(TXT_HW_WRONG_PASS)
@@ -661,7 +771,7 @@ class MainWin(QMainWindow):
 
     def saveHwSettings(self):
         self.configs['SerialNumber'] = self.txtSerialNumber.text()            
-        self.configs['TotalShotCounter'] = self.txtTotalShotCounter.text()            
+        self.configs['TotalShotCounter'] = int(self.txtTotalShotCounter.text())
         self.configs['LaserDiodeEnergy'] = self.txtLaserDiodeEnergy.text()            
         self.configs['LaserBarType'] = self.txtLaserBarType.text()            
         self.configs['LaserWavelength'] = self.txtLaserWavelength.text()            
@@ -685,12 +795,21 @@ class MainWin(QMainWindow):
             milisecond = 0
             time = (year, month, day, hour, minute, second, milisecond)
             setSystemTime(time)
+            nextDate = jdatetime.datetime.now() + jdatetime.timedelta(120) 
+            self.txtLockYear.setText(str(nextDate.year))
+            self.txtLockMonth.setText(str(nextDate.month))
+            self.txtLockDay.setText(str(nextDate.day)) 
         except Exception:
             self.setLabel(
                     TEXT['lblSystemTimeStatus'][self.language], 
                     self.lblSystemTimeStatus, 
                     self.sysTimeStatusLabelTimer, 4
                 )
+
+        if self.hwStackedWidget.currentIndex() == self.hwStackedWidget.indexOf(self.lockSettingsPage):
+            self.serialT.lockPage(WRITE)
+        else:
+            self.enterSettingPage(WRITE)
 
         self.setLabel(
                 TEXT['lblSaveHw'][self.language], 
@@ -699,6 +818,24 @@ class MainWin(QMainWindow):
             )
         
         self.loadLocksTable()
+
+    def enterSettingPage(self, cmdType):
+        fieldValues = {
+            'serial': self.txtSerialNumber.text(),
+            'totalCounter': self.txtTotalShotCounter.text(), 
+            'pDate': self.txtProductionDate.text(),
+            'LaserEnergy': self.txtLaserDiodeEnergy.text(), 
+            'waveLength': self.txtLaserWavelength.text(), 
+            'LaserBarType': self.txtLaserBarType.text(),
+            'DriverVersion': self.txtDriverVersion.text(), 
+            'controlVersion': self.txtMainControlVersion.text(), 
+            'firmware': self.txtFirmwareVersion.text(),
+            'monitor': self.txtMonitor.text(),
+            'os': self.txtOsSpecification.text(),
+            'gui': self.txtGuiVersion.text(),
+            'rpi': self.txtRpiVersion.text()
+        }
+        self.serialT.settingsPage(fieldValues, cmdType)
 
     def resetTotalShot(self):
         self.txtTotalShotCounter.setText('0')
@@ -883,42 +1020,61 @@ class MainWin(QMainWindow):
                     self.lblReadyError,
                     self.readyErrorTimer, 4
                 )
-                return
 
-            if self.waterflowError:
+            elif self.waterflowError:
                 self.setLabel(
                     TEXT['waterflowError'][self.language],
                     self.lblReadyError,
                     self.readyErrorTimer, 4
                 )
-                return
-            
-            if self.waterLevelError:
+                
+            elif self.waterLevelError:
                 self.setLabel(
                     TEXT['waterLevelError'][self.language],
                     self.lblReadyError,
                     self.readyErrorTimer, 4
                 )
-                return
             
-            if self.lockFlag:
+            elif self.interLockError:
                 self.setLabel(
                     TEXT['interLockError'][self.language],
                     self.lblReadyError,
                     self.readyErrorTimer, 4
                 )
-                return
 
-            self.ready = True
-            self.btnStandby.setStyleSheet(READY_NOT_SELECTED)
-            self.btnReady.setStyleSheet(READY_SELECTED)
-            self.sliderEnergy.setStyleSheet(SLIDER_DISABLED)
-            self.sliderFrequency.setStyleSheet(SLIDER_DISABLED)
-            self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED)
-            self.epfSkinGradeLayout.setEnabled(False)
+            elif self.overHeatError:
+                self.setLabel(
+                    TEXT['overHeatError'][self.language],
+                    self.lblReadyError,
+                    self.readyErrorTimer, 4
+                )
+
+            elif self.physicalDamage:
+                self.setLabel(
+                    TEXT['physicalDamage'][self.language],
+                    self.lblReadyError,
+                    self.readyErrorTimer, 4
+                )
+            else:
+                self.ready = True
+                self.serialT.laserPage({'ready-standby': 'Ready'})
+                fields = {
+                    'cooling': self.cooling , 'energy': self.energy,
+                    'pulseWidth': self.pulseWidth,'frequency': self.frequency, 
+                    'couter': self.currentCounter
+                } 
+                
+                self.serialT.laserPage(fields)
+                self.btnStandby.setStyleSheet(READY_NOT_SELECTED)
+                self.btnReady.setStyleSheet(READY_SELECTED)
+                self.sliderEnergy.setStyleSheet(SLIDER_DISABLED)
+                self.sliderFrequency.setStyleSheet(SLIDER_DISABLED)
+                self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED)
+                self.epfSkinGradeLayout.setEnabled(False)
 
         else:
             self.ready = False
+            self.serialT.laserPage({'ready-standby': 'StandBy'})
             self.btnStandby.setStyleSheet(READY_SELECTED)
             self.btnReady.setStyleSheet(READY_NOT_SELECTED)
             self.epfSkinGradeLayout.setEnabled(True)
@@ -932,6 +1088,7 @@ class MainWin(QMainWindow):
         if operation == 'inc':
             if self.cooling < 5:
                 self.cooling += 1
+                self.serialT.laserPage({'cooling': self.cooling})
                 for btn in buttons:
                     coolingNum = int(btn.objectName().split('Cooling')[1])
                     if coolingNum == self.cooling:
@@ -948,6 +1105,7 @@ class MainWin(QMainWindow):
                         btn.setIconSize(QSize(50, 50))
                         
                 self.cooling -= 1       
+                self.serialT.laserPage({'cooling': self.cooling})
 
     def sliderChgColor(self, i):
         if i == 'pressed':
@@ -1036,7 +1194,16 @@ class MainWin(QMainWindow):
             bodyPart = btn.objectName().split('btn')[1][1:].lower()
             btn.clicked.connect(self.setBodyPart(sex, bodyPart))
             btn.clicked.connect(self.loadCase)
+            btn.clicked.connect(self.sendLaserFields)
         
+    def sendLaserFields(self):
+        fields = {
+            'cooling': self.cooling , 'energy': self.energy,
+            'pulseWidth': self.pulseWidth,'frequency': self.frequency, 
+            'couter': self.currentCounter, 
+        }
+        self.serialT.laserPage(fields)
+    
     def setBodyPart(self, sex, bodyPart):
         def wrapper():
             self.bodyPart = bodyPart
@@ -1079,23 +1246,6 @@ class MainWin(QMainWindow):
 
         return wrapper
 
-    def selectEPF(self, parameter):
-        if parameter == 'E':
-            self.btnEnergy.setStyleSheet(EPF_SELECTED)
-            self.btnPulseWidth.setStyleSheet(EPF_NOT_SELECTED)
-            self.btnFrequency.setStyleSheet(EPF_NOT_SELECTED)
-            self.EPF = 'E'
-        elif parameter == 'P':
-            self.btnEnergy.setStyleSheet(EPF_NOT_SELECTED)
-            self.btnPulseWidth.setStyleSheet(EPF_SELECTED)
-            self.btnFrequency.setStyleSheet(EPF_NOT_SELECTED)
-            self.EPF = 'P'
-        elif parameter == 'F':
-            self.btnEnergy.setStyleSheet(EPF_NOT_SELECTED)
-            self.btnPulseWidth.setStyleSheet(EPF_NOT_SELECTED)
-            self.btnFrequency.setStyleSheet(EPF_SELECTED)
-            self.EPF = 'F'
-
     def loadCase(self):
         case = openCase(self.case)
         energy, pl, freq = case.getValue(self.sex, self.bodyPart)
@@ -1114,7 +1264,8 @@ class MainWin(QMainWindow):
         if self.stackedWidgetSettings.currentIndex() == 0:
             self.stackedWidget.setCurrentWidget(self.mainPage)
         else:
-            self.stackedWidgetSettings.setCurrentWidget(self.settingsMenuPage) 
+            self.stackedWidgetSettings.setCurrentWidget(self.settingsMenuPage)
+            self.serialT.mainPage() 
 
     def blinkSensorsIcon(self, sensor):
         if sensor == 'waterflow':
@@ -1138,6 +1289,27 @@ class MainWin(QMainWindow):
             else:
                 self.btnTemp.setIcon(self.tempIco)
 
+        elif sensor == 'interLock':
+            self.lockFlag = not self.lockFlag
+            if self.lockFlag:
+                self.btnLock.setIcon(self.lockWarIco)
+            else:
+                self.btnLock.setIcon(self.lockIco)
+
+        elif sensor == 'overHeat':
+            self.overHeatFlag = not self.overHeatFlag
+            if self.overHeatFlag:
+                self.btnOverHeat.setVisible(True)
+            else:
+                self.btnOverHeat.setVisible(False)
+
+        elif sensor == 'physicalDamage':
+            self.physicalDamageFlag = not self.physicalDamageFlag
+            if self.physicalDamageFlag:
+                self.btnPhysicalDamage.setVisible(True)
+            else:
+                self.btnPhysicalDamage.setVisible(False)
+
     def stopSensorWarning(self, sensor):
         if sensor == 'waterflow':
             self.waterflowTimer.stop()
@@ -1154,6 +1326,21 @@ class MainWin(QMainWindow):
             self.tempWar = False
             self.btnTemp.setIcon(self.tempIco)
 
+        elif sensor == 'interLock':
+            self.interLockTimer.stop()
+            self.lockWar = False
+            self.btnLock.setIcon(self.unlockIco)
+
+        elif sensor == 'overHeat':
+            self.overHeatTimer.stop()
+            self.overHeatWar = False
+            self.btnOverHeat.setVisible(False)
+
+        elif sensor == 'physicalDamage':
+            self.physicalDamageTimer.stop()
+            self.physicalDamageWar = False
+            self.btnPhysicalDamage.setVisible(False)
+
     def startSensorWarning(self, sensor):
         if sensor == 'waterflow':
             if not self.waterflowWar:
@@ -1169,15 +1356,28 @@ class MainWin(QMainWindow):
             if not self.tempWar:
                 self.tempTimer.start(500)
                 self.tempWar = True
-
-    def setLock(self, lock=True):
-        if lock:
-            self.btnLock.setIcon(self.lockIco)
-            self.lockFlag = True
+                
+        elif sensor == 'interLock':
+            if not self.lockWar:
+                self.interLockTimer.start(500)
+                self.lockWar = True
         
+        elif sensor == 'overHeat':
+            if not self.overHeatWar:
+                self.overHeatTimer.start(500)
+                self.overHeatWar = True
+
+        elif sensor == 'physicalDamage':
+            if not self.physicalDamageWar:
+                self.physicalDamageTimer.start(500)
+                self.physicalDamageWar = True
+
+    def setLock(self, lock):
+        self.interLockError = lock
+        if lock:
+            self.startSensorWarning('interLock')
         else:
-            self.btnLock.setIcon(self.unlockIco)
-            self.lockFlag = False
+            self.stopSensorWarning('interLock')
 
     def setTemp(self, value):
         self.txtTemp.setText(str(value) + ' °C')
@@ -1200,6 +1400,20 @@ class MainWin(QMainWindow):
             self.startSensorWarning('waterLevel')
         else:
             self.stopSensorWarning('waterLevel')
+
+    def setOverHeatError(self, status):
+        self.overHeatError = status
+        if self.overHeatError:
+            self.startSensorWarning('overHeat')
+        else:
+            self.stopSensorWarning('overHeat')
+
+    def setPhysicalDamage(self, status):
+        self.physicalDamage = status
+        if self.physicalDamage:
+            self.startSensorWarning('physicalDamage')
+        else:
+            self.stopSensorWarning('physicalDamage')
 
     def search(self):
         name = self.txtSearch.text().lower()
@@ -1639,6 +1853,7 @@ class MainWin(QMainWindow):
             self.keyboard('hide')
             self.changeAnimation('horizontal')
             self.stackedWidget.setCurrentWidget(self.laserMainPage)
+            self.serialT.selectionPage()
 
         elif self.user and self.user.currentSession == 'started':
             if not userExists(self.user.phoneNumber):
@@ -1680,12 +1895,17 @@ class MainWin(QMainWindow):
                 self.keyboard('hide')
                 self.changeAnimation('horizontal')
                 self.stackedWidget.setCurrentWidget(self.laserMainPage)
+                self.serialT.selectionPage()
 
     def endSession(self):
         self.user.setCurrentSession('finished')
         self.user.addSession()
         self.user.save()
         self.user = None
+        self.configs['TotalShotCounter'] += self.currentCounter
+        saveConfigs(self.configs)
+        self.lblCounterValue.setText('0')
+        self.currentCounter = 0
         self.stackedWidget.setCurrentWidget(self.mainPage)
         self.stackedWidgetLaser.setCurrentIndex(0)
         self.btnBackLaser.setVisible(False)
