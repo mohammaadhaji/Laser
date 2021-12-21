@@ -156,9 +156,7 @@ def getID():
 
 class UpdateFirmware(QThread):
     result = pyqtSignal(str)
-    
-    def __init__(self, parent):
-        super().__init__(parent=parent)
+
 
     def run(self):
         if platform.system() == 'Windows':
