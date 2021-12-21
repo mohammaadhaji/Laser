@@ -76,10 +76,83 @@ def sendPacket(fieldsIndex, fieldValues, page, cmdType=REPORT):
         packet.append(0xCC)
         serial.write(packet)
         packet[:] = []
-    
+
+def selectionPage():
+    packet = bytearray(9)
+    packet[0] = 0xAA
+    packet[1] = 0xBB
+    packet[2] = 0x05 # NoB
+    packet[3] = 0x03 # Page Number
+    packet[4] = 0xAA # Field
+    packet[5] = 0x0A # Cmd type 
+    crc = Crc16Xmodem.calc(packet[2:6])
+    crc_bytes = crc.to_bytes(2, byteorder='big')
+    packet[6] = crc_bytes[0]
+    packet[7] = crc_bytes[1]
+    packet[8] = 0xCC
+    serial.write(packet)
+
+def mainPage():
+    packet = bytearray(9)
+    packet[0] = 0xAA
+    packet[1] = 0xBB
+    packet[2] = 0x05 
+    packet[3] = 0x04 
+    packet[4] = 0xAA 
+    packet[5] = REPORT  
+    crc = Crc16Xmodem.calc(packet[2:-3])
+    crc_bytes = crc.to_bytes(2, byteorder='big')
+    packet[6] = crc_bytes[0]
+    packet[7] = crc_bytes[1]
+    packet[8] = 0xCC
+    serial.write(packet)
+
+def readTime():
+    packet = bytearray(9)
+    packet[0] = 0xAA
+    packet[1] = 0xBB
+    packet[2] = 0x05 
+    packet[3] = LOCK_TIME_PAGE 
+    packet[4] = 0x01 
+    packet[5] = READ  
+    crc = Crc16Xmodem.calc(packet[2:-3])
+    crc_bytes = crc.to_bytes(2, byteorder='big')
+    packet[6] = crc_bytes[0]
+    packet[7] = crc_bytes[1]
+    packet[8] = 0xCC
+    serial.write(packet)
+    packet[4] = 0x00
+    crc = Crc16Xmodem.calc(packet[2:-3])
+    crc_bytes = crc.to_bytes(2, byteorder='big')
+    packet[6] = crc_bytes[0]
+    packet[7] = crc_bytes[1]
+    serial.write(packet)
+
+def laserPage(fieldValues):
+    fieldsIndex = {
+        'cooling': 3 , 'energy': 4, 'pulseWidth': 5,
+        'frequency':6, 'couter': 7, 'ready-standby': 8
+    }
+    sendPacket(fieldsIndex, fieldValues, LASER_PAGE)
+
+def settingsPage(fieldValues, cmdType):
+    fieldsIndex = {
+        'serial': 0, 'totalCounter': 1, 'pDate': 2,
+        'LaserEnergy': 3, 'waveLength': 4, 'LaserBarType': 5,
+        'DriverVersion': 6, 'controlVersion': 7, 'firmware': 8,
+        'monitor': 9, 'os': 10, 'gui': 11, 'rpi': 12
+    }
+    sendPacket(fieldsIndex, fieldValues, SETTING_PAGE, cmdType)
+
+def lockPage(cmdType):
+    fieldsIndex = { 'clock': 0, 'date': 1}
+    clock = jdatetime.datetime.now().strftime('%H : %M : %S')
+    date  = jdatetime.datetime.now().togregorian().strftime('%Y-%m-%d')
+    fieldValues = {'clock': clock, 'date': date}
+    sendPacket(fieldsIndex, fieldValues, LOCK_TIME_PAGE, cmdType)
 
 
-class SerialThread(QObject):
+class SerialCom(QObject):
     sensorFlags = pyqtSignal(list)
     tempValue = pyqtSignal(int)
     shot = pyqtSignal()
@@ -98,96 +171,20 @@ class SerialThread(QObject):
         super(QObject, self).__init__()
         self.loop = True
 
-    def selectionPage(self):
-        packet = bytearray(9)
-        packet[0] = 0xAA
-        packet[1] = 0xBB
-        packet[2] = 0x05 # NoB
-        packet[3] = 0x03 # Page Number
-        packet[4] = 0xAA # Field
-        packet[5] = 0x0A # Cmd type 
-        crc = Crc16Xmodem.calc(packet[2:6])
-        crc_bytes = crc.to_bytes(2, byteorder='big')
-        packet[6] = crc_bytes[0]
-        packet[7] = crc_bytes[1]
-        packet[8] = 0xCC
-        serial.write(packet)
-
-    def mainPage(self):
-        packet = bytearray(9)
-        packet[0] = 0xAA
-        packet[1] = 0xBB
-        packet[2] = 0x05 
-        packet[3] = 0x04 
-        packet[4] = 0xAA 
-        packet[5] = REPORT  
-        crc = Crc16Xmodem.calc(packet[2:-3])
-        crc_bytes = crc.to_bytes(2, byteorder='big')
-        packet[6] = crc_bytes[0]
-        packet[7] = crc_bytes[1]
-        packet[8] = 0xCC
-        serial.write(packet)
-    
-    def readTime(self):
-        packet = bytearray(9)
-        packet[0] = 0xAA
-        packet[1] = 0xBB
-        packet[2] = 0x05 
-        packet[3] = LOCK_TIME_PAGE 
-        packet[4] = 0x01 
-        packet[5] = READ  
-        crc = Crc16Xmodem.calc(packet[2:-3])
-        crc_bytes = crc.to_bytes(2, byteorder='big')
-        packet[6] = crc_bytes[0]
-        packet[7] = crc_bytes[1]
-        packet[8] = 0xCC
-        serial.write(packet)
-        packet[4] = 0x00
-        crc = Crc16Xmodem.calc(packet[2:-3])
-        crc_bytes = crc.to_bytes(2, byteorder='big')
-        packet[6] = crc_bytes[0]
-        packet[7] = crc_bytes[1]
-        serial.write(packet)
-
-
-    def laserPage(self, fieldValues):
-        fieldsIndex = {
-            'cooling': 3 , 'energy': 4, 'pulseWidth': 5,
-            'frequency':6, 'couter': 7, 'ready-standby': 8
-        }
-        sendPacket(fieldsIndex, fieldValues, LASER_PAGE)
-
-    def settingsPage(self, fieldValues, cmdType):
-        fieldsIndex = {
-           'serial': 0, 'totalCounter': 1, 'pDate': 2,
-            'LaserEnergy': 3, 'waveLength': 4, 'LaserBarType': 5,
-            'DriverVersion': 6, 'controlVersion': 7, 'firmware': 8,
-            'monitor': 9, 'os': 10, 'gui': 11, 'rpi': 12
-        }
-        sendPacket(fieldsIndex, fieldValues, SETTING_PAGE, cmdType)
-
-    def lockPage(self, cmdType):
-        fieldsIndex = { 'clock': 0, 'date': 1}
-        clock = jdatetime.datetime.now().strftime('%H : %M : %S')
-        date  = jdatetime.datetime.now().togregorian().strftime('%Y-%m-%d')
-        fieldValues = {'clock': clock, 'date': date}
-        sendPacket(fieldsIndex, fieldValues, LOCK_TIME_PAGE, cmdType)
 
     def closePort(self):
         self.loop = False
         serial.close()
 
     def checkBuffer(self):
-        if serial.in_waiting > 1:
-            self.run()
+        if serial.is_open and serial.in_waiting > 1:
+            self.readDate()
 
-    def run(self):
+    def readDate(self):
         global STATE 
         packet = bytearray()
         nob = 0
-        # serial.reset_input_buffer()
 
-        # while self.loop:
         try:
             temp = serial.read_all()
             counter = 0
@@ -270,8 +267,8 @@ class SerialThread(QObject):
                                             self.sensorFlags.emit(flags)
 
                                         if packet[FIELD_INDEX] == 1:
-                                            temp = packet[4:-2].decode()
-                                            self.tempValue.emit(int(temp))
+                                            t = packet[4:-2].decode()
+                                            self.tempValue.emit(int(t))
 
                                         if packet[FIELD_INDEX] == 7:
                                             shot = packet[4:-2].hex()
@@ -308,7 +305,6 @@ class SerialThread(QObject):
                                         elif packet[FIELD_INDEX] == 6:
                                             self.readFrequency.emit()
 
-                            
                         else:
                             packet.append(temp[counter])
 

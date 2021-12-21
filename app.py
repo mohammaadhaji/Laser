@@ -1,11 +1,12 @@
+from re import A
 from PyQt5.QtGui import *
 from PyQt5.QtMultimedia import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5 import uic
-from communication import SerialThread, WRITE, REPORT
+from communication import *
 from promotions import *
-from functions import *
+from utility import *
 from styles import *
 from paths import *
 from lang import *
@@ -14,6 +15,7 @@ from user import *
 from lock import *
 from itertools import chain
 from pathlib import Path
+from os.path import isfile, isdir, join
 import jdatetime, platform, hashlib, math, sys
 
 
@@ -26,30 +28,28 @@ class MainWin(QMainWindow):
     def setupUi(self):
         # self.setCursor(Qt.BlankCursor)
         self.configs = loadConfigs()
-        self.serialT = SerialThread()
-        self.serialT.sensorFlags.connect(self.setSensors)
-        self.serialT.tempValue.connect(self.setTemp)
-        self.serialT.shot.connect(self.shot)
-        self.serialT.serialNumber.connect(self.txtSerialNumber.setText)
-        self.serialT.productionDate.connect(self.txtProductionDate.setText)
-        self.serialT.laserEnergy.connect(self.txtLaserDiodeEnergy.setText)
-        self.serialT.firmwareVesion.connect(self.txtFirmwareVersion.setText)
-        self.serialT.readCooling.connect(
-            lambda: self.serialT.laserPage({'cooling': self.cooling})
+        self.serialC = SerialCom()
+        self.serialC.sensorFlags.connect(self.setSensors)
+        self.serialC.tempValue.connect(self.setTemp)
+        self.serialC.shot.connect(self.shot)
+        self.serialC.serialNumber.connect(self.txtSerialNumber.setText)
+        self.serialC.productionDate.connect(self.txtProductionDate.setText)
+        self.serialC.laserEnergy.connect(self.txtLaserDiodeEnergy.setText)
+        self.serialC.firmwareVesion.connect(self.txtFirmwareVersion.setText)
+        self.serialC.readCooling.connect(
+            lambda: laserPage({'cooling': self.cooling})
         )
-        self.serialT.readEnergy.connect(
-            lambda: self.serialT.laserPage({'energy': self.energy})
+        self.serialC.readEnergy.connect(
+            lambda: laserPage({'energy': self.energy})
         )
-        self.serialT.readPulseWidht.connect(
-            lambda: self.serialT.laserPage({'pulseWidht': self.pulseWidth})
+        self.serialC.readPulseWidht.connect(
+            lambda: laserPage({'pulseWidht': self.pulseWidth})
         )
-        self.serialT.readFrequency.connect(
-            lambda: self.serialT.laserPage({'frequency': self.frequency})
+        self.serialC.readFrequency.connect(
+            lambda: laserPage({'frequency': self.frequency})
         )
-        self.serialT.sysDate.connect(self.receiveDate)
-        self.serialT.sysClock.connect(self.adjustTime)
-        # self.serialT.start()       
-        # self.serialT.setPriority(0)
+        self.serialC.sysDate.connect(self.receiveDate)
+        self.serialC.sysClock.connect(self.adjustTime)
         self.license = self.configs['LICENSE']
         self.movie = QMovie(LOCK_GIF)
         self.movie.frameChanged.connect(self.unlock)
@@ -103,10 +103,8 @@ class MainWin(QMainWindow):
         self.casesSignals()
         self.tutorials()
         self.initSensors()
-        self.serialT.readTime()
-
-    def readData(self):
-        self.serialT.checkBuffer()
+        self.checkUUID()
+        readTime()
 
     def initPages(self):
         self.stackedWidget.setCurrentWidget(self.splashPage)
@@ -136,8 +134,6 @@ class MainWin(QMainWindow):
 
     def initTimers(self):
         self.checkBuffer = QTimer()
-        self.checkBuffer.timeout.connect(self.readData)
-        self.checkBuffer.start(10)
         self.loginLabelTimer = QTimer()
         self.submitLabelTimer = QTimer()
         self.editLabelTimer = QTimer()
@@ -151,12 +147,18 @@ class MainWin(QMainWindow):
         self.uuidPassLabelTimer = QTimer()
         self.sysTimeStatusLabelTimer = QTimer()
         self.lockErrorLabel = QTimer()
+        self.updateFirmwareLabelTimer = QTimer()
         self.systemTimeTimer = QTimer()
         self.readyErrorTimer =  QTimer()
         self.monitorSensorsTimer = QTimer()
         self.sparkTimer = QTimer()
+        self.restartTimer = QTimer()
+        self.restartCounter = 6
+        self.restartTimer.timeout.connect(self.restartForUpdate)
         self.systemTimeTimer.timeout.connect(self.time)
         self.systemTimeTimer.start(1000)
+        self.checkBuffer.timeout.connect(self.serialC.checkBuffer)
+        self.checkBuffer.start(10)
         self.loginLabelTimer.timeout.connect(
             lambda: self.clearLabel(self.lblLogin, self.loginLabelTimer)
         )
@@ -186,6 +188,9 @@ class MainWin(QMainWindow):
         )
         self.readyErrorTimer.timeout.connect(
             lambda: self.clearLabel(self.lblReadyError, self.readyErrorTimer)
+        )
+        self.updateFirmwareLabelTimer.timeout.connect(
+            lambda: self.clearLabel(self.lblUpdateFirmware, self.updateFirmwareLabelTimer)
         )
         self.incDaysTimer.timeout.connect(lambda: self.incDecDay('inc'))
         self.decDaysTimer.timeout.connect(lambda: self.incDecDay('dec'))
@@ -225,7 +230,7 @@ class MainWin(QMainWindow):
         self.btnEnter.clicked.connect(self.unlockLIC)
         self.btnSort.clicked.connect(self.sort)
         self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
-        self.btnEndSession.clicked.connect(self.serialT.mainPage)
+        self.btnEndSession.clicked.connect(mainPage)
         self.btnPower.clicked.connect(self.powerOff)
         self.btnStartSession.clicked.connect(self.startSession)
         self.btnSubmit.clicked.connect(lambda: self.changeAnimation('horizontal'))
@@ -295,14 +300,15 @@ class MainWin(QMainWindow):
         self.btnHwinfo.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.infoPage))
         self.btnHwinfo.clicked.connect(lambda: self.enterSettingPage(REPORT))
         self.btnSystemLock.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.lockSettingsPage))
-        self.btnSystemLock.clicked.connect(lambda: self.serialT.lockPage(REPORT))
+        self.btnSystemLock.clicked.connect(lambda: lockPage(REPORT))
         self.btnAddLock.clicked.connect(self.addLock)
         self.btnBackLaser.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnBackLaser.clicked.connect(lambda: self.stackedWidgetLaser.setCurrentWidget(self.bodyPartPage))
         self.btnBackLaser.clicked.connect(lambda: self.btnBackLaser.setVisible(False))
         self.btnBackLaser.clicked.connect(lambda: self.setReady(False))
-        self.btnBackLaser.clicked.connect(self.serialT.selectionPage)
+        self.btnBackLaser.clicked.connect(selectionPage)
         self.btnBackLaser.setVisible(False)
+        self.btnUpdateFirmware.clicked.connect(self.updateSystem)
         sensors = [
             'btnPhysicalDamage', 'btnOverHeat', 'btnTemp',
             'btnLock', 'btnWaterLevel', 'btnWaterflow',
@@ -453,12 +459,33 @@ class MainWin(QMainWindow):
             pass
 
     def powerOff(self):
-        self.serialT.quit()
-        self.serialT.closePort()
+        self.serialC.closePort()
         if platform.system() == 'Windows':
             self.close()
         else:
             os.system('poweroff')
+
+    def restartForUpdate(self):
+        self.restartCounter -= 1
+        self.lblUpdateFirmware.setText(
+            f'Your system will restart in {self.restartCounter} seconds...'
+        )
+        if self.restartTimer == 1:
+            self.serialC.closePort()
+            os.system('reboot')
+
+    def updateSystem(self):
+        result = updateFirmware()
+
+        if result == 'Done':
+            self.restartTimer.start(1000)
+        else:
+            self.setLabel(
+                result, 
+                self.lblUpdateFirmware,
+                self.updateFirmwareLabelTimer
+            )
+
 
     def setSensors(self, flags):
         self.setLock(flags[0])
@@ -659,11 +686,11 @@ class MainWin(QMainWindow):
         hwid += '@mohammaad_haji'
         
         if hashlib.sha256(hwid.encode()).hexdigest()[:10] == user_pass:
-            self.stackedWidget.setCurrentIndex(2)
+            index = self.stackedWidget.indexOf(self.splashPage)
+            self.stackedWidget.setCurrentIndex(index)
             self.configs['PASSWORD'] = user_pass
             saveConfigs(self.configs)
             self.keyboard('hide')
-            self.unlockLIC(auto=True)
         else:
             self.setLabel(
                 'Password is not correct.', 
@@ -676,47 +703,46 @@ class MainWin(QMainWindow):
         self.txtUUID.setText(hwid)
         hwid += '@mohammaad_haji'
         if hashlib.sha256(hwid.encode()).hexdigest()[:10] == self.configs['PASSWORD']:
-            return True
+            index = self.stackedWidget.indexOf(self.splashPage)
+            self.stackedWidget.setCurrentIndex(index)
         else:
-            self.stackedWidget.setCurrentIndex(0)
-            return False
+            index = self.stackedWidget.indexOf(self.UUIDPage)
+            self.stackedWidget.setCurrentIndex(index)
 
     def unlockLIC(self, auto=False):
         userPass = self.txtPassword.text().strip()
         locks = self.getLocks()
 
-        if self.checkUUID():
+        if len(locks) > 0:
+            index = self.stackedWidget.indexOf(self.loginPage)
+            self.stackedWidget.setCurrentIndex(index)
+            self.txtID.setText(str(locks[0].license))
+            self.setStyleSheet(APP_LOCK_BG)
+        else:
+            self.checkUUID()
         
-            if len(locks) > 0:
-                self.stackedWidget.setCurrentIndex(self.stackedWidget.indexOf(self.loginPage))
-                self.txtID.setText(str(locks[0].license))
-                self.setStyleSheet(APP_LOCK_BG)
-            else:
-                self.stackedWidget.setCurrentIndex(self.stackedWidget.indexOf(self.splashPage))
-            
-            for lock in locks:
-                if lock.checkPassword(userPass):
-                    saveConfigs(self.configs)
-                    self.keyboard('hide')
-                    self.movie.start()
-                    self.txtPassword.clear()
-                    self.wellcomeSound.play()
-                    return
+        for lock in locks:
+            if lock.checkPassword(userPass):
+                saveConfigs(self.configs)
+                self.keyboard('hide')
+                self.movie.start()
+                self.txtPassword.clear()
+                self.wellcomeSound.play()
+                return
 
-                else:
-                    if not auto:
-                        self.setLabel(
-                                'Password is not correct.', 
-                                self.lblPassword, 
-                                self.passwordLabelTimer, 4
+            else:
+                if not auto:
+                    self.setLabel(
+                            'Password is not correct.', 
+                            self.lblPassword, 
+                            self.passwordLabelTimer, 4
                             )
 
     def unlock(self, frameNumber):
         if frameNumber == self.movie.frameCount() - 1: 
             self.movie.stop()
             os.chdir(CURRENT_FILE_DIR)
-            self.serialT.quit()
-            self.serialT.closePort()
+            self.serialC.closePort()
             QApplication.processEvents()
             if platform.system() == 'Windows':
                 os.system('python app.py')
@@ -848,7 +874,7 @@ class MainWin(QMainWindow):
                 )
 
         if self.hwStackedWidget.currentIndex() == self.hwStackedWidget.indexOf(self.lockSettingsPage):
-            self.serialT.lockPage(WRITE)
+            lockPage(WRITE)
         else:
             self.enterSettingPage(WRITE)
 
@@ -876,7 +902,7 @@ class MainWin(QMainWindow):
             'gui': self.txtGuiVersion.text(),
             'rpi': self.txtRpiVersion.text()
         }
-        self.serialT.settingsPage(fieldValues, cmdType)
+        settingsPage(fieldValues, cmdType)
 
     def resetTotalShot(self):
         self.txtTotalShotCounter.setText('0')
@@ -1098,14 +1124,14 @@ class MainWin(QMainWindow):
                 )
             else:
                 self.ready = True
-                self.serialT.laserPage({'ready-standby': 'Ready'})
+                laserPage({'ready-standby': 'Ready'})
                 fields = {
                     'cooling': self.cooling , 'energy': self.energy,
                     'pulseWidth': self.pulseWidth,'frequency': self.frequency, 
                     'couter': self.currentCounter
                 } 
                 
-                self.serialT.laserPage(fields)
+                laserPage(fields)
                 self.btnStandby.setStyleSheet(READY_NOT_SELECTED)
                 self.btnReady.setStyleSheet(READY_SELECTED)
                 self.sliderEnergy.setStyleSheet(SLIDER_DISABLED)
@@ -1115,7 +1141,7 @@ class MainWin(QMainWindow):
 
         else:
             self.ready = False
-            self.serialT.laserPage({'ready-standby': 'StandBy'})
+            laserPage({'ready-standby': 'StandBy'})
             self.btnStandby.setStyleSheet(READY_SELECTED)
             self.btnReady.setStyleSheet(READY_NOT_SELECTED)
             self.epfSkinGradeLayout.setEnabled(True)
@@ -1129,7 +1155,7 @@ class MainWin(QMainWindow):
         if operation == 'inc':
             if self.cooling < 5:
                 self.cooling += 1
-                self.serialT.laserPage({'cooling': self.cooling})
+                laserPage({'cooling': self.cooling})
                 for btn in buttons:
                     coolingNum = int(btn.objectName().split('Cooling')[1])
                     if coolingNum == self.cooling:
@@ -1146,7 +1172,7 @@ class MainWin(QMainWindow):
                         btn.setIconSize(QSize(50, 50))
                         
                 self.cooling -= 1       
-                self.serialT.laserPage({'cooling': self.cooling})
+                laserPage({'cooling': self.cooling})
 
     def sliderChgColor(self, i):
         if i == 'pressed':
@@ -1245,7 +1271,7 @@ class MainWin(QMainWindow):
             'pulseWidth': self.pulseWidth,'frequency': self.frequency, 
             'couter': self.currentCounter, 
         }
-        self.serialT.laserPage(fields)
+        laserPage(fields)
     
     def setBodyPart(self, sex, bodyPart):
         def wrapper():
@@ -1308,7 +1334,7 @@ class MainWin(QMainWindow):
             self.stackedWidget.setCurrentWidget(self.mainPage)
         else:
             self.stackedWidgetSettings.setCurrentWidget(self.settingsMenuPage)
-            self.serialT.mainPage() 
+            mainPage() 
 
     def blinkSensorsIcon(self, sensor):
         if sensor == 'waterflow':
@@ -1896,7 +1922,7 @@ class MainWin(QMainWindow):
             self.keyboard('hide')
             self.changeAnimation('horizontal')
             self.stackedWidget.setCurrentWidget(self.laserMainPage)
-            self.serialT.selectionPage()
+            selectionPage()
 
         elif self.user and self.user.currentSession == 'started':
             if not userExists(self.user.phoneNumber):
@@ -1938,7 +1964,7 @@ class MainWin(QMainWindow):
                 self.keyboard('hide')
                 self.changeAnimation('horizontal')
                 self.stackedWidget.setCurrentWidget(self.laserMainPage)
-                self.serialT.selectionPage()
+                selectionPage()
 
     def endSession(self):
         self.user.setCurrentSession('finished')

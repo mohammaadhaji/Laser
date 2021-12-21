@@ -1,9 +1,9 @@
 from uuid import getnode as get_mac
 from paths import *
-from os.path import isfile
+from os.path import isfile, isdir
 import datetime, jdatetime
 import subprocess, platform, pickle
-import random, uuid, os, re
+import random, uuid, os, re, json, shutil
 
 
 def setSystemTime(time):
@@ -150,3 +150,55 @@ def getID():
             id = r
 
     return id
+
+
+def updateFirmware():
+    if platform.system() == 'Windows':
+        return "We don't do that here."
+                         
+    r1  = subprocess.check_output('lsblk -J', shell=True)
+    blocks = json.loads(r1)['blockdevices']
+
+    sdaFound = False
+    sdaBlock = None
+    for blk in blocks:
+        if blk['name'] == 'sda':
+            sdaFound = True
+            sdaFound = blk
+
+    if not sdaFound:
+        return "Flash Drive not found."
+            
+    if not 'children' in sdaBlock:
+        return "Flash drive doesn't have any partitions."
+           
+    mountDir ='/media/updateFirmware' 
+    os.mkdir(mountDir)
+    partitionsDir = {}
+
+    for part in sdaBlock['children']:
+        partitionsDir[part['name']] = part['mountpoint']
+
+    for part in partitionsDir:
+        if partitionsDir[part] == None:
+                os.mkdir(f'{mountDir}/{part}')
+                r = subprocess.call(
+                    f'mount /dev/{part} {mountDir}/{part}',
+                    shell=True
+                )
+                partitionsDir[part] = f'{mountDir}/{part}'
+
+    laserFound = False
+    laserDir = ''
+    for dir in partitionsDir.values():
+        if isdir(f'{dir}/Laser'):
+            laserFound = True
+            laserDir = f'{dir}/Laser'
+
+    if not laserFound:
+        return "Source files not found."
+        
+    os.system(f'cp {laserDir}/* {CURRENT_FILE_DIR}')
+    os.system(f'umount {mountDir}/sda*')
+    shutil.rmtree(mountDir)
+    return "Done"

@@ -1,4 +1,4 @@
-from functions import getDiff, randID
+from utility import getDiff, randID
 
 
 class Lock:
