@@ -50,6 +50,8 @@ class MainWin(QMainWindow):
         )
         self.serialC.sysDate.connect(self.receiveDate)
         self.serialC.sysClock.connect(self.adjustTime)
+        self.updateT = UpdateFirmware()
+        self.updateT.result.connect(self.updateResult)
         self.license = self.configs['LICENSE']
         self.movie = QMovie(LOCK_GIF)
         self.movie.frameChanged.connect(self.unlock)
@@ -475,14 +477,7 @@ class MainWin(QMainWindow):
             self.serialC.closePort()
             os.system('reboot')
 
-    def updateSystem(self):
-        result = updateFirmware()
-        self.setLabel(
-                'Please wait...', 
-                self.lblUpdateFirmware,
-                self.updateFirmwareLabelTimer
-            )
-        QApplication.processEvents()
+    def updateResult(self, result):
         if result == 'Done':
             self.restartTimer.start(1000)
         else:
@@ -491,6 +486,14 @@ class MainWin(QMainWindow):
                 self.lblUpdateFirmware,
                 self.updateFirmwareLabelTimer
             )
+
+    def updateSystem(self):
+        self.setLabel(
+                'Please wait...', 
+                self.lblUpdateFirmware,
+                self.updateFirmwareLabelTimer
+            )
+        self.updateT.start()
 
 
     def setSensors(self, flags):

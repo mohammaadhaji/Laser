@@ -1,9 +1,13 @@
+import platform
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from crccheck.crc import Crc16Xmodem
 from serial import Serial
 import jdatetime
 
-serial = Serial('COM2', 1152000)
+if platform.system() == 'Windows':
+    serial = Serial('COM2', 115200)
+else:
+    serial = Serial('/dev/ttyS0', 115200)
 
 HEADER_1   = 1
 HEADER_2   = 2

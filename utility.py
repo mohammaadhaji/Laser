@@ -1,4 +1,6 @@
 from uuid import getnode as get_mac
+
+from PyQt5.QtCore import QThread, pyqtSignal
 from paths import *
 from os.path import isfile, isdir
 import datetime, jdatetime
@@ -152,53 +154,59 @@ def getID():
     return id
 
 
-def updateFirmware():
-    if platform.system() == 'Windows':
-        return "We don't do that here."
-                         
-    r1  = subprocess.check_output('lsblk -J', shell=True)
-    blocks = json.loads(r1)['blockdevices']
+class UpdateFirmware(QThread):
+    result = pyqtSignal(str)
+    
+    def __init__(self, parent):
+        super().__init__(parent=parent)
 
-    sdaFound = False
-    sdaBlock = None
-    for blk in blocks:
-        if blk['name'] == 'sda':
-            sdaFound = True
-            sdaBlock = blk
+    def run(self):
+        if platform.system() == 'Windows':
+            self.result.emit("We don't do that here.")
+                            
+        r1  = subprocess.check_output('lsblk -J', shell=True)
+        blocks = json.loads(r1)['blockdevices']
 
-    if not sdaFound:
-        return "Flash Drive not found."
+        sdaFound = False
+        sdaBlock = None
+        for blk in blocks:
+            if blk['name'] == 'sda':
+                sdaFound = True
+                sdaBlock = blk
+
+        if not sdaFound:
+            self.result.emit("Flash Drive not found.")
+                
+        if not 'children' in sdaBlock:
+            self.result.emit("Flash drive doesn't have any partitions.")
             
-    if not 'children' in sdaBlock:
-        return "Flash drive doesn't have any partitions."
-           
-    mountDir ='/media/updateFirmware' 
-    os.mkdir(mountDir)
-    partitionsDir = {}
+        mountDir ='/media/updateFirmware' 
+        os.mkdir(mountDir)
+        partitionsDir = {}
 
-    for part in sdaBlock['children']:
-        partitionsDir[part['name']] = part['mountpoint']
+        for part in sdaBlock['children']:
+            partitionsDir[part['name']] = part['mountpoint']
 
-    for part in partitionsDir:
-        if partitionsDir[part] == None:
-                os.mkdir(f'{mountDir}/{part}')
-                r = subprocess.call(
-                    f'mount /dev/{part} {mountDir}/{part}',
-                    shell=True
-                )
-                partitionsDir[part] = f'{mountDir}/{part}'
+        for part in partitionsDir:
+            if partitionsDir[part] == None:
+                    os.mkdir(f'{mountDir}/{part}')
+                    r = subprocess.call(
+                        f'mount /dev/{part} {mountDir}/{part}',
+                        shell=True
+                    )
+                    partitionsDir[part] = f'{mountDir}/{part}'
 
-    laserFound = False
-    laserDir = ''
-    for dir in partitionsDir.values():
-        if isdir(f'{dir}/Laser'):
-            laserFound = True
-            laserDir = f'{dir}/Laser'
+        laserFound = False
+        laserDir = ''
+        for dir in partitionsDir.values():
+            if isdir(f'{dir}/Laser'):
+                laserFound = True
+                laserDir = f'{dir}/Laser'
 
-    if not laserFound:
-        return "Source files not found."
-        
-    os.system(f'cp -r {laserDir}/* {CURRENT_FILE_DIR}')
-    os.system(f'umount {mountDir}/sda*')
-    shutil.rmtree(mountDir)
-    return "Done"
+        if not laserFound:
+            self.result.emit("Source files not found.")
+            
+        os.system(f'cp -r {laserDir}/* {CURRENT_FILE_DIR}')
+        os.system(f'umount {mountDir}/sda*')
+        shutil.rmtree(mountDir)
+        self.result.emit("Done")
