@@ -470,13 +470,19 @@ class MainWin(QMainWindow):
         self.lblUpdateFirmware.setText(
             f'Your system will restart in {self.restartCounter} seconds...'
         )
-        if self.restartTimer == 1:
+        if self.restartCounter == 0:
+            self.restartTimer.stop()
             self.serialC.closePort()
             os.system('reboot')
 
     def updateSystem(self):
         result = updateFirmware()
-
+        self.setLabel(
+                'Please wait...', 
+                self.lblUpdateFirmware,
+                self.updateFirmwareLabelTimer
+            )
+        QApplication.processEvents()
         if result == 'Done':
             self.restartTimer.start(1000)
         else:

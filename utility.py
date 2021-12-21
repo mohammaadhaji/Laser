@@ -164,7 +164,7 @@ def updateFirmware():
     for blk in blocks:
         if blk['name'] == 'sda':
             sdaFound = True
-            sdaFound = blk
+            sdaBlock = blk
 
     if not sdaFound:
         return "Flash Drive not found."
@@ -198,7 +198,7 @@ def updateFirmware():
     if not laserFound:
         return "Source files not found."
         
-    os.system(f'cp {laserDir}/* {CURRENT_FILE_DIR}')
+    os.system(f'cp -r {laserDir}/* {CURRENT_FILE_DIR}')
     os.system(f'umount {mountDir}/sda*')
     shutil.rmtree(mountDir)
     return "Done"
