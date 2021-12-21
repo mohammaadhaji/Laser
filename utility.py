@@ -205,6 +205,8 @@ class UpdateFirmware(QThread):
 
         if not laserFound:
             self.result.emit("Source files not found.")
+            os.system(f'umount {mountDir}/sda*')
+            shutil.rmtree(mountDir)
             return
             
         os.system(f'cp -r {laserDir}/* {CURRENT_FILE_DIR}')
