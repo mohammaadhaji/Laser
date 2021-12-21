@@ -174,9 +174,11 @@ class UpdateFirmware(QThread):
 
         if not sdaFound:
             self.result.emit("Flash Drive not found.")
+            return
                 
         if not 'children' in sdaBlock:
             self.result.emit("Flash drive doesn't have any partitions.")
+            return
             
         mountDir ='/media/updateFirmware' 
         os.mkdir(mountDir)
@@ -203,6 +205,7 @@ class UpdateFirmware(QThread):
 
         if not laserFound:
             self.result.emit("Source files not found.")
+            return
             
         os.system(f'cp -r {laserDir}/* {CURRENT_FILE_DIR}')
         os.system(f'umount {mountDir}/sda*')
