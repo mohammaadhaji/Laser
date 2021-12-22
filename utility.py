@@ -1,3 +1,4 @@
+from typing_extensions import final
 from uuid import getnode as get_mac
 from PyQt5.QtCore import QThread, pyqtSignal
 from paths import *
@@ -244,7 +245,7 @@ class UpdateFirmware(QThread):
                 sdaBlock = blk
 
         if not sdaFound:
-            self.result.emit("Flash Drive not found.")
+            self.result.emit("Flash dlsrive not found.")
             return
                 
         if not 'children' in sdaBlock:
@@ -287,12 +288,14 @@ class UpdateFirmware(QThread):
 
             if not md5 == calcMD5(laserDir, 'verify'):
                 self.result.emit(verifyError)
+                os.system(f'umount {mountDir}/sda*')
+                shutil.rmtree(mountDir)
                 return
-
-            os.remove(f'{laserDir}/verify')    
-
+   
         except Exception:
             self.result.emit(verifyError)
+            os.system(f'umount {mountDir}/sda*')
+            shutil.rmtree(mountDir)
             return
 
         os.system(f'cp -r {laserDir}/* {CURRENT_FILE_DIR}')

@@ -53,7 +53,7 @@ font-family:&quot;Times New Roman&quot;;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>5</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="UUIDPage">
        <layout class="QVBoxLayout" name="verticalLayout_66">
@@ -701,6 +701,9 @@ QPushButton:pressed {
       </widget>
       <widget class="QWidget" name="splashPage">
        <layout class="QVBoxLayout" name="verticalLayout_37">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <property name="leftMargin">
          <number>0</number>
         </property>
@@ -740,6 +743,9 @@ QPushButton:pressed {
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_47">
+            <property name="spacing">
+             <number>0</number>
+            </property>
             <property name="leftMargin">
              <number>0</number>
             </property>

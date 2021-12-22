@@ -218,3 +218,15 @@ QSlider::handle:horizontal:pressed {
     background-color: rgb(65, 255, 195);
 }
 """
+
+OWNER_INFO_STYLE = '''
+QLabel {
+    qproperty-alignment: AlignCenter;
+	border: 1px solid #FF17365D;
+	border-top-right-radius: 15px;
+	background-color: #FF17365D;
+	padding: 50px 50px;
+	color: rgb(255, 255, 255);
+	max-height: 100px;	
+}
+'''

@@ -67,10 +67,12 @@ class MainWin(QMainWindow):
         self.wellcomeText = QLabel(self.lblSplash)
         self.wellcomeText.setText('')
         self.wellcomeText.setFont(QFont('Arial', 40))
-        self.wellcomeText.setStyleSheet('color:rgb(24, 131, 199); background-color: white;')
-        self.wellcomeText.setText(self.configs['OwnerInfo'])
-        self.wellcomeText.move(100, 900)     
-        # self.wellcomeText.adjustSize()  
+        self.wellcomeText.setStyleSheet(OWNER_INFO_STYLE)
+        ownerInfo = self.configs['OwnerInfo']
+        self.wellcomeText.setText(ownerInfo)
+        if not ownerInfo:
+            self.wellcomeText.setVisible(False)
+        self.wellcomeText.move(self.geometry().bottomLeft())     
         self.time(edit=True)        
         self.shotSound = QSoundEffect()
         self.shotSound.setSource(QUrl.fromLocalFile(SHOT_SOUND))
@@ -463,7 +465,11 @@ class MainWin(QMainWindow):
 
     def setOwnerInfo(self, text):
         self.wellcomeText.setText(text)
-        self.wellcomeText.adjustSize()  
+        self.wellcomeText.adjustSize()
+        if not text:
+            self.wellcomeText.setVisible(False)
+        else:
+            self.wellcomeText.setVisible(True)
         self.configs['OwnerInfo'] = text
         saveConfigs(self.configs)
 
@@ -2031,6 +2037,7 @@ class MainWin(QMainWindow):
             self.language = 0
 
         saveConfigs(self.configs)
+        self.wellcomeText.adjustSize()  
         self.lblLanguage.setText(TEXT['lblLanguage'][self.language])
         self.lblSettingsHeader.setText(TEXT['lblSettingsHeader'][self.language])
         self.btnHwSettings.setText(TEXT['btnHwSettings'][self.language])
