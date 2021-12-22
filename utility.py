@@ -14,7 +14,7 @@ RPI_VERSION = ''
 if isfile('/proc/device-tree/model'):
     file = open('/proc/device-tree/model', 'r')
     RPI_MODEL = file.read()
-    RPI_VERSION = RPI_MODEL.split('Pi')[1][:2].split()
+    RPI_VERSION = RPI_MODEL.split('Pi')[1][:2].strip()
     file.close()
 
 else:
