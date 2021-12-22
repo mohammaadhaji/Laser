@@ -125,5 +125,7 @@ TEXT = {
     'waterLevelError': ['Water Level Sensor Error', 'خطای سنسور سطح آب'],
     'interLockError': ['Inter Lock Swith Error', 'خطای سوئیچ قفل داخلی'],
     'overHeatError': ['OverHeat Error', 'خطای گرمای بیش از حد'],
-    'physicalDamage': ['Physical Damage', 'آسیب فیزیکی']
+    'physicalDamage': ['Physical Damage', 'آسیب فیزیکی'],
+    'lblOwnerInfo': ['Owner Information', 'اطلاعات مالک'],
+    'btnShowSplash': ['Splash Page', 'صفحه اسپلش']
 }

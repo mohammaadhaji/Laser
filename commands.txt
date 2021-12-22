@@ -1,5 +1,5 @@
 sudo apt-get update
-sudo apt-get install 
-sudo apt-get install python3-pip python3-pyqt5 python3-pyqt5.qtmultimedia git libqt5multimedia5-plugins
+sudo apt-get install python3-pip python3-pyqt5 python3-pyqt5.qtmultimedia libqt5multimedia5-plugins git
 sudo pip3 install jdatetime pyserial crccheck
 sudo apt-get install libgl1-mesa-dev libglu1-mesa-dev
+sudo apt-get install edid-decode 

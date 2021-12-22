@@ -1,11 +1,47 @@
 from uuid import getnode as get_mac
-
 from PyQt5.QtCore import QThread, pyqtSignal
 from paths import *
 from os.path import isfile, isdir
 import datetime, jdatetime
-import subprocess, platform, pickle
+import subprocess, platform, pickle, hashlib
 import random, uuid, os, re, json, shutil
+
+
+
+RPI_MODEL = ''
+RPI_VERSION = ''
+if isfile('/proc/device-tree/model'):
+    file = open('/proc/device-tree/model', 'r')
+    RPI_MODEL = file.read()
+    RPI_VERSION = RPI_MODEL.split('Pi')[1][:2].split()
+    file.close()
+
+else:
+    RPI_MODEL = 'Unknown'
+
+
+OS_SPEC = ''
+if platform.system() == 'Windows':
+    OS_SPEC = platform.platform()
+        
+else:
+    OS_SPEC = platform.platform().split('-with')[0]
+
+
+MONITOR_INFO = ''
+if platform.system() == 'Windows':
+    proc = subprocess.Popen(
+        ['powershell', 'Get-WmiObject win32_desktopmonitor;'], 
+        stdout=subprocess.PIPE
+    )
+    res = proc.communicate()
+    monitors = re.findall(
+        '(?s)\r\nName\s+:\s(.*?)\r\n', 
+        res[0].decode("utf-8")
+    )
+    MONITOR_INFO = monitors[0]
+else:
+    MONITOR_INFO = 'Unknown'
 
 
 def setSystemTime(time):
@@ -93,12 +129,26 @@ def genLicense():
     return lic
 
 
+def EncryptDecrypt(filename, key):
+    with open(filename, 'rb') as f:
+        data = f.read()
+    
+    data = bytearray(data)
+    for index, value in enumerate(data):
+        data[index] = value ^ key
+        
+    with open(filename, 'wb') as f:
+        f.write(data)
+    
+
 def loadConfigs():
     if not isfile(CONFIG_FILE):
         print("Don't be an asshole")
         exit(1)
     
+    EncryptDecrypt(CONFIG_FILE, 15)
     file = open(CONFIG_FILE, 'rb')
+    
     try:
         configs = pickle.load(file)
         if len(configs) == 0:
@@ -107,6 +157,7 @@ def loadConfigs():
             configs['LICENSE'] = genLicense()
             configs['PASSWORD'] = ''
             configs['LANGUAGE'] = 'en'
+            configs['OwnerInfo'] = ''
             configs['SerialNumber'] = ''
             configs['TotalShotCounter'] = 0
             configs['LaserDiodeEnergy'] = ''
@@ -120,6 +171,11 @@ def loadConfigs():
             configs['LOCK'] = []
             pickle.dump(configs, file)
             file.close()
+        
+        else:
+            file.close()
+
+        EncryptDecrypt(CONFIG_FILE, 15)
 
         return configs
 
@@ -129,9 +185,10 @@ def loadConfigs():
 
 
 def saveConfigs(configs):
-    file = open(CONFIG_FILE, 'wb')
-    pickle.dump(configs, file)
-    file.close()
+    with open(CONFIG_FILE, 'wb') as f:
+        pickle.dump(configs, f)
+
+    EncryptDecrypt(CONFIG_FILE, 15)
 
 
 def getID():
@@ -154,13 +211,27 @@ def getID():
     return id
 
 
+def calcMD5(directory, verifyFileName):
+    sumMd5 = 0
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            file_path = os.path.join(root, file)
+            if Path(file_path).name == verifyFileName:
+                continue
+            with open(file_path, 'rb') as f:
+                data = f.read()
+            sumMd5 += int(hashlib.md5(data).hexdigest(), 16)
+            
+    return sumMd5
+
+
 class UpdateFirmware(QThread):
     result = pyqtSignal(str)
-
 
     def run(self):
         if platform.system() == 'Windows':
             self.result.emit("We don't do that here.")
+            return
                             
         r1  = subprocess.check_output('lsblk -J', shell=True)
         blocks = json.loads(r1)['blockdevices']
@@ -189,26 +260,41 @@ class UpdateFirmware(QThread):
 
         for part in partitionsDir:
             if partitionsDir[part] == None:
-                    os.mkdir(f'{mountDir}/{part}')
-                    r = subprocess.call(
-                        f'mount /dev/{part} {mountDir}/{part}',
-                        shell=True
-                    )
-                    partitionsDir[part] = f'{mountDir}/{part}'
+                os.mkdir(f'{mountDir}/{part}')
+                r = subprocess.call(
+                    f'mount /dev/{part} {mountDir}/{part}',
+                    shell=True
+                )
+                partitionsDir[part] = f'{mountDir}/{part}'
 
         laserFound = False
         laserDir = ''
         for dir in partitionsDir.values():
-            if isdir(f'{dir}/Laser'):
+            if isdir(f'{dir}/LaserSrc'):
                 laserFound = True
-                laserDir = f'{dir}/Laser'
+                laserDir = f'{dir}/LaserSrc'
 
         if not laserFound:
             self.result.emit("Source files not found.")
             os.system(f'umount {mountDir}/sda*')
             shutil.rmtree(mountDir)
             return
-            
+
+        verifyError = 'The source files are corrupted and can not be replaced.'
+        try:
+            with open(f'{laserDir}/verify', 'r') as f:
+                md5 = int(f.read(), 16)
+
+            if not md5 == calcMD5(laserDir, 'verify'):
+                self.result.emit(verifyError)
+                return
+
+            os.remove(f'{laserDir}/verify')    
+
+        except Exception:
+            self.result.emit(verifyError)
+            return
+
         os.system(f'cp -r {laserDir}/* {CURRENT_FILE_DIR}')
         os.system(f'umount {mountDir}/sda*')
         shutil.rmtree(mountDir)

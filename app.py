@@ -1,4 +1,3 @@
-from re import A
 from PyQt5.QtGui import *
 from PyQt5.QtMultimedia import *
 from PyQt5.QtWidgets import *
@@ -28,7 +27,10 @@ class MainWin(QMainWindow):
     def setupUi(self):
         # self.setCursor(Qt.BlankCursor)
         self.configs = loadConfigs()
-        self.serialC = SerialCom()
+        if RPI_VERSION == '3':
+            self.serialC = SerialTimer()
+        else:
+            self.serialC = SerialThread()
         self.serialC.sensorFlags.connect(self.setSensors)
         self.serialC.tempValue.connect(self.setTemp)
         self.serialC.shot.connect(self.shot)
@@ -58,8 +60,17 @@ class MainWin(QMainWindow):
         self.lblLock.setMovie(self.movie)
         self.movie.start()
         self.movie.stop()
-        self.lblSplash.setStyleSheet(f'border-image:url({SPLASH[-21:]});')
+        # self.lblSplash.setStyleSheet(f'border-image:url({SPLASH[-21:]});')
+        self.lblSplash.setPixmap(QPixmap(SPLASH))
+        self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
+        self.wellcomeText = QLabel(self.lblSplash)
+        self.wellcomeText.setText('')
+        self.wellcomeText.setFont(QFont('Arial', 40))
+        self.wellcomeText.setStyleSheet('color:rgb(24, 131, 199); background-color: white;')
+        self.wellcomeText.setText(self.configs['OwnerInfo'])
+        self.wellcomeText.move(100, 900)     
+        # self.wellcomeText.adjustSize()  
         self.time(edit=True)        
         self.shotSound = QSoundEffect()
         self.shotSound.setSource(QUrl.fromLocalFile(SHOT_SOUND))
@@ -135,7 +146,12 @@ class MainWin(QMainWindow):
         self.hwStackedWidget.setSlideTransition(True)
 
     def initTimers(self):
-        self.checkBuffer = QTimer()
+        if RPI_VERSION == '3':
+            self.checkBuffer = QTimer()
+            self.checkBuffer.timeout.connect(self.serialC.checkBuffer)
+            self.checkBuffer.start(10)
+        else:
+            self.serialC.start()
         self.loginLabelTimer = QTimer()
         self.submitLabelTimer = QTimer()
         self.editLabelTimer = QTimer()
@@ -159,8 +175,6 @@ class MainWin(QMainWindow):
         self.restartTimer.timeout.connect(self.restartForUpdate)
         self.systemTimeTimer.timeout.connect(self.time)
         self.systemTimeTimer.start(1000)
-        self.checkBuffer.timeout.connect(self.serialC.checkBuffer)
-        self.checkBuffer.start(10)
         self.loginLabelTimer.timeout.connect(
             lambda: self.clearLabel(self.lblLogin, self.loginLabelTimer)
         )
@@ -311,6 +325,7 @@ class MainWin(QMainWindow):
         self.btnBackLaser.clicked.connect(selectionPage)
         self.btnBackLaser.setVisible(False)
         self.btnUpdateFirmware.clicked.connect(self.updateSystem)
+        self.btnShowSplash.clicked.connect(self.showSplash)
         sensors = [
             'btnPhysicalDamage', 'btnOverHeat', 'btnTemp',
             'btnLock', 'btnWaterLevel', 'btnWaterflow',
@@ -363,6 +378,9 @@ class MainWin(QMainWindow):
         self.txtLockYear.fIn.connect(lambda: self.keyboard('show'))
         self.txtLockMonth.fIn.connect(lambda: self.keyboard('show'))
         self.txtLockDay.fIn.connect(lambda: self.keyboard('show'))
+        self.txtOwnerInfo.fIn.connect(lambda: self.keyboard('show'))
+        self.txtOwnerInfo.setText(self.configs['OwnerInfo'])
+        self.txtOwnerInfo.textChanged.connect(self.setOwnerInfo)
         self.txtDays.textChanged.connect(self.setDateText)
         self.txtDate.textChanged.connect(self.setDaysText)
         reg_ex = QRegExp("[0-9\(\)]*")
@@ -439,9 +457,21 @@ class MainWin(QMainWindow):
         self.overHeatError = False
         self.temperature = 0
         self.setTemp(0)
-        self.setWaterflowError(False)
-        self.setWaterLevelError(False)
-        self.setLock(False)
+        self.setWaterflowError(True)
+        self.setWaterLevelError(True)
+        self.setLock(True)
+
+    def setOwnerInfo(self, text):
+        self.wellcomeText.setText(text)
+        self.wellcomeText.adjustSize()  
+        self.configs['OwnerInfo'] = text
+        saveConfigs(self.configs)
+
+    def showSplash(self):
+        self.keyboard('hide')
+        index = self.stackedWidget.indexOf(self.splashPage)
+        self.stackedWidget.setCurrentIndex(index) 
+        self.stackedWidgetSettings.setCurrentWidget(self.settingsMenuPage)  
 
     def receiveDate(self, date):
         self.receivedTime += date
@@ -488,13 +518,8 @@ class MainWin(QMainWindow):
             )
 
     def updateSystem(self):
-        self.setLabel(
-                'Please wait...', 
-                self.lblUpdateFirmware,
-                self.updateFirmwareLabelTimer
-            )
+        self.lblUpdateFirmware.setText('Please wait...')
         self.updateT.start()
-
 
     def setSensors(self, flags):
         self.setLock(flags[0])
@@ -506,10 +531,8 @@ class MainWin(QMainWindow):
     def shot(self):
         self.currentCounter += 1
         self.user.incShot(self.bodyPart)
-        self.lblCounterValue.setText(f'{self.currentCounter}')
-        QApplication.processEvents()
         self.shotSound.play()
-        QApplication.processEvents()
+        self.lblCounterValue.setText(f'{self.currentCounter}')
         self.sparkTimer.start(1000/self.frequency + 100)
         self.lblSpark.setVisible(True)
         self.lblLasing.setVisible(True)
@@ -806,7 +829,6 @@ class MainWin(QMainWindow):
             self.txtHwPass.clear()
             self.stackedWidgetSettings.setCurrentWidget(self.hWPage)
             
-
         else:
             self.txtHwPass.setStyleSheet(TXT_HW_WRONG_PASS)
             self.hwWrongPassTimer.start(4000)
@@ -816,24 +838,9 @@ class MainWin(QMainWindow):
         self.txtHwPass.setStyleSheet(TXT_HW_PASS)
 
     def readHwInfo(self):
-        rpi_version = ''
-       
-        if isfile('/proc/device-tree/model'):
-            file = open('/proc/device-tree/model', 'r')
-            rpi_version = file.read()
-            file.close()
-
-        else:
-            rpi_version = 'Unknown'
-
-        if platform.system() == 'Windows':
-            self.txtOsSpecification.setText(platform.platform())
-        
-        else:
-            os = platform.platform().split('-with')[0]
-            self.txtOsSpecification.setText(os)
-            
-        self.txtRpiVersion.setText(rpi_version)
+        self.txtOsSpecification.setText(OS_SPEC)
+        self.txtRpiVersion.setText(RPI_MODEL)
+        self.txtMonitor.setText(MONITOR_INFO)
         self.txtSerialNumber.setText(self.configs['SerialNumber'])                
         self.txtTotalShotCounter.setText(str(self.configs['TotalShotCounter']))              
         self.txtLaserDiodeEnergy.setText(self.configs['LaserDiodeEnergy'])                
@@ -2133,6 +2140,8 @@ class MainWin(QMainWindow):
         self.tableLock.horizontalHeaderItem(3).setText(TEXT['tableLock3'][self.language])
         self.lblCurrentUser.setText(TEXT['lblCurrentUser'][self.language])        
         self.lblCurrentSnumber.setText(TEXT['lblCurrentSnumber'][self.language])
+        self.lblOwnerInfo.setText(TEXT['lblOwnerInfo'][self.language])
+        self.btnShowSplash.setText(TEXT['btnShowSplash'][self.language])
 
 
 app = QApplication(sys.argv)

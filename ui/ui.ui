@@ -701,11 +701,66 @@ QPushButton:pressed {
       </widget>
       <widget class="QWidget" name="splashPage">
        <layout class="QVBoxLayout" name="verticalLayout_37">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item>
-         <widget class="Label" name="lblSplash">
-          <property name="text">
-           <string/>
+         <widget class="QScrollArea" name="scrollArea_4">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
           </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="sizeAdjustPolicy">
+           <enum>QAbstractScrollArea::AdjustToContents</enum>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_4">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>1595</width>
+             <height>909</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_47">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="Label" name="lblSplash">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
        </layout>
@@ -1627,7 +1682,7 @@ border:3px solid red;
         <item>
          <widget class="StackedWidget" name="stackedWidgetSettings">
           <property name="currentIndex">
-           <number>3</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="settingsMenuPage">
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -1936,7 +1991,13 @@ QLineEdit:focus{
           <widget class="QWidget" name="uiPage">
            <layout class="QVBoxLayout" name="verticalLayout_54">
             <item>
-             <layout class="QVBoxLayout" name="verticalLayout_53" stretch="0,0,1">
+             <layout class="QVBoxLayout" name="verticalLayout_53" stretch="2,2">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
               <property name="topMargin">
                <number>0</number>
               </property>
@@ -1944,43 +2005,17 @@ QLineEdit:focus{
                <number>0</number>
               </property>
               <item>
-               <spacer name="verticalSpacer_38">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_46" stretch="1,0,1,4">
-                <property name="leftMargin">
+               <layout class="QGridLayout" name="gridLayout_2" rowstretch="1,0,0" columnstretch="2,3,0,0,1">
+                <property name="topMargin">
                  <number>0</number>
                 </property>
                 <property name="rightMargin">
                  <number>0</number>
                 </property>
-                <item>
-                 <widget class="QLabel" name="lblLanguage">
-                  <property name="font">
-                   <font>
-                    <family>Arial</family>
-                    <pointsize>30</pointsize>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Language</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item>
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <item row="1" column="4">
                  <spacer name="horizontalSpacer_64">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1993,9 +2028,28 @@ QLineEdit:focus{
                   </property>
                  </spacer>
                 </item>
-                <item>
-                 <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0">
+                <item row="1" column="0">
+                 <widget class="QLabel" name="lblOwnerInfo">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>30</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Owner Information</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,1,1,5">
                   <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="spacing">
                    <number>0</number>
                   </property>
                   <item row="2" column="0">
@@ -2014,46 +2068,6 @@ QLineEdit:focus{
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="0">
-                   <widget class="QPushButton" name="btnEnLang">
-                    <property name="minimumSize">
-                     <size>
-                      <width>100</width>
-                      <height>100</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>100</width>
-                      <height>100</height>
-                     </size>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true">QPushButton {
-outline:0;
-border-radius:50px;
-background-color: rgb(255, 255, 255);
-}
-
-QPushButton:pressed{
-    background-color: rgb(255, 0, 0);
-}</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset>
-                      <normaloff>images/english.png</normaloff>images/english.png</iconset>
-                    </property>
-                    <property name="iconSize">
-                     <size>
-                      <width>90</width>
-                      <height>90</height>
-                     </size>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="2" column="2">
                    <widget class="QLabel" name="lblFa">
                     <property name="font">
@@ -2066,7 +2080,7 @@ QPushButton:pressed{
                      <string>فارسی</string>
                     </property>
                     <property name="alignment">
-                     <set>Qt::AlignHCenter|Qt::AlignTop</set>
+                     <set>Qt::AlignCenter</set>
                     </property>
                    </widget>
                   </item>
@@ -2112,26 +2126,43 @@ QPushButton:pressed{
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="1">
-                   <spacer name="horizontalSpacer_62">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
+                  <item row="1" column="0">
+                   <widget class="QPushButton" name="btnEnLang">
+                    <property name="minimumSize">
                      <size>
-                      <width>40</width>
-                      <height>20</height>
+                      <width>100</width>
+                      <height>100</height>
                      </size>
                     </property>
-                   </spacer>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="lblEnSelected">
+                    <property name="maximumSize">
+                     <size>
+                      <width>100</width>
+                      <height>100</height>
+                     </size>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">QPushButton {
+outline:0;
+border-radius:50px;
+background-color: rgb(255, 255, 255);
+}
+
+QPushButton:pressed{
+    background-color: rgb(255, 0, 0);
+}</string>
+                    </property>
                     <property name="text">
                      <string/>
                     </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
+                    <property name="icon">
+                     <iconset>
+                      <normaloff>images/english.png</normaloff>images/english.png</iconset>
+                    </property>
+                    <property name="iconSize">
+                     <size>
+                      <width>90</width>
+                      <height>90</height>
+                     </size>
                     </property>
                    </widget>
                   </item>
@@ -2145,10 +2176,125 @@ QPushButton:pressed{
                     </property>
                    </widget>
                   </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="lblEnSelected">
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <spacer name="horizontalSpacer_63">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="1" column="3">
+                   <spacer name="horizontalSpacer_105">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
                  </layout>
                 </item>
-                <item>
-                 <spacer name="horizontalSpacer_63">
+                <item row="1" column="1">
+                 <widget class="LineEdit" name="txtOwnerInfo">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>90</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>90</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>30</pointsize>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">QLineEdit{
+border-radius:10px;
+border:2px solid gray;
+padding:10px 10px 10px 10px;
+}
+QLineEdit:focus{
+border:2px solid white;
+}</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="lblLanguage">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>30</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Language</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="3">
+                 <widget class="QPushButton" name="btnShowSplash">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>20</pointsize>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+min-width: 250px;
+min-height: 100px;
+border-radius: 5px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string>Show Splash</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <spacer name="horizontalSpacer_62">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
@@ -2257,7 +2403,7 @@ QPushButton:pressed{
                          <widget class="QPushButton" name="btnUpdateFirmware">
                           <property name="minimumSize">
                            <size>
-                            <width>300</width>
+                            <width>212</width>
                             <height>82</height>
                            </size>
                           </property>
