@@ -44,6 +44,14 @@ else:
     MONITOR_INFO = 'Unknown'
 
 
+def isFarsi(text):
+    farsi = list('اآبپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی')
+    for i in farsi:
+        if i in text:
+            return True
+
+    return False
+
 def setSystemTime(time):
     if platform.system() == 'Windows':
         import win32api

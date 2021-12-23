@@ -219,12 +219,24 @@ QSlider::handle:horizontal:pressed {
 }
 """
 
-OWNER_INFO_STYLE = '''
+OWNER_INFO_STYLE_FA = '''
 QLabel {
+    font: 40pt "IranNastaliq";
 	border: 5px solid #FF17365D;
 	border-top-right-radius: 15px;
 	background-color: #FF17365D;
-	padding: 50px 50px 50px 50px;
+	padding: 20px 60px 100px 50px;
+	color: rgb(255, 255, 255);
+}
+'''
+
+OWNER_INFO_STYLE_EN = '''
+QLabel {
+    font: 40pt "Aril";
+	border: 5px solid #FF17365D;
+	border-top-right-radius: 15px;
+	background-color: #FF17365D;
+	padding: 40px 50px 60px 50px;
 	color: rgb(255, 255, 255);
 }
 '''

@@ -53,7 +53,7 @@ font-family:&quot;Times New Roman&quot;;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="UUIDPage">
        <layout class="QVBoxLayout" name="verticalLayout_66">
@@ -2011,7 +2011,7 @@ QLineEdit:focus{
                <number>0</number>
               </property>
               <item>
-               <layout class="QGridLayout" name="gridLayout_2" rowstretch="1,0,0" columnstretch="2,3,0,0,1">
+               <layout class="QGridLayout" name="gridLayout_2" rowstretch="1,0" columnstretch="2,3,0,1,1">
                 <property name="topMargin">
                  <number>0</number>
                 </property>
@@ -2021,19 +2021,6 @@ QLineEdit:focus{
                 <property name="spacing">
                  <number>0</number>
                 </property>
-                <item row="1" column="4">
-                 <spacer name="horizontalSpacer_64">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
                 <item row="1" column="0">
                  <widget class="QLabel" name="lblOwnerInfo">
                   <property name="font">
@@ -2049,6 +2036,19 @@ QLineEdit:focus{
                    <set>Qt::AlignCenter</set>
                   </property>
                  </widget>
+                </item>
+                <item row="1" column="4">
+                 <spacer name="horizontalSpacer_64">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
                 </item>
                 <item row="0" column="1">
                  <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,1,1,5">
@@ -2078,7 +2078,7 @@ QLineEdit:focus{
                    <widget class="QLabel" name="lblFa">
                     <property name="font">
                      <font>
-                      <family>Tahoma</family>
+                      <family>IranNastaliq</family>
                       <pointsize>20</pointsize>
                      </font>
                     </property>
@@ -2220,6 +2220,47 @@ QPushButton:pressed{
                   </item>
                  </layout>
                 </item>
+                <item row="1" column="3">
+                 <widget class="QPushButton" name="btnShowSplash">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>20</pointsize>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+min-width: 250px;
+min-height: 100px;
+border-radius: 5px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string>Show Splash</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <spacer name="horizontalSpacer_62">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
                 <item row="1" column="1">
                  <widget class="LineEdit" name="txtOwnerInfo">
                   <property name="minimumSize">
@@ -2270,47 +2311,6 @@ border:2px solid white;
                    <set>Qt::AlignCenter</set>
                   </property>
                  </widget>
-                </item>
-                <item row="1" column="3">
-                 <widget class="QPushButton" name="btnShowSplash">
-                  <property name="font">
-                   <font>
-                    <family>Arial</family>
-                    <pointsize>20</pointsize>
-                   </font>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">QPushButton {
-background-color: rgb(68, 68, 68);
-min-width: 250px;
-min-height: 100px;
-border-radius: 5px;
-border: 1px solid gray;
-margin: 0 5px 0 5px;
-outline:0;
-}
-QPushButton:hover:!pressed{
-background-color:rgb(77, 77, 77);
-border: 1px solid white;
-}</string>
-                  </property>
-                  <property name="text">
-                   <string>Show Splash</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="2">
-                 <spacer name="horizontalSpacer_62">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
                 </item>
                </layout>
               </item>
@@ -2386,7 +2386,7 @@ border: 1px solid white;
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1248</width>
+                       <width>958</width>
                        <height>828</height>
                       </rect>
                      </property>

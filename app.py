@@ -58,17 +58,25 @@ class MainWin(QMainWindow):
         self.lblSplash.setPixmap(QPixmap(SPLASH))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
-        self.wellcomeText = QLabel(self.lblSplash)
-        self.wellcomeText.setText('')
-        self.wellcomeText.setFont(QFont('Arial', 40))
-        self.wellcomeText.setStyleSheet(OWNER_INFO_STYLE)
+        self.ownerInfoSplash = QLabel(self.lblSplash)
+        self.ownerInfoSplash.setText('')
+        font_db = QFontDatabase()
+        font_id = font_db.addApplicationFont(IRAN_NASTALIQ)
+        font_id = font_db.addApplicationFont(IRANIAN_SANS)
+        self.ownerInfoSplash.setFont(QFont("IranNastaliq", 40))
         ownerInfo = self.configs['OwnerInfo']
-        self.wellcomeText.setText(ownerInfo)
+        if ownerInfo and isFarsi(ownerInfo):
+            self.ownerInfoSplash.setStyleSheet(OWNER_INFO_STYLE_FA)
+        else:
+            self.ownerInfoSplash.setStyleSheet(OWNER_INFO_STYLE_EN)
+        self.ownerInfoSplash.setText(ownerInfo)
         if not ownerInfo:
-            self.wellcomeText.setVisible(False)
-        self.wellcomeText.move(self.geometry().bottomLeft())     
+            self.ownerInfoSplash.setVisible(False)
+        self.ownerInfoSplash.move(self.geometry().bottomLeft())     
         self.time(edit=True)
-        self.initSounds()        
+        self.shotSound = QSound(SHOT_SOUND)
+        self.wellcomeSound = QSound(WELLCOME_SOUND)
+        self.touchSound = QSound(TOUCH_SOUND)        
         self.initPages()
         self.initTimers()
         self.initButtons()
@@ -110,22 +118,6 @@ class MainWin(QMainWindow):
         self.checkUUID()
         readTime()
 
-    def initSounds(self):
-        self.shotSound = QMediaPlayer()
-        self.wellcomeSound = QMediaPlayer()
-        self.touchSound = QMediaPlayer()
-        content = QMediaContent(
-            QUrl.fromLocalFile(SHOT_SOUND)
-        )
-        self.shotSound.setMedia(content)
-        content = QMediaContent(
-            QUrl.fromLocalFile(WELLCOME_SOUND)
-        )
-        self.wellcomeSound.setMedia(content)
-        content = QMediaContent(
-            QUrl.fromLocalFile(TOUCH_SOUND)
-        )
-        self.touchSound.setMedia(content)
 
     def initPages(self):
         self.stackedWidget.setCurrentWidget(self.splashPage)
@@ -470,14 +462,18 @@ class MainWin(QMainWindow):
         self.setLock(True)
 
     def setOwnerInfo(self, text):
-        self.wellcomeText.setText(text)
-        self.wellcomeText.adjustSize()
-        if not text:
-            self.wellcomeText.setVisible(False)
-        else:
-            self.wellcomeText.setVisible(True)
+        self.ownerInfoSplash.setText(text)
+        self.ownerInfoSplash.adjustSize()
         self.configs['OwnerInfo'] = text
         saveConfigs(self.configs)
+        if not text:
+            self.ownerInfoSplash.setVisible(False)
+        else:
+            self.ownerInfoSplash.setVisible(True)
+        if text and isFarsi(text):
+            self.ownerInfoSplash.setStyleSheet(OWNER_INFO_STYLE_FA)
+        else:
+            self.ownerInfoSplash.setStyleSheet(OWNER_INFO_STYLE_EN)
 
     def showSplash(self):
         self.keyboard('hide')
@@ -2018,7 +2014,7 @@ class MainWin(QMainWindow):
     def changeLang(self, lang):
         global app
         if lang == 'fa':
-            app.setStyleSheet('*{font-family:"Tahoma"}')
+            app.setStyleSheet('*{font-family:"A Iranian Sans"}')
             self.lblEn.setStyleSheet("font-family:'Arial'")
             self.userInfoFrame.setLayoutDirection(Qt.RightToLeft)
             self.nextSessionFrame.setLayoutDirection(Qt.RightToLeft)
@@ -2031,7 +2027,7 @@ class MainWin(QMainWindow):
             self.language = 1
         else:
             app.setStyleSheet('*{font-family:"Arial"}')
-            self.lblFa.setStyleSheet("font-family:'Tahoma'")
+            self.lblFa.setStyleSheet("font-family:'A Iranian Sans'")
             self.userInfoFrame.setLayoutDirection(Qt.LeftToRight)
             self.nextSessionFrame.setLayoutDirection(Qt.LeftToRight)
             self.hwFrame.setLayoutDirection(Qt.LeftToRight)
@@ -2043,7 +2039,12 @@ class MainWin(QMainWindow):
             self.language = 0
 
         saveConfigs(self.configs)
-        self.wellcomeText.adjustSize()  
+        self.ownerInfoSplash.adjustSize()
+        txt = self.ownerInfoSplash.text()
+        if txt and isFarsi(txt):
+            self.ownerInfoSplash.setStyleSheet(OWNER_INFO_STYLE_FA)
+        else:
+            self.ownerInfoSplash.setStyleSheet(OWNER_INFO_STYLE_EN)
         self.lblLanguage.setText(TEXT['lblLanguage'][self.language])
         self.lblSettingsHeader.setText(TEXT['lblSettingsHeader'][self.language])
         self.btnHwSettings.setText(TEXT['btnHwSettings'][self.language])
