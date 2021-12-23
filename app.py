@@ -508,7 +508,7 @@ class MainWin(QMainWindow):
         self.lblUpdateFirmware.setText(
             f'Your system will restart in {self.restartCounter} seconds...'
         )
-        if self.restartCounter == 0:
+        if self.restartCounter == -1:
             self.restartTimer.stop()
             self.serialC.closePort()
             os.system('reboot')

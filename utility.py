@@ -245,7 +245,7 @@ class UpdateFirmware(QThread):
                 sdaBlock = blk
 
         if not sdaFound:
-            self.result.emit("Flash dlsrive not found.")
+            self.result.emit("Flash drive not found.")
             return
                 
         if not 'children' in sdaBlock:
@@ -284,7 +284,7 @@ class UpdateFirmware(QThread):
         verifyError = 'The source files are corrupted and can not be replaced.'
         try:
             with open(f'{laserDir}/verify', 'r') as f:
-                md5 = int(f.read(), 16)
+                md5 = int(f.read())
 
             if not md5 == calcMD5(laserDir, 'verify'):
                 self.result.emit(verifyError)
