@@ -55,7 +55,6 @@ class MainWin(QMainWindow):
         self.lblLock.setMovie(self.movie)
         self.movie.start()
         self.movie.stop()
-        # self.lblSplash.setStyleSheet(f'border-image:url({SPLASH[-21:]});')
         self.lblSplash.setPixmap(QPixmap(SPLASH))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
@@ -68,11 +67,8 @@ class MainWin(QMainWindow):
         if not ownerInfo:
             self.wellcomeText.setVisible(False)
         self.wellcomeText.move(self.geometry().bottomLeft())     
-        self.time(edit=True)        
-        self.shotSound = QSound(SHOT_SOUND)
-        self.wellcomeSound = QSound(WELLCOME_SOUND)
-        self.touchSound = QSound(TOUCH_SOUND)
-        # self.touchSound.setSource(QUrl.fromLocalFile(TOUCH_SOUND))
+        self.time(edit=True)
+        self.initSounds()        
         self.initPages()
         self.initTimers()
         self.initButtons()
@@ -113,6 +109,23 @@ class MainWin(QMainWindow):
         self.initSensors()
         self.checkUUID()
         readTime()
+
+    def initSounds(self):
+        self.shotSound = QMediaPlayer()
+        self.wellcomeSound = QMediaPlayer()
+        self.touchSound = QMediaPlayer()
+        content = QMediaContent(
+            QUrl.fromLocalFile(SHOT_SOUND)
+        )
+        self.shotSound.setMedia(content)
+        content = QMediaContent(
+            QUrl.fromLocalFile(WELLCOME_SOUND)
+        )
+        self.wellcomeSound.setMedia(content)
+        content = QMediaContent(
+            QUrl.fromLocalFile(TOUCH_SOUND)
+        )
+        self.touchSound.setMedia(content)
 
     def initPages(self):
         self.stackedWidget.setCurrentWidget(self.splashPage)
