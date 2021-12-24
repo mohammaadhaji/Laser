@@ -165,6 +165,8 @@ def loadConfigs():
             configs['LICENSE'] = genLicense()
             configs['PASSWORD'] = ''
             configs['LANGUAGE'] = 'en'
+            configs['slideTransition'] = True
+            configs['touchSound'] = True
             configs['OwnerInfo'] = ''
             configs['SerialNumber'] = ''
             configs['TotalShotCounter'] = 0

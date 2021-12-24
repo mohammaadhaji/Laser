@@ -141,5 +141,7 @@ TEXT = {
     'physicalDamage': ['Physical Damage', 'آسیب فیزیکی'],
     'lblOwnerInfo': ['Owner Information', 'اطلاعات مالک'],
     'btnShowSplash': ['Splash Page', 'صفحه اسپلش'],
-    'btnUpdateFirmware': ['Update Firmware', 'بروزرسانی فریموور ']
+    'btnUpdateFirmware': ['Update Firmware', 'بروزرسانی فریموور '],
+    'lblSlideTransition': ['Slide Transition', 'گذر اسلاید'],
+    'lblTouchSound': ['Touch Sound', 'صدای تاچ'],
 }

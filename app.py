@@ -112,6 +112,16 @@ class MainWin(QMainWindow):
             self.changeLang(self.configs['LANGUAGE'])
         self.shortcut = QShortcut(QKeySequence("Ctrl+x"), self)
         self.shortcut.activated.connect(self.close)
+        self.chbSlideTransition.setFixedSize(150, 48)
+        self.chbSlideTransition.setCheckState(
+            2 if self.configs['slideTransition'] else 0
+        )
+        self.chbSlideTransition.stateChanged.connect(self.setTransition)
+        self.chbTouchSound.setFixedSize(150, 48)
+        self.chbTouchSound.setCheckState(
+            2 if self.configs['touchSound'] else 0
+        )
+        self.chbTouchSound.stateChanged.connect(self.setTouchSound)
         self.loadLocksTable()
         self.bodyPartsSignals()
         self.keyboardSignals()
@@ -121,11 +131,20 @@ class MainWin(QMainWindow):
         self.checkUUID()
         readTime()
 
+    def setTouchSound(self, state):
+        volume = 100 if state == 2 else 0
+        self.keyboardSound.setVolume(volume)
+        self.wellcomeSound.setVolume(volume)
+        self.touchSound.setVolume(volume)
+        self.configs['touchSound'] = True if state == 2 else False 
 
     def initSounds(self):
         self.keyboardSound = QMediaPlayer()
         self.wellcomeSound = QMediaPlayer()
         self.touchSound = QMediaPlayer()
+        self.keyboardSound.setVolume(100 if self.configs['touchSound'] else 0)
+        self.wellcomeSound.setVolume(100 if self.configs['touchSound'] else 0)
+        self.touchSound.setVolume(100 if self.configs['touchSound'] else 0)        
         content = QMediaContent(
             QUrl.fromLocalFile(KEYBOARD_SOUND)
         )
@@ -147,23 +166,33 @@ class MainWin(QMainWindow):
         self.stackedWidget.setTransitionDirection(Qt.Vertical)
         self.stackedWidget.setTransitionSpeed(500)
         self.stackedWidget.setTransitionEasingCurve(QEasingCurve.OutQuart)
-        self.stackedWidget.setSlideTransition(True)
+        self.stackedWidget.setSlideTransition(self.configs['slideTransition'])
         self.stackedWidgetSex.setTransitionDirection(Qt.Vertical)
         self.stackedWidgetSex.setTransitionSpeed(500)
         self.stackedWidgetSex.setTransitionEasingCurve(QEasingCurve.OutBack)
-        self.stackedWidgetSex.setSlideTransition(True)
+        self.stackedWidgetSex.setSlideTransition(self.configs['slideTransition'])
         self.stackedWidgetLaser.setTransitionDirection(Qt.Horizontal)
         self.stackedWidgetLaser.setTransitionSpeed(500)
         self.stackedWidgetLaser.setTransitionEasingCurve(QEasingCurve.OutQuart)
-        self.stackedWidgetLaser.setSlideTransition(True)
+        self.stackedWidgetLaser.setSlideTransition(self.configs['slideTransition'])
         self.stackedWidgetSettings.setTransitionDirection(Qt.Horizontal)
         self.stackedWidgetSettings.setTransitionSpeed(500)
         self.stackedWidgetSettings.setTransitionEasingCurve(QEasingCurve.OutQuart)
-        self.stackedWidgetSettings.setSlideTransition(True)
+        self.stackedWidgetSettings.setSlideTransition(self.configs['slideTransition'])
         self.hwStackedWidget.setTransitionDirection(Qt.Vertical)
         self.hwStackedWidget.setTransitionSpeed(500)
         self.hwStackedWidget.setTransitionEasingCurve(QEasingCurve.OutQuart)
-        self.hwStackedWidget.setSlideTransition(True)
+        self.hwStackedWidget.setSlideTransition(self.configs['slideTransition'])
+
+    def setTransition(self, state):
+        checked = True if state == 2 else False
+        self.stackedWidget.setSlideTransition(checked)
+        self.stackedWidgetSex.setSlideTransition(checked)
+        self.stackedWidgetLaser.setSlideTransition(checked)
+        self.stackedWidgetSettings.setSlideTransition(checked)
+        self.hwStackedWidget.setSlideTransition(checked)
+        self.configs['slideTransition'] = checked
+        saveConfigs(self.configs)
 
     def initTimers(self):
         if RPI_VERSION == '3':
