@@ -4,6 +4,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtWidgets, QtCore
 from paths import INFORMATION_ICON
+from styles import ACTION_BTN
 import json
 
 
@@ -12,14 +13,7 @@ class Action(QWidget):
     def __init__(self, parent, number):
         super().__init__(parent)
         self.number = number
-        stylesheet = """QPushButton {
-                            border-radius:10px;
-                            outline:0;
-                        }
-                        QPushButton:pressed{
-                        margin: 10px 0 0 0;
-                        }
-                        """
+        stylesheet = ACTION_BTN
                     
         layout = QHBoxLayout(self)
         btn_edit = QPushButton(self)

@@ -1,4 +1,3 @@
-from datetime import date
 from PyQt5.QtGui import *
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtWidgets import *
@@ -10,7 +9,7 @@ from paths import *
 from lang import *
 from case import *
 from user import *
-from hash import *
+from lock import *
 from functions import *
 from itertools import chain
 from pathlib import Path
@@ -28,12 +27,9 @@ class MainWin(QMainWindow):
         self.setupUi()
         self.tutorials()
         self.setupSensors()
-        if self.lic['KEY'] in LOCK_KEY:
-            self.setStyleSheet(APP_LOCK_BG)
-            self.stackedWidget.setCurrentWidget(self.loginPage)
         
     def setupUi(self):
-        self.lic = loadLIC()
+        self.license = loadLIC()
         self.configs = loadConfigs()
         if self.configs['HIDE_CURSOR'] == '1':
             self.setCursor(Qt.BlankCursor)
@@ -44,11 +40,10 @@ class MainWin(QMainWindow):
         self.movie.stop()
         self.lblSplash.setStyleSheet(f'border-image:url({SPLASH[-21:]});')
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
-        self.stackedWidget.setCurrentWidget(self.UUIDPage)
+        self.stackedWidget.setCurrentWidget(self.splashPage)
         self.stackedWidgetLaser.setCurrentIndex(0)
         self.stackedWidgetSex.setCurrentIndex(0)
         self.stackedWidgetSettings.setCurrentIndex(0)
-        self.hwStackedWidget.setCurrentIndex(0)
         self.stackedWidget.setTransitionDirection(Qt.Vertical)
         self.stackedWidget.setTransitionSpeed(500)
         self.stackedWidget.setTransitionEasingCurve(QEasingCurve.OutQuart)
@@ -82,22 +77,21 @@ class MainWin(QMainWindow):
         self.passwordLabelTimer = QTimer()
         self.hwWrongPassTimer = QTimer()
         self.uuidPassLabelTimer = QTimer()
-        self.clockTimer = QTimer()
-        self.dateTimer = QTimer()
-        self.clockTimer.timeout.connect(self.time)
-        # self.txtSysDate.setText(jdatetime.datetime.now().strftime("%Y / %m / %d"))
-        # self.dateTimer.timeout.connect(
-        #     lambda: self.txtSysDate.setText(jdatetime.datetime.now().strftime("%Y / %m / %d"))
-        # )
-        self.clockTimer.start(1000)
-        self.dateTimer.start(8.64e+7)
-        self.loginLabelTimer.timeout.connect(lambda: self.clearLabel('login'))
-        self.submitLabelTimer.timeout.connect(lambda: self.clearLabel('submit'))
-        self.editLabelTimer.timeout.connect(lambda: self.clearLabel('edit'))
-        self.nextSessionLabelTimer.timeout.connect(lambda: self.clearLabel('nextSession'))
-        self.hwUpdatedLabelTimer.timeout.connect(lambda: self.clearLabel('hw'))
-        self.passwordLabelTimer.timeout.connect(lambda: self.clearLabel('password'))
-        self.uuidPassLabelTimer.timeout.connect(lambda: self.clearLabel('uuid'))
+        self.sysTimeStatusLabelTimer = QTimer()
+        self.lockErrorLabel = QTimer()
+        self.systemTimeTimer = QTimer()
+        self.systemTimeTimer.timeout.connect(self.time)
+        self.systemTimeTimer.start(1000)
+        self.time(edit=True)
+        self.loginLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblLogin, self.loginLabelTimer))
+        self.submitLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblSubmit, self.submitLabelTimer))
+        self.editLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblEditUser, self.editLabelTimer))
+        self.nextSessionLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblErrNextSession, self.nextSessionLabelTimer))
+        self.hwUpdatedLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblSaveHw, self.hwUpdatedLabelTimer))
+        self.passwordLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblPassword, self.passwordLabelTimer))
+        self.uuidPassLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblPassUUID, self.uuidPassLabelTimer))
+        self.sysTimeStatusLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblSystemTimeStatus, self.sysTimeStatusLabelTimer))
+        self.lockErrorLabel.timeout.connect(lambda: self.clearLabel(self.lblLockError, timer=self.lockErrorLabel))
         self.incEPFTimer.timeout.connect(lambda: self.setEPF('inc'))
         self.decEPFTimer.timeout.connect(lambda: self.setEPF('dec'))
         self.incDaysTimer.timeout.connect(lambda: self.incDecDay('inc'))
@@ -118,7 +112,7 @@ class MainWin(QMainWindow):
         self.language = 0 # 0: en, 1: fa
         self.btnEnLang.clicked.connect(lambda: self.changeLang('en'))
         self.btnFaLang.clicked.connect(lambda: self.changeLang('fa'))
-        self.btnEnter.clicked.connect(self.login)
+        self.btnEnter.clicked.connect(self.unlockLIC)
         self.language = 0 if self.configs['LANGUAGE'] == 'en' else 1
         self.changeLang(self.configs['LANGUAGE'])
         self.btnSort.clicked.connect(self.sort)
@@ -214,14 +208,17 @@ class MainWin(QMainWindow):
         self.txtDate.textChanged.connect(self.setDaysText)
         self.btnOkNS.clicked.connect(self.saveNextSession)
         reg_ex = QRegExp("[0-9\(\)]*")
-        ms_ex = QRegExp("[0-5]?[0-9]")
-        h_ex = QRegExp("/\b2[0-3]\b|\b[0-1]?[0-9]\b/")
         input_validator = QRegExpValidator(reg_ex, self.txtDays)
-        input_validator_2 = QRegExpValidator(ms_ex, self.txtEditMinute)
         self.txtDays.setValidator(input_validator)
         self.txtPassword.setValidator(input_validator)
-        self.txtEditMinute.setValidator(input_validator_2)
+        self.txtEditMinute.setValidator(input_validator)
         self.txtEditHour.setValidator(input_validator)
+        self.txtLockYear.setValidator(input_validator)        
+        self.txtLockMonth.setValidator(input_validator)
+        self.txtLockDay.setValidator(input_validator)
+        self.txtEditDay.setValidator(input_validator)
+        self.txtEditMonth.setValidator(input_validator)
+        self.txtEditYear.setValidator(input_validator)        
         self.txtDays.setText('30')
         self.txtSearch.textChanged.connect(self.search)
         self.btnMale.clicked.connect(lambda: self.setSex('male'))
@@ -253,90 +250,177 @@ class MainWin(QMainWindow):
         self.btnUnqEnter.clicked.connect(self.unlockUUID)
         self.btnHwinfo.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.infoPage))
         self.btnSystemLock.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.lockSettingsPage))
+        self.btnAddLock.clicked.connect(self.addLock)
         self.shortcut = QShortcut(QKeySequence("Ctrl+x"), self)
         self.shortcut.activated.connect(self.close)
+        self.loadLocksTable()
         self.bodyPartsSignals()
         self.keyboardSignals()
         self.casesSignals()
-        self.unlockUUID(True)
+        self.unlockLIC(auto=True)
 
     def time(self, edit=False):
         hour = "{:02d}".format(jdatetime.datetime.now().hour) 
         minute = "{:02d}".format(jdatetime.datetime.now().minute)
+        second = jdatetime.datetime.now().second
         year = str(jdatetime.datetime.now().year)
         month = "{:02d}".format(jdatetime.datetime.now().month)
         day = "{:02d}".format(jdatetime.datetime.now().day)
         self.txtSysClock.setText(jdatetime.datetime.now().strftime('%H : %M : %S'))
         self.txtSysDate.setText(jdatetime.datetime.now().strftime('%Y / %m / %d'))
 
-        if edit:
-            self.txtLockYear.setText(year)
-            self.txtLockMonth.setText(month)
-            self.txtLockDay.setText(day)
+        if second == 0 or edit:
+            if edit:
+                self.txtLockYear.setText(year)
+                self.txtLockMonth.setText(month)
+                self.txtLockDay.setText(day)
             self.txtEditYear.setText(year)
             self.txtEditMonth.setText(month)
             self.txtEditDay.setText(day)
             self.txtEditHour.setText(hour)
             self.txtEditMinute.setText(minute)
 
+    def addLock(self):
+        try:
+            year = int(self.txtLockYear.text())
+            month = int(self.txtLockMonth.text())
+            day = int(self.txtLockDay.text())
+        except ValueError:
+            self.setLabel(
+                'Please fill in the fields.', 
+                self.lblLockError, 
+                self.lockErrorLabel, 4
+            )
+            return
 
-    def unlockUUID(self, auto=False):
+        try:
+            date = jdatetime.datetime(year, month, day)
+        except Exception as e:
+            self.setLabel(
+                    str(e).capitalize() + '.', 
+                    self.lblLockError, self.lockErrorLabel, 4
+                )
+            return
+
+        if getDiff(date) <= -1:
+            self.setLabel(
+                    TEXT['passedDate'][self.language],
+                    self.lblLockError, 
+                    self.lockErrorLabel, 4
+                )
+            return
+
+        if anyLockBefor(date):
+            self.setLabel(
+                    TEXT['anyLockBefor'][self.language], 
+                    self.lblLockError, 
+                    self.lockErrorLabel, 5
+                )
+            return  
+
+        numOfLocks = countLocks()
+        license = self.license[f'LICENSE{numOfLocks + 1}']
+        Lock(date, license)
+        self.loadLocksTable()
+
+
+    def loadLocksTable(self):
+        locks = loadAllLocks()
+        self.tableLock.setRowCount(len(locks))
+        for i, lock in enumerate(locks):
+            date = TableWidgetItem(str(lock.date.date()))
+            self.tableLock.setItem(i, 0, date)
+            diff = lock.getStatus()
+            status = ''
+            if diff == 0:
+                status = TEXT['today'][self.language]
+            elif diff == -1:
+                status = TEXT['1dayPassed'][self.language]
+            elif diff < -1:
+                status = f'{abs(diff)} {TEXT["nDayPassed"][self.language]}'
+            elif diff == 1:
+                status = TEXT['1dayleft'][self.language]
+            else:
+                status = f'{diff} {TEXT["nDayLeft"][self.language]}'
+
+            status = TableWidgetItem(status)
+            self.tableLock.setItem(i, 1, status)
+            paid = TableWidgetItem('Yes' if lock.paid else 'No')
+            self.tableLock.setItem(i, 2, paid)
+            btnDelete = QPushButton(self)
+            deleteIcon = QIcon()
+            deleteIcon.addPixmap(QPixmap(DELETE_ICON), QIcon.Normal, QIcon.Off)
+            btnDelete.setIcon(deleteIcon)
+            btnDelete.setIconSize(QSize(60, 60))
+            btnDelete.setStyleSheet(ACTION_BTN)
+            btnDelete.clicked.connect(self.removeLock)
+            self.tableLock.setCellWidget(i, 3, btnDelete)
+
+
+    def removeLock(self):
+        button = qApp.focusWidget()
+        index = self.tableLock.indexAt(button.pos())
+        if index.isValid():
+            year, month, day = self.tableLock.item(index.row(), 0).text().split('-')
+            removeLock(jdatetime.datetime(int(year), int(month), int(day)))
+            self.loadLocksTable()
+
+
+    def unlockUUID(self):
         user_pass = self.txtPassUUID.text()
+        hwid = getID()
+        hwid += '@mohammaad_haji'
+        
+        if hashlib.sha256(hwid.encode()).hexdigest()[:10] == user_pass:
+            self.stackedWidget.setCurrentIndex(2)
+            self.configs['PASSWORD'] = user_pass
+            saveConfigs(self.configs)
+            self.keyboard('hide')
+            self.unlockLIC(auto=True)
+        else:
+            self.setLabel(
+                'Password is not correct.', 
+                self.lblPassUUID, 
+                self.uuidPassLabelTimer, 4
+            )
+
+    def checkUUID(self):
         hwid = getID()
         self.txtUUID.setText(hwid)
         hwid += '@mohammaad_haji'
         if hashlib.sha256(hwid.encode()).hexdigest()[:10] == self.configs['PASSWORD']:
-            self.stackedWidget.setCurrentIndex(2)
-            return
-
+            return True
         else:
-            if hashlib.sha256(hwid.encode()).hexdigest()[:10] == user_pass:
-                self.stackedWidget.setCurrentIndex(2)
-                self.configs['PASSWORD'] = user_pass
-                saveConfigs(self.configs)
-                self.keyboard('hide')
-            else:
-                if not auto:
-                    self.setLabel('Password is not correct.', 'uuid', 4)
+            return False
 
-    def login(self):
+    def unlockLIC(self, auto=False):
         userPass = self.txtPassword.text().strip()
-        UnlockPass = [0xABCD, 0xBCDE, 0xCDEF]
-        for i in range(1, 4):
+        userPass = 0 if userPass == '' else int(userPass)
+        locks = loadLocks()
 
-            if self.lic['LOCK_COUNTER'] == i:
-                if int(userPass) ^ int(self.lic[f'LICENSE{i}']) == UnlockPass[i - 1]:
-                    self.lic['KEY'] = UNLOCK_KEY[random.randrange(0, 100)]
-                    if self.lic['LOCK_COUNTER'] == 3:
-                        self.lic['LOCK_COUNTER'] = 'Done'
-                    else:
-                        self.lic['LOCK_COUNTER'] = i + 1
-                    saveLIC(self.lic)
+        if self.checkUUID():
+        
+            if len(locks) > 0:
+                self.stackedWidget.setCurrentWidget(self.loginPage)
+                self.txtID.setText(str(locks[0].license))
+                self.setStyleSheet(APP_LOCK_BG)
+            else:
+                self.stackedWidget.setCurrentWidget(self.splashPage)
+            
+            for lock in locks:
+                if lock.checkPassword(int(userPass)):
                     self.keyboard('hide')
                     self.movie.start()
                     self.txtPassword.clear()
                     return
-                else:
-                    self.setLabel('Password is not correct.', 'password', 4)
 
-    def lockDevice(self):
-        if not self.lic['LOCK_COUNTER'] == 'Done':
-            self.setStyleSheet(APP_LOCK_BG)
-            self.lic['KEY'] = LOCK_KEY[random.randrange(0, 100)]
-            saveLIC(self.lic)
-            self.stackedWidget.setCurrentIndex(0)
-            licenseID = self.lic[f'LICENSE{self.lic["LOCK_COUNTER"]}']
-            self.txtID.setText(str(licenseID))
-        
-    def loginIfPaied(self):
-        id = self.configs['ID']
-        id += '@mohammaad_haji'
-        if 'PASSWORD' in self.configs:
-            lenght = 15
-            password = hashlib.sha256(id.encode()).hexdigest()[:lenght]
-            if password == self.configs['PASSWORD']:
-                self.setStyleSheet(APP_BG)
-                self.stackedWidget.setCurrentIndex(1)
+                else:
+                    if not auto:
+                        self.setLabel(
+                                'Password is not correct.', 
+                                self.lblPassword, 
+                                self.passwordLabelTimer, 4
+                            )
 
     def unlock(self, frameNumber):
         if frameNumber == self.movie.frameCount() - 1: 
@@ -350,6 +434,7 @@ class MainWin(QMainWindow):
 
     def loginHw(self):
         password = self.txtHwPass.text()
+        self.hwStackedWidget.setCurrentIndex(0)
         txts = chain(
             get_layout_widget(self.prodGridLayout, QLineEdit),
             get_layout_widget(self.laserGridLayout, QLineEdit),
@@ -372,7 +457,6 @@ class MainWin(QMainWindow):
             self.txtTotalShotCounter.setDisabled(True)
             self.keyboard('hide')
             self.readHwInfo()
-            self.time(edit=True)
             self.hwbtnsFrame.show()
             self.txtRpiVersion.setVisible(True)
             self.lblRpiVersion.setVisible(True)            
@@ -439,25 +523,35 @@ class MainWin(QMainWindow):
         self.configs['MainControlVersion'] = self.txtMainControlVersion.text()            
         self.configs['ProductionDate'] = self.txtProductionDate.text()
         self.configs['GuiVersion'] = self.txtGuiVersion.text()  
-        self.setLabel(TEXT['lblSaveHw'][self.language], 'hw', 2)
-        year = int(self.txtEditYear.text())
-        month = int(self.txtEditMonth.text())
-        day = int(self.txtEditDay.text())
-        miladi = jdatetime.datetime(year, month, day).togregorian()
-        year = miladi.year
-        month = miladi.month
-        day = miladi.day
-        hour = int(self.txtEditHour.text())
-        minute = int(self.txtEditMinute.text())
-        second = jdatetime.datetime.now().second
-        milisecond = 0
-        time = (year, month, day, hour, minute, second, milisecond)
-
-        if platform.system() == 'Windows':
-            win_set_time(time)
-        else:
-            linux_set_time(time)
         saveConfigs(self.configs)
+        try:
+            year = int(self.txtEditYear.text())
+            month = int(self.txtEditMonth.text())
+            day = int(self.txtEditDay.text())
+            gregorian = jdatetime.datetime(year, month, day).togregorian()
+            year = gregorian.year
+            month = gregorian.month
+            day = gregorian.day
+            hour = int(self.txtEditHour.text())
+            minute = int(self.txtEditMinute.text())
+            second = jdatetime.datetime.now().second
+            milisecond = 0
+            time = (year, month, day, hour, minute, second, milisecond)
+            setSystemTime(time)
+        except Exception:
+            self.setLabel(
+                    TEXT['lblSystemTimeStatus'][self.language], 
+                    self.lblSystemTimeStatus, 
+                    self.sysTimeStatusLabelTimer, 4
+                )
+
+        self.setLabel(
+                TEXT['lblSaveHw'][self.language], 
+                self.lblSaveHw, 
+                self.hwUpdatedLabelTimer, 2
+            )
+        
+        self.loadLocksTable()
 
     def resetTotalShot(self):
         self.txtTotalShotCounter.setText('0')
@@ -563,7 +657,11 @@ class MainWin(QMainWindow):
             try:
                 date = jdatetime.datetime(year, month, day)
                 if getDiff(date) <= -1:
-                    self.setLabel(TEXT['passedDate'][self.language], 'nextSession')
+                    self.setLabel(
+                            TEXT['passedDate'][self.language], 
+                            self.lblErrNextSession, 
+                            self.nextSessionLabelTimer
+                        )
                     return
                 self.userNextSession.setNextSession(date)
                 self.userNextSession.save()
@@ -572,10 +670,18 @@ class MainWin(QMainWindow):
                 else:
                     self.edit(self.userNextSession.phoneNumber)
             except ValueError as e:
-                self.setLabel(str(e).capitalize() + '.', 'nextSession')
+                self.setLabel(
+                        str(e).capitalize() + '.', 
+                        self.lblErrNextSession,
+                        self.nextSessionLabelTimer
+                    )
 
         except Exception:
-            self.setLabel(TEXT['invalidDateF'][self.language], 'nextSession')
+            self.setLabel(
+                    TEXT['invalidDateF'][self.language], 
+                    self.lblErrNextSession, 
+                    self.nextSessionLabelTimer
+                )
 
     def cancelNextSession(self):
         if self.userNextSession.currentSession == 'started':
@@ -1201,18 +1307,28 @@ class MainWin(QMainWindow):
         noteEdit = self.textEditNote.toPlainText()
 
         if not numberEdit:
-            self.setLabel(TEXT['emptyNumber'][self.language], 'edit')
+            self.setLabel(
+                    TEXT['emptyNumber'][self.language], 
+                    self.lblEditUser,
+                    self.editLabelTimer
+                )
             self.txtEditNumber.setFocus()
             return
 
         if not userExists(self.userInfo.phoneNumber):
-            self.setLabel(TEXT['userBeenDeleted'][self.language], 'edit')
+            self.setLabel(
+                    TEXT['userBeenDeleted'][self.language], 
+                    self.lblEditUser,
+                    self.editLabelTimer
+                )
             return
 
         if numberEdit != self.userInfo.phoneNumber:
             if userExists(numberEdit):
                 self.setLabel(
-                    TEXT['alreadyExists'][self.language], 'edit'
+                    TEXT['alreadyExists'][self.language], 
+                    self.lblEditUser,
+                    self.editLabelTimer
                 )
                 self.txtEditNumber.setFocus()
                 return
@@ -1236,7 +1352,11 @@ class MainWin(QMainWindow):
             self.user.setNote(noteEdit)
 
         self.userInfo.save()
-        self.setLabel(TEXT['userUpdated'][self.language], 'edit')
+        self.setLabel(
+                TEXT['userUpdated'][self.language],
+                self.lblEditUser,
+                self.editLabelTimer
+            )
         self.loadToTabel()
 
     def deleteUser(self):
@@ -1251,11 +1371,19 @@ class MainWin(QMainWindow):
         name = self.txtNameSubmit.text()
 
         if not number:
-            self.setLabel(TEXT['emptyNumber'][self.language], 'submit')
+            self.setLabel(
+                    TEXT['emptyNumber'][self.language], 
+                    self.lblSubmit, 
+                    self.submitLabelTimer
+                )
             return
 
         if userExists(number):
-            self.setLabel(TEXT['alreadyExistsSub'][self.language], 'submit')
+            self.setLabel(
+                    TEXT['alreadyExistsSub'][self.language], 
+                    self.lblSubmit, 
+                    self.submitLabelTimer
+                )
             return
 
         user = User(number, name)
@@ -1271,7 +1399,13 @@ class MainWin(QMainWindow):
         if (not self.user) or (self.user.currentSession == 'finished'):
 
             if not numberEntered:
-                self.setLabel(TEXT['emptyNumber'][self.language], 'login')
+                self.setLabel(
+                        TEXT['emptyNumber'][self.language], 
+                        self.lblLogin, 
+                        self.loginLabelTimer
+                    )
+                self.txtNumber.setFocus()
+                self.txtNumber.selectAll()
                 return
 
             self.user = loadUser(numberEntered)
@@ -1290,17 +1424,35 @@ class MainWin(QMainWindow):
 
         elif self.user and self.user.currentSession == 'started':
             if not userExists(self.user.phoneNumber):
-                    self.setLabel(TEXT['userBeenDeleted'][self.language], 'login')
+                    self.setLabel(
+                            TEXT['userBeenDeleted'][self.language], 
+                            self.lblLogin, 
+                            self.loginLabelTimer
+                        )
+                    self.txtNumber.setFocus()
+                    self.txtNumber.selectAll()
                     self.user = None
                     return
             elif numberEntered != self.user.phoneNumber:
                 text = f'{TEXT["sssionNotOver"][self.language]} ({self.user.phoneNumber})'
 
-                self.setLabel(text, 'login')
+                self.setLabel(
+                        text, 
+                        self.lblLogin, 
+                        self.loginLabelTimer
+                    )
+                self.txtNumber.setFocus()
+                self.txtNumber.selectAll()
                 return
             else:
                 if not userExists(self.user.phoneNumber):
-                    self.setLabel(TEXT['userBeenDeleted'][self.language], 'login')
+                    self.setLabel(
+                            TEXT['userBeenDeleted'][self.language], 
+                            self.lblLogin, 
+                            self.loginLabelTimer
+                        )
+                    self.txtNumber.setFocus()
+                    self.txtNumber.selectAll()
                     self.user = None
                     return
                     
@@ -1317,67 +1469,13 @@ class MainWin(QMainWindow):
         self.stackedWidget.setCurrentWidget(self.mainPage)
         self.stackedWidgetLaser.setCurrentIndex(0)
 
-    def setLabel(self, text, label, sec=5):
-        if label == 'login':
-            self.lblLogin.setText(text)
-            self.txtNumber.setFocus()
-            self.txtNumber.selectAll()
-            self.loginLabelTimer.start(sec * 1000)
-        
-        elif label == 'submit':
-            self.lblSubmit.setText(text)
-            self.txtNumber.setFocus()
-            self.txtNumber.selectAll()
-            self.submitLabelTimer.start(sec * 1000)
+    def setLabel(self, text, label, timer, sec=5):
+        label.setText(text)
+        timer.start(sec * 1000)
 
-        elif label == 'edit':
-            self.lblEditUser.setText(text)
-            self.editLabelTimer.start(sec * 1000)
-
-        elif label == 'nextSession':
-            self.lblErrNextSession.setText(text)
-            self.nextSessionLabelTimer.start(sec * 1000)
-
-        elif label == 'password':
-            self.lblPassword.setText(text)
-            self.passwordLabelTimer.start(sec * 1000)
-
-        elif label == 'hw':
-            self.lblSaveHw.setText(text)
-            self.hwUpdatedLabelTimer.start(sec * 1000)
-
-        elif label == 'uuid':
-            self.lblPassUUID.setText(text)
-            self.uuidPassLabelTimer.start(sec * 1000)
-
-    def clearLabel(self, label):
-        if label == 'login':
-            self.lblLogin.clear()
-            self.loginLabelTimer.stop()
-        
-        elif label == 'submit':
-            self.lblSubmit.clear()
-            self.submitLabelTimer.stop()
-
-        elif label == 'edit':
-            self.lblEditUser.clear()
-            self.editLabelTimer.stop()
-
-        elif label == 'nextSession':
-            self.lblErrNextSession.clear()
-            self.nextSessionLabelTimer.stop()
-
-        elif label == 'password':
-            self.lblPassword.clear()
-            self.passwordLabelTimer.stop()
-
-        elif label == 'hw':
-            self.lblSaveHw.clear()
-            self.hwUpdatedLabelTimer.stop()
-
-        elif label == 'uuid':
-            self.lblPassUUID.clear()
-            self.uuidPassLabelTimer.stop()
+    def clearLabel(self, label, timer):
+        label.clear()
+        timer.stop()
 
     def changeLang(self, lang):
         global app
@@ -1499,7 +1597,19 @@ class MainWin(QMainWindow):
         self.lblProducion.setText(TEXT['lblProducion'][self.language])
         self.lblLaser.setText(TEXT['lblLaser'][self.language])
         self.lblDriver.setText(TEXT['lblDriver'][self.language])        
-        self.lblEmbedded.setText(TEXT['lblEmbedded'][self.language])        
+        self.lblEmbedded.setText(TEXT['lblEmbedded'][self.language])
+        self.btnHwinfo.setText(TEXT['btnHwinfo'][self.language])        
+        self.btnSystemLock.setText(TEXT['btnSystemLock'][self.language])
+        self.lblDefineLock.setText(TEXT['lblDefineLock'][self.language])
+        self.lblSysClock.setText(TEXT['lblSysClock'][self.language])
+        self.lblSysDate.setText(TEXT['lblSysDate'][self.language])
+        self.lblEditClock.setText(TEXT['lblEditClock'][self.language])
+        self.lblEditDate.setText(TEXT['lblEditDate'][self.language])
+        self.tableLock.horizontalHeaderItem(0).setText(TEXT['tableLock0'][self.language])
+        self.tableLock.horizontalHeaderItem(1).setText(TEXT['tableLock1'][self.language])
+        self.tableLock.horizontalHeaderItem(2).setText(TEXT['tableLock2'][self.language])
+        self.tableLock.horizontalHeaderItem(3).setText(TEXT['tableLock3'][self.language])
+
 
 app = QApplication(sys.argv)
 mainWin = MainWin()

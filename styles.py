@@ -123,6 +123,7 @@ QLineEdit:focus{
 
 APP_LOCK_BG = """
 background-color: rgb(77, 74, 78);
+color: white;
 """
 
 APP_BG = """
@@ -151,5 +152,15 @@ QPushButton {
     border-radius: 15px;
     border: 10px solid rgb(213, 213, 213);
     outline:0;
+}
+"""
+
+ACTION_BTN = """
+QPushButton {
+    border-radius:10px;
+    outline:0;
+}
+    QPushButton:pressed{
+    margin: 10px 0 0 0;
 }
 """

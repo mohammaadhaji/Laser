@@ -94,6 +94,7 @@ TEXT = {
     'enter': ['Enter', 'ورود'],
     'txtHwPass': ['Password', 'رمز عبور'],
     'lblSaveHw': ['Updated.', 'بروزرسانی شد.'],
+    'lblSystemTimeStatus': ['Could not set system time.', 'زمان سیستم تنظیم نشد.'],
     'btnResetCounter': ['Reset Counter', 'ریست شمارنده'],
     'lblProducion': ['Production', 'تولید'],
     'lblLaser': ['Laser', 'لیزر'],
@@ -101,5 +102,16 @@ TEXT = {
     'lblEmbedded': ['Embedded System', 'سیستم تعبیه شده'],
     'lblSkinGrade': ['Skin Grade', 'گرید پوستی'],
     'lblCooling': ['Cooling', 'سرمایش'],
-    
+    'btnHwinfo': ['System Info', 'اطلاعات سیستم'],
+    'btnSystemLock': ['Lock && Time', 'قفل و زمان'],
+    'lblDefineLock': ['Define a Lock', 'تعریف یک قفل'],
+    'lblSysClock': ['System Clock', 'ساعت سیستم'],
+    'lblSysDate': ['System Date', 'تاریخ سیستم'],
+    'lblEditClock': ['Edit Clock', 'تنظیم ساعت'],
+    'lblEditDate': ['Edit Date', 'تنظیم تاریخ'],
+    'tableLock0': ['Date', 'تاریخ'],
+    'tableLock1': ['Status' ,'وضعیت'],
+    'tableLock2': ['Paid', 'پرداخت شده'],
+    'tableLock3': ['Remove', 'پاک کردن'],
+    'anyLockBefor': ['The lock date must be earlier than the last one', 'تاریخ قفل باید از تاریخ اخرین قفل جلوتر باشد.']
 }

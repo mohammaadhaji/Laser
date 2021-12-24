@@ -2231,8 +2231,8 @@ QPushButton:pressed{
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1201</width>
-                       <height>920</height>
+                       <width>958</width>
+                       <height>661</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_73">
@@ -3127,7 +3127,7 @@ border:0px;
                  </layout>
                 </widget>
                 <widget class="QWidget" name="lockSettingsPage">
-                 <layout class="QHBoxLayout" name="horizontalLayout_58" stretch="0,2,0,2,0">
+                 <layout class="QHBoxLayout" name="horizontalLayout_58" stretch="0,3,0,2,0">
                   <property name="leftMargin">
                    <number>11</number>
                   </property>
@@ -3148,7 +3148,7 @@ border:0px;
                    </spacer>
                   </item>
                   <item>
-                   <layout class="QVBoxLayout" name="verticalLayout_72" stretch="2,0,4,2">
+                   <layout class="QVBoxLayout" name="verticalLayout_72" stretch="2,0,0,0,4,2">
                     <property name="topMargin">
                      <number>0</number>
                     </property>
@@ -3169,9 +3169,35 @@ border:0px;
                      </spacer>
                     </item>
                     <item>
+                     <widget class="QLabel" name="lblLockError">
+                      <property name="font">
+                       <font>
+                        <family>Arial</family>
+                        <pointsize>16</pointsize>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="verticalSpacer_74">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>40</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
                      <layout class="QHBoxLayout" name="horizontalLayout_56">
                       <item>
-                       <widget class="QLabel" name="lblLockYear">
+                       <widget class="QLabel" name="lblDefineLock">
                         <property name="font">
                          <font>
                           <family>Arial</family>
@@ -3359,6 +3385,12 @@ border:3px solid white;
                     </item>
                     <item>
                      <widget class="QTableWidget" name="tableLock">
+                      <property name="font">
+                       <font>
+                        <family>Segoe UI</family>
+                        <pointsize>16</pointsize>
+                       </font>
+                      </property>
                       <property name="styleSheet">
                        <string notr="true">QHeaderView::section
 {
@@ -3387,6 +3419,9 @@ QScrollBar:vertical {
 QScrollBar::handle:vertical {
     background: rgb(126, 126, 126);
 }</string>
+                      </property>
+                      <property name="selectionBehavior">
+                       <enum>QAbstractItemView::SelectRows</enum>
                       </property>
                       <column>
                        <property name="text">
@@ -3499,7 +3534,20 @@ QScrollBar::handle:vertical {
                       <property name="topMargin">
                        <number>0</number>
                       </property>
-                      <item row="0" column="0">
+                      <item row="0" column="1">
+                       <widget class="QLabel" name="lblSystemTimeStatus">
+                        <property name="font">
+                         <font>
+                          <family>Arial</family>
+                          <pointsize>16</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string/>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="2" column="0">
                        <widget class="QLabel" name="lblSysClock">
                         <property name="font">
                          <font>
@@ -3512,7 +3560,7 @@ QScrollBar::handle:vertical {
                         </property>
                        </widget>
                       </item>
-                      <item row="0" column="1">
+                      <item row="2" column="1">
                        <widget class="QLineEdit" name="txtSysClock">
                         <property name="enabled">
                          <bool>false</bool>
@@ -3541,7 +3589,7 @@ border:1px solid gray;
                         </property>
                        </widget>
                       </item>
-                      <item row="1" column="0">
+                      <item row="3" column="0">
                        <widget class="QLabel" name="lblSysDate">
                         <property name="font">
                          <font>
@@ -3554,7 +3602,7 @@ border:1px solid gray;
                         </property>
                        </widget>
                       </item>
-                      <item row="1" column="1">
+                      <item row="3" column="1">
                        <widget class="QLineEdit" name="txtSysDate">
                         <property name="enabled">
                          <bool>false</bool>
@@ -3583,7 +3631,7 @@ border:1px solid gray;
                         </property>
                        </widget>
                       </item>
-                      <item row="2" column="1">
+                      <item row="5" column="1">
                        <spacer name="verticalSpacer_73">
                         <property name="orientation">
                          <enum>Qt::Vertical</enum>
@@ -3596,7 +3644,7 @@ border:1px solid gray;
                         </property>
                        </spacer>
                       </item>
-                      <item row="3" column="0">
+                      <item row="6" column="0">
                        <widget class="QLabel" name="lblEditClock">
                         <property name="font">
                          <font>
@@ -3605,11 +3653,11 @@ border:1px solid gray;
                          </font>
                         </property>
                         <property name="text">
-                         <string>Clock</string>
+                         <string>Edit Clock</string>
                         </property>
                        </widget>
                       </item>
-                      <item row="3" column="1">
+                      <item row="6" column="1">
                        <layout class="QHBoxLayout" name="horizontalLayout_57">
                         <property name="spacing">
                          <number>7</number>
@@ -3713,7 +3761,7 @@ border:1px solid gray;
                         </item>
                        </layout>
                       </item>
-                      <item row="4" column="0">
+                      <item row="7" column="0">
                        <widget class="QLabel" name="lblEditDate">
                         <property name="font">
                          <font>
@@ -3722,11 +3770,11 @@ border:1px solid gray;
                          </font>
                         </property>
                         <property name="text">
-                         <string>Date</string>
+                         <string>Edit Date</string>
                         </property>
                        </widget>
                       </item>
-                      <item row="4" column="1">
+                      <item row="7" column="1">
                        <layout class="QHBoxLayout" name="horizontalLayout_59">
                         <property name="topMargin">
                          <number>0</number>
@@ -3810,6 +3858,9 @@ border:1px solid gray;
 
 </string>
                           </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
                          </widget>
                         </item>
                         <item>
@@ -3868,6 +3919,19 @@ border:1px solid gray;
                          </spacer>
                         </item>
                        </layout>
+                      </item>
+                      <item row="1" column="1">
+                       <spacer name="verticalSpacer_72">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
                       </item>
                      </layout>
                     </item>
@@ -4011,7 +4075,7 @@ border: 1px solid white;
 }</string>
                    </property>
                    <property name="text">
-                    <string>Information</string>
+                    <string>Hardware Info</string>
                    </property>
                   </widget>
                  </item>
@@ -5072,7 +5136,7 @@ border:2px solid white;
                <widget class="QTableWidget" name="usersTable">
                 <property name="font">
                  <font>
-                  <pointsize>14</pointsize>
+                  <pointsize>16</pointsize>
                  </font>
                 </property>
                 <property name="styleSheet">
@@ -5418,7 +5482,7 @@ border: 1px solid white;
                <widget class="QTableWidget" name="userInfoTable">
                 <property name="font">
                  <font>
-                  <pointsize>14</pointsize>
+                  <pointsize>16</pointsize>
                  </font>
                 </property>
                 <property name="styleSheet">
