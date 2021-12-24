@@ -302,6 +302,16 @@ class MainWin(QMainWindow):
                 )
             return
 
+        numOfLocks = countLocks()
+
+        if numOfLocks == 3:
+            self.setLabel(
+                    TEXT['maxLock'][self.language], 
+                    self.lblLockError, 
+                    self.lockErrorLabel, 5
+                )
+            return
+
         if getDiff(date) <= -1:
             self.setLabel(
                     TEXT['passedDate'][self.language],
@@ -318,7 +328,7 @@ class MainWin(QMainWindow):
                 )
             return  
 
-        numOfLocks = countLocks()
+        
         license = self.license[f'LICENSE{numOfLocks + 1}']
         Lock(date, license)
         self.loadLocksTable()
