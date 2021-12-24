@@ -2156,6 +2156,7 @@ class MainWin(QMainWindow):
         self.lblCurrentSnumber.setText(TEXT['lblCurrentSnumber'][self.language])
         self.lblOwnerInfo.setText(TEXT['lblOwnerInfo'][self.language])
         self.btnShowSplash.setText(TEXT['btnShowSplash'][self.language])
+        self.btnUpdateFirmware.setText(TEXT['btnUpdateFirmware'][self.language])
 
 
 app = QApplication(sys.argv)

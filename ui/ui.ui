@@ -1688,7 +1688,7 @@ border:3px solid red;
         <item>
          <widget class="StackedWidget" name="stackedWidgetSettings">
           <property name="currentIndex">
-           <number>1</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="settingsMenuPage">
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -2078,7 +2078,7 @@ QLineEdit:focus{
                    <widget class="QLabel" name="lblFa">
                     <property name="font">
                      <font>
-                      <family>IranNastaliq</family>
+                      <family>A Iranian Sans</family>
                       <pointsize>20</pointsize>
                      </font>
                     </property>
@@ -2386,8 +2386,8 @@ border:2px solid white;
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>958</width>
-                       <height>828</height>
+                       <width>1248</width>
+                       <height>848</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_73" stretch="1,9">
@@ -2409,13 +2409,13 @@ border:2px solid white;
                          <widget class="QPushButton" name="btnUpdateFirmware">
                           <property name="minimumSize">
                            <size>
-                            <width>212</width>
-                            <height>82</height>
+                            <width>362</width>
+                            <height>102</height>
                            </size>
                           </property>
                           <property name="maximumSize">
                            <size>
-                            <width>300</width>
+                            <width>16777215</width>
                             <height>16777215</height>
                            </size>
                           </property>
@@ -2429,8 +2429,8 @@ border:2px solid white;
                            <string notr="true">QPushButton {
 background-color: rgb(68, 68, 68);
 color:white;
-min-width: 200px;
-min-height: 80px;
+min-width: 350px;
+min-height: 100px;
 border-radius: 5px;
 border: 1px solid gray;
 margin: 0 5px 0 5px;
@@ -4546,7 +4546,7 @@ border:3px solid red;
                <number>30</number>
               </property>
               <property name="bottomMargin">
-               <number>50</number>
+               <number>30</number>
               </property>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_34" stretch="3,0,7">
@@ -4718,65 +4718,44 @@ border:1px solid white;</string>
                   </item>
                   <item>
                    <widget class="QSlider" name="sliderVolume">
+                    <property name="minimumSize">
+                     <size>
+                      <width>50</width>
+                      <height>0</height>
+                     </size>
+                    </property>
                     <property name="styleSheet">
-                     <string notr="true">QSlider::groove:horizontal
-{
-border: 1px solid #bbb;
-background: white;
-width: 10px;
-border-radius: 4px;
+                     <string notr="true">QSlider::groove:vertical {
+    background: red;
+    position: absolute; /* absolutely position 4px from the left and right of the widget. setting margins on the widget should work too... */
+    left: 4px; right: 4px;
+	width: 10px;
 }
 
-QSlider::sub-page:vertical
-{
-background: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #fff, stop: 0.4999 #eee, stop: 0.5 #ddd, stop: 1 #eee );
-border: 1px solid #777;
-width: 10px;
-border-radius: 4px;
+
+QSlider::handle:vertical {
+    height: 30px;
+	width: 30px;
+	border-radius:5px;
+    background: rgb(85, 170, 255);
+    margin: 0 -20px; 
+
 }
 
 QSlider::add-page:vertical {
-background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+	background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
   stop: 0 #ABCD44, 
   stop: 0.5 #ABCD44,
   stop: 0.51 #A1C72E,
   stop: 0.54 #A1C72E,
   stop: 1.0 #9CC322);
-
-border: 1px solid #777;
-width: 10px;
-border-radius: 4px;
 }
 
-QSlider::handle:vertical {
-background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #eee, stop:1 #ccc);
-border: 1px solid #777;
-height: 13px;
-margin-top: -2px;
-margin-bottom: -2px;
-border-radius: 4px;
+QSlider::sub-page:vertical {
+    background: #fff;
 }
-
-QSlider::handle:vertical:hover {
-background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #fff, stop:1 #ddd);
-border: 1px solid #444;
-border-radius: 4px;
-}
-
-QSlider::sub-page:vertical:disabled {
-background: #bbb;
-border-color: #999;
-}
-
-QSlider::add-page:vertical:disabled {
-background: #eee;
-border-color: #999;
-}
-
-QSlider::handle:vertical:disabled {
-background: #eee;
-border: 1px solid #aaa;
-border-radius: 4px;
+QSlider::handle:vertical:pressed {
+    background-color: rgb(65, 255, 195);
 }</string>
                     </property>
                     <property name="maximum">
@@ -4868,12 +4847,34 @@ background-color: rgb(0, 170, 255);
                     </item>
                     <item>
                      <widget class="QSlider" name="positionSlider">
+                      <property name="minimumSize">
+                       <size>
+                        <width>0</width>
+                        <height>70</height>
+                       </size>
+                      </property>
                       <property name="styleSheet">
-                       <string notr="true">QSlider::groove:horizontal {
-border: 1px solid #bbb;
-background: white;
-height: 20px;
-border-radius: 4px;
+                       <string notr="true">QSlider {
+min-height:70px;
+}
+QSlider::groove:horizontal {
+    border-radius: 1px;
+    height: 10px;
+    margin: 0px;
+    background-color: rgb(52, 59, 72);
+}
+
+QSlider::handle:horizontal {
+    background-color: rgb(85, 170, 255);
+    border: none;
+    height: 70px;
+    width: 60px;
+    border-radius:25px;
+    margin: -25px 0;
+    padding: -25px 0px;
+}
+QSlider::handle:horizontal:pressed {
+    background-color: rgb(65, 255, 195);
 }
 
 QSlider::sub-page:horizontal {
@@ -4892,16 +4893,6 @@ QSlider::add-page:horizontal {
 background: #fff;
 border: 1px solid #777;
 height: 10px;
-border-radius: 4px;
-}
-
-QSlider::handle:horizontal {
-background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-    stop:0 #eee, stop:1 #ccc);
-border: 1px solid #777;
-width: 20px;
-margin-top: -2px;
-margin-bottom: -2px;
 border-radius: 4px;
 }
 </string>

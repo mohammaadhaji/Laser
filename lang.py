@@ -127,5 +127,6 @@ TEXT = {
     'overHeatError': ['OverHeat Error', 'خطای گرمای بیش از حد'],
     'physicalDamage': ['Physical Damage', 'آسیب فیزیکی'],
     'lblOwnerInfo': ['Owner Information', 'اطلاعات مالک'],
-    'btnShowSplash': ['Splash Page', 'صفحه اسپلش']
+    'btnShowSplash': ['Splash Page', 'صفحه اسپلش'],
+    'btnUpdateFirmware': ['Update Firmware', 'بروزرسانی فریموور ']
 }
