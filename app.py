@@ -18,6 +18,11 @@ class MainWin(QMainWindow):
         super(MainWin, self).__init__(*args, **kwargs)
         uic.loadUi(APP_UI, self)
         self.setupUi()
+        self.setStyleSheet("""
+                    QMainWindow {
+                        background-image:url('ui/images/wallpaper.jpg'); 
+                    }
+             """)
         
     def setupUi(self):
         # self.setCursor(Qt.BlankCursor)

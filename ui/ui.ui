@@ -14,12 +14,11 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(32, 74, 135);
-color: rgb(255, 255, 255);</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
-    <string notr="true"/>
+    <string notr="true">color:white;</string>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
     <property name="spacing">
@@ -53,7 +52,7 @@ font-family:&quot;Times New Roman&quot;;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>5</number>
+       <number>10</number>
       </property>
       <widget class="QWidget" name="UUIDPage">
        <layout class="QVBoxLayout" name="verticalLayout_66">
@@ -981,7 +980,7 @@ border:3px solid red;
                  </font>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true"/>
+                 <string notr="true">background: transparent;</string>
                 </property>
                 <property name="placeholderText">
                  <string>Number</string>
@@ -1013,7 +1012,7 @@ border:3px solid red;
                  </font>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true"/>
+                 <string notr="true">background: transparent;</string>
                 </property>
                 <property name="placeholderText">
                  <string>Name</string>
@@ -1181,6 +1180,9 @@ border: 1px solid white;
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
              <layout class="QHBoxLayout" name="powerLayout">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
               <property name="topMargin">
                <number>20</number>
               </property>
@@ -1429,7 +1431,7 @@ margin: 20px 0 0 0;
                  <enum>Qt::LeftToRight</enum>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true"/>
+                 <string notr="true">background: transparent;</string>
                 </property>
                 <property name="text">
                  <string/>
@@ -1688,7 +1690,7 @@ border:3px solid red;
         <item>
          <widget class="StackedWidget" name="stackedWidgetSettings">
           <property name="currentIndex">
-           <number>3</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="settingsMenuPage">
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -1946,6 +1948,7 @@ border: 10px solid rgb(0, 170, 255);
     border-radius:10px;
     border:2px solid gray;
     padding:10px 10px 10px 10px;
+background: transparent;
 }
 QLineEdit:focus{
     border:2px solid white;
@@ -2283,13 +2286,13 @@ border: 1px solid white;
                   </property>
                   <property name="styleSheet">
                    <string notr="true">QLineEdit{
-border-radius:10px;
-border:2px solid gray;
-padding:10px 10px 10px 10px;
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
 }
-QLineEdit:focus{
-border:2px solid white;
-}</string>
+
+</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -2354,9 +2357,12 @@ border:2px solid white;
               <item>
                <widget class="StackedWidget" name="hwStackedWidget">
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>1</number>
                 </property>
                 <widget class="QWidget" name="infoPage">
+                 <property name="styleSheet">
+                  <string notr="true">background: transparent;</string>
+                 </property>
                  <layout class="QVBoxLayout" name="verticalLayout_71">
                   <property name="leftMargin">
                    <number>0</number>
@@ -4520,6 +4526,9 @@ border:3px solid red;
           </item>
           <item>
            <widget class="QScrollArea" name="scrollArea_3">
+            <property name="styleSheet">
+             <string notr="true"> background: transparent</string>
+            </property>
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -4534,6 +4543,9 @@ border:3px solid red;
                <width>1571</width>
                <height>755</height>
               </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"> background: transparent</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_78" stretch="9,1">
               <property name="leftMargin">
@@ -4584,13 +4596,16 @@ border:3px solid red;
                     </property>
                     <property name="styleSheet">
                      <string notr="true">QListWidget {
-background-color: rgb(255, 255, 255);
-color:rgb(0, 0, 0);
+
+color:white;
 padding: 20px 20px 20px 20px;
 border-radius:20px;
+border:3px soild;
+border-color: rgb(255, 255, 255);
+
 }
 QListWidget::item {
- margin: 10px; 
+ margin: 15px; 
 }</string>
                     </property>
                     <property name="spacing">
@@ -4789,7 +4804,7 @@ QSlider::handle:vertical:pressed {
 outline : 0;
 background-color: rgb(213, 213, 213);
 border-radius: 60px;
-border:10px solid black;
+border:10px solid rgb(74, 74, 74);
 
 }
 
@@ -5416,6 +5431,7 @@ border:3px solid red;
 border-radius:10px;
 border:2px solid gray;
 padding:10px 10px 10px 10px;
+background: transparent;
 }
 QLineEdit:focus{
 border:2px solid white;
@@ -5567,6 +5583,12 @@ QScrollBar::handle:vertical {
                 </item>
                 <item>
                  <widget class="QPushButton" name="btnSort">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>102</height>
+                   </size>
+                  </property>
                   <property name="font">
                    <font>
                     <family>Arial</family>
@@ -5576,7 +5598,8 @@ QScrollBar::handle:vertical {
                   <property name="styleSheet">
                    <string notr="true">QPushButton {
 background-color: rgb(68, 68, 68);
-min-width: 220px;
+padding-left:20px;
+padding-right:20px;
 min-height: 100px;
 border-radius: 5px;
 border: 1px solid gray;
@@ -5996,7 +6019,8 @@ QScrollBar::handle:vertical {
                      <property name="styleSheet">
                       <string notr="true">color: rgb(0, 0, 0);
 background-color: rgb(255, 255, 255);
-padding:10px 10px 10px 10px;</string>
+padding:10px 10px 10px 10px;
+border:2px soild white;</string>
                      </property>
                     </widget>
                    </item>
@@ -6013,6 +6037,7 @@ padding:10px 10px 10px 10px;</string>
 border-radius:10px;
 border:2px solid gray;
 padding:10px 10px 10px 10px;
+background: transparent;
 }
 QLineEdit:focus{
 border:2px solid white;
@@ -6039,6 +6064,7 @@ border:2px solid white;
 border-radius:10px;
 border:2px solid gray;
 padding:10px 10px 10px 10px;
+background: transparent;
 }
 QLineEdit:focus{
 border:2px solid white;
@@ -6212,6 +6238,7 @@ border: 1px solid white;
 border-radius:10px;
 border:2px solid gray;
 padding:10px 10px 10px 10px;
+background: transparent;
 }
 QLineEdit:focus{
 border:2px solid white;
@@ -6580,6 +6607,9 @@ border: 1px solid white;
           </item>
           <item>
            <widget class="StackedWidget" name="stackedWidgetLaser">
+            <property name="styleSheet">
+             <string notr="true">background: transparent;</string>
+            </property>
             <property name="currentIndex">
              <number>1</number>
             </property>
@@ -7728,6 +7758,9 @@ background-color: rgb(0, 170, 255);
               </property>
               <item>
                <widget class="QScrollArea" name="scrollArea_2">
+                <property name="styleSheet">
+                 <string notr="true">background: transparent;</string>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
                 </property>
@@ -7742,6 +7775,9 @@ background-color: rgb(0, 170, 255);
                    <width>1528</width>
                    <height>819</height>
                   </rect>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">background: transparent;</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_80">
                   <property name="leftMargin">
@@ -8352,7 +8388,7 @@ margin-right:20px;
     border-radius: 1px;
     height: 3px;
     margin: 0px;
-    background-color: rgb(52, 59, 72);
+    background-color: white;
 }
 
 QSlider::handle:horizontal {
@@ -8555,11 +8591,9 @@ margin-right:20px;
     border-radius: 1px;
     height: 3px;
     margin: 0px;
-    background-color: rgb(52, 59, 72);
+    background-color: white;
 }
-QSlider::groove:horizontal:hover {
-    background-color: rgb(55, 62, 76);
-}
+
 QSlider::handle:horizontal {
     background-color: rgb(85, 170, 255);
     border: none;
@@ -8748,11 +8782,9 @@ margin-right:20px;
     border-radius: 1px;
     height: 3px;
     margin: 0px;
-    background-color: rgb(52, 59, 72);
+    background-color: white;
 }
-QSlider::groove:horizontal:hover {
-    background-color: rgb(55, 62, 76);
-}
+
 QSlider::handle:horizontal {
     background-color: rgb(85, 170, 255);
     border: none;

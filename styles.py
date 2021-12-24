@@ -152,11 +152,9 @@ QSlider::groove:horizontal {
     border-radius: 1px;
     height: 3px;
     margin: 0px;
-    background-color: rgb(52, 59, 72);
+    background-color: white;
 }
-QSlider::groove:horizontal:hover {
-    background-color: rgb(55, 62, 76);
-}
+
 QSlider::handle:horizontal {
     background-color: rgb(85, 170, 255);
     border: none;
@@ -176,11 +174,9 @@ QSlider::groove:horizontal {
     border-radius: 1px;
     height: 3px;
     margin: 0px;
-    background-color: rgb(52, 59, 72);
+    background-color: white;
 }
-QSlider::groove:horizontal:hover {
-    background-color: rgb(55, 62, 76);
-}
+
 QSlider::handle:horizontal {
     background-color: white;
     border: none;
@@ -200,11 +196,9 @@ QSlider::groove:horizontal {
     border-radius: 1px;
     height: 3px;
     margin: 0px;
-    background-color: rgb(52, 59, 72);
+    background-color: white;
 }
-QSlider::groove:horizontal:hover {
-    background-color: rgb(55, 62, 76);
-}
+
 QSlider::handle:horizontal {
     background-color: rgb(157, 157, 157);
     border: none;
