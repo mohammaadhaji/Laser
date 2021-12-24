@@ -391,6 +391,7 @@ class MainWin(QMainWindow):
         if hashlib.sha256(hwid.encode()).hexdigest()[:10] == self.configs['PASSWORD']:
             return True
         else:
+            self.stackedWidget.setCurrentIndex(0)
             return False
 
     def unlockLIC(self, auto=False):
