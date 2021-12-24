@@ -355,7 +355,7 @@ class MainWin(QMainWindow):
 
             status = TableWidgetItem(status)
             self.tableLock.setItem(i, 1, status)
-            paid = TableWidgetItem('Yes' if lock.paid else 'No')
+            paid = TableWidgetItem(TEXT['yes'][self.language] if lock.paid else TEXT['no'][self.language])
             self.tableLock.setItem(i, 2, paid)
             btnDelete = QPushButton(self)
             deleteIcon = QIcon()

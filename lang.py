@@ -113,7 +113,9 @@ TEXT = {
     'tableLock1': ['Status' ,'وضعیت'],
     'tableLock2': ['Paid', 'پرداخت شده'],
     'tableLock3': ['Remove', 'پاک کردن'],
-    'anyLockBefor': ['The lock date must be earlier than the last one', 'تاریخ قفل باید از تاریخ اخرین قفل جلوتر باشد.'],
-    'maxLock': ['A maximum of 3 locks can be defined.', 'حداکثر 3 قفل می تواند تعریف شود.']
+    'anyLockBefor': ['The lock date must be earlier than the last one.', 'تاریخ قفل باید از تاریخ اخرین قفل جلوتر باشد.'],
+    'maxLock': ['A maximum of 3 locks can be defined.', 'حداکثر 3 قفل می تواند تعریف شود.'],
+    'yes': ['Yes', 'بله'],
+    'no': ['No', 'خیر'],
 
 }
