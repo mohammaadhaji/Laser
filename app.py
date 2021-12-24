@@ -96,7 +96,7 @@ class MainWin(QMainWindow):
         self.receivedTime = ()
         self.startupEditTime = False
         self.ready = False
-        self.language = 0 if self.configs['LANGUAGE'] == 'en' else 1
+        self.langIndex = 0 if self.configs['LANGUAGE'] == 'en' else 1
         icon = QPixmap(SELECTED_LANG_ICON)
         self.lblEnSelected.setPixmap(icon.scaled(70, 70))
         icon = QPixmap(SPARK_ICON)
@@ -671,7 +671,7 @@ class MainWin(QMainWindow):
 
         if numOfLocks == 3:
             self.setLabel(
-                    TEXT['maxLock'][self.language], 
+                    TEXT['maxLock'][self.langIndex], 
                     self.lblLockError, 
                     self.lockErrorLabel, 5
                 )
@@ -679,7 +679,7 @@ class MainWin(QMainWindow):
 
         if getDiff(date) <= -1:
             self.setLabel(
-                    TEXT['passedDate'][self.language],
+                    TEXT['passedDate'][self.langIndex],
                     self.lblLockError, 
                     self.lockErrorLabel, 4
                 )
@@ -687,7 +687,7 @@ class MainWin(QMainWindow):
 
         if self.anyLockBefor(date):
             self.setLabel(
-                    TEXT['anyLockBefor'][self.language], 
+                    TEXT['anyLockBefor'][self.langIndex], 
                     self.lblLockError, 
                     self.lockErrorLabel, 5
                 )
@@ -714,19 +714,19 @@ class MainWin(QMainWindow):
             diff = lock.getStatus()
             status = ''
             if diff == 0:
-                status = TEXT['today'][self.language]
+                status = TEXT['today'][self.langIndex]
             elif diff == -1:
-                status = TEXT['1dayPassed'][self.language]
+                status = TEXT['1dayPassed'][self.langIndex]
             elif diff < -1:
-                status = f'{abs(diff)} {TEXT["nDayPassed"][self.language]}'
+                status = f'{abs(diff)} {TEXT["nDayPassed"][self.langIndex]}'
             elif diff == 1:
-                status = TEXT['1dayleft'][self.language]
+                status = TEXT['1dayleft'][self.langIndex]
             else:
-                status = f'{diff} {TEXT["nDayLeft"][self.language]}'
+                status = f'{diff} {TEXT["nDayLeft"][self.langIndex]}'
 
             status = TableWidgetItem(status)
             self.tableLock.setItem(i, 1, status)
-            paid = TableWidgetItem(TEXT['yes'][self.language] if lock.paid else TEXT['no'][self.language])
+            paid = TableWidgetItem(TEXT['yes'][self.langIndex] if lock.paid else TEXT['no'][self.langIndex])
             self.tableLock.setItem(i, 2, paid)
             btnDelete = QPushButton(self)
             deleteIcon = QIcon()
@@ -923,7 +923,7 @@ class MainWin(QMainWindow):
             self.txtLockDay.setText(str(nextDate.day)) 
         except Exception:
             self.setLabel(
-                    TEXT['lblSystemTimeStatus'][self.language], 
+                    TEXT['systemTimeStatus'][self.langIndex], 
                     self.lblSystemTimeStatus, 
                     self.sysTimeStatusLabelTimer, 4
                 )
@@ -934,7 +934,7 @@ class MainWin(QMainWindow):
             self.enterSettingPage(WRITE)
 
         self.setLabel(
-                TEXT['lblSaveHw'][self.language], 
+                TEXT['saveHw'][self.langIndex], 
                 self.lblSaveHw, 
                 self.hwUpdatedLabelTimer, 2
             )
@@ -1064,7 +1064,7 @@ class MainWin(QMainWindow):
                 date = jdatetime.datetime(year, month, day)
                 if getDiff(date) <= -1:
                     self.setLabel(
-                            TEXT['passedDate'][self.language], 
+                            TEXT['passedDate'][self.langIndex], 
                             self.lblErrNextSession, 
                             self.nextSessionLabelTimer
                         )
@@ -1084,7 +1084,7 @@ class MainWin(QMainWindow):
 
         except Exception:
             self.setLabel(
-                    TEXT['invalidDateF'][self.language], 
+                    TEXT['invalidDateF'][self.langIndex], 
                     self.lblErrNextSession, 
                     self.nextSessionLabelTimer
                 )
@@ -1138,42 +1138,42 @@ class MainWin(QMainWindow):
         if ready:
             if not 5 <= self.temperature <= 40:
                 self.setLabel(
-                    TEXT['tempError'][self.language],
+                    TEXT['tempError'][self.langIndex],
                     self.lblReadyError,
                     self.readyErrorTimer, 4
                 )
 
             elif self.waterflowError:
                 self.setLabel(
-                    TEXT['waterflowError'][self.language],
+                    TEXT['waterflowError'][self.langIndex],
                     self.lblReadyError,
                     self.readyErrorTimer, 4
                 )
                 
             elif self.waterLevelError:
                 self.setLabel(
-                    TEXT['waterLevelError'][self.language],
+                    TEXT['waterLevelError'][self.langIndex],
                     self.lblReadyError,
                     self.readyErrorTimer, 4
                 )
             
             elif self.interLockError:
                 self.setLabel(
-                    TEXT['interLockError'][self.language],
+                    TEXT['interLockError'][self.langIndex],
                     self.lblReadyError,
                     self.readyErrorTimer, 4
                 )
 
             elif self.overHeatError:
                 self.setLabel(
-                    TEXT['overHeatError'][self.language],
+                    TEXT['overHeatError'][self.langIndex],
                     self.lblReadyError,
                     self.readyErrorTimer, 4
                 )
 
             elif self.physicalDamage:
                 self.setLabel(
-                    TEXT['physicalDamage'][self.language],
+                    TEXT['physicalDamage'][self.langIndex],
                     self.lblReadyError,
                     self.readyErrorTimer, 4
                 )
@@ -1333,7 +1333,7 @@ class MainWin(QMainWindow):
             self.bodyPart = bodyPart
             icon = QIcon()
             key = sex + ' ' + bodyPart
-            self.lblSelectedBodyPart.setText(TEXT[bodyPart][self.language])
+            self.lblSelectedBodyPart.setText(TEXT[bodyPart][self.langIndex])
             icon.addPixmap(QPixmap(BODY_PART_ICONS[key]))
             self.btnSelectedBodyPart.setIcon(icon)
             self.btnSelectedBodyPart.setIconSize(QSize(180, 170))
@@ -1694,7 +1694,7 @@ class MainWin(QMainWindow):
     def loadToTabel(self):
         users = loadAllUsers()
         self.usersTable.setRowCount(len(users))
-        if self.language == 1:
+        if self.langIndex == 1:
             text = f'{len(users)} :تعداد کل'
         else:
             text = f'Total Users: {len(users)}'
@@ -1721,20 +1721,20 @@ class MainWin(QMainWindow):
         self.userInfo = loadUser(num)
         nextSessionDate = self.userInfo.nextSession
         if not nextSessionDate:
-            self.txtNextSession.setText(TEXT['notSet'][self.language])
+            self.txtNextSession.setText(TEXT['notSet'][self.langIndex])
         else:
             diff = getDiff(nextSessionDate)
 
             if diff == 0:
-                self.txtNextSession.setText(TEXT['today'][self.language])
+                self.txtNextSession.setText(TEXT['today'][self.langIndex])
             elif diff == -1:
-                self.txtNextSession.setText(TEXT['1dayPassed'][self.language])
+                self.txtNextSession.setText(TEXT['1dayPassed'][self.langIndex])
             elif diff < -1:
-                self.txtNextSession.setText(f'{abs(diff)} {TEXT["nDayPassed"][self.language]}')
+                self.txtNextSession.setText(f'{abs(diff)} {TEXT["nDayPassed"][self.langIndex]}')
             elif diff == 1:
-                self.txtNextSession.setText(TEXT['1dayleft'][self.language])
+                self.txtNextSession.setText(TEXT['1dayleft'][self.langIndex])
             else:
-                self.txtNextSession.setText(f'{diff} {TEXT["nDayLeft"][self.language]}')
+                self.txtNextSession.setText(f'{diff} {TEXT["nDayLeft"][self.langIndex]}')
 
         self.txtEditNumber.setText(self.userInfo.phoneNumber)
         self.txtEditName.setText(self.userInfo.name)
@@ -1763,7 +1763,7 @@ class MainWin(QMainWindow):
             self.userInfoTable.setItem(sn - 1, 7, totalRow)
 
         lastRow = len(sessions)
-        text = TEXT['total'][self.language]
+        text = TEXT['total'][self.langIndex]
         lastRowTitle = TableWidgetItem(text)
         font = QFont('Arial', 18)
         font.setBold(True)
@@ -1802,7 +1802,7 @@ class MainWin(QMainWindow):
                 nextSession = user.nextSession
                 num = TableWidgetItem(user.phoneNumber)
                 name = TableWidgetItem(user.name)
-                text = TEXT['firstTime'][self.language] 
+                text = TEXT['firstTime'][self.langIndex] 
                 lastSession = TableWidgetItem(text)
                 sn = TableWidgetItem(str(user.sessionNumber))
                 if nextSession and getDiff(nextSession) == 1:
@@ -1842,7 +1842,7 @@ class MainWin(QMainWindow):
                     # self.tableAfterTomorrow.setItem(rowAfterTomorrow, 2, lastSession)
                     rowAfterTomorrow += 1
 
-        if self.language == 1:
+        if self.langIndex == 1:
             textTomorrow = f'{rowTomorrow} → فردا'
             textAfterTomorrow = f'{rowAfterTomorrow} → پس فردا'
         
@@ -1862,7 +1862,7 @@ class MainWin(QMainWindow):
 
         if not numberEdit:
             self.setLabel(
-                    TEXT['emptyNumber'][self.language], 
+                    TEXT['emptyNumber'][self.langIndex], 
                     self.lblEditUser,
                     self.editLabelTimer
                 )
@@ -1871,7 +1871,7 @@ class MainWin(QMainWindow):
 
         if not userExists(self.userInfo.phoneNumber):
             self.setLabel(
-                    TEXT['userBeenDeleted'][self.language], 
+                    TEXT['userBeenDeleted'][self.langIndex], 
                     self.lblEditUser,
                     self.editLabelTimer
                 )
@@ -1880,7 +1880,7 @@ class MainWin(QMainWindow):
         if numberEdit != self.userInfo.phoneNumber:
             if userExists(numberEdit):
                 self.setLabel(
-                    TEXT['alreadyExists'][self.language], 
+                    TEXT['alreadyExists'][self.langIndex], 
                     self.lblEditUser,
                     self.editLabelTimer
                 )
@@ -1907,7 +1907,7 @@ class MainWin(QMainWindow):
 
         self.userInfo.save()
         self.setLabel(
-                TEXT['userUpdated'][self.language],
+                TEXT['userUpdated'][self.langIndex],
                 self.lblEditUser,
                 self.editLabelTimer, 3
             )
@@ -1926,7 +1926,7 @@ class MainWin(QMainWindow):
 
         if not number:
             self.setLabel(
-                    TEXT['emptyNumber'][self.language], 
+                    TEXT['emptyNumber'][self.langIndex], 
                     self.lblSubmit, 
                     self.submitLabelTimer
                 )
@@ -1934,7 +1934,7 @@ class MainWin(QMainWindow):
 
         if userExists(number):
             self.setLabel(
-                    TEXT['alreadyExistsSub'][self.language], 
+                    TEXT['alreadyExistsSub'][self.langIndex], 
                     self.lblSubmit, 
                     self.submitLabelTimer
                 )
@@ -1954,7 +1954,7 @@ class MainWin(QMainWindow):
 
             if not numberEntered:
                 self.setLabel(
-                        TEXT['emptyNumber'][self.language], 
+                        TEXT['emptyNumber'][self.langIndex], 
                         self.lblLogin, 
                         self.loginLabelTimer
                     )
@@ -1982,7 +1982,7 @@ class MainWin(QMainWindow):
         elif self.user and self.user.currentSession == 'started':
             if not userExists(self.user.phoneNumber):
                     self.setLabel(
-                            TEXT['userBeenDeleted'][self.language], 
+                            TEXT['userBeenDeleted'][self.langIndex], 
                             self.lblLogin, 
                             self.loginLabelTimer
                         )
@@ -1991,7 +1991,7 @@ class MainWin(QMainWindow):
                     self.user = None
                     return
             elif numberEntered != self.user.phoneNumber:
-                text = f'{TEXT["sssionNotOver"][self.language]} ({self.user.phoneNumber})'
+                text = f'{TEXT["sssionNotOver"][self.langIndex]} ({self.user.phoneNumber})'
 
                 self.setLabel(
                         text, 
@@ -2004,7 +2004,7 @@ class MainWin(QMainWindow):
             else:
                 if not userExists(self.user.phoneNumber):
                     self.setLabel(
-                            TEXT['userBeenDeleted'][self.language], 
+                            TEXT['userBeenDeleted'][self.langIndex], 
                             self.lblLogin, 
                             self.loginLabelTimer
                         )
@@ -2055,7 +2055,7 @@ class MainWin(QMainWindow):
             self.lblFaSelected.setPixmap(icon.scaled(70, 70))
             self.lblEnSelected.clear()
             self.configs['LANGUAGE'] = 'fa'
-            self.language = 1
+            self.langIndex = 1
         else:
             app.setStyleSheet('*{font-family:"Arial"}')
             self.lblFa.setStyleSheet("font-family:'A Iranian Sans'")
@@ -2067,7 +2067,7 @@ class MainWin(QMainWindow):
             self.lblEnSelected.setPixmap(icon.scaled(70, 70))
             self.lblFaSelected.clear()
             self.configs['LANGUAGE'] = 'en'
-            self.language = 0
+            self.langIndex = 0
 
         saveConfigs(self.configs)
         self.ownerInfoSplash.adjustSize()
@@ -2076,119 +2076,43 @@ class MainWin(QMainWindow):
             self.ownerInfoSplash.setStyleSheet(OWNER_INFO_STYLE_FA)
         else:
             self.ownerInfoSplash.setStyleSheet(OWNER_INFO_STYLE_EN)
-        self.lblLanguage.setText(TEXT['lblLanguage'][self.language])
-        self.lblSettingsHeader.setText(TEXT['lblSettingsHeader'][self.language])
-        self.btnHwSettings.setText(TEXT['btnHwSettings'][self.language])
-        self.btnUmSettings.setText(TEXT['btnUmSettings'][self.language])
-        self.btnUiSettings.setText(TEXT['btnUiSettings'][self.language])
-        self.lblUserNumber.setText(TEXT['lblUserNumber'][self.language])
-        self.txtNumber.setPlaceholderText(TEXT['txtNumber'][self.language])
-        self.btnStartSession.setText(TEXT['btnStartSession'][self.language])
-        self.lblHeaderTutorials.setText(TEXT['lblHeaderTutorials'][self.language])        
-        self.lblVideos.setText(TEXT['lblVideos'][self.language])
-        self.lblTitle.setText(TEXT['lblTitle'][self.language])
-        self.lblHeaderFsessions.setText(TEXT['lblHeaderFsessions'][self.language])
-        self.tableTomorrow.horizontalHeaderItem(0).setText(TEXT['tbFsessions0'][self.language])
-        self.tableTomorrow.horizontalHeaderItem(1).setText(TEXT['tbFsessions1'][self.language])
-        self.tableTomorrow.horizontalHeaderItem(2).setText(TEXT['tbFsessions2'][self.language])
-        self.tableAfterTomorrow.horizontalHeaderItem(0).setText(TEXT['tbFsessions0'][self.language])
-        self.tableAfterTomorrow.horizontalHeaderItem(1).setText(TEXT['tbFsessions1'][self.language])
-        self.tableAfterTomorrow.horizontalHeaderItem(2).setText(TEXT['tbFsessions2'][self.language])
-        self.lblHeaderUm.setText(TEXT['lblHeaderUm'][self.language])
-        self.usersTable.horizontalHeaderItem(0).setText(TEXT['usersTable0'][self.language])
-        self.usersTable.horizontalHeaderItem(1).setText(TEXT['usersTable1'][self.language])
-        self.usersTable.horizontalHeaderItem(2).setText(TEXT['usersTable2'][self.language])
-        self.usersTable.horizontalHeaderItem(3).setText(TEXT['usersTable3'][self.language])
-        self.btnSort.setText(TEXT['btnSort'][self.language])
-        self.txtSearch.setPlaceholderText(TEXT['txtSearch'][self.language])
-        self.lblNote.setText(TEXT['lblNote'][self.language])
-        self.lblName.setText(TEXT['lblName'][self.language])
-        self.lblPhoneNumber.setText(TEXT['lblPhoneNumber'][self.language])
-        self.lblNextSession.setText(TEXT['lblNextSession'][self.language])
-        self.lblHeaderUserInfo.setText(TEXT['lblHeaderUserInfo'][self.language])
-        self.btnNextSession.setText(TEXT['btnNextSession'][self.language])
-        self.btnSaveInfo.setText(TEXT['save'][self.language])
-        self.btnDeleteUser.setText(TEXT['btnDeleteUser'][self.language])
-        self.userInfoTable.horizontalHeaderItem(0).setText(TEXT['userInfoTable0'][self.language])        
-        self.userInfoTable.horizontalHeaderItem(1).setText(TEXT['userInfoTable1'][self.language])        
-        self.userInfoTable.horizontalHeaderItem(2).setText(TEXT['userInfoTable2'][self.language])        
-        self.userInfoTable.horizontalHeaderItem(3).setText(TEXT['userInfoTable3'][self.language])        
-        self.userInfoTable.horizontalHeaderItem(4).setText(TEXT['userInfoTable4'][self.language])        
-        self.userInfoTable.horizontalHeaderItem(5).setText(TEXT['userInfoTable5'][self.language])        
-        self.userInfoTable.horizontalHeaderItem(6).setText(TEXT['userInfoTable6'][self.language])        
-        self.userInfoTable.horizontalHeaderItem(7).setText(TEXT['userInfoTable7'][self.language])
-        self.lblDate.setText(TEXT['lblDate'][self.language])
-        self.lblDays.setText(TEXT['lblDays'][self.language])
-        self.lblDaysAfter.setText(TEXT['lblDaysAfter'][self.language])        
-        self.btnCancelNS.setText(TEXT['btnCancelNS'][self.language])
-        self.btnOkNS.setText(TEXT['btnOkNS'][self.language])        
-        self.lblHeaderNextSession.setText(TEXT['lblHeaderNextSession'][self.language])
-        self.lblHeaderNewUser.setText(TEXT['lblHeaderNewUser'][self.language])
-        self.lblEnterUserInfo.setText(TEXT['lblEnterUserInfo'][self.language])
-        self.txtNumberSubmit.setPlaceholderText(TEXT['txtNumberSubmit'][self.language])
-        self.txtNameSubmit.setPlaceholderText(TEXT['txtNameSubmit'][self.language])
-        self.btnSubmit.setText(TEXT['btnSubmit'][self.language])   
-        self.btnEndSession.setText(TEXT['btnEndSession'][self.language])
-        self.btnFemale.setText(TEXT['btnFemale'][self.language])
-        self.btnMale.setText(TEXT['btnMale'][self.language])
-        self.lblFFace.setText(TEXT['face'][self.language])
-        self.lblFArmpit.setText(TEXT['armpit'][self.language])
-        self.lblFArm.setText(TEXT['arm'][self.language])
-        self.lblFBody.setText(TEXT['body'][self.language])
-        self.lblFBikini.setText(TEXT['bikini'][self.language])
-        self.lblFLeg.setText(TEXT['leg'][self.language])
-        self.lblMFace.setText(TEXT['face'][self.language])
-        self.lblMArmpit.setText(TEXT['armpit'][self.language])
-        self.lblMArm.setText(TEXT['arm'][self.language])
-        self.lblMBody.setText(TEXT['body'][self.language])
-        self.lblMBikini.setText(TEXT['bikini'][self.language])
-        self.lblMLeg.setText(TEXT['leg'][self.language])
-        self.lblEnergy.setText(TEXT['lblEnergy'][self.language])
-        self.lblFrequency.setText(TEXT['lblFrequency'][self.language])
-        self.lblPulseWidth.setText(TEXT['lblPulseWidth'][self.language])
-        self.lblCounter.setText(TEXT['lblCounter'][self.language])
-        self.lblSkinGrade.setText(TEXT['lblSkinGrade'][self.language])
-        self.lblCooling.setText(TEXT['lblCooling'][self.language])
-        self.btnReady.setText(TEXT['btnReady'][self.language])    
-        self.btnStandby.setText(TEXT['btnStandby'][self.language])            
-        self.lblSerialNumber.setText(TEXT['lblSerialNumber'][self.language])
-        self.lblTotalShotCounter.setText(TEXT['lblTotalShotCounter'][self.language])
-        self.lblLaserDiodeEnergy.setText(TEXT['lblLaserDiodeEnergy'][self.language])
-        self.lblLaserBarType.setText(TEXT['lblLaserBarType'][self.language])
-        self.lblLaserWavelength.setText(TEXT['lblLaserWavelength'][self.language])
-        self.lblDriverVersion.setText(TEXT['lblDriverVersion'][self.language])
-        self.lblMainControlVersion.setText(TEXT['lblMainControlVersion'][self.language])
-        self.lblFirmwareVersion.setText(TEXT['lblFirmwareVersion'][self.language])
-        self.lblOsSpecification.setText(TEXT['lblOsSpecification'][self.language])
-        self.lblMonitor.setText(TEXT['lblMonitor'][self.language])
-        self.lblProductionDate.setText(TEXT['lblProductionDate'][self.language])
-        self.lblRpiVersion.setText(TEXT['lblRpiVersion'][self.language])
-        self.lblGuiVersion.setText(TEXT['lblGuiVersion'][self.language])
-        self.btnEnterHw.setText(TEXT['enter'][self.language])
-        self.txtHwPass.setPlaceholderText(TEXT['txtHwPass'][self.language])
-        self.btnSaveHw.setText(TEXT['save'][self.language])
-        self.btnResetCounter.setText(TEXT['btnResetCounter'][self.language])
-        self.lblProducion.setText(TEXT['lblProducion'][self.language])
-        self.lblLaser.setText(TEXT['lblLaser'][self.language])
-        self.lblDriver.setText(TEXT['lblDriver'][self.language])        
-        self.lblEmbedded.setText(TEXT['lblEmbedded'][self.language])
-        self.btnHwinfo.setText(TEXT['btnHwinfo'][self.language])        
-        self.btnSystemLock.setText(TEXT['btnSystemLock'][self.language])
-        self.lblDefineLock.setText(TEXT['lblDefineLock'][self.language])
-        self.lblSysClock.setText(TEXT['lblSysClock'][self.language])
-        self.lblSysDate.setText(TEXT['lblSysDate'][self.language])
-        self.lblEditClock.setText(TEXT['lblEditClock'][self.language])
-        self.lblEditDate.setText(TEXT['lblEditDate'][self.language])
-        self.tableLock.horizontalHeaderItem(0).setText(TEXT['tableLock0'][self.language])
-        self.tableLock.horizontalHeaderItem(1).setText(TEXT['tableLock1'][self.language])
-        self.tableLock.horizontalHeaderItem(2).setText(TEXT['tableLock2'][self.language])
-        self.tableLock.horizontalHeaderItem(3).setText(TEXT['tableLock3'][self.language])
-        self.lblCurrentUser.setText(TEXT['lblCurrentUser'][self.language])        
-        self.lblCurrentSnumber.setText(TEXT['lblCurrentSnumber'][self.language])
-        self.lblOwnerInfo.setText(TEXT['lblOwnerInfo'][self.language])
-        self.btnShowSplash.setText(TEXT['btnShowSplash'][self.language])
-        self.btnUpdateFirmware.setText(TEXT['btnUpdateFirmware'][self.language])
 
+        for lbl in self.findChildren(QLabel):
+            if lbl.objectName() in TEXT.keys():
+                lbl.setText(TEXT[lbl.objectName()][self.langIndex])
+
+        for btn in self.findChildren(QPushButton):
+            if btn.objectName() in TEXT.keys():
+                btn.setText(TEXT[btn.objectName()][self.langIndex])
+        
+        self.tableTomorrow.horizontalHeaderItem(0).setText(TEXT['tbFsessions0'][self.langIndex])
+        self.tableTomorrow.horizontalHeaderItem(1).setText(TEXT['tbFsessions1'][self.langIndex])
+        self.tableTomorrow.horizontalHeaderItem(2).setText(TEXT['tbFsessions2'][self.langIndex])
+        self.tableAfterTomorrow.horizontalHeaderItem(0).setText(TEXT['tbFsessions0'][self.langIndex])
+        self.tableAfterTomorrow.horizontalHeaderItem(1).setText(TEXT['tbFsessions1'][self.langIndex])
+        self.tableAfterTomorrow.horizontalHeaderItem(2).setText(TEXT['tbFsessions2'][self.langIndex])
+        self.usersTable.horizontalHeaderItem(0).setText(TEXT['usersTable0'][self.langIndex])
+        self.usersTable.horizontalHeaderItem(1).setText(TEXT['usersTable1'][self.langIndex])
+        self.usersTable.horizontalHeaderItem(2).setText(TEXT['usersTable2'][self.langIndex])
+        self.usersTable.horizontalHeaderItem(3).setText(TEXT['usersTable3'][self.langIndex])
+        self.userInfoTable.horizontalHeaderItem(0).setText(TEXT['userInfoTable0'][self.langIndex])        
+        self.userInfoTable.horizontalHeaderItem(1).setText(TEXT['userInfoTable1'][self.langIndex])        
+        self.userInfoTable.horizontalHeaderItem(2).setText(TEXT['userInfoTable2'][self.langIndex])        
+        self.userInfoTable.horizontalHeaderItem(3).setText(TEXT['userInfoTable3'][self.langIndex])        
+        self.userInfoTable.horizontalHeaderItem(4).setText(TEXT['userInfoTable4'][self.langIndex])        
+        self.userInfoTable.horizontalHeaderItem(5).setText(TEXT['userInfoTable5'][self.langIndex])        
+        self.userInfoTable.horizontalHeaderItem(6).setText(TEXT['userInfoTable6'][self.langIndex])        
+        self.userInfoTable.horizontalHeaderItem(7).setText(TEXT['userInfoTable7'][self.langIndex])
+        self.tableLock.horizontalHeaderItem(0).setText(TEXT['tableLock0'][self.langIndex])
+        self.tableLock.horizontalHeaderItem(1).setText(TEXT['tableLock1'][self.langIndex])
+        self.tableLock.horizontalHeaderItem(2).setText(TEXT['tableLock2'][self.langIndex])
+        self.tableLock.horizontalHeaderItem(3).setText(TEXT['tableLock3'][self.langIndex])
+        self.txtNumber.setPlaceholderText(TEXT['txtNumber'][self.langIndex])
+        self.txtSearch.setPlaceholderText(TEXT['txtSearch'][self.langIndex])
+        self.txtNumberSubmit.setPlaceholderText(TEXT['txtNumberSubmit'][self.langIndex])
+        self.txtNameSubmit.setPlaceholderText(TEXT['txtNameSubmit'][self.langIndex])
+        self.txtHwPass.setPlaceholderText(TEXT['txtHwPass'][self.langIndex])
+        
 
 app = QApplication(sys.argv)
 mainWin = MainWin()
