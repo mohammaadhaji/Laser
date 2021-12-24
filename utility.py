@@ -25,7 +25,7 @@ if platform.system() == 'Windows':
     OS_SPEC = platform.platform()
         
 else:
-    OS_SPEC = platform.platform().split('-with')[0]
+    OS_SPEC = platform.platform().split('-with')[0].replace('-', ' ')
 
 
 MONITOR_INFO = ''

@@ -74,9 +74,7 @@ class MainWin(QMainWindow):
             self.ownerInfoSplash.setVisible(False)
         self.ownerInfoSplash.move(self.geometry().bottomLeft())     
         self.time(edit=True)
-        self.shotSound = QSound(SHOT_SOUND)
-        self.wellcomeSound = QSound(WELLCOME_SOUND)
-        self.touchSound = QSound(TOUCH_SOUND)        
+        self.initSounds()       
         self.initPages()
         self.initTimers()
         self.initButtons()
@@ -118,6 +116,23 @@ class MainWin(QMainWindow):
         self.checkUUID()
         readTime()
 
+
+    def initSounds(self):
+        self.keyboardSound = QMediaPlayer()
+        self.wellcomeSound = QMediaPlayer()
+        self.touchSound = QMediaPlayer()
+        content = QMediaContent(
+            QUrl.fromLocalFile(KEYBOARD_SOUND)
+        )
+        self.keyboardSound.setMedia(content)
+        content = QMediaContent(
+            QUrl.fromLocalFile(WELLCOME_SOUND)
+        )
+        self.wellcomeSound.setMedia(content)
+        content = QMediaContent(
+            QUrl.fromLocalFile(TOUCH_SOUND)
+        )
+        self.touchSound.setMedia(content)
 
     def initPages(self):
         self.stackedWidget.setCurrentWidget(self.splashPage)
@@ -330,12 +345,29 @@ class MainWin(QMainWindow):
             'btnPhysicalDamage', 'btnOverHeat', 'btnTemp',
             'btnLock', 'btnWaterLevel', 'btnWaterflow',
         ]
+        keyboardButtons = list(chain(
+            layout_widgets(self.keyboardRow1),
+            layout_widgets(self.keyboardRow2),
+            layout_widgets(self.keyboardRow3),
+            layout_widgets(self.numRow1),
+            layout_widgets(self.numRow2),
+            layout_widgets(self.numRow3)
+        ))
+        keyboardButtons.append(self.btnBackspace)
+        keyboardButtons.append(self.btnReturn)
+        keyboardButtons.append(self.btnShift)
+        keyboardButtons.append(self.btnFa)
+        keyboardButtons.append(self.btnSpace)
         self.touchSignals = {}
         allButtons = self.findChildren(QPushButton)
         for btn in allButtons:
             if btn.objectName() == 'btnSaveCase':
                 self.touchSignals[btn.objectName()] = btn.clicked.connect(
                     self.touchSound.play
+                )
+            elif btn in keyboardButtons:
+                self.touchSignals[btn.objectName()] = btn.pressed.connect(
+                    self.keyboardSound.play
                 )
             elif btn.objectName() not in sensors:
                 self.touchSignals[btn.objectName()] = btn.pressed.connect(
@@ -539,7 +571,6 @@ class MainWin(QMainWindow):
     def shot(self):
         self.currentCounter += 1
         self.user.incShot(self.bodyPart)
-        self.shotSound.play()
         self.lblCounterValue.setText(f'{self.currentCounter}')
         self.sparkTimer.start(1000/self.frequency + 100)
         self.lblSpark.setVisible(True)
