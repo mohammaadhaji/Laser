@@ -18,11 +18,6 @@ class MainWin(QMainWindow):
         super(MainWin, self).__init__(*args, **kwargs)
         uic.loadUi(APP_UI, self)
         self.setupUi()
-        self.setStyleSheet("""
-                    QMainWindow {
-                        background-image:url('ui/images/wallpaper3.jpg'); 
-                    }
-             """)
         
     def setupUi(self):
         # self.setCursor(Qt.BlankCursor)
@@ -79,6 +74,7 @@ class MainWin(QMainWindow):
             self.ownerInfoSplash.setVisible(False)
         self.ownerInfoSplash.move(self.geometry().bottomLeft())     
         self.time(edit=True)
+        self.changeTheme(self.configs['theme'])
         self.initSounds()       
         self.initPages()
         self.initTimers()
@@ -375,12 +371,16 @@ class MainWin(QMainWindow):
         self.btnBackLaser.setVisible(False)
         self.btnUpdateFirmware.clicked.connect(self.updateSystem)
         self.btnShowSplash.clicked.connect(self.showSplash)
-        self.btnTheme1.setStyleSheet(THEME1)
-        self.btnTheme2.setStyleSheet(THEME2)
-        self.btnTheme3.setStyleSheet(THEME3)
-        self.btnTheme4.setStyleSheet(THEME4)
-            
-        
+        self.btnTheme1.setStyleSheet(BTN_THEME1)
+        self.btnTheme2.setStyleSheet(BTN_THEME2)
+        self.btnTheme3.setStyleSheet(BTN_THEME3)
+        self.btnTheme4.setStyleSheet(BTN_THEME4)
+        self.btnTheme5.setStyleSheet(BTN_THEME5)
+        self.btnTheme1.clicked.connect(lambda: self.changeTheme('1'))            
+        self.btnTheme2.clicked.connect(lambda: self.changeTheme('2'))        
+        self.btnTheme3.clicked.connect(lambda: self.changeTheme('3'))
+        self.btnTheme4.clicked.connect(lambda: self.changeTheme('4'))
+        self.btnTheme5.clicked.connect(lambda: self.changeTheme('5'))        
         sensors = [
             'btnPhysicalDamage', 'btnOverHeat', 'btnTemp',
             'btnLock', 'btnWaterLevel', 'btnWaterflow',
@@ -533,6 +533,49 @@ class MainWin(QMainWindow):
         self.setWaterLevelError(True)
         self.setLock(True)
 
+    def changeTheme(self, theme):
+        inc = QIcon()
+        dec = QIcon()
+        if theme == '1':
+            self.sliderEnergy.setStyleSheet(SLIDER_GB)
+            self.sliderFrequency.setStyleSheet(SLIDER_GB)
+            self.sliderPulseWidth.setStyleSheet(SLIDER_GB)
+            inc.addPixmap(QPixmap(INC_BLACK))
+            dec.addPixmap(QPixmap(DEC_BLACK))
+        else:
+            self.sliderEnergy.setStyleSheet(SLIDER_GW)                
+            self.sliderFrequency.setStyleSheet(SLIDER_GW)                
+            self.sliderPulseWidth.setStyleSheet(SLIDER_GW)
+            inc.addPixmap(QPixmap(INC_BLUE))
+            dec.addPixmap(QPixmap(DEC_BLUE))
+
+        self.btnDecE.setIcon(dec)
+        self.btnDecP.setIcon(dec)
+        self.btnDecF.setIcon(dec)
+        self.btnIncE.setIcon(inc)
+        self.btnIncP.setIcon(inc)
+        self.btnIncF.setIcon(inc)
+        self.btnDecE.setIconSize(QSize(120, 120))                
+        self.btnDecP.setIconSize(QSize(120, 120))                
+        self.btnDecF.setIconSize(QSize(120, 120))                
+        self.btnIncE.setIconSize(QSize(120, 120))                
+        self.btnIncP.setIconSize(QSize(120, 120))                
+        self.btnIncF.setIconSize(QSize(120, 120)) 
+
+        if theme == '1':
+            self.centralWidget().setStyleSheet(THEME1)
+        elif theme == '2':
+            self.centralWidget().setStyleSheet(THEME2)
+        elif theme == '3':
+            self.centralWidget().setStyleSheet(THEME3)
+        elif theme == '4':
+            self.centralWidget().setStyleSheet(THEME4)
+        elif theme == '5':
+            self.centralWidget().setStyleSheet(THEME5)
+
+        self.configs['theme'] = theme
+        saveConfigs(self.configs)
+            
     def setOwnerInfo(self, text):
         self.ownerInfoSplash.setText(text)
         self.ownerInfoSplash.adjustSize()
@@ -1229,10 +1272,15 @@ class MainWin(QMainWindow):
                 laserPage(fields)
                 self.btnStandby.setStyleSheet(READY_NOT_SELECTED)
                 self.btnReady.setStyleSheet(READY_SELECTED)
-                self.sliderEnergy.setStyleSheet(SLIDER_DISABLED)
-                self.sliderFrequency.setStyleSheet(SLIDER_DISABLED)
-                self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED)
                 self.epfSkinGradeLayout.setEnabled(False)
+                if self.configs['theme'] == '1':
+                    self.sliderEnergy.setStyleSheet(SLIDER_DISABLED_GB)
+                    self.sliderFrequency.setStyleSheet(SLIDER_DISABLED_GB)
+                    self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED_GB)
+                else:
+                    self.sliderEnergy.setStyleSheet(SLIDER_DISABLED_GW)
+                    self.sliderFrequency.setStyleSheet(SLIDER_DISABLED_GW)
+                    self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED_GW)
 
         else:
             self.ready = False
@@ -1240,9 +1288,14 @@ class MainWin(QMainWindow):
             self.btnStandby.setStyleSheet(READY_SELECTED)
             self.btnReady.setStyleSheet(READY_NOT_SELECTED)
             self.epfSkinGradeLayout.setEnabled(True)
-            self.sliderEnergy.setStyleSheet(SLIDER)
-            self.sliderFrequency.setStyleSheet(SLIDER)
-            self.sliderPulseWidth.setStyleSheet(SLIDER)
+            if self.configs['theme'] == '1':
+                self.sliderEnergy.setStyleSheet(SLIDER_GB)
+                self.sliderFrequency.setStyleSheet(SLIDER_GB)
+                self.sliderPulseWidth.setStyleSheet(SLIDER_GB)
+            else:
+                self.sliderEnergy.setStyleSheet(SLIDER_GW)                
+                self.sliderFrequency.setStyleSheet(SLIDER_GW)                
+                self.sliderPulseWidth.setStyleSheet(SLIDER_GW)                    
 
     def setCooling(self, operation):
         buttons = layout_widgets(self.coolingLayout)
@@ -1271,13 +1324,24 @@ class MainWin(QMainWindow):
 
     def sliderChgColor(self, i):
         if i == 'pressed':
-            self.sliderEnergy.setStyleSheet(SLIDER_SAVED)
-            self.sliderFrequency.setStyleSheet(SLIDER_SAVED)
-            self.sliderPulseWidth.setStyleSheet(SLIDER_SAVED)
+            if self.configs['theme'] == '1':
+                self.sliderEnergy.setStyleSheet(SLIDER_SAVED_GB)
+                self.sliderFrequency.setStyleSheet(SLIDER_SAVED_GB)
+                self.sliderPulseWidth.setStyleSheet(SLIDER_SAVED_GB)         
+            else:
+                self.sliderEnergy.setStyleSheet(SLIDER_SAVED_GW)                
+                self.sliderFrequency.setStyleSheet(SLIDER_SAVED_GW)                
+                self.sliderPulseWidth.setStyleSheet(SLIDER_SAVED_GW) 
+
         else:
-            self.sliderEnergy.setStyleSheet(SLIDER)            
-            self.sliderFrequency.setStyleSheet(SLIDER)            
-            self.sliderPulseWidth.setStyleSheet(SLIDER)                
+            if self.configs['theme'] == '1':
+                self.sliderEnergy.setStyleSheet(SLIDER_GB)
+                self.sliderFrequency.setStyleSheet(SLIDER_GB)
+                self.sliderPulseWidth.setStyleSheet(SLIDER_GB)
+            else:
+                self.sliderEnergy.setStyleSheet(SLIDER_GW)                
+                self.sliderFrequency.setStyleSheet(SLIDER_GW)                
+                self.sliderPulseWidth.setStyleSheet(SLIDER_GW)               
 
     def setEnergy(self, operation):
         e = self.energy

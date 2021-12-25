@@ -147,7 +147,7 @@ QPushButton {
 }
 """
 
-SLIDER = """
+SLIDER_GW = """
 QSlider::groove:horizontal {
     border-radius: 1px;
     height: 3px;
@@ -169,12 +169,78 @@ QSlider::handle:horizontal:pressed {
 }
 """
 
-SLIDER_SAVED = """
+SLIDER_DISABLED_GW = """
 QSlider::groove:horizontal {
     border-radius: 1px;
     height: 3px;
     margin: 0px;
     background-color: white;
+}
+
+QSlider::handle:horizontal {
+    background-color: rgb(157, 157, 157);
+    border: none;
+    height: 80px;
+    width: 80px;
+    border-radius: 40px;
+    margin: -40px 0;
+    padding: -40px 0px;
+}
+QSlider::handle:horizontal:pressed {
+    background-color: rgb(65, 255, 195);
+}
+"""
+
+SLIDER_GB = """
+QSlider::groove:horizontal {
+    border-radius: 1px;
+    height: 3px;
+    margin: 0px;
+    background-color: black;
+}
+
+QSlider::handle:horizontal {
+    background-color: rgb(85, 170, 255);
+    border: none;
+    height: 80px;
+    width: 80px;
+    border-radius: 40px;
+    margin: -40px 0;
+    padding: -40px 0px;
+}
+QSlider::handle:horizontal:pressed {
+    background-color: rgb(65, 255, 195);
+}
+"""
+
+SLIDER_DISABLED_GB = """
+QSlider::groove:horizontal {
+    border-radius: 1px;
+    height: 3px;
+    margin: 0px;
+    background-color: black;
+}
+
+QSlider::handle:horizontal {
+    background-color: rgb(157, 157, 157);
+    border: none;
+    height: 80px;
+    width: 80px;
+    border-radius: 40px;
+    margin: -40px 0;
+    padding: -40px 0px;
+}
+QSlider::handle:horizontal:pressed {
+    background-color: rgb(65, 255, 195);
+}
+"""
+
+SLIDER_SAVED_GB = """
+QSlider::groove:horizontal {
+    border-radius: 1px;
+    height: 3px;
+    margin: 0px;
+    background-color: black;
 }
 
 QSlider::handle:horizontal {
@@ -191,7 +257,7 @@ QSlider::handle:horizontal:pressed {
 }
 """
 
-SLIDER_DISABLED = """
+SLIDER_SAVED_GW = """
 QSlider::groove:horizontal {
     border-radius: 1px;
     height: 3px;
@@ -200,7 +266,7 @@ QSlider::groove:horizontal {
 }
 
 QSlider::handle:horizontal {
-    background-color: rgb(157, 157, 157);
+    background-color: white;
     border: none;
     height: 80px;
     width: 80px;
@@ -235,9 +301,9 @@ QLabel {
 }
 '''
 
-THEME1 = """
+BTN_THEME1 = """
 QPushButton{
-    background-color:lightblue;
+    background-color: rgb(32, 74, 135);
     min-width: 150px;
     min-height: 100px;
     max-width: 150px;
@@ -250,7 +316,7 @@ QPushButton:pressed{
 }
 """
 
-THEME2 = """
+BTN_THEME2 = """
 QPushButton{
     background-color:black;
     background-image: url(ui/images/theme1.jpg);
@@ -268,7 +334,7 @@ QPushButton:pressed{
 }
 """
 
-THEME3 = """
+BTN_THEME3 = """
 QPushButton{
     background-color:black;
     background-image: url(ui/images/theme2.jpg);
@@ -286,7 +352,7 @@ QPushButton:pressed{
 }
 """
 
-THEME4 = """
+BTN_THEME4 = """
 QPushButton{
     background-color:black;
     background-image: url(ui/images/theme3.jpg);
@@ -301,5 +367,52 @@ QPushButton{
 }
 QPushButton:pressed{
     border:5px solid red;
+}
+"""
+
+BTN_THEME5 = """
+QPushButton{
+    background-color:black;
+    background-image: url(ui/images/theme4.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    min-width: 150px;
+    min-height: 100px;
+    max-width: 150px;
+    max-height: 100px;
+    border:5px solid white;
+    border-radius:10px;
+}
+QPushButton:pressed{
+    border:5px solid red;
+}
+"""
+
+THEME1 = """
+
+    background-color: rgb(32, 74, 135); 
+"""
+
+THEME2 = """
+QWidget#centralwidget {
+    background-image: url(ui/images/wallpaper1.jpg); 
+}
+"""
+
+THEME3 = """
+QWidget#centralwidget {
+    background-image: url(ui/images/wallpaper2.jpg); 
+}
+"""
+
+THEME4 = """
+QWidget#centralwidget {
+    background-image: url(ui/images/wallpaper3.jpg); 
+}
+"""
+
+THEME5 = """
+QWidget#centralwidget {
+    background-image: url(ui/images/wallpaper4.jpg); 
 }
 """
