@@ -39,17 +39,16 @@
     <item>
      <widget class="StackedWidget" name="stackedWidget">
       <property name="styleSheet">
-       <string notr="true">QLineEdit{
-border-radius:0px;
-border-bottom:2px solid gray;
+       <string notr="true">
+QLineEdit{
+color: rgb(255, 255, 255);
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:1px solid gray;
 padding:10px 10px 10px 10px;
 }
-QLineEdit:focus{
-border-bottom:2px solid white;
-}
-QStackedWidget {
-font-family:&quot;Times New Roman&quot;;
-}</string>
+
+</string>
       </property>
       <property name="currentIndex">
        <number>5</number>
@@ -123,14 +122,7 @@ font-family:&quot;Times New Roman&quot;;
                </font>
               </property>
               <property name="styleSheet">
-               <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-
-}
-</string>
+               <string notr="true"/>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -178,14 +170,7 @@ border:1px solid gray;
                </font>
               </property>
               <property name="styleSheet">
-               <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-
-}
-</string>
+               <string notr="true"/>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -415,14 +400,7 @@ border: 1px solid white;
                    </font>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-
-}
-</string>
+                   <string notr="true"/>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -470,14 +448,7 @@ border:1px solid gray;
                    </font>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-
-}
-</string>
+                   <string notr="true"/>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -980,7 +951,18 @@ border:3px solid red;
                  </font>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">background: transparent;</string>
+                 <string notr="true">QLineEdit{
+border-radius:0px;
+border-top:0px;
+border-left:0px;
+border-right:0px;
+border-bottom:2px solid gray;
+padding:10px 10px 10px 10px;
+background: transparent;
+}
+QLineEdit:focus{
+border-bottom:2px solid white;
+}</string>
                 </property>
                 <property name="placeholderText">
                  <string>Number</string>
@@ -1012,7 +994,18 @@ border:3px solid red;
                  </font>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">background: transparent;</string>
+                 <string notr="true">QLineEdit{
+border-radius:0px;
+border-top:0px;
+border-left:0px;
+border-right:0px;
+border-bottom:2px solid gray;
+padding:10px 10px 10px 10px;
+background: transparent;
+}
+QLineEdit:focus{
+border-bottom:2px solid white;
+}</string>
                 </property>
                 <property name="placeholderText">
                  <string>Name</string>
@@ -1431,7 +1424,18 @@ margin: 20px 0 0 0;
                  <enum>Qt::LeftToRight</enum>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">background: transparent;</string>
+                 <string notr="true">QLineEdit{
+border-radius:0px;
+border-top:0px;
+border-left:0px;
+border-right:0px;
+border-bottom:2px solid gray;
+padding:10px 10px 10px 10px;
+background: transparent;
+}
+QLineEdit:focus{
+border-bottom:2px solid white;
+}</string>
                 </property>
                 <property name="text">
                  <string/>
@@ -2000,7 +2004,7 @@ QLineEdit:focus{
           <widget class="QWidget" name="uiPage">
            <layout class="QVBoxLayout" name="verticalLayout_54">
             <item>
-             <layout class="QVBoxLayout" name="verticalLayout_53" stretch="2,1">
+             <layout class="QVBoxLayout" name="verticalLayout_53" stretch="5,1">
               <property name="spacing">
                <number>0</number>
               </property>
@@ -2014,7 +2018,7 @@ QLineEdit:focus{
                <number>0</number>
               </property>
               <item>
-               <layout class="QGridLayout" name="gridLayout_2" rowstretch="1,0,0,0,0,0" columnstretch="2,3,0,0,2">
+               <layout class="QGridLayout" name="gridLayout_2" rowstretch="1,0,0,0,0,0,0,0" columnstretch="2,4,0,0,2">
                 <property name="topMargin">
                  <number>0</number>
                 </property>
@@ -2024,6 +2028,19 @@ QLineEdit:focus{
                 <property name="spacing">
                  <number>0</number>
                 </property>
+                <item row="1" column="4">
+                 <spacer name="horizontalSpacer_64">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
                 <item row="1" column="0">
                  <widget class="QLabel" name="lblOwnerInfo">
                   <property name="font">
@@ -2040,27 +2057,54 @@ QLineEdit:focus{
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="4">
-                 <spacer name="horizontalSpacer_64">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
                 <item row="0" column="1">
-                 <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,1,1,5">
+                 <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0,1">
                   <property name="rightMargin">
                    <number>0</number>
                   </property>
                   <property name="spacing">
                    <number>0</number>
                   </property>
+                  <item row="1" column="0">
+                   <widget class="QPushButton" name="btnEnLang">
+                    <property name="minimumSize">
+                     <size>
+                      <width>100</width>
+                      <height>100</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>100</width>
+                      <height>100</height>
+                     </size>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">QPushButton {
+outline:0;
+border-radius:50px;
+background-color: rgb(255, 255, 255);
+}
+
+QPushButton:pressed{
+    background-color: rgb(255, 0, 0);
+}</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset>
+                      <normaloff>images/english.png</normaloff>images/english.png</iconset>
+                    </property>
+                    <property name="iconSize">
+                     <size>
+                      <width>90</width>
+                      <height>90</height>
+                     </size>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="2" column="0">
                    <widget class="QLabel" name="lblEn">
                     <property name="font">
@@ -2071,22 +2115,6 @@ QLineEdit:focus{
                     </property>
                     <property name="text">
                      <string>English</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="2">
-                   <widget class="QLabel" name="lblFa">
-                    <property name="font">
-                     <font>
-                      <family>A Iranian Sans</family>
-                      <pointsize>20</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>فارسی</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -2135,58 +2163,24 @@ QPushButton:pressed{
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="0">
-                   <widget class="QPushButton" name="btnEnLang">
-                    <property name="minimumSize">
-                     <size>
-                      <width>100</width>
-                      <height>100</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>100</width>
-                      <height>100</height>
-                     </size>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true">QPushButton {
-outline:0;
-border-radius:50px;
-background-color: rgb(255, 255, 255);
-}
-
-QPushButton:pressed{
-    background-color: rgb(255, 0, 0);
-}</string>
+                  <item row="2" column="2">
+                   <widget class="QLabel" name="lblFa">
+                    <property name="font">
+                     <font>
+                      <family>A Iranian Sans</family>
+                      <pointsize>20</pointsize>
+                     </font>
                     </property>
                     <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset>
-                      <normaloff>images/english.png</normaloff>images/english.png</iconset>
-                    </property>
-                    <property name="iconSize">
-                     <size>
-                      <width>90</width>
-                      <height>90</height>
-                     </size>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="2">
-                   <widget class="QLabel" name="lblFaSelected">
-                    <property name="text">
-                     <string/>
+                     <string>فارسی</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="lblEnSelected">
+                  <item row="0" column="2">
+                   <widget class="QLabel" name="lblFaSelected">
                     <property name="text">
                      <string/>
                     </property>
@@ -2221,6 +2215,16 @@ QPushButton:pressed{
                     </property>
                    </spacer>
                   </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="lblEnSelected">
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </item>
                 <item row="1" column="3">
@@ -2251,6 +2255,19 @@ border: 1px solid white;
                   </property>
                  </widget>
                 </item>
+                <item row="1" column="2">
+                 <spacer name="horizontalSpacer_62">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
                 <item row="0" column="0">
                  <widget class="QLabel" name="lblLanguage">
                   <property name="font">
@@ -2266,19 +2283,6 @@ border: 1px solid white;
                    <set>Qt::AlignCenter</set>
                   </property>
                  </widget>
-                </item>
-                <item row="1" column="2">
-                 <spacer name="horizontalSpacer_62">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
                 </item>
                 <item row="1" column="1">
                  <widget class="LineEdit" name="txtOwnerInfo">
@@ -2301,32 +2305,19 @@ border: 1px solid white;
                    </font>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-}
-
-</string>
+                   <string notr="true"/>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="0">
-                 <spacer name="verticalSpacer_38">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
+                <item row="3" column="1">
+                 <widget class="ToggleButton" name="chbSlideTransition">
+                  <property name="text">
+                   <string/>
                   </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                 </spacer>
+                 </widget>
                 </item>
                 <item row="3" column="0">
                  <widget class="QLabel" name="lblSlideTransition">
@@ -2341,13 +2332,6 @@ border:1px solid gray;
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="1">
-                 <widget class="ToggleButton" name="chbSlideTransition">
-                  <property name="text">
-                   <string/>
                   </property>
                  </widget>
                 </item>
@@ -2374,8 +2358,134 @@ border:1px solid gray;
                   </property>
                  </widget>
                 </item>
+                <item row="7" column="0">
+                 <widget class="QLabel" name="lblTheme">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>25</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Themes</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="7" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_69">
+                  <item>
+                   <widget class="QPushButton" name="btnTheme1">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <family>MS Reference Sans Serif</family>
+                     </font>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true"/>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="btnTheme2">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true"/>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="btnTheme3">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true"/>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="btnTheme4">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <family>MS Reference Sans Serif</family>
+                     </font>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true"/>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="6" column="0">
+                 <spacer name="verticalSpacer_81">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
                 <item row="4" column="0">
                  <spacer name="verticalSpacer_80">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="2" column="0">
+                 <spacer name="verticalSpacer_38">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
                   </property>
@@ -2429,7 +2539,7 @@ border:1px solid gray;
               <item>
                <widget class="StackedWidget" name="hwStackedWidget">
                 <property name="currentIndex">
-                 <number>1</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="infoPage">
                  <property name="styleSheet">
@@ -2561,11 +2671,6 @@ background-color: rgb(58, 58, 58);
 border-radius:5px;
 border:1px solid gray;
 }
-
-QLabel {
-color:white;
-}
-
 </string>
                         </property>
                         <layout class="QHBoxLayout" name="horizontalLayout_54" stretch="0,0">
@@ -2635,6 +2740,7 @@ color:white;
 	border: 3px solid #FF17365D;
 	border-bottom-left-radius: 15px;
 	border-bottom-right-radius: 15px;
+	background-color: rgb(26, 26, 26);
 }
 QLabel{
 border:0px;
@@ -2857,6 +2963,7 @@ color:white;
 	border: 3px solid #FF17365D;
 	border-bottom-left-radius: 15px;
 	border-bottom-right-radius: 15px;
+background-color: rgb(26, 26, 26);
 }
 QLabel{
 border:0px;
@@ -3074,6 +3181,7 @@ color:white;
 	border: 3px solid #FF17365D;
 	border-bottom-left-radius: 15px;
 	border-bottom-right-radius: 15px;
+background-color: rgb(26, 26, 26);
 }
 QLabel{
 border:0px;
@@ -3275,6 +3383,7 @@ color:white;
 	border: 3px solid #FF17365D;
 	border-bottom-left-radius: 15px;
 	border-bottom-right-radius: 15px;
+background-color: rgb(26, 26, 26);
 }
 QLabel{
 border:0px;
@@ -3587,14 +3696,7 @@ color:white;
                          </font>
                         </property>
                         <property name="styleSheet">
-                         <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-}
-
-</string>
+                         <string notr="true"/>
                         </property>
                         <property name="alignment">
                          <set>Qt::AlignCenter</set>
@@ -3629,14 +3731,7 @@ border:1px solid gray;
                          </font>
                         </property>
                         <property name="styleSheet">
-                         <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-}
-
-</string>
+                         <string notr="true"/>
                         </property>
                         <property name="alignment">
                          <set>Qt::AlignCenter</set>
@@ -3671,14 +3766,7 @@ border:1px solid gray;
                          </font>
                         </property>
                         <property name="styleSheet">
-                         <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-}
-
-</string>
+                         <string notr="true"/>
                         </property>
                         <property name="alignment">
                          <set>Qt::AlignCenter</set>
@@ -3938,14 +4026,7 @@ QScrollBar::handle:vertical {
                          </font>
                         </property>
                         <property name="styleSheet">
-                         <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-}
-
-</string>
+                         <string notr="true"/>
                         </property>
                         <property name="alignment">
                          <set>Qt::AlignCenter</set>
@@ -3980,14 +4061,7 @@ border:1px solid gray;
                          </font>
                         </property>
                         <property name="styleSheet">
-                         <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-}
-
-</string>
+                         <string notr="true"/>
                         </property>
                         <property name="alignment">
                          <set>Qt::AlignCenter</set>
@@ -4056,14 +4130,7 @@ border:1px solid gray;
                            </font>
                           </property>
                           <property name="styleSheet">
-                           <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-}
-
-</string>
+                           <string notr="true"/>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -4098,14 +4165,7 @@ border:1px solid gray;
                            </font>
                           </property>
                           <property name="styleSheet">
-                           <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-}
-
-</string>
+                           <string notr="true"/>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -4173,14 +4233,7 @@ border:1px solid gray;
                            </font>
                           </property>
                           <property name="styleSheet">
-                           <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-}
-
-</string>
+                           <string notr="true"/>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -4215,14 +4268,7 @@ border:1px solid gray;
                            </font>
                           </property>
                           <property name="styleSheet">
-                           <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-}
-
-</string>
+                           <string notr="true"/>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -4257,14 +4303,7 @@ border:1px solid gray;
                            </font>
                           </property>
                           <property name="styleSheet">
-                           <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-}
-
-</string>
+                           <string notr="true"/>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -6748,7 +6787,7 @@ border: 1px solid white;
              <string notr="true">background: transparent;</string>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="bodyPartPage">
              <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -9872,6 +9911,18 @@ border: 10px solid rgb(0, 170, 255);
                  </item>
                  <item row="2" column="2">
                   <widget class="LineEdit" name="txtDays">
+                   <property name="minimumSize">
+                    <size>
+                     <width>140</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>140</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
                    <property name="font">
                     <font>
                      <family>Arial</family>
@@ -9882,15 +9933,7 @@ border: 10px solid rgb(0, 170, 255);
                     </font>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-max-width:110px;
-border:1px solid gray;
-
-}
-</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>0</string>
@@ -9909,14 +9952,7 @@ border:1px solid gray;
                     </font>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QLineEdit{
-color: rgb(255, 255, 255);
-background-color: rgb(58, 58, 58);
-border-radius:5px;
-border:1px solid gray;
-
-}
-</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>1400 / 04 / 18</string>

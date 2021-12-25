@@ -15,17 +15,14 @@ class Action(QWidget):
         super().__init__(parent)
         self.number = number
         stylesheet = ACTION_BTN
-        self.sound = QSoundEffect()
-        self.sound.setSource(QUrl.fromLocalFile(TOUCH_SOUND))
         layout = QHBoxLayout(self)
-        btn_edit = QPushButton(self)
+        self.btn_edit = QPushButton(self)
         editIcon = QIcon()
         editIcon.addPixmap(QPixmap(INFORMATION_ICON), QIcon.Normal, QIcon.Off)
-        btn_edit.setIcon(editIcon)
-        btn_edit.setIconSize(QSize(60, 60))
-        btn_edit.setStyleSheet(stylesheet)
-        btn_edit.clicked.connect(lambda: self.edit.emit(self.number))
-        btn_edit.pressed.connect(self.sound.play)
+        self.btn_edit.setIcon(editIcon)
+        self.btn_edit.setIconSize(QSize(60, 60))
+        self.btn_edit.setStyleSheet(stylesheet)
+        self.btn_edit.clicked.connect(lambda: self.edit.emit(self.number))
 
         spacerItem = QSpacerItem(
             40, 20, 
@@ -33,7 +30,7 @@ class Action(QWidget):
             QSizePolicy.Minimum
         )
         layout.addItem(spacerItem)
-        layout.addWidget(btn_edit)
+        layout.addWidget(self.btn_edit)
         spacerItem1 = QSpacerItem(
             40, 20, 
             QSizePolicy.Expanding, 

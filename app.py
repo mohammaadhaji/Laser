@@ -20,7 +20,7 @@ class MainWin(QMainWindow):
         self.setupUi()
         self.setStyleSheet("""
                     QMainWindow {
-                        background-image:url('ui/images/wallpaper.jpg'); 
+                        background-image:url('ui/images/wallpaper3.jpg'); 
                     }
              """)
         
@@ -311,7 +311,7 @@ class MainWin(QMainWindow):
         self.btnUiSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.uiPage))
         self.btnUmSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.uMPage))        
         self.btnEnterHw.clicked.connect(self.loginHw)
-        self.btnHwSettings.clicked.connect(lambda: self.hwPass('show'))
+        self.btnHwSettings.clicked.connect(self.btnHwsettingClicked)
         self.btnUserManagement.clicked.connect(self.loadToTabel)
         self.btnSaveInfo.clicked.connect(self.saveUserInfo)
         self.btnDeleteUser.clicked.connect(self.deleteUser)
@@ -375,6 +375,12 @@ class MainWin(QMainWindow):
         self.btnBackLaser.setVisible(False)
         self.btnUpdateFirmware.clicked.connect(self.updateSystem)
         self.btnShowSplash.clicked.connect(self.showSplash)
+        self.btnTheme1.setStyleSheet(THEME1)
+        self.btnTheme2.setStyleSheet(THEME2)
+        self.btnTheme3.setStyleSheet(THEME3)
+        self.btnTheme4.setStyleSheet(THEME4)
+            
+        
         sensors = [
             'btnPhysicalDamage', 'btnOverHeat', 'btnTemp',
             'btnLock', 'btnWaterLevel', 'btnWaterflow',
@@ -1710,12 +1716,17 @@ class MainWin(QMainWindow):
             height = 0
             newHeight = 90
 
-        self.animation = QPropertyAnimation(self.hwPassFrame, b"maximumHeight")
-        self.animation.setDuration(500)
-        self.animation.setStartValue(height)
-        self.animation.setEndValue(newHeight)
-        self.animation.setEasingCurve(QEasingCurve.InOutQuart)
-        self.animation.start()
+        self.animation2 = QPropertyAnimation(self.hwPassFrame, b"maximumHeight")
+        self.animation2.setDuration(500)
+        self.animation2.setStartValue(height)
+        self.animation2.setEndValue(newHeight)
+        self.animation2.setEasingCurve(QEasingCurve.InOutQuart)
+        self.animation2.start()
+
+    def btnHwsettingClicked(self):
+        self.hwPass('show')
+        self.keyboard('show')
+        self.txtHwPass.setFocus()
 
     def sort(self):
         self.sortBySession = not self.sortBySession
@@ -1737,6 +1748,7 @@ class MainWin(QMainWindow):
         row = 0
         for user in users:
             action = Action(self.usersTable, user.phoneNumber)
+            action.btn_edit.pressed.connect(self.touchSound.play)
             action.edit.connect(self.edit)
             self.usersTable.setCellWidget(row, 3, action)
             number = QTableWidgetItem(user.phoneNumber)

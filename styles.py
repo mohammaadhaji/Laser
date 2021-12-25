@@ -234,3 +234,72 @@ QLabel {
 	color: rgb(255, 255, 255);
 }
 '''
+
+THEME1 = """
+QPushButton{
+    background-color:lightblue;
+    min-width: 150px;
+    min-height: 100px;
+    max-width: 150px;
+    max-height: 100px;
+    border:5px solid white;
+    border-radius:10px;
+}
+QPushButton:pressed{
+    border:5px solid red;
+}
+"""
+
+THEME2 = """
+QPushButton{
+    background-color:black;
+    background-image: url(ui/images/theme1.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    min-width: 150px;
+    min-height: 100px;
+    max-width: 150px;
+    max-height: 100px;
+    border:5px solid white;
+    border-radius:10px;
+}
+QPushButton:pressed{
+    border:5px solid red;
+}
+"""
+
+THEME3 = """
+QPushButton{
+    background-color:black;
+    background-image: url(ui/images/theme2.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    min-width: 150px;
+    min-height: 100px;
+    max-width: 150px;
+    max-height: 100px;
+    border:5px solid white;
+    border-radius:10px;
+}
+QPushButton:pressed{
+    border:5px solid red;
+}
+"""
+
+THEME4 = """
+QPushButton{
+    background-color:black;
+    background-image: url(ui/images/theme3.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    min-width: 150px;
+    min-height: 100px;
+    max-width: 150px;
+    max-height: 100px;
+    border:5px solid white;
+    border-radius:10px;
+}
+QPushButton:pressed{
+    border:5px solid red;
+}
+"""
