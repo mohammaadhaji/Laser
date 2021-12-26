@@ -132,9 +132,9 @@ class MainWin(QMainWindow):
     def setTouchSound(self, state):
         volume = 100 if state == 2 else 0
         self.keyboardSound.setVolume(volume)
-        self.wellcomeSound.setVolume(volume)
         self.touchSound.setVolume(volume)
         self.configs['touchSound'] = True if state == 2 else False 
+        saveConfigs(self.configs)
 
     def initSounds(self):
         self.keyboardSound = QMediaPlayer()
@@ -142,7 +142,6 @@ class MainWin(QMainWindow):
         self.touchSound = QMediaPlayer()
         self.shotSound = QMediaPlayer()
         self.keyboardSound.setVolume(100 if self.configs['touchSound'] else 0)
-        self.wellcomeSound.setVolume(100 if self.configs['touchSound'] else 0)
         self.touchSound.setVolume(100 if self.configs['touchSound'] else 0)        
         content = QMediaContent(
             QUrl.fromLocalFile(KEYBOARD_SOUND)
