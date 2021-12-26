@@ -144,5 +144,8 @@ TEXT = {
     'btnUpdateFirmware': ['Update Firmware', 'بروزرسانی فریموور '],
     'lblSlideTransition': ['Slide Transition', 'گذر اسلاید'],
     'lblTouchSound': ['Touch Sound', 'صدای تاچ'],
-    'lblTheme': ['Themes', 'تم ها']
+    'lblTheme': ['Themes', 'تم ها'],
+    'lblAfterTomorrow': ['Day After Tomorrow', 'پس فردا'],
+    'lblTomorrow': ['Tomorrow', 'فردا'],
+    'lblTotalUsers': ['Total Users', 'تعداد کل']
 }

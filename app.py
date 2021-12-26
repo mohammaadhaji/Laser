@@ -112,11 +112,13 @@ class MainWin(QMainWindow):
         self.chbSlideTransition.setCheckState(
             2 if self.configs['slideTransition'] else 0
         )
+        self.chbSlideTransition.pressed.connect(self.touchSound.play)
         self.chbSlideTransition.stateChanged.connect(self.setTransition)
         self.chbTouchSound.setFixedSize(150, 48)
         self.chbTouchSound.setCheckState(
             2 if self.configs['touchSound'] else 0
         )
+        self.chbTouchSound.pressed.connect(self.touchSound.play)
         self.chbTouchSound.stateChanged.connect(self.setTouchSound)
         self.loadLocksTable()
         self.bodyPartsSignals()
@@ -138,6 +140,7 @@ class MainWin(QMainWindow):
         self.keyboardSound = QMediaPlayer()
         self.wellcomeSound = QMediaPlayer()
         self.touchSound = QMediaPlayer()
+        self.shotSound = QMediaPlayer()
         self.keyboardSound.setVolume(100 if self.configs['touchSound'] else 0)
         self.wellcomeSound.setVolume(100 if self.configs['touchSound'] else 0)
         self.touchSound.setVolume(100 if self.configs['touchSound'] else 0)        
@@ -153,6 +156,10 @@ class MainWin(QMainWindow):
             QUrl.fromLocalFile(TOUCH_SOUND)
         )
         self.touchSound.setMedia(content)
+        content = QMediaContent(
+            QUrl.fromLocalFile(SHOT_SOUND)
+        )
+        self.shotSound.setMedia(content)
 
     def initPages(self):
         self.stackedWidget.setCurrentWidget(self.splashPage)
@@ -219,7 +226,6 @@ class MainWin(QMainWindow):
         self.restartCounter = 6
         self.restartTimer.timeout.connect(self.restartForUpdate)
         self.systemTimeTimer.timeout.connect(self.time)
-        self.systemTimeTimer.start(1000)
         self.loginLabelTimer.timeout.connect(
             lambda: self.clearLabel(self.lblLogin, self.loginLabelTimer)
         )
@@ -300,12 +306,13 @@ class MainWin(QMainWindow):
         self.btnBackManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackManagement.clicked.connect(lambda: self.txtSearch.clear())
         self.btnBackSettings.clicked.connect(self.backSettings)
+        self.btnBackSettings.clicked.connect(self.systemTimeTimer.stop)
         self.btnBackEditUser.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnBackEditUser.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.userManagementPage))
         self.btnSettings.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnSettings.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.settingsPage))
         self.btnUiSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.uiPage))
-        self.btnUmSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.uMPage))        
+        # self.btnUmSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.uMPage))        
         self.btnEnterHw.clicked.connect(self.loginHw)
         self.btnHwSettings.clicked.connect(self.btnHwsettingClicked)
         self.btnUserManagement.clicked.connect(self.loadToTabel)
@@ -362,6 +369,7 @@ class MainWin(QMainWindow):
         self.btnHwinfo.clicked.connect(lambda: self.enterSettingPage(REPORT))
         self.btnSystemLock.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.lockSettingsPage))
         self.btnSystemLock.clicked.connect(lambda: lockPage(REPORT))
+        self.btnSystemLock.clicked.connect(lambda: self.systemTimeTimer.start(1000))
         self.btnAddLock.clicked.connect(self.addLock)
         self.btnBackLaser.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnBackLaser.clicked.connect(lambda: self.stackedWidgetLaser.setCurrentWidget(self.bodyPartPage))
@@ -401,10 +409,9 @@ class MainWin(QMainWindow):
         self.touchSignals = {}
         allButtons = self.findChildren(QPushButton)
         for btn in allButtons:
-            if btn.objectName() == 'btnSaveCase':
-                self.touchSignals[btn.objectName()] = btn.clicked.connect(
-                    self.touchSound.play
-                )
+            if btn.objectName() == 'btnSelectedBodyPart':
+                continue
+
             elif btn in keyboardButtons:
                 self.touchSignals[btn.objectName()] = btn.pressed.connect(
                     self.keyboardSound.play
@@ -413,10 +420,6 @@ class MainWin(QMainWindow):
                 self.touchSignals[btn.objectName()] = btn.pressed.connect(
                     self.touchSound.play
                 )
-
-        # for btn in allButtons:
-        #     if btn.objectName() not in sensors:
-        #         btn.disconnect(self.touchSignals[btn.objectName()])
 
     def initTextboxes(self):
         self.txtNumber.returnPressed.connect(self.startSession)
@@ -658,6 +661,8 @@ class MainWin(QMainWindow):
         self.sparkTimer.start(1000/self.frequency + 100)
         self.lblSpark.setVisible(True)
         self.lblLasing.setVisible(True)
+        self.shotSound.stop()
+        self.shotSound.play()
 
     def hideSpark(self):
         self.sparkTimer.stop()
@@ -986,33 +991,35 @@ class MainWin(QMainWindow):
         self.configs['ProductionDate'] = self.txtProductionDate.text()
         self.configs['GuiVersion'] = self.txtGuiVersion.text()  
         saveConfigs(self.configs)
-        try:
-            year = int(self.txtEditYear.text())
-            month = int(self.txtEditMonth.text())
-            day = int(self.txtEditDay.text())
-            gregorian = jdatetime.datetime(year, month, day).togregorian()
-            year = gregorian.year
-            month = gregorian.month
-            day = gregorian.day
-            hour = int(self.txtEditHour.text())
-            minute = int(self.txtEditMinute.text())
-            second = jdatetime.datetime.now().second
-            milisecond = 0
-            time = (year, month, day, hour, minute, second, milisecond)
-            setSystemTime(time)
-            nextDate = jdatetime.datetime.now() + jdatetime.timedelta(120) 
-            self.txtLockYear.setText(str(nextDate.year))
-            self.txtLockMonth.setText(str(nextDate.month))
-            self.txtLockDay.setText(str(nextDate.day)) 
-        except Exception:
-            self.setLabel(
-                    TEXT['systemTimeStatus'][self.langIndex], 
-                    self.lblSystemTimeStatus, 
-                    self.sysTimeStatusLabelTimer, 4
-                )
+        lockIndex = self.hwStackedWidget.indexOf(self.lockSettingsPage)
+        if self.hwStackedWidget.currentIndex() == lockIndex:
+            try:
+                year = int(self.txtEditYear.text())
+                month = int(self.txtEditMonth.text())
+                day = int(self.txtEditDay.text())
+                gregorian = jdatetime.datetime(year, month, day).togregorian()
+                year = gregorian.year
+                month = gregorian.month
+                day = gregorian.day
+                hour = int(self.txtEditHour.text())
+                minute = int(self.txtEditMinute.text())
+                second = jdatetime.datetime.now().second
+                milisecond = 0
+                time = (year, month, day, hour, minute, second, milisecond)
+                setSystemTime(time)
+                nextDate = jdatetime.datetime.now() + jdatetime.timedelta(120) 
+                self.txtLockYear.setText(str(nextDate.year))
+                self.txtLockMonth.setText(str(nextDate.month))
+                self.txtLockDay.setText(str(nextDate.day)) 
+            except Exception:
+                self.setLabel(
+                        TEXT['systemTimeStatus'][self.langIndex], 
+                        self.lblSystemTimeStatus, 
+                        self.sysTimeStatusLabelTimer, 4
+                    )
 
-        if self.hwStackedWidget.currentIndex() == self.hwStackedWidget.indexOf(self.lockSettingsPage):
             lockPage(WRITE)
+        
         else:
             self.enterSettingPage(WRITE)
 
@@ -1071,7 +1078,8 @@ class MainWin(QMainWindow):
         self.lblLength.setText(self.length)
 
         tutoriasl = os.listdir(TUTORIALS_DIR)
-        tutoriasl.remove('.gitignore')
+        if '.gitignore' in tutoriasl:
+            tutoriasl.remove('.gitignore')
         for file in tutoriasl:
             path = os.path.join(TUTORIALS_DIR, file) 
             name = Path(path).stem
@@ -1803,12 +1811,7 @@ class MainWin(QMainWindow):
     def loadToTabel(self):
         users = loadAllUsers()
         self.usersTable.setRowCount(len(users))
-        if self.langIndex == 1:
-            text = f'{len(users)} :تعداد کل'
-        else:
-            text = f'Total Users: {len(users)}'
-
-        self.lblTotalUsers.setText(text)
+        self.lblTotalUsersCount.setText(f'{len(users)}')
         row = 0
         for user in users:
             action = Action(self.usersTable, user.phoneNumber)
@@ -1952,16 +1955,8 @@ class MainWin(QMainWindow):
                     # self.tableAfterTomorrow.setItem(rowAfterTomorrow, 2, lastSession)
                     rowAfterTomorrow += 1
 
-        if self.langIndex == 1:
-            textTomorrow = f'{rowTomorrow} → فردا'
-            textAfterTomorrow = f'{rowAfterTomorrow} → پس فردا'
-        
-        else:
-            textTomorrow = f'Tomorrow → {rowTomorrow}'
-            textAfterTomorrow = f'Day After Tomorrow → {rowAfterTomorrow}'
-
-        self.lblTomorrow.setText(textTomorrow)
-        self.lblAfterTomorrow.setText(textAfterTomorrow)
+        self.lblTomorrowCount.setText(f'{rowTomorrow}')
+        self.lblAfterTomorrowCount.setText(f'{rowAfterTomorrow}')
         self.tableTomorrow.setRowCount(rowTomorrow)
         self.tableAfterTomorrow.setRowCount(rowAfterTomorrow)
 
