@@ -44,16 +44,14 @@ def monitorInfo():
         info = monitors[0]
         return info + ' ' + resolution
     else:
-        subprocess.call(f'chmod 755 {MONITOR_COMMADN}', shell=True)
+        subprocess.call(f'chmod 755 {MONITOR_COMMAND}', shell=True)
+        subprocess.call(f'{MONITOR_COMMAND}')
         with open(MONITOR_INFO_FILE, 'r') as f:
             for l in f:
                 if l.startswith('Display Product Name'):
-                    MONITOR_INFO = l.split(':')[1].strip()
+                    info = l.split(':')[1].strip()
 
-        if not MONITOR_INFO:
-            return 'Unknown'
-        else:
-            return info + ' ' + resolution
+        return info + ' ' + resolution
 
 
 
