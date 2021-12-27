@@ -1,11 +1,11 @@
 from uuid import getnode as get_mac
 from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5 import QtWidgets
 from paths import *
 from os.path import isfile, isdir
 import datetime, jdatetime
 import subprocess, platform, pickle, hashlib
 import random, uuid, os, re, json, shutil
-
 
 
 RPI_MODEL = ''
@@ -27,21 +27,34 @@ if platform.system() == 'Windows':
 else:
     OS_SPEC = platform.platform().split('-with')[0].replace('-', ' ')
 
+def monitorInfo():
+    info = ''
+    screen =  QtWidgets.QApplication.primaryScreen() 
+    resolution = f'{screen.size().width()}x{screen.size().height()}'
+    if platform.system() == 'Windows':
+        proc = subprocess.Popen(
+            ['powershell', 'Get-WmiObject win32_desktopmonitor;'], 
+            stdout=subprocess.PIPE
+        )
+        res = proc.communicate()
+        monitors = re.findall(
+            '(?s)\r\nName\s+:\s(.*?)\r\n', 
+            res[0].decode("utf-8")
+        )
+        info = monitors[0]
+        return info + ' ' + resolution
+    else:
+        subprocess.call(f'chmod 755 {MONITOR_COMMADN}', shell=True)
+        with open(MONITOR_INFO_FILE, 'r') as f:
+            for l in f:
+                if l.startswith('Display Product Name'):
+                    MONITOR_INFO = l.split(':')[1].strip()
 
-MONITOR_INFO = ''
-if platform.system() == 'Windows':
-    proc = subprocess.Popen(
-        ['powershell', 'Get-WmiObject win32_desktopmonitor;'], 
-        stdout=subprocess.PIPE
-    )
-    res = proc.communicate()
-    monitors = re.findall(
-        '(?s)\r\nName\s+:\s(.*?)\r\n', 
-        res[0].decode("utf-8")
-    )
-    MONITOR_INFO = monitors[0]
-else:
-    MONITOR_INFO = 'Unknown'
+        if not MONITOR_INFO:
+            return 'Unknown'
+        else:
+            return info + ' ' + resolution
+
 
 
 def isFarsi(text):

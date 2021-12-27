@@ -3,7 +3,6 @@ from communication import *
 from promotions import *
 from utility import *
 from styles import *
-from paths import *
 from lang import *
 from case import *
 from user import *
@@ -969,7 +968,7 @@ class MainWin(QMainWindow):
     def readHwInfo(self):
         self.txtOsSpecification.setText(OS_SPEC)
         self.txtRpiVersion.setText(RPI_MODEL)
-        self.txtMonitor.setText(MONITOR_INFO)
+        self.txtMonitor.setText(monitorInfo())
         self.txtSerialNumber.setText(self.configs['SerialNumber'])                
         self.txtTotalShotCounter.setText(str(self.configs['TotalShotCounter']))              
         self.txtLaserDiodeEnergy.setText(self.configs['LaserDiodeEnergy'])                
