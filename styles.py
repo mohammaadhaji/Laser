@@ -97,7 +97,6 @@ QLineEdit:focus{
 
 APP_LOCK_BG = """
 background-color: rgb(77, 74, 78);
-color: white;
 """
 
 APP_BG = """
@@ -389,7 +388,6 @@ QPushButton:pressed{
 """
 
 THEME1 = """
-
     background-color: rgb(32, 74, 135); 
 """
 

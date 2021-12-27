@@ -138,27 +138,25 @@ class MainWin(QMainWindow):
 
     def initSounds(self):
         self.keyboardSound = QMediaPlayer()
-        self.wellcomeSound = QMediaPlayer()
         self.touchSound = QMediaPlayer()
         self.shotSound = QMediaPlayer()
         self.keyboardSound.setVolume(100 if self.configs['touchSound'] else 0)
         self.touchSound.setVolume(100 if self.configs['touchSound'] else 0)        
-        content = QMediaContent(
-            QUrl.fromLocalFile(KEYBOARD_SOUND)
+        self.keyboardSound.setMedia(
+            QMediaContent(
+                QUrl.fromLocalFile(KEYBOARD_SOUND)
+            )
         )
-        self.keyboardSound.setMedia(content)
-        content = QMediaContent(
-            QUrl.fromLocalFile(WELLCOME_SOUND)
+        self.touchSound.setMedia(
+            QMediaContent(
+                QUrl.fromLocalFile(TOUCH_SOUND)
+            )
         )
-        self.wellcomeSound.setMedia(content)
-        content = QMediaContent(
-            QUrl.fromLocalFile(TOUCH_SOUND)
+        self.shotSound.setMedia(
+            QMediaContent(
+                QUrl.fromLocalFile(SHOT_SOUND)
+            )
         )
-        self.touchSound.setMedia(content)
-        content = QMediaContent(
-            QUrl.fromLocalFile(SHOT_SOUND)
-        )
-        self.shotSound.setMedia(content)
 
     def initPages(self):
         self.stackedWidget.setCurrentWidget(self.splashPage)
@@ -875,7 +873,7 @@ class MainWin(QMainWindow):
             index = self.stackedWidget.indexOf(self.loginPage)
             self.stackedWidget.setCurrentIndex(index)
             self.txtID.setText(str(locks[0].license))
-            self.setStyleSheet(APP_LOCK_BG)
+            self.centralWidget().setStyleSheet(APP_LOCK_BG)
         else:
             self.checkUUID()
         
@@ -885,7 +883,12 @@ class MainWin(QMainWindow):
                 self.keyboard('hide')
                 self.movie.start()
                 self.txtPassword.clear()
-                self.wellcomeSound.play()
+                self.mediaPlayer.setMedia(
+                    QMediaContent(
+                        QUrl.fromLocalFile(WELLCOME_SOUND)
+                    )
+                )
+                self.mediaPlayer.play()
                 return
 
             else:
