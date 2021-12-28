@@ -2190,34 +2190,33 @@ class MainWin(QMainWindow):
         for btn in self.findChildren(QPushButton):
             if btn.objectName() in TEXT.keys():
                 btn.setText(TEXT[btn.objectName()][self.langIndex])
+                
+        for txt in self.findChildren(QLineEdit):
+            if lbl.objectName() in TEXT.keys():
+                txt.setPlaceholderText(TEXT[txt.objectName()][self.langIndex])
+
+        for i in range(3):
+            self.tableTomorrow.horizontalHeaderItem(i).setText(
+                TEXT[f'tbFsessions{i}'][self.langIndex]
+            )
+            self.tableAfterTomorrow.horizontalHeaderItem(0).setText(
+                TEXT[f'tbFsessions{i}'][self.langIndex]
+            )
+
+        for i in range(4):
+            self.usersTable.horizontalHeaderItem(i).setText(
+                TEXT[f'usersTable{i}'][self.langIndex]
+            )
+            self.tableLock.horizontalHeaderItem(i).setText(
+                TEXT[f'tableLock{i}'][self.langIndex]
+            )
+
+        for i in range(8):
+            self.userInfoTable.horizontalHeaderItem(i).setText(
+                TEXT[f'userInfoTable{i}'][self.langIndex]
+            )        
         
-        self.tableTomorrow.horizontalHeaderItem(0).setText(TEXT['tbFsessions0'][self.langIndex])
-        self.tableTomorrow.horizontalHeaderItem(1).setText(TEXT['tbFsessions1'][self.langIndex])
-        self.tableTomorrow.horizontalHeaderItem(2).setText(TEXT['tbFsessions2'][self.langIndex])
-        self.tableAfterTomorrow.horizontalHeaderItem(0).setText(TEXT['tbFsessions0'][self.langIndex])
-        self.tableAfterTomorrow.horizontalHeaderItem(1).setText(TEXT['tbFsessions1'][self.langIndex])
-        self.tableAfterTomorrow.horizontalHeaderItem(2).setText(TEXT['tbFsessions2'][self.langIndex])
-        self.usersTable.horizontalHeaderItem(0).setText(TEXT['usersTable0'][self.langIndex])
-        self.usersTable.horizontalHeaderItem(1).setText(TEXT['usersTable1'][self.langIndex])
-        self.usersTable.horizontalHeaderItem(2).setText(TEXT['usersTable2'][self.langIndex])
-        self.usersTable.horizontalHeaderItem(3).setText(TEXT['usersTable3'][self.langIndex])
-        self.userInfoTable.horizontalHeaderItem(0).setText(TEXT['userInfoTable0'][self.langIndex])        
-        self.userInfoTable.horizontalHeaderItem(1).setText(TEXT['userInfoTable1'][self.langIndex])        
-        self.userInfoTable.horizontalHeaderItem(2).setText(TEXT['userInfoTable2'][self.langIndex])        
-        self.userInfoTable.horizontalHeaderItem(3).setText(TEXT['userInfoTable3'][self.langIndex])        
-        self.userInfoTable.horizontalHeaderItem(4).setText(TEXT['userInfoTable4'][self.langIndex])        
-        self.userInfoTable.horizontalHeaderItem(5).setText(TEXT['userInfoTable5'][self.langIndex])        
-        self.userInfoTable.horizontalHeaderItem(6).setText(TEXT['userInfoTable6'][self.langIndex])        
-        self.userInfoTable.horizontalHeaderItem(7).setText(TEXT['userInfoTable7'][self.langIndex])
-        self.tableLock.horizontalHeaderItem(0).setText(TEXT['tableLock0'][self.langIndex])
-        self.tableLock.horizontalHeaderItem(1).setText(TEXT['tableLock1'][self.langIndex])
-        self.tableLock.horizontalHeaderItem(2).setText(TEXT['tableLock2'][self.langIndex])
-        self.tableLock.horizontalHeaderItem(3).setText(TEXT['tableLock3'][self.langIndex])
-        self.txtNumber.setPlaceholderText(TEXT['txtNumber'][self.langIndex])
-        self.txtSearch.setPlaceholderText(TEXT['txtSearch'][self.langIndex])
-        self.txtNumberSubmit.setPlaceholderText(TEXT['txtNumberSubmit'][self.langIndex])
-        self.txtNameSubmit.setPlaceholderText(TEXT['txtNameSubmit'][self.langIndex])
-        self.txtHwPass.setPlaceholderText(TEXT['txtHwPass'][self.langIndex])
+        
         
 
 app = QApplication(sys.argv)
