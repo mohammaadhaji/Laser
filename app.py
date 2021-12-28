@@ -2190,7 +2190,7 @@ class MainWin(QMainWindow):
         for btn in self.findChildren(QPushButton):
             if btn.objectName() in TEXT.keys():
                 btn.setText(TEXT[btn.objectName()][self.langIndex])
-                
+
         for txt in self.findChildren(QLineEdit):
             if lbl.objectName() in TEXT.keys():
                 txt.setPlaceholderText(TEXT[txt.objectName()][self.langIndex])
@@ -2199,7 +2199,7 @@ class MainWin(QMainWindow):
             self.tableTomorrow.horizontalHeaderItem(i).setText(
                 TEXT[f'tbFsessions{i}'][self.langIndex]
             )
-            self.tableAfterTomorrow.horizontalHeaderItem(0).setText(
+            self.tableAfterTomorrow.horizontalHeaderItem(i).setText(
                 TEXT[f'tbFsessions{i}'][self.langIndex]
             )
 
