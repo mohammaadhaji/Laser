@@ -90,3 +90,10 @@ def loadAllUsers():
         users.append(user)
 
     return users
+
+def countUsers():
+    numbers = os.listdir(USERS_DIR)
+    if isfile(join(USERS_DIR, '.gitignore')):
+        numbers.remove('.gitignore')
+    
+    return len(numbers)

@@ -1166,7 +1166,7 @@ class MainWin(QMainWindow):
                 if self.userNextSession.currentSession == 'started':
                     self.endSession()
                 else:
-                    self.edit(self.userNextSession.phoneNumber)
+                    self.info(self.userNextSession.phoneNumber)
             except ValueError as e:
                 self.setLabel(
                         str(e).capitalize() + '.', 
@@ -1187,7 +1187,7 @@ class MainWin(QMainWindow):
             self.changeAnimation('vertical')
             self.endSession()
         else:
-            self.edit(self.userNextSession.phoneNumber)
+            self.info(self.userNextSession.phoneNumber)
 
     def incDecDay(self, operation):
         if not self.txtDays.text():
@@ -1502,6 +1502,7 @@ class MainWin(QMainWindow):
             self.stackedWidget.setCurrentWidget(self.mainPage)
         else:
             self.stackedWidgetSettings.setCurrentWidget(self.settingsMenuPage)
+            self.hWPage.setVisible(False)
             mainPage() 
 
     def blinkSensorsIcon(self, sensor):
@@ -1816,8 +1817,10 @@ class MainWin(QMainWindow):
         row = 0
         for user in users:
             action = Action(self.usersTable, user.phoneNumber)
-            action.btn_edit.pressed.connect(self.touchSound.play)
-            action.edit.connect(self.edit)
+            action.btnInfo.pressed.connect(self.touchSound.play)
+            action.info.connect(self.info)
+            action.btnDel.pressed.connect(self.touchSound.play)
+            action.delete.connect(self.removeUser)
             self.usersTable.setCellWidget(row, 3, action)
             number = QTableWidgetItem(user.phoneNumber)
             name = QTableWidgetItem(user.name)
@@ -1830,7 +1833,17 @@ class MainWin(QMainWindow):
             self.usersTable.setItem(row, 2, sessions)
             row += 1
 
-    def edit(self, num):
+    def removeUser(self):
+        button = self.sender()
+        if button:
+            row = self.usersTable.indexAt(button.pos()).row()
+            number = self.usersTable.item(row, 0).text()
+            deleteUser(number)
+            self.usersTable.removeRow(row)
+            totalUsers = countUsers()
+            self.lblTotalUsersCount.setText(f'{totalUsers}')
+
+    def info(self, num):
         self.stackedWidget.setCurrentWidget(self.editUserPage)
         self.userInfo = loadUser(num)
         nextSessionDate = self.userInfo.nextSession

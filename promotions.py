@@ -10,19 +10,28 @@ import json
 
 
 class Action(QWidget):
-    edit = pyqtSignal(str)
+    info = pyqtSignal(str)
+    delete = pyqtSignal(str)
     def __init__(self, parent, number):
         super().__init__(parent)
         self.number = number
         stylesheet = ACTION_BTN
         layout = QHBoxLayout(self)
-        self.btn_edit = QPushButton(self)
-        editIcon = QIcon()
-        editIcon.addPixmap(QPixmap(INFORMATION_ICON), QIcon.Normal, QIcon.Off)
-        self.btn_edit.setIcon(editIcon)
-        self.btn_edit.setIconSize(QSize(60, 60))
-        self.btn_edit.setStyleSheet(stylesheet)
-        self.btn_edit.clicked.connect(lambda: self.edit.emit(self.number))
+        self.btnInfo = QPushButton(self)
+        infoIcon = QIcon()
+        infoIcon.addPixmap(QPixmap(INFORMATION_ICON), QIcon.Normal, QIcon.Off)
+        self.btnInfo.setIcon(infoIcon)
+        self.btnInfo.setIconSize(QSize(60, 60))
+        self.btnInfo.setStyleSheet(stylesheet)
+        self.btnInfo.clicked.connect(lambda: self.info.emit(self.number))
+
+        self.btnDel = QPushButton(self)
+        delIcon = QIcon()
+        delIcon.addPixmap(QPixmap(DELETE_ICON), QIcon.Normal, QIcon.Off)
+        self.btnDel.setIcon(delIcon)
+        self.btnDel.setIconSize(QSize(60, 60))
+        self.btnDel.setStyleSheet(stylesheet)
+        self.btnDel.clicked.connect(lambda: self.delete.emit(self.number))
 
         spacerItem = QSpacerItem(
             40, 20, 
@@ -30,13 +39,20 @@ class Action(QWidget):
             QSizePolicy.Minimum
         )
         layout.addItem(spacerItem)
-        layout.addWidget(self.btn_edit)
+        layout.addWidget(self.btnInfo)
         spacerItem1 = QSpacerItem(
             40, 20, 
             QSizePolicy.Expanding, 
             QSizePolicy.Minimum
         )
         layout.addItem(spacerItem1)
+        layout.addWidget(self.btnDel)
+        spacerItem2 = QSpacerItem(
+            40, 20, 
+            QSizePolicy.Expanding, 
+            QSizePolicy.Minimum
+        )
+        layout.addItem(spacerItem2)
 
 class LineEdit(QLineEdit):
     fIn = pyqtSignal()

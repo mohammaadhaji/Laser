@@ -52,7 +52,7 @@ color:white;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>8</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="UUIDPage">
        <layout class="QVBoxLayout" name="verticalLayout_66">
@@ -714,8 +714,8 @@ QPushButton:pressed {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1595</width>
-             <height>909</height>
+             <width>100</width>
+             <height>30</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -1702,7 +1702,7 @@ border:3px solid red;
         <item>
          <widget class="StackedWidget" name="stackedWidgetSettings">
           <property name="currentIndex">
-           <number>0</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="settingsMenuPage">
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -2538,7 +2538,7 @@ border: 1px solid white;
               <item>
                <widget class="StackedWidget" name="hwStackedWidget">
                 <property name="currentIndex">
-                 <number>1</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="infoPage">
                  <property name="styleSheet">
@@ -2573,7 +2573,7 @@ border: 1px solid white;
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>958</width>
+                       <width>1248</width>
                        <height>848</height>
                       </rect>
                      </property>
@@ -4650,8 +4650,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>1571</width>
-               <height>755</height>
+               <width>312</width>
+               <height>413</height>
               </rect>
              </property>
              <property name="styleSheet">
@@ -5884,7 +5884,7 @@ QScrollBar::handle:vertical {
                 </column>
                 <column>
                  <property name="text">
-                  <string>Information</string>
+                  <string>Action</string>
                  </property>
                  <property name="font">
                   <font>
@@ -6985,7 +6985,7 @@ border: 1px solid white;
              <string notr="true">background: transparent;</string>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="bodyPartPage">
              <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -7080,7 +7080,7 @@ border:2px solid white;
                         </font>
                        </property>
                        <property name="text">
-                        <string>S Number</string>
+                        <string>Session</string>
                        </property>
                        <property name="alignment">
                         <set>Qt::AlignCenter</set>
@@ -8146,7 +8146,7 @@ background-color: rgb(0, 170, 255);
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1528</width>
+                   <width>1341</width>
                    <height>803</height>
                   </rect>
                  </property>

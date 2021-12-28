@@ -393,24 +393,28 @@ THEME1 = """
 
 THEME2 = """
 QWidget#centralwidget {
+    background-color: rgb(32, 74, 135);
     background-image: url(ui/images/wallpaper1.jpg); 
 }
 """
 
 THEME3 = """
 QWidget#centralwidget {
+    background-color: rgb(32, 74, 135);
     background-image: url(ui/images/wallpaper2.jpg); 
 }
 """
 
 THEME4 = """
 QWidget#centralwidget {
+    background-color: rgb(32, 74, 135);
     background-image: url(ui/images/wallpaper3.jpg); 
 }
 """
 
 THEME5 = """
 QWidget#centralwidget {
+    background-color: rgb(32, 74, 135);
     background-image: url(ui/images/wallpaper4.jpg); 
 }
 """

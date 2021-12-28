@@ -215,20 +215,18 @@ def saveConfigs(configs):
 
 def getID():
     id = ''
-    if platform.system() == 'Linux':
-        r = subprocess.check_output('blkid -s UUID -o value', shell=True)
-        r = re.sub('[^a-zA-Z0-9]', '', str(r)).upper()
-        if len(r) >= 10:
-            id = r[:10]
-        else:
-            id = r
+    if not RPI_MODEL == 'Unknown':
+        try:
+            f = open('/proc/cpuinfo','r')
+            for line in f:
+                if line.startswith('Serial'):
+                    id = line.split(':')[1].strip()
+            f.close()
+        except:
+            id = str(get_mac()).upper()
     
     else:
-        r = str(get_mac()).upper()
-        if len(r) >= 10:
-            id = r[:10]
-        else:
-            id = r
+        id = str(get_mac()).upper()
 
     return id
 
