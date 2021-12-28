@@ -1217,6 +1217,7 @@ class MainWin(QMainWindow):
                 self.txtDays.setText(str(diff))
 
     def setNextSession(self, page):
+        self.stackedWidgetLaser.setVisible(False)
         if page == 'lazer':
             self.userNextSession = self.user
             self.setReady(False)
@@ -2067,6 +2068,7 @@ class MainWin(QMainWindow):
         self.startSession()
 
     def startSession(self):
+        self.stackedWidgetLaser.setVisible(True)
         numberEntered = self.txtNumber.text()
 
         if (not self.user) or (self.user.currentSession == 'finished'):
