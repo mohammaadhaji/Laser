@@ -2192,7 +2192,7 @@ class MainWin(QMainWindow):
                 btn.setText(TEXT[btn.objectName()][self.langIndex])
 
         for txt in self.findChildren(QLineEdit):
-            if lbl.objectName() in TEXT.keys():
+            if txt.objectName() in TEXT.keys():
                 txt.setPlaceholderText(TEXT[txt.objectName()][self.langIndex])
 
         for i in range(3):
