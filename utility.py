@@ -42,7 +42,7 @@ def monitorInfo():
             res[0].decode("utf-8")
         )
         info = monitors[0]
-        return info + ' ' + resolution
+
     else:
         subprocess.call(f'chmod 755 {MONITOR_COMMAND}', shell=True)
         subprocess.call(f'{MONITOR_COMMAND}')
@@ -51,7 +51,7 @@ def monitorInfo():
                 if l.startswith('Display Product Name'):
                     info = l.split(':')[1].strip()
 
-        return info + ' ' + resolution
+    return info + ' ' + resolution
 
 
 
