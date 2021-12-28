@@ -2041,6 +2041,7 @@ class MainWin(QMainWindow):
         self.stackedWidget.setCurrentWidget(self.userManagementPage)
 
     def submit(self):
+        self.newUserPage.setVisible(False)
         number = self.txtNumberSubmit.text()
         name = self.txtNameSubmit.text()
 
@@ -2068,6 +2069,7 @@ class MainWin(QMainWindow):
         self.startSession()
 
     def startSession(self):
+        self.mainPage.setVisible(False)
         numberEntered = self.txtNumber.text()
 
         if (not self.user) or (self.user.currentSession == 'finished'):
@@ -2088,7 +2090,7 @@ class MainWin(QMainWindow):
                 self.txtNumberSubmit.setText(numberEntered)
                 self.txtNameSubmit.setFocus()
                 self.changeAnimation('vertical')
-                self.stackedWidget.setCurrentWidget(self.newSessionPage)
+                self.stackedWidget.setCurrentWidget(self.newUserPage)
                 return
 
             self.user.setCurrentSession('started')

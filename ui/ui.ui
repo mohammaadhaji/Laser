@@ -52,7 +52,7 @@ color:white;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>5</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="UUIDPage">
        <layout class="QVBoxLayout" name="verticalLayout_66">
@@ -714,8 +714,8 @@ QPushButton:pressed {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>100</width>
-             <height>30</height>
+             <width>1595</width>
+             <height>909</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -747,7 +747,7 @@ QPushButton:pressed {
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="newSessionPage">
+      <widget class="QWidget" name="newUserPage">
        <property name="font">
         <font>
          <pointsize>14</pointsize>
@@ -4650,8 +4650,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>312</width>
-               <height>413</height>
+               <width>1571</width>
+               <height>755</height>
               </rect>
              </property>
              <property name="styleSheet">
@@ -8146,7 +8146,7 @@ background-color: rgb(0, 170, 255);
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1341</width>
+                   <width>1528</width>
                    <height>803</height>
                   </rect>
                  </property>
