@@ -861,7 +861,7 @@ class MainWin(QMainWindow):
         hwid = getID()
         self.txtUUID.setText(hwid)
         hwid += '@mohammaad_haji'
-        if hashlib.sha256(hwid.encode()).hexdigest()[:10] == self.configs['PASSWORD']:
+        if hashlib.sha256(hwid.encode()).hexdigest()[:10].upper() == self.configs['PASSWORD']:
             index = self.stackedWidget.indexOf(self.splashPage)
             self.stackedWidget.setCurrentIndex(index)
         else:
