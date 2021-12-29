@@ -61,13 +61,13 @@ class Ui_Form(object):
         self.btnGetPass.clicked.connect(self.getPass)
 
     def getPass(self):
-        id = self.txtID.text()
+        id = self.txtID.text().upper()
         if not id:
             self.txtID.setFocus()
             return
         id += '@mohammaad_haji'
         lenght = 10
-        password = hashlib.sha256(id.encode()).hexdigest()[:lenght]
+        password = hashlib.sha256(id.encode()).hexdigest()[:lenght].upper()
         self.txtPass.setText(password)
 
     def retranslateUi(self, Form):

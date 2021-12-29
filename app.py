@@ -293,8 +293,10 @@ class MainWin(QMainWindow):
         self.btnEnter.clicked.connect(self.unlockLIC)
         self.btnSort.clicked.connect(self.sort)
         self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
-        self.btnEndSession.clicked.connect(mainPage)
+        self.btnEndSession.clicked.connect(lambda: enterPage(MAIN_PAGE))
         self.btnPower.clicked.connect(self.powerOff)
+        self.btnPower_2.clicked.connect(self.powerOff)
+        self.btnPower_3.clicked.connect(self.powerOff)
         self.btnStartSession.clicked.connect(self.startSession)
         self.btnSubmit.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnSubmit.clicked.connect(self.submit)
@@ -308,7 +310,6 @@ class MainWin(QMainWindow):
         self.btnSettings.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnSettings.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.settingsPage))
         self.btnUiSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.uiPage))
-        # self.btnUmSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.uMPage))        
         self.btnEnterHw.clicked.connect(self.loginHw)
         self.btnHwSettings.clicked.connect(self.btnHwsettingClicked)
         self.btnUserManagement.clicked.connect(self.loadToTabel)
@@ -371,7 +372,7 @@ class MainWin(QMainWindow):
         self.btnBackLaser.clicked.connect(lambda: self.stackedWidgetLaser.setCurrentWidget(self.bodyPartPage))
         self.btnBackLaser.clicked.connect(lambda: self.btnBackLaser.setVisible(False))
         self.btnBackLaser.clicked.connect(lambda: self.setReady(False))
-        self.btnBackLaser.clicked.connect(selectionPage)
+        self.btnBackLaser.clicked.connect(lambda: enterPage(BODY_PART_PAGE))
         self.btnBackLaser.setVisible(False)
         self.btnUpdateFirmware.clicked.connect(self.updateSystem)
         self.btnShowSplash.clicked.connect(self.showSplash)
@@ -419,6 +420,8 @@ class MainWin(QMainWindow):
 
     def initTextboxes(self):
         self.txtNumber.returnPressed.connect(self.startSession)
+        self.txtNameSubmit.returnPressed.connect(self.submit)
+        self.txtNumberSubmit.returnPressed.connect(self.submit)
         self.txtNumber.fIn.connect(lambda: self.keyboard('show'))
         self.txtNumberSubmit.fIn.connect(lambda: self.keyboard('show'))
         self.txtNameSubmit.fIn.connect(lambda: self.keyboard('show'))
@@ -613,6 +616,7 @@ class MainWin(QMainWindow):
             pass
 
     def powerOff(self):
+        enterPage(SHUTDONW_PAGE)
         self.serialC.closePort()
         if platform.system() == 'Windows':
             self.close()
@@ -836,11 +840,11 @@ class MainWin(QMainWindow):
             self.loadLocksTable()
 
     def unlockUUID(self):
-        user_pass = self.txtPassUUID.text()
+        user_pass = self.txtPassUUID.text().upper()
         hwid = getID()
         hwid += '@mohammaad_haji'
         
-        if hashlib.sha256(hwid.encode()).hexdigest()[:10] == user_pass:
+        if hashlib.sha256(hwid.encode()).hexdigest()[:10].upper() == user_pass:
             index = self.stackedWidget.indexOf(self.splashPage)
             self.stackedWidget.setCurrentIndex(index)
             self.configs['PASSWORD'] = user_pass
@@ -1499,12 +1503,13 @@ class MainWin(QMainWindow):
 
     def backSettings(self):
         self.hwPass('hide') 
-        if self.stackedWidgetSettings.currentIndex() == 0:
+        index = self.stackedWidgetSettings.indexOf(self.settingsMenuPage)
+        if self.stackedWidgetSettings.currentIndex() == index:
             self.stackedWidget.setCurrentWidget(self.mainPage)
         else:
             self.stackedWidgetSettings.setCurrentWidget(self.settingsMenuPage)
             self.hWPage.setVisible(False)
-            mainPage() 
+            enterPage(MAIN_PAGE) 
 
     def blinkSensorsIcon(self, sensor):
         if sensor == 'waterflow':
@@ -2041,7 +2046,6 @@ class MainWin(QMainWindow):
         self.stackedWidget.setCurrentWidget(self.userManagementPage)
 
     def submit(self):
-        self.newUserPage.setVisible(False)
         number = self.txtNumberSubmit.text()
         name = self.txtNameSubmit.text()
 
@@ -2051,6 +2055,7 @@ class MainWin(QMainWindow):
                     self.lblSubmit, 
                     self.submitLabelTimer
                 )
+            self.txtNumberSubmit.setFocus()
             return
 
         if userExists(number):
@@ -2059,6 +2064,7 @@ class MainWin(QMainWindow):
                     self.lblSubmit, 
                     self.submitLabelTimer
                 )
+            self.txtNumberSubmit.setFocus()
             return
 
         user = User(number, name)
@@ -2066,10 +2072,10 @@ class MainWin(QMainWindow):
         self.txtNumber.setText(number)
         self.txtNumberSubmit.clear()
         self.txtNameSubmit.clear()
+        self.newUserPage.setVisible(False)
         self.startSession()
 
     def startSession(self):
-        self.mainPage.setVisible(False)
         numberEntered = self.txtNumber.text()
 
         if (not self.user) or (self.user.currentSession == 'finished'):
@@ -2099,7 +2105,8 @@ class MainWin(QMainWindow):
             self.keyboard('hide')
             self.changeAnimation('horizontal')
             self.stackedWidget.setCurrentWidget(self.laserMainPage)
-            selectionPage()
+            self.mainPage.setVisible(False)
+            enterPage(BODY_PART_PAGE)
 
         elif self.user and self.user.currentSession == 'started':
             if not userExists(self.user.phoneNumber):
@@ -2141,7 +2148,8 @@ class MainWin(QMainWindow):
                 self.keyboard('hide')
                 self.changeAnimation('horizontal')
                 self.stackedWidget.setCurrentWidget(self.laserMainPage)
-                selectionPage()
+                self.mainPage.setVisible(False)
+                enterPage(BODY_PART_PAGE)
 
     def endSession(self):
         self.user.setCurrentSession('finished')

@@ -22,6 +22,8 @@ LASER_PAGE     = 0
 SETTING_PAGE   = 1
 LOCK_TIME_PAGE = 2
 BODY_PART_PAGE = 3
+MAIN_PAGE      = 4
+SHUTDONW_PAGE  = 5
 
 REPORT = 0x0A
 WRITE  = 0x0B 
@@ -32,6 +34,7 @@ RECEIVED_DATA = bytearray()
 
 def printPacket(packet):
     print( " ".join(packet.hex()[i:i+2].upper() for i in range(0, len(packet.hex()), 2)))
+
 
 def sensors(packet):
     flags = [False] * 5
@@ -63,6 +66,7 @@ def sensors(packet):
 
     return flags
 
+
 def sendPacket(fieldsIndex, fieldValues, page, cmdType=REPORT):
     packet = bytearray()
     for field, value in fieldValues.items():
@@ -81,27 +85,13 @@ def sendPacket(fieldsIndex, fieldValues, page, cmdType=REPORT):
         serial.write(packet)
         packet[:] = []
 
-def selectionPage():
-    packet = bytearray(9)
-    packet[0] = 0xAA
-    packet[1] = 0xBB
-    packet[2] = 0x05 # NoB
-    packet[3] = 0x03 # Page Number
-    packet[4] = 0xAA # Field
-    packet[5] = 0x0A # Cmd type 
-    crc = Crc16Xmodem.calc(packet[2:6])
-    crc_bytes = crc.to_bytes(2, byteorder='big')
-    packet[6] = crc_bytes[0]
-    packet[7] = crc_bytes[1]
-    packet[8] = 0xCC
-    serial.write(packet)
 
-def mainPage():
+def enterPage(page):
     packet = bytearray(9)
     packet[0] = 0xAA
     packet[1] = 0xBB
     packet[2] = 0x05 
-    packet[3] = 0x04 
+    packet[3] = page 
     packet[4] = 0xAA 
     packet[5] = REPORT  
     crc = Crc16Xmodem.calc(packet[2:-3])
@@ -110,6 +100,7 @@ def mainPage():
     packet[7] = crc_bytes[1]
     packet[8] = 0xCC
     serial.write(packet)
+
 
 def readTime():
     packet = bytearray(9)
@@ -132,12 +123,14 @@ def readTime():
     packet[7] = crc_bytes[1]
     serial.write(packet)
 
+
 def laserPage(fieldValues):
     fieldsIndex = {
         'cooling': 3 , 'energy': 4, 'pulseWidth': 5,
         'frequency':6, 'couter': 7, 'ready-standby': 8
     }
     sendPacket(fieldsIndex, fieldValues, LASER_PAGE)
+
 
 def settingsPage(fieldValues, cmdType):
     fieldsIndex = {
@@ -147,6 +140,7 @@ def settingsPage(fieldValues, cmdType):
         'monitor': 9, 'os': 10, 'gui': 11, 'rpi': 12
     }
     sendPacket(fieldsIndex, fieldValues, SETTING_PAGE, cmdType)
+
 
 def lockPage(cmdType):
     fieldsIndex = { 'clock': 0, 'date': 1}

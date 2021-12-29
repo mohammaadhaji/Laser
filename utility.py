@@ -228,7 +228,7 @@ def getID():
     else:
         id = str(get_mac()).upper()
 
-    return id
+    return id.upper()
 
 
 def calcMD5(directory, verifyFileName):
