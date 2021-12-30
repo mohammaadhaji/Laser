@@ -1,6 +1,9 @@
+from PyQt5.QtCore import QThread, pyqtSignal
 from os.path import join, isfile
 from paths import USERS_DIR
 import jdatetime, pickle, os
+
+from utility import randBinNumber, randID
 
 
 class User:
@@ -61,6 +64,20 @@ def loadUser(number):
         user = pickle.load(fileHandler)
         fileHandler.close()
         return user
+    else:
+        return None
+
+
+def loadAllUsers2():
+    numbers = os.listdir(USERS_DIR)
+    if isfile(join(USERS_DIR, '.gitignore')):
+        numbers.remove('.gitignore')
+    users = []
+    for number in numbers:
+        user = loadUser(number)
+        users.append(user)
+
+    return users
 
 
 def userExists(number):
@@ -80,20 +97,39 @@ def deleteUser(number):
     os.remove(filePath)
 
 
-def loadAllUsers():
-    numbers = os.listdir(USERS_DIR)
-    if isfile(join(USERS_DIR, '.gitignore')):
-        numbers.remove('.gitignore')
-    users = []
-    for number in numbers:
-        user = loadUser(number)
-        users.append(user)
-
-    return users
-
 def countUsers():
     numbers = os.listdir(USERS_DIR)
     if isfile(join(USERS_DIR, '.gitignore')):
         numbers.remove('.gitignore')
     
     return len(numbers)
+
+
+class LoadAllUsers(QThread):
+    user = pyqtSignal(dict)
+    count = pyqtSignal(int)
+    finish = pyqtSignal()
+
+    def run(self):
+        numbers = os.listdir(USERS_DIR)
+        if isfile(join(USERS_DIR, '.gitignore')):
+            numbers.remove('.gitignore')
+        
+        self.count.emit(len(numbers))
+        for number in numbers:
+            userInfo = loadUser(number)
+            x = {
+                'name':  userInfo.name,
+                'phoneNumber': userInfo.phoneNumber,
+                'sessionNumber': str(userInfo.sessionNumber - 1)
+            }
+
+            self.user.emit(x)
+        
+        self.finish.emit()
+        
+# for i in range(1000):
+#     number = randID(11)
+#     name = randID(5)
+#     user = User(number, name)
+#     user.save()
