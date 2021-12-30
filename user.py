@@ -125,6 +125,7 @@ class LoadAllUsers(QThread):
             }
 
             self.user.emit(x)
+            self.msleep(10)
         
         self.finish.emit()
         
