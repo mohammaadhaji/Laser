@@ -128,8 +128,8 @@ class LoadAllUsers(QThread):
         
         self.finish.emit()
         
-# for i in range(1000):
-#     number = randID(11)
-#     name = randID(5)
-#     user = User(number, name)
-#     user.save()
+for i in range(1000):
+    number = randID(11)
+    name = randID(5)
+    user = User(number, name)
+    user.save()
