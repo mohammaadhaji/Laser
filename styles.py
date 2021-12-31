@@ -302,7 +302,7 @@ QLabel {
 }
 '''
 
-BTN_THEME1 = """
+BTN_COLOR1 = """
 QPushButton{
     background-color: rgb(32, 74, 135);
     min-width: 150px;
@@ -317,7 +317,52 @@ QPushButton:pressed{
 }
 """
 
-BTN_THEME2 = """
+BTN_COLOR2 = """
+QPushButton{
+    background-color: rgb(173, 3, 252);
+    min-width: 150px;
+    min-height: 100px;
+    max-width: 150px;
+    max-height: 100px;
+    border:5px solid white;
+    border-radius:10px;
+}
+QPushButton:pressed{
+    border:5px solid red;
+}
+"""
+
+BTN_COLOR3 = """
+QPushButton{
+    background-color: rgb(20, 20, 20);
+    min-width: 150px;
+    min-height: 100px;
+    max-width: 150px;
+    max-height: 100px;
+    border:5px solid white;
+    border-radius:10px;
+}
+QPushButton:pressed{
+    border:5px solid red;
+}
+"""
+
+BTN_COLOR4 = """
+QPushButton{
+    background-color: rgb(252, 3, 128);
+    min-width: 150px;
+    min-height: 100px;
+    max-width: 150px;
+    max-height: 100px;
+    border:5px solid white;
+    border-radius:10px;
+}
+QPushButton:pressed{
+    border:5px solid red;
+}
+"""
+
+BTN_THEME1 = """
 QPushButton{
     background-color:black;
     background-image: url(ui/images/theme1.jpg);
@@ -335,7 +380,7 @@ QPushButton:pressed{
 }
 """
 
-BTN_THEME3 = """
+BTN_THEME2 = """
 QPushButton{
     background-color:black;
     background-image: url(ui/images/theme2.jpg);
@@ -353,7 +398,7 @@ QPushButton:pressed{
 }
 """
 
-BTN_THEME4 = """
+BTN_THEME3 = """
 QPushButton{
     background-color:black;
     background-image: url(ui/images/theme3.jpg);
@@ -371,7 +416,7 @@ QPushButton:pressed{
 }
 """
 
-BTN_THEME5 = """
+BTN_THEME4 = """
 QPushButton{
     background-color:black;
     background-image: url(ui/images/theme4.jpg);
@@ -389,32 +434,44 @@ QPushButton:pressed{
 }
 """
 
-THEME1 = """
+COLOR1 = """
     background-color: rgb(32, 74, 135); 
 """
 
-THEME2 = """
+COLOR2 = """
+    background-color: rgb(173, 3, 252);
+"""
+
+COLOR3 = """
+    background-color: rgb(20, 20, 20);
+"""
+
+COLOR4 = """
+    background-color: rgb(252, 3, 128);
+"""
+
+THEME1 = """
 QWidget#centralwidget {
     background-color: rgb(32, 74, 135);
     background-image: url(ui/images/wallpaper1.jpg); 
 }
 """
 
-THEME3 = """
+THEME2 = """
 QWidget#centralwidget {
     background-color: rgb(32, 74, 135);
     background-image: url(ui/images/wallpaper2.jpg); 
 }
 """
 
-THEME4 = """
+THEME3 = """
 QWidget#centralwidget {
     background-color: rgb(32, 74, 135);
     background-image: url(ui/images/wallpaper3.jpg); 
 }
 """
 
-THEME5 = """
+THEME4 = """
 QWidget#centralwidget {
     background-color: rgb(32, 74, 135);
     background-image: url(ui/images/wallpaper4.jpg); 

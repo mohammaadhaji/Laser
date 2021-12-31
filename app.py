@@ -161,6 +161,10 @@ class MainWin(QMainWindow):
             )
         )
 
+    def playTouchSound(self):
+        self.touchSound.stop()
+        self.touchSound.play()
+
     def initPages(self):
         self.stackedWidget.setCurrentWidget(self.splashPage)
         self.stackedWidgetLaser.setCurrentIndex(0)
@@ -386,16 +390,22 @@ class MainWin(QMainWindow):
         self.btnBackLaser.setVisible(False)
         self.btnUpdateFirmware.clicked.connect(self.updateSystem)
         self.btnShowSplash.clicked.connect(self.showSplash)
+        self.btnColor1.setStyleSheet(BTN_COLOR1)
+        self.btnColor2.setStyleSheet(BTN_COLOR2)
+        self.btnColor3.setStyleSheet(BTN_COLOR3)
+        self.btnColor4.setStyleSheet(BTN_COLOR4)
         self.btnTheme1.setStyleSheet(BTN_THEME1)
         self.btnTheme2.setStyleSheet(BTN_THEME2)
         self.btnTheme3.setStyleSheet(BTN_THEME3)
         self.btnTheme4.setStyleSheet(BTN_THEME4)
-        self.btnTheme5.setStyleSheet(BTN_THEME5)
-        self.btnTheme1.clicked.connect(lambda: self.changeTheme('1'))            
-        self.btnTheme2.clicked.connect(lambda: self.changeTheme('2'))        
-        self.btnTheme3.clicked.connect(lambda: self.changeTheme('3'))
-        self.btnTheme4.clicked.connect(lambda: self.changeTheme('4'))
-        self.btnTheme5.clicked.connect(lambda: self.changeTheme('5'))        
+        self.btnColor1.clicked.connect(lambda: self.changeTheme('C1'))
+        self.btnColor2.clicked.connect(lambda: self.changeTheme('C2'))
+        self.btnColor3.clicked.connect(lambda: self.changeTheme('C3'))
+        self.btnColor4.clicked.connect(lambda: self.changeTheme('C4'))
+        self.btnTheme1.clicked.connect(lambda: self.changeTheme('T1'))
+        self.btnTheme2.clicked.connect(lambda: self.changeTheme('T2'))        
+        self.btnTheme3.clicked.connect(lambda: self.changeTheme('T3'))
+        self.btnTheme4.clicked.connect(lambda: self.changeTheme('T4'))        
         sensors = [
             'btnPhysicalDamage', 'btnOverHeat', 'btnTemp',
             'btnLock', 'btnWaterLevel', 'btnWaterflow',
@@ -425,7 +435,7 @@ class MainWin(QMainWindow):
                 )
             elif btn.objectName() not in sensors:
                 self.touchSignals[btn.objectName()] = btn.pressed.connect(
-                    self.touchSound.play
+                    self.playTouchSound
                 )
 
     def initTextboxes(self):
@@ -548,7 +558,7 @@ class MainWin(QMainWindow):
     def changeTheme(self, theme):
         inc = QIcon()
         dec = QIcon()
-        if theme == '1':
+        if theme in ['C1', 'C2', 'C4']:
             self.sliderEnergy.setStyleSheet(SLIDER_GB)
             self.sliderFrequency.setStyleSheet(SLIDER_GB)
             self.sliderPulseWidth.setStyleSheet(SLIDER_GB)
@@ -574,16 +584,23 @@ class MainWin(QMainWindow):
         self.btnIncP.setIconSize(QSize(120, 120))                
         self.btnIncF.setIconSize(QSize(120, 120)) 
 
-        if theme == '1':
+        if theme == 'T1':
             self.centralWidget().setStyleSheet(THEME1)
-        elif theme == '2':
+        elif theme == 'T2':
             self.centralWidget().setStyleSheet(THEME2)
-        elif theme == '3':
+        elif theme == 'T3':
             self.centralWidget().setStyleSheet(THEME3)
-        elif theme == '4':
+        elif theme == 'T4':
             self.centralWidget().setStyleSheet(THEME4)
-        elif theme == '5':
-            self.centralWidget().setStyleSheet(THEME5)
+        elif theme == 'C1':
+            self.centralWidget().setStyleSheet(COLOR1)
+        elif theme == 'C2':
+            self.centralWidget().setStyleSheet(COLOR2)
+        elif theme == 'C3':
+            self.centralWidget().setStyleSheet(COLOR3)
+        elif theme == 'C4':
+            self.centralWidget().setStyleSheet(COLOR4)
+
 
         self.configs['theme'] = theme
         saveConfigs(self.configs)
@@ -840,7 +857,7 @@ class MainWin(QMainWindow):
             btnDelete.setIconSize(QSize(60, 60))
             btnDelete.setStyleSheet(ACTION_BTN)
             btnDelete.clicked.connect(self.removeLock)
-            btnDelete.pressed.connect(self.touchSound.play)
+            btnDelete.pressed.connect(self.playTouchSound)
             self.tableLock.setCellWidget(i, 3, btnDelete)
 
     def removeLock(self):
@@ -1303,7 +1320,7 @@ class MainWin(QMainWindow):
                 self.btnStandby.setStyleSheet(READY_NOT_SELECTED)
                 self.btnReady.setStyleSheet(READY_SELECTED)
                 self.epfSkinGradeLayout.setEnabled(False)
-                if self.configs['theme'] == '1':
+                if self.configs['theme'] in ['C1', 'C2', 'C4']:
                     self.sliderEnergy.setStyleSheet(SLIDER_DISABLED_GB)
                     self.sliderFrequency.setStyleSheet(SLIDER_DISABLED_GB)
                     self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED_GB)
@@ -1318,7 +1335,7 @@ class MainWin(QMainWindow):
             self.btnStandby.setStyleSheet(READY_SELECTED)
             self.btnReady.setStyleSheet(READY_NOT_SELECTED)
             self.epfSkinGradeLayout.setEnabled(True)
-            if self.configs['theme'] == '1':
+            if self.configs['theme'] in ['C1', 'C2', 'C4']:
                 self.sliderEnergy.setStyleSheet(SLIDER_GB)
                 self.sliderFrequency.setStyleSheet(SLIDER_GB)
                 self.sliderPulseWidth.setStyleSheet(SLIDER_GB)
@@ -1354,7 +1371,7 @@ class MainWin(QMainWindow):
 
     def sliderChgColor(self, i):
         if i == 'pressed':
-            if self.configs['theme'] == '1':
+            if self.configs['theme'] in ['C1', 'C2', 'C4']:
                 self.sliderEnergy.setStyleSheet(SLIDER_SAVED_GB)
                 self.sliderFrequency.setStyleSheet(SLIDER_SAVED_GB)
                 self.sliderPulseWidth.setStyleSheet(SLIDER_SAVED_GB)         
@@ -1364,7 +1381,7 @@ class MainWin(QMainWindow):
                 self.sliderPulseWidth.setStyleSheet(SLIDER_SAVED_GW) 
 
         else:
-            if self.configs['theme'] == '1':
+            if self.configs['theme'] in ['C1', 'C2', 'C4']:
                 self.sliderEnergy.setStyleSheet(SLIDER_GB)
                 self.sliderFrequency.setStyleSheet(SLIDER_GB)
                 self.sliderPulseWidth.setStyleSheet(SLIDER_GB)
@@ -1870,9 +1887,9 @@ class MainWin(QMainWindow):
         rowPosition = self.usersTable.rowCount()
         self.usersTable.insertRow(rowPosition)
         action = Action(self.usersTable, user.phoneNumber)
-        action.btnInfo.pressed.connect(self.touchSound.play)
+        action.btnInfo.pressed.connect(self.playTouchSound)
         action.info.connect(self.info)
-        action.btnDel.pressed.connect(self.touchSound.play)
+        action.btnDel.pressed.connect(self.playTouchSound)
         action.delete.connect(self.removeUser)
         self.usersTable.setCellWidget(rowPosition, 3, action)
         number = QTableWidgetItem(user.phoneNumber)
@@ -2039,6 +2056,7 @@ class MainWin(QMainWindow):
         numberEdit = self.txtEditNumber.text()
         nameEdit = self.txtEditName.text()
         noteEdit = self.textEditNote.toPlainText()
+        numberEdited = False
 
         if not numberEdit:
             self.setLabel(
@@ -2047,14 +2065,6 @@ class MainWin(QMainWindow):
                     self.editLabelTimer
                 )
             self.txtEditNumber.setFocus()
-            return
-
-        if not self.userInfo.phoneNumber in self.usersData:
-            self.setLabel(
-                    TEXT['userBeenDeleted'][self.langIndex], 
-                    self.lblEditUser,
-                    self.editLabelTimer
-                )
             return
 
         if numberEdit != self.userInfo.phoneNumber:
@@ -2068,12 +2078,11 @@ class MainWin(QMainWindow):
                 return
 
             oldNumber = self.userInfo.phoneNumber
-            if self.user and self.user.phoneNumber == oldNumber:
-                self.user.setPhoneNumber(numberEdit)
-
             self.userInfo.setPhoneNumber(numberEdit)
             newNumber = self.userInfo.phoneNumber
             self.usersData[newNumber] = self.usersData.pop(oldNumber)
+            numberEdited = True
+            self.removeUser(oldNumber)
 
 
         if not nameEdit:
@@ -2082,21 +2091,22 @@ class MainWin(QMainWindow):
         self.userInfo.setName(nameEdit)
         self.userInfo.setNote(noteEdit)
 
-        if self.user and self.user.phoneNumber == self.userInfo.phoneNumber:
-            self.user.setName(nameEdit)
-            self.user.setNote(noteEdit)
+        if not numberEdited:
+            self.removeUser(self.userInfo.phoneNumber)
+
+        self.insertToTabel(self.userInfo)
 
         self.setLabel(
                 TEXT['userUpdated'][self.langIndex],
                 self.lblEditUser,
                 self.editLabelTimer, 3
             )
-        self.loadToTabel()
 
     def deleteUser(self):
         number = self.userInfo.phoneNumber        
         del self.usersData[number]
         self.removeUser(number)
+        saveUser(self.usersData)
         self.changeAnimation('horizontal')
         self.stackedWidget.setCurrentWidget(self.userManagementPage)
 

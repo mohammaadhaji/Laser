@@ -178,7 +178,7 @@ def loadConfigs():
             configs['LANGUAGE'] = 'en'
             configs['slideTransition'] = True
             configs['touchSound'] = True
-            configs['theme'] = '1'
+            configs['theme'] = 'C1'
             configs['OwnerInfo'] = ''
             configs['SerialNumber'] = ''
             configs['TotalShotCounter'] = 0

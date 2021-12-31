@@ -11,7 +11,7 @@ import json
 
 class Action(QWidget):
     info = pyqtSignal(str)
-    delete = pyqtSignal(str)
+    delete = pyqtSignal()
     def __init__(self, parent, number):
         super().__init__(parent)
         self.number = number
@@ -31,7 +31,7 @@ class Action(QWidget):
         self.btnDel.setIcon(delIcon)
         self.btnDel.setIconSize(QSize(60, 60))
         self.btnDel.setStyleSheet(stylesheet)
-        self.btnDel.clicked.connect(lambda: self.delete.emit(self.number))
+        self.btnDel.clicked.connect(lambda: self.delete.emit())
 
         spacerItem = QSpacerItem(
             40, 20, 
