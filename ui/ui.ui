@@ -52,7 +52,7 @@ color:white;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>8</number>
       </property>
       <widget class="QWidget" name="UUIDPage">
        <layout class="QVBoxLayout" name="verticalLayout_66">
@@ -6185,7 +6185,7 @@ border:3px solid red;
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="3,2">
+           <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="4,3">
             <property name="leftMargin">
              <number>0</number>
             </property>
@@ -6334,14 +6334,14 @@ QHeaderView::section
                <number>60</number>
               </property>
               <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_11" stretch="0,0,0,0,0">
+               <layout class="QGridLayout" name="gridLayout_8">
                 <property name="topMargin">
                  <number>0</number>
                 </property>
                 <property name="rightMargin">
                  <number>20</number>
                 </property>
-                <item>
+                <item row="0" column="0">
                  <widget class="QLabel" name="lblTotalUsers">
                   <property name="font">
                    <font>
@@ -6353,27 +6353,11 @@ QHeaderView::section
                    <string>Total Users</string>
                   </property>
                   <property name="alignment">
-                   <set>Qt::AlignCenter</set>
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                   </property>
                  </widget>
                 </item>
-                <item>
-                 <widget class="QLabel" name="label_11">
-                  <property name="font">
-                   <font>
-                    <family>Arial</family>
-                    <pointsize>25</pointsize>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string> → </string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item>
+                <item row="0" column="4">
                  <widget class="QLabel" name="lblTotalUsersCount">
                   <property name="font">
                    <font>
@@ -6389,7 +6373,23 @@ QHeaderView::section
                   </property>
                  </widget>
                 </item>
-                <item>
+                <item row="0" column="2">
+                 <widget class="QLabel" name="label_11">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>25</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>→</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="6">
                  <spacer name="horizontalSpacer_67">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -6402,7 +6402,20 @@ QHeaderView::section
                   </property>
                  </spacer>
                 </item>
-                <item>
+                <item row="0" column="5">
+                 <spacer name="horizontalSpacer_111">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="0" column="7">
                  <widget class="QPushButton" name="btnSort">
                   <property name="minimumSize">
                    <size>
@@ -6434,6 +6447,109 @@ border: 1px solid white;
                   </property>
                   <property name="text">
                    <string>Sort By Session</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <spacer name="horizontalSpacer_113">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="0" column="3">
+                 <spacer name="horizontalSpacer_112">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="lblSelectedUsers">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>25</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Selected Users</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QLabel" name="label_19">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>25</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>→</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="4">
+                 <widget class="QLabel" name="lblSelectedUsersValue">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>25</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>0</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="7">
+                 <widget class="QPushButton" name="btnDelSelectedUsers">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>20</pointsize>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+padding-left:20px;
+padding-right:20px;
+min-height: 100px;
+border-radius: 5px;
+border: 1px solid gray;
+outline:0;
+color:white;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string>Remove</string>
                   </property>
                  </widget>
                 </item>

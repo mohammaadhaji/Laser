@@ -5,13 +5,13 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtWidgets, QtCore
 from paths import *
-from styles import ACTION_BTN
+from styles import ACTION_BTN, CHECKBOX_DEL
 import json
 
 
 class Action(QWidget):
     info = pyqtSignal(str)
-    delete = pyqtSignal()
+    delete = pyqtSignal(str)
     def __init__(self, parent, number):
         super().__init__(parent)
         self.number = number
@@ -25,20 +25,25 @@ class Action(QWidget):
         self.btnInfo.setStyleSheet(stylesheet)
         self.btnInfo.clicked.connect(lambda: self.info.emit(self.number))
 
-        self.btnDel = QPushButton(self)
-        delIcon = QIcon()
-        delIcon.addPixmap(QPixmap(DELETE_ICON), QIcon.Normal, QIcon.Off)
-        self.btnDel.setIcon(delIcon)
-        self.btnDel.setIconSize(QSize(60, 60))
-        self.btnDel.setStyleSheet(stylesheet)
-        self.btnDel.clicked.connect(lambda: self.delete.emit())
+        # self.btnDel = QPushButton(self)
+        # delIcon = QIcon()
+        # delIcon.addPixmap(QPixmap(DELETE_ICON), QIcon.Normal, QIcon.Off)
+        # self.btnDel.setIcon(delIcon)
+        # self.btnDel.setIconSize(QSize(60, 60))
+        # self.btnDel.setStyleSheet(stylesheet)
+        # self.btnDel.clicked.connect(lambda: self.delete.emit())
+
+        self.chbDel = QCheckBox(self)
+        self.chbDel.setMinimumSize(QtCore.QSize(60, 60))
+        self.chbDel.setStyleSheet(CHECKBOX_DEL)
+        self.chbDel.toggled.connect(lambda: self.delete.emit(self.number))
 
         spacerItem = QSpacerItem(
             40, 20, 
             QSizePolicy.Expanding, 
             QSizePolicy.Minimum
         )
-        # layout.addItem(spacerItem)
+        layout.addItem(spacerItem)
         layout.addWidget(self.btnInfo)
         spacerItem1 = QSpacerItem(
             40, 20, 
@@ -46,13 +51,13 @@ class Action(QWidget):
             QSizePolicy.Minimum
         )
         layout.addItem(spacerItem1)
-        layout.addWidget(self.btnDel)
+        layout.addWidget(self.chbDel)
         spacerItem2 = QSpacerItem(
             40, 20, 
             QSizePolicy.Expanding, 
             QSizePolicy.Minimum
         )
-        # layout.addItem(spacerItem2)
+        layout.addItem(spacerItem2)
 
 class LineEdit(QLineEdit):
     fIn = pyqtSignal()

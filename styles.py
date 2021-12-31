@@ -140,11 +140,9 @@ ACTION_BTN = """
 QPushButton {
     border-radius:10px;
     outline:0;
-    margin-left:15px;
-    margin-right:15px;
 }
-    QPushButton:pressed{
-    margin: 10px 15px 0 15px;
+QPushButton:pressed{
+    margin: 10px 0 0 0;
 }
 """
 
@@ -476,4 +474,11 @@ QWidget#centralwidget {
     background-color: rgb(32, 74, 135);
     background-image: url(ui/images/wallpaper4.jpg); 
 }
+"""
+
+CHECKBOX_DEL = """
+QCheckBox { margin-bottom: 5px;}
+QCheckBox::indicator { width : 50; height : 50; }
+QCheckBox::indicator::unchecked { image : url(ui/images/unchecked.png); }
+QCheckBox::indicator::checked { image : url(ui/images/checked.png); }
 """

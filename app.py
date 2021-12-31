@@ -86,7 +86,7 @@ class MainWin(QMainWindow):
         self.user = None
         self.userNextSession = None
         self.sortBySession = False
-        self.selectedUsers = 0
+        self.selectedUsers = []
         self.shift = False
         self.farsi = False
         self.sex = 'female'
@@ -390,6 +390,7 @@ class MainWin(QMainWindow):
         self.btnBackLaser.setVisible(False)
         self.btnUpdateFirmware.clicked.connect(self.updateSystem)
         self.btnShowSplash.clicked.connect(self.showSplash)
+        self.btnDelSelectedUsers.clicked.connect(self.removeSelectedUsers)
         self.btnColor1.setStyleSheet(BTN_COLOR1)
         self.btnColor2.setStyleSheet(BTN_COLOR2)
         self.btnColor3.setStyleSheet(BTN_COLOR3)
@@ -1889,8 +1890,9 @@ class MainWin(QMainWindow):
         action = Action(self.usersTable, user.phoneNumber)
         action.btnInfo.pressed.connect(self.playTouchSound)
         action.info.connect(self.info)
-        action.btnDel.pressed.connect(self.playTouchSound)
-        action.delete.connect(self.removeUser)
+        action.chbDel.toggled.connect(self.playTouchSound)
+        action.delete.connect(self.selecetCheckedUsers)
+        # action.delete.connect(self.removeUser)
         self.usersTable.setCellWidget(rowPosition, 3, action)
         number = QTableWidgetItem(user.phoneNumber)
         name = QTableWidgetItem(user.name)
@@ -1902,6 +1904,23 @@ class MainWin(QMainWindow):
         self.usersTable.setItem(rowPosition, 1, name)
         self.usersTable.setItem(rowPosition, 2, sessions)
         self.lblTotalUsersCount.setText(f'{self.usersTable.rowCount()}')
+
+
+    def selecetCheckedUsers(self, number):
+        if number in self.selectedUsers:
+            self.selectedUsers.remove(number)
+        else:
+            self.selectedUsers.append(number)
+        
+        self.lblSelectedUsersValue.setText(f'{len(self.selectedUsers)}')
+
+    def removeSelectedUsers(self):
+        for num in self.selectedUsers:
+            self.removeUser(num)
+            del self.usersData[num]
+        
+        self.lblSelectedUsersValue.setText('0')
+        self.selectedUsers.clear()
 
     def removeUser(self, number=None):
         if number:
@@ -2220,6 +2239,8 @@ class MainWin(QMainWindow):
     def endSession(self):
         self.user.setCurrentSession('finished')
         self.user.addSession()
+        self.removeUser(self.user.phoneNumber)
+        self.insertToTabel(self.user)
         self.user = None
         self.configs['TotalShotCounter'] += self.currentCounter
         saveConfigs(self.configs)
