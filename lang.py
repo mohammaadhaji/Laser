@@ -19,7 +19,7 @@ TEXT = {
     'usersTable1': ['Name', 'نام'],
     'usersTable2': ['Sessions', 'تعداد جلسات'],
     'usersTable3': ['Action', 'عملیات'],
-    'btnSort': ['Sort By Session', 'مرتب سازی تعداد جلسات'],
+    'btnSort': ['Sort By Session', 'مرتب سازی جلسات'],
     'txtSearch': ['Search By Number', 'جستوجو شماره تلفن'],
     'lblNote': ['Note', 'یادداشت'],
     'lblName': ['Name', 'نام'],
@@ -149,5 +149,7 @@ TEXT = {
     'lblTomorrow': ['Tomorrow', 'فردا'],
     'lblTotalUsers': ['Total Users', 'تعداد کل'],
     'btnPower': [' Power Off', '     خاموش'],
-    'btnRestart': [' Restart     ', 'ری استارت']
+    'btnRestart': [' Restart     ', 'ری استارت'],
+    'lblSelectedUsers': ['Selected Users', 'انتخاب شده'],
+    'btnDelSelectedUsers': ['Remove', 'حذف کردن']
 }
