@@ -147,5 +147,7 @@ TEXT = {
     'lblTheme': ['Themes', 'تم ها'],
     'lblAfterTomorrow': ['Day After Tomorrow', 'پس فردا'],
     'lblTomorrow': ['Tomorrow', 'فردا'],
-    'lblTotalUsers': ['Total Users', 'تعداد کل']
+    'lblTotalUsers': ['Total Users', 'تعداد کل'],
+    'btnPower': [' Power Off', '     خاموش'],
+    'btnRestart': [' Restart     ', 'ری استارت']
 }

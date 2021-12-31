@@ -2113,6 +2113,7 @@ class MainWin(QMainWindow):
     def submit(self):
         number = self.txtNumberSubmit.text()
         name = self.txtNameSubmit.text()
+        name = name if name else 'User ' + str(len(self.usersData) + 1)
 
         if not number:
             self.setLabel(

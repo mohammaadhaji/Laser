@@ -6,13 +6,9 @@ from utility import randID
 
 
 class User:
-    def __init__(self, number, name=''):
+    def __init__(self, number, name):
         self.phoneNumber = number
-        if name:
-            self.name = name
-        else:
-            self.name = 'User ' + str(len(os.listdir(USERS_DIR)))
-
+        self.name = name
         self.sessionNumber = 1
         self.sessions = {} 
         self.note = ''
