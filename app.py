@@ -9,7 +9,7 @@ from user import *
 from lock import *
 from itertools import chain
 from pathlib import Path
-import jdatetime, math, sys, time
+import jdatetime, math, sys
 
 
 class MainWin(QMainWindow):
@@ -46,10 +46,6 @@ class MainWin(QMainWindow):
         )
         self.serialC.sysDate.connect(self.receiveDate)
         self.serialC.sysClock.connect(self.adjustTime)
-        self.loadUsersT = LoadAllUsers()
-        self.loadUsersT.count.connect(self.setUserProgress)
-        self.loadUsersT.finish.connect(self.loadUsersFinished)
-        self.loadUsersT.user.connect(self.insetUserTable)
         self.updateT = UpdateFirmware()
         self.updateT.result.connect(self.updateResult)
         self.license = self.configs['LICENSE']
@@ -85,9 +81,7 @@ class MainWin(QMainWindow):
         self.initTables()
         self.initTextboxes()
         self.user = None
-        self.userInfo = None
         self.userNextSession = None
-        self.laodUsersFinishedFlag = False 
         self.sortBySession = False
         self.shift = False
         self.farsi = False
@@ -184,7 +178,6 @@ class MainWin(QMainWindow):
         self.stackedWidgetSettings.setTransitionSpeed(500)
         self.stackedWidgetSettings.setTransitionEasingCurve(QEasingCurve.OutQuart)
         self.stackedWidgetSettings.setSlideTransition(self.configs['slideTransition'])
-        self.stackedWidgetSettings.pageChanged.connect(self.loadUsersStart)
         self.hwStackedWidget.setTransitionDirection(Qt.Vertical)
         self.hwStackedWidget.setTransitionSpeed(500)
         self.hwStackedWidget.setTransitionEasingCurve(QEasingCurve.OutQuart)
@@ -221,7 +214,6 @@ class MainWin(QMainWindow):
         self.sysTimeStatusLabelTimer = QTimer()
         self.lockErrorLabel = QTimer()
         self.updateFirmwareLabelTimer = QTimer()
-        self.UserNotFoundLabelTimer = QTimer()
         self.systemTimeTimer = QTimer()
         self.readyErrorTimer =  QTimer()
         self.monitorSensorsTimer = QTimer()
@@ -263,9 +255,6 @@ class MainWin(QMainWindow):
         self.updateFirmwareLabelTimer.timeout.connect(
             lambda: self.clearLabel(self.lblUpdateFirmware, self.updateFirmwareLabelTimer)
         )
-        self.UserNotFoundLabelTimer.timeout.connect(
-            lambda: self.clearLabel(self.lblUserNotFound, self.UserNotFoundLabelTimer)
-        )
         self.incDaysTimer.timeout.connect(lambda: self.incDecDay('inc'))
         self.decDaysTimer.timeout.connect(lambda: self.incDecDay('dec'))
         self.backspaceTimer.timeout.connect(self.type(lambda: 'backspace'))
@@ -295,7 +284,9 @@ class MainWin(QMainWindow):
         self.tableLock.verticalHeader().setDefaultSectionSize(70)
         self.tableLock.horizontalHeader().setFixedHeight(60)
         self.tableLock.verticalHeader().setVisible(False)
-        
+        header = self.userInfoTable.horizontalHeader()
+        header.setSectionResizeMode(0,  QHeaderView.ResizeToContents)
+
     def initButtons(self):
         self.btnEnLang.clicked.connect(lambda: self.changeLang('en'))
         self.btnFaLang.clicked.connect(lambda: self.changeLang('fa'))
@@ -310,23 +301,22 @@ class MainWin(QMainWindow):
         self.btnSubmit.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnSubmit.clicked.connect(self.submit)
         self.btnBackNewSession.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
+        self.btnBackManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
+        self.btnBackManagement.clicked.connect(lambda: self.txtSearch.clear())
         self.btnBackSettings.clicked.connect(self.backSettings)
         self.btnBackSettings.clicked.connect(self.systemTimeTimer.stop)
         self.btnBackEditUser.clicked.connect(lambda: self.changeAnimation('horizontal'))
-        self.btnBackEditUser.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
-        self.btnBackEditUser.clicked.connect(self.clearUserInfo)
+        self.btnBackEditUser.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.userManagementPage))
         self.btnSettings.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnSettings.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.settingsPage))
         self.btnUiSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.uiPage))
         self.btnEnterHw.clicked.connect(self.loginHw)
         self.btnHwSettings.clicked.connect(self.btnHwsettingClicked)
+        self.btnUserManagement.clicked.connect(self.loadToTabel)
         self.btnSaveInfo.clicked.connect(self.saveUserInfo)
         self.btnDeleteUser.clicked.connect(self.deleteUser)
-        self.btnUmSettings.clicked.connect(lambda: self.changeAnimation('horizontal'))
-        self.btnUmSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.uMPage))
-        self.btnFind.clicked.connect(self.info)
-        self.btnUserInfo.clicked.connect(lambda: self.changeAnimation('horizontal'))
-        self.btnUserInfo.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.userInfoPage))
+        self.btnUserManagement.clicked.connect(lambda: self.changeAnimation('horizontal'))
+        self.btnUserManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.userManagementPage))
         self.btnNotify.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnNotify.clicked.connect(self.futureSessions)
         self.btnNotify.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.notifyPage))
@@ -437,7 +427,7 @@ class MainWin(QMainWindow):
         self.txtNameSubmit.fIn.connect(lambda: self.keyboard('show'))
         self.txtEditNumber.fIn.connect(lambda: self.keyboard('show'))
         self.txtEditName.fIn.connect(lambda: self.keyboard('show'))
-        # self.textEditNote.fIn.connect(lambda: self.keyboard('show'))
+        self.textEditNote.fIn.connect(lambda: self.keyboard('show'))
         self.txtSearch.fIn.connect(lambda: self.keyboard('show'))
         self.txtDate.fIn.connect(lambda: self.keyboard('show'))
         self.txtDays.fIn.connect(lambda: self.keyboard('show'))
@@ -463,12 +453,10 @@ class MainWin(QMainWindow):
         self.txtLockMonth.fIn.connect(lambda: self.keyboard('show'))
         self.txtLockDay.fIn.connect(lambda: self.keyboard('show'))
         self.txtOwnerInfo.fIn.connect(lambda: self.keyboard('show'))
-        self.txtSearchInfo.fIn.connect(lambda: self.keyboard('show'))
         self.txtOwnerInfo.setText(self.configs['OwnerInfo'])
         self.txtOwnerInfo.textChanged.connect(self.setOwnerInfo)
         self.txtDays.textChanged.connect(self.setDateText)
         self.txtDate.textChanged.connect(self.setDaysText)
-        self.txtSearchInfo.textChanged.connect(lambda: self.clearUserInfo(False))
         reg_ex = QRegExp("[0-9\(\)]*")
         input_validator = QRegExpValidator(reg_ex, self.txtDays)
         self.txtDays.setValidator(input_validator)
@@ -1182,8 +1170,7 @@ class MainWin(QMainWindow):
                 if self.userNextSession.currentSession == 'started':
                     self.endSession()
                 else:
-                    self.info()
-                    self.stackedWidget.setCurrentWidget(self.userInfoPage)
+                    self.info(self.userNextSession.phoneNumber)
             except ValueError as e:
                 self.setLabel(
                         str(e).capitalize() + '.', 
@@ -1204,8 +1191,7 @@ class MainWin(QMainWindow):
             self.changeAnimation('vertical')
             self.endSession()
         else:
-            self.info()
-            self.stackedWidget.setCurrentWidget(self.userInfoPage)
+            self.info(self.userNextSession.phoneNumber)
 
     def incDecDay(self, operation):
         if not self.txtDays.text():
@@ -1242,9 +1228,8 @@ class MainWin(QMainWindow):
         elif page == 'edit':
             self.userNextSession = self.userInfo
             
-        if self.userNextSession:
-            self.changeAnimation('vertical')
-            self.stackedWidget.setCurrentWidget(self.nextSessionPage)
+        self.changeAnimation('vertical')
+        self.stackedWidget.setCurrentWidget(self.nextSessionPage)
 
     def setReady(self, ready):
         if ready:
@@ -1831,76 +1816,42 @@ class MainWin(QMainWindow):
         else:
             self.usersTable.sortItems(2, Qt.AscendingOrder)
 
-    def setUserProgress(self, count):
-        self.progressBar.setRange(0, count)
+    def loadToTabel(self):
+        users = loadAllUsers()
+        self.usersTable.setRowCount(len(users))
+        self.lblTotalUsersCount.setText(f'{len(users)}')
+        row = 0
+        for user in users:
+            action = Action(self.usersTable, user.phoneNumber)
+            action.btnInfo.pressed.connect(self.touchSound.play)
+            action.info.connect(self.info)
+            action.btnDel.pressed.connect(self.touchSound.play)
+            action.delete.connect(self.removeUser)
+            self.usersTable.setCellWidget(row, 3, action)
+            number = QTableWidgetItem(user.phoneNumber)
+            name = QTableWidgetItem(user.name)
+            sessions = QTableWidgetItem(str(user.sessionNumber - 1))
+            number.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            name.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            sessions.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            self.usersTable.setItem(row, 0, number)
+            self.usersTable.setItem(row, 1, name)
+            self.usersTable.setItem(row, 2, sessions)
+            row += 1
 
-    def loadUsersFinished(self):
-        self.progressBar.setVisible(False)
-        self.laodUsersFinishedFlag = True
+    def removeUser(self):
+        button = self.sender()
+        if button:
+            row = self.usersTable.indexAt(button.pos()).row()
+            number = self.usersTable.item(row, 0).text()
+            deleteUser(number)
+            self.usersTable.removeRow(row)
+            totalUsers = countUsers()
+            self.lblTotalUsersCount.setText(f'{totalUsers}')
 
-    def loadUsersStart(self):
-        index = self.stackedWidgetSettings.indexOf(self.uMPage)
-        if self.stackedWidgetSettings.currentIndex() == index:
-            if not self.laodUsersFinishedFlag:
-                self.loadUsersT.start()
-
-    def insetUserTable(self, user):
-        row = self.usersTable.rowCount()
-        self.usersTable.insertRow(row)
-        number = QTableWidgetItem(user['phoneNumber'])
-        name = QTableWidgetItem(user['name'])
-        sessions = QTableWidgetItem(user['sessionNumber'])
-        number.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        name.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        sessions.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        self.usersTable.setItem(row, 0, number)
-        self.usersTable.setItem(row, 1, name)
-        self.usersTable.setItem(row, 2, sessions)
-        btnDel = Action(self.usersTable)
-        btnDel.delete.connect(self.removeUserTable)
-        btnDel.btnDel.pressed.connect(self.touchSound.play)
-        self.usersTable.setCellWidget(row, 3, btnDel)
-        self.lblTotalUsersCount.setText(f'{self.usersTable.rowCount()}')
-        self.progressBar.setValue(self.usersTable.rowCount())
-
-    def removeUserTable(self, number=None):
-        if number:
-            for row in range(self.usersTable.rowCount()):
-                x = self.usersTable.model().index(row,0).data()
-                if x == number:
-                    self.usersTable.model().removeRow(row)
-                    self.lblTotalUsersCount.setText(str(self.usersTable.rowCount()))
-        else:
-            button = self.sender()
-            if button:
-                row = self.usersTable.indexAt(button.pos()).row()
-                number = self.usersTable.item(row, 0).text()
-                deleteUser(number)
-                self.usersTable.removeRow(row)
-                totalUsers = countUsers()
-                self.lblTotalUsersCount.setText(f'{totalUsers}')
-
-    def info(self):
-        number = self.txtSearchInfo.text()
-        if not number:
-            self.setLabel(
-                    TEXT['emptyNumber'][self.langIndex], 
-                    self.lblUserNotFound,
-                    self.UserNotFoundLabelTimer
-                )
-            self.txtSearchInfo.setFocus()
-            self.keyboard('show')
-            return
-
-        self.userInfo = loadUser(self.txtSearchInfo.text())
-        if not self.userInfo:
-            self.clearUserInfo(False)
-            self.setLabel(
-                'There is no user with this number.',
-                self.lblUserNotFound,
-                self.UserNotFoundLabelTimer
-            )
-            return
+    def info(self, num):
+        self.stackedWidget.setCurrentWidget(self.editUserPage)
+        self.userInfo = loadUser(num)
         nextSessionDate = self.userInfo.nextSession
         if not nextSessionDate:
             self.txtNextSession.setText(TEXT['notSet'][self.langIndex])
@@ -1920,7 +1871,7 @@ class MainWin(QMainWindow):
 
         self.txtEditNumber.setText(self.userInfo.phoneNumber)
         self.txtEditName.setText(self.userInfo.name)
-        # self.textEditNote.setPlainText(self.userInfo.note)
+        self.textEditNote.setPlainText(self.userInfo.note)
         sessions = self.userInfo.sessions
         totalSessions = len(sessions)+1 if len(sessions) > 0 else 0
         self.userInfoTable.setRowCount(totalSessions)
@@ -1975,11 +1926,8 @@ class MainWin(QMainWindow):
         self.userInfoTable.setItem(lastRow, 6, leg)
         self.userInfoTable.setItem(lastRow, 7, totalShots)
 
-        header = self.userInfoTable.horizontalHeader()
-        header.setSectionResizeMode(0,  QHeaderView.ResizeToContents)
-
     def futureSessions(self):
-        users = loadAllUsers2()
+        users = loadAllUsers()
         rowTomorrow = 0
         rowAfterTomorrow = 0
         for user in users:
@@ -2033,12 +1981,9 @@ class MainWin(QMainWindow):
         self.tableAfterTomorrow.setRowCount(rowAfterTomorrow)
 
     def saveUserInfo(self):
-        if not self.userInfo:
-            return
-
         numberEdit = self.txtEditNumber.text()
         nameEdit = self.txtEditName.text()
-        # noteEdit = self.textEditNote.toPlainText()
+        noteEdit = self.textEditNote.toPlainText()
 
         if not numberEdit:
             self.setLabel(
@@ -2079,11 +2024,11 @@ class MainWin(QMainWindow):
             nameEdit = 'Nobody'
 
         self.userInfo.setName(nameEdit)
-        # self.userInfo.setNote(noteEdit)
+        self.userInfo.setNote(noteEdit)
 
         if self.user and self.user.phoneNumber == self.userInfo.phoneNumber:
             self.user.setName(nameEdit)
-            # self.user.setNote(noteEdit)
+            self.user.setNote(noteEdit)
 
         self.userInfo.save()
         self.setLabel(
@@ -2091,28 +2036,14 @@ class MainWin(QMainWindow):
                 self.lblEditUser,
                 self.editLabelTimer, 3
             )
-        # self.loadToTabel()
+        self.loadToTabel()
 
     def deleteUser(self):
-        if not self.userInfo:
-            return
         number = self.userInfo.phoneNumber        
         deleteUser(number)
-        self.removeUserTable(number)
-        self.clearUserInfo()
+        self.loadToTabel()
         self.changeAnimation('horizontal')
-        self.stackedWidget.setCurrentWidget(self.mainPage)
-
-    def clearUserInfo(self, clearSearch=True):
-        if clearSearch:
-            self.txtSearchInfo.clear()
-        self.txtNextSession.clear()
-        self.txtEditNumber.clear()
-        self.txtEditName.clear()
-        self.userInfo = None
-        self.userInfoTable.setRowCount(0)
-        header = self.userInfoTable.horizontalHeader()
-        header.setSectionResizeMode(0,  QHeaderView.Stretch)
+        self.stackedWidget.setCurrentWidget(self.userManagementPage)
 
     def submit(self):
         number = self.txtNumberSubmit.text()
@@ -2138,13 +2069,6 @@ class MainWin(QMainWindow):
 
         user = User(number, name)
         user.save()
-        
-        x = {
-            'name':  user.name,
-            'phoneNumber': user.phoneNumber,
-            'sessionNumber': str(user.sessionNumber - 1)
-        }
-        self.insetUserTable(x)
         self.txtNumber.setText(number)
         self.txtNumberSubmit.clear()
         self.txtNameSubmit.clear()
