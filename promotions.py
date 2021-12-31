@@ -38,7 +38,7 @@ class Action(QWidget):
             QSizePolicy.Expanding, 
             QSizePolicy.Minimum
         )
-        layout.addItem(spacerItem)
+        # layout.addItem(spacerItem)
         layout.addWidget(self.btnInfo)
         spacerItem1 = QSpacerItem(
             40, 20, 
@@ -52,7 +52,7 @@ class Action(QWidget):
             QSizePolicy.Expanding, 
             QSizePolicy.Minimum
         )
-        layout.addItem(spacerItem2)
+        # layout.addItem(spacerItem2)
 
 class LineEdit(QLineEdit):
     fIn = pyqtSignal()

@@ -301,7 +301,9 @@ class MainWin(QMainWindow):
         self.btnSort.clicked.connect(self.sort)
         self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
         self.btnEndSession.clicked.connect(lambda: enterPage(MAIN_PAGE))
+        self.btnPowerOption.clicked.connect(lambda: self.powerOption('show'))
         self.btnPower.clicked.connect(self.powerOff)
+        self.btnRestart.clicked.connect(self.restart)
         self.btnPower_2.clicked.connect(self.powerOff)
         self.btnPower_3.clicked.connect(self.powerOff)
         self.btnStartSession.clicked.connect(self.startSession)
@@ -630,6 +632,13 @@ class MainWin(QMainWindow):
             self.close()
         else:
             os.system('poweroff')
+        
+    def restart(self):
+        enterPage(SHUTDONW_PAGE)
+        if platform.system() == 'Windows':
+            self.close()
+        else:
+            os.system('reboot')
 
     def restartForUpdate(self):
         self.restartCounter -= 1
@@ -1715,6 +1724,7 @@ class MainWin(QMainWindow):
         x = left < event.x() < right
         y = bottom < self.height() - event.y() < top
 
+        self.powerOption('hide')
         if not (x and y):
             self.keyboard('hide')
 
@@ -1809,6 +1819,28 @@ class MainWin(QMainWindow):
         self.animation2.setEndValue(newHeight)
         self.animation2.setEasingCurve(QEasingCurve.InOutQuart)
         self.animation2.start()
+
+    def powerOption(self, i):
+        height = self.powerFrame.height()
+        if i == 'hide' and height == 0:
+            return
+
+        if i == 'show' and height > 0:
+            return
+
+        if i == 'hide':
+            height = 300
+            newHeight = 0
+        else:
+            height = 0
+            newHeight = 300
+
+        self.animation3 = QPropertyAnimation(self.powerFrame, b"maximumHeight")
+        self.animation3.setDuration(500)
+        self.animation3.setStartValue(height)
+        self.animation3.setEndValue(newHeight)
+        self.animation3.setEasingCurve(QEasingCurve.InOutQuart)
+        self.animation3.start()
 
     def btnHwsettingClicked(self):
         self.hwPass('show')

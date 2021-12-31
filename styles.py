@@ -140,9 +140,11 @@ ACTION_BTN = """
 QPushButton {
     border-radius:10px;
     outline:0;
+    margin-left:15px;
+    margin-right:15px;
 }
     QPushButton:pressed{
-    margin: 10px 0 0 0;
+    margin: 10px 15px 0 15px;
 }
 """
 

@@ -53,14 +53,14 @@ class User:
 
 
 def saveUser(usersData):
-    filePath = join(USERS_DIR, 'USERS_DATE')
+    filePath = join(USERS_DIR, 'USERS_DATA')
     fileHandler = open(filePath, 'wb')
     usersData = pickle.dump(usersData, fileHandler)
     fileHandler.close()
    
 
 def loadUsers():
-    filePath = join(USERS_DIR, 'USERS_DATE')
+    filePath = join(USERS_DIR, 'USERS_DATA')
     if isfile(filePath):
         fileHandler = open(filePath, 'rb')
         usersData = pickle.load(fileHandler)

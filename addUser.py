@@ -14,7 +14,7 @@ if not len(arg) == 2:
     print(help)
 else:
     if arg[1].isnumeric():
-        filePath = join(USERS_DIR, 'USERS_DATE')
+        filePath = join(USERS_DIR, 'USERS_DATA')
         if isfile(filePath):
             os.remove(filePath)
         fileHandler = open(filePath, 'wb')
