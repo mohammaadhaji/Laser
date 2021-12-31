@@ -1,3 +1,4 @@
+from os import stat
 from PyQt5 import uic
 from communication import *
 from promotions import *
@@ -21,6 +22,7 @@ class MainWin(QMainWindow):
     def setupUi(self):
         # self.setCursor(Qt.BlankCursor)
         self.configs = loadConfigs()
+        self.usersData = loadUsers()
         if RPI_VERSION == '3':
             self.serialC = SerialTimer()
         else:
@@ -83,6 +85,7 @@ class MainWin(QMainWindow):
         self.user = None
         self.userNextSession = None
         self.sortBySession = False
+        self.selectedUsers = 0
         self.shift = False
         self.farsi = False
         self.sex = 'female'
@@ -622,6 +625,10 @@ class MainWin(QMainWindow):
             self.close()
         else:
             os.system('poweroff')
+
+    def close(self, event):
+        saveUser(self.usersData)
+        return super().close()
 
     def restartForUpdate(self):
         self.restartCounter -= 1
@@ -1166,7 +1173,6 @@ class MainWin(QMainWindow):
                         )
                     return
                 self.userNextSession.setNextSession(date)
-                self.userNextSession.save()
                 if self.userNextSession.currentSession == 'started':
                     self.endSession()
                 else:
@@ -1817,7 +1823,7 @@ class MainWin(QMainWindow):
             self.usersTable.sortItems(2, Qt.AscendingOrder)
 
     def loadToTabel(self):
-        users = loadAllUsers()
+        users = self.usersData.values()
         self.usersTable.setRowCount(len(users))
         self.lblTotalUsersCount.setText(f'{len(users)}')
         row = 0
@@ -1844,14 +1850,14 @@ class MainWin(QMainWindow):
         if button:
             row = self.usersTable.indexAt(button.pos()).row()
             number = self.usersTable.item(row, 0).text()
-            deleteUser(number)
+            del self.usersData[number]
             self.usersTable.removeRow(row)
-            totalUsers = countUsers()
+            totalUsers = len(self.usersData)
             self.lblTotalUsersCount.setText(f'{totalUsers}')
 
     def info(self, num):
         self.stackedWidget.setCurrentWidget(self.editUserPage)
-        self.userInfo = loadUser(num)
+        self.userInfo = self.usersData[num]
         nextSessionDate = self.userInfo.nextSession
         if not nextSessionDate:
             self.txtNextSession.setText(TEXT['notSet'][self.langIndex])
@@ -1927,7 +1933,7 @@ class MainWin(QMainWindow):
         self.userInfoTable.setItem(lastRow, 7, totalShots)
 
     def futureSessions(self):
-        users = loadAllUsers()
+        users = self.usersData.values()
         rowTomorrow = 0
         rowAfterTomorrow = 0
         for user in users:
@@ -1994,7 +2000,7 @@ class MainWin(QMainWindow):
             self.txtEditNumber.setFocus()
             return
 
-        if not userExists(self.userInfo.phoneNumber):
+        if not self.userInfo.phoneNumber in self.usersData:
             self.setLabel(
                     TEXT['userBeenDeleted'][self.langIndex], 
                     self.lblEditUser,
@@ -2003,7 +2009,7 @@ class MainWin(QMainWindow):
             return
 
         if numberEdit != self.userInfo.phoneNumber:
-            if userExists(numberEdit):
+            if numberEdit in self.usersData:
                 self.setLabel(
                     TEXT['alreadyExists'][self.langIndex], 
                     self.lblEditUser,
@@ -2018,7 +2024,8 @@ class MainWin(QMainWindow):
 
             self.userInfo.setPhoneNumber(numberEdit)
             newNumber = self.userInfo.phoneNumber
-            renameUserFile(oldNumber, newNumber)
+            self.usersData[newNumber] = self.usersData.pop(oldNumber)
+
 
         if not nameEdit:
             nameEdit = 'Nobody'
@@ -2030,7 +2037,6 @@ class MainWin(QMainWindow):
             self.user.setName(nameEdit)
             self.user.setNote(noteEdit)
 
-        self.userInfo.save()
         self.setLabel(
                 TEXT['userUpdated'][self.langIndex],
                 self.lblEditUser,
@@ -2040,7 +2046,7 @@ class MainWin(QMainWindow):
 
     def deleteUser(self):
         number = self.userInfo.phoneNumber        
-        deleteUser(number)
+        del self.usersData[number]
         self.loadToTabel()
         self.changeAnimation('horizontal')
         self.stackedWidget.setCurrentWidget(self.userManagementPage)
@@ -2058,7 +2064,7 @@ class MainWin(QMainWindow):
             self.txtNumberSubmit.setFocus()
             return
 
-        if userExists(number):
+        if number in self.usersData:
             self.setLabel(
                     TEXT['alreadyExistsSub'][self.langIndex], 
                     self.lblSubmit, 
@@ -2067,8 +2073,8 @@ class MainWin(QMainWindow):
             self.txtNumberSubmit.setFocus()
             return
 
-        user = User(number, name)
-        user.save()
+        self.usersData[number] = User(number, name)
+        print(self.usersData)
         self.txtNumber.setText(number)
         self.txtNumberSubmit.clear()
         self.txtNameSubmit.clear()
@@ -2090,15 +2096,15 @@ class MainWin(QMainWindow):
                 self.txtNumber.selectAll()
                 return
 
-            self.user = loadUser(numberEntered)
 
-            if not self.user:
+            if not numberEntered in  self.usersData:
                 self.txtNumberSubmit.setText(numberEntered)
                 self.txtNameSubmit.setFocus()
                 self.changeAnimation('vertical')
                 self.stackedWidget.setCurrentWidget(self.newUserPage)
                 return
 
+            self.user = self.usersData[numberEntered]
             self.user.setCurrentSession('started')
             self.txtCurrentUser.setText(self.user.name)
             self.txtCurrentSnumber.setText(str(self.user.sessionNumber))
@@ -2109,7 +2115,7 @@ class MainWin(QMainWindow):
             enterPage(BODY_PART_PAGE)
 
         elif self.user and self.user.currentSession == 'started':
-            if not userExists(self.user.phoneNumber):
+            if not self.user.phoneNumber in self.usersData:
                     self.setLabel(
                             TEXT['userBeenDeleted'][self.langIndex], 
                             self.lblLogin, 
@@ -2131,7 +2137,7 @@ class MainWin(QMainWindow):
                 self.txtNumber.selectAll()
                 return
             else:
-                if not userExists(self.user.phoneNumber):
+                if not self.user.phoneNumber in self.usersData:
                     self.setLabel(
                             TEXT['userBeenDeleted'][self.langIndex], 
                             self.lblLogin, 
@@ -2154,7 +2160,6 @@ class MainWin(QMainWindow):
     def endSession(self):
         self.user.setCurrentSession('finished')
         self.user.addSession()
-        self.user.save()
         self.user = None
         self.configs['TotalShotCounter'] += self.currentCounter
         saveConfigs(self.configs)

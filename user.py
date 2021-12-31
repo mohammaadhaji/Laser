@@ -2,6 +2,8 @@ from os.path import join, isfile
 from paths import USERS_DIR
 import jdatetime, pickle, os
 
+from utility import randID
+
 
 class User:
     def __init__(self, number, name=''):
@@ -45,55 +47,42 @@ class User:
         self.shot = dict.fromkeys(self.shot, 0)
         self.sessionNumber += 1
 
-    def save(self):
-        filePath = join(USERS_DIR, self.phoneNumber)
-        fileHandler = open(filePath, 'wb')
-        pickle.dump(self, fileHandler)
-        fileHandler.close()
-
     def __str__(self):
         return '<' + self.name + '> ' + '(' + self.phoneNumber + ')'
 
-def loadUser(number):
-    filePath = join(USERS_DIR, number)
+
+
+def saveUser(usersData):
+    filePath = join(USERS_DIR, 'USERS_DATE')
+    fileHandler = open(filePath, 'wb')
+    usersData = pickle.dump(usersData, fileHandler)
+    fileHandler.close()
+   
+
+def loadUsers():
+    filePath = join(USERS_DIR, 'USERS_DATE')
     if isfile(filePath):
         fileHandler = open(filePath, 'rb')
-        user = pickle.load(fileHandler)
+        usersData = pickle.load(fileHandler)
         fileHandler.close()
-        return user
-
-
-def userExists(number):
-    filePath = join(USERS_DIR, number)
-    if isfile(filePath):
-        return True
+        return usersData
     else:
-        return False
-
-def renameUserFile(oldNumber, newNumber):
-    filePath = join(USERS_DIR, oldNumber)
-    newName = join(USERS_DIR, newNumber)
-    os.rename(filePath, newName)
-
-def deleteUser(number):
-    filePath = join(USERS_DIR, number)
-    os.remove(filePath)
+        usersData = {}
+        fileHandler = open(filePath, 'wb')
+        pickle.dump(usersData, fileHandler)
+        fileHandler.close()
+        return usersData
 
 
-def loadAllUsers():
-    numbers = os.listdir(USERS_DIR)
-    if isfile(join(USERS_DIR, '.gitignore')):
-        numbers.remove('.gitignore')
-    users = []
-    for number in numbers:
-        user = loadUser(number)
-        users.append(user)
 
-    return users
+# filePath = join(USERS_DIR, 'USERS_DATE')
+# fileHandler = open(filePath, 'rb')
+# usersData = pickle.load(fileHandler)
+# fileHandler.close()
+# for i in range(1000):
+#     num = randID(11)
+#     usersData[num] = User(num, randID(5))
 
-def countUsers():
-    numbers = os.listdir(USERS_DIR)
-    if isfile(join(USERS_DIR, '.gitignore')):
-        numbers.remove('.gitignore')
-    
-    return len(numbers)
+# fileHandler = open(filePath, 'wb')
+# usersData = pickle.dump(usersData, fileHandler)
+# fileHandler.close()
