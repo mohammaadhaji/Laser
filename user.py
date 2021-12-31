@@ -73,16 +73,3 @@ def loadUsers():
         fileHandler.close()
         return usersData
 
-
-
-filePath = join(USERS_DIR, 'USERS_DATE')
-fileHandler = open(filePath, 'rb')
-usersData = pickle.load(fileHandler)
-fileHandler.close()
-for i in range(1000):
-    num = randID(11)
-    usersData[num] = User(num, randID(5))
-
-fileHandler = open(filePath, 'wb')
-usersData = pickle.dump(usersData, fileHandler)
-fileHandler.close()

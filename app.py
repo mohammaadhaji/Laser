@@ -23,6 +23,7 @@ class MainWin(QMainWindow):
         # self.setCursor(Qt.BlankCursor)
         self.configs = loadConfigs()
         self.usersData = loadUsers()
+        self.usersList = list(self.usersData.values())
         if RPI_VERSION == '3':
             self.serialC = SerialTimer()
         else:
@@ -222,7 +223,10 @@ class MainWin(QMainWindow):
         self.monitorSensorsTimer = QTimer()
         self.sparkTimer = QTimer()
         self.restartTimer = QTimer()
+        self.loadUsersTimer = QTimer()
         self.restartCounter = 6
+        self.loadUsersTimer.timeout.connect(self.addUsersTable)
+        self.loadUsersTimer.start(20)
         self.restartTimer.timeout.connect(self.restartForUpdate)
         self.systemTimeTimer.timeout.connect(self.time)
         self.loginLabelTimer.timeout.connect(
@@ -306,6 +310,7 @@ class MainWin(QMainWindow):
         self.btnBackNewSession.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackManagement.clicked.connect(lambda: self.txtSearch.clear())
+        self.btnBackManagement.clicked.connect(lambda: saveUser(self.usersData))
         self.btnBackSettings.clicked.connect(self.backSettings)
         self.btnBackSettings.clicked.connect(self.systemTimeTimer.stop)
         self.btnBackEditUser.clicked.connect(lambda: self.changeAnimation('horizontal'))
@@ -315,7 +320,7 @@ class MainWin(QMainWindow):
         self.btnUiSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.uiPage))
         self.btnEnterHw.clicked.connect(self.loginHw)
         self.btnHwSettings.clicked.connect(self.btnHwsettingClicked)
-        self.btnUserManagement.clicked.connect(self.loadToTabel)
+        # self.btnUserManagement.clicked.connect(self.loadToTabel)
         self.btnSaveInfo.clicked.connect(self.saveUserInfo)
         self.btnDeleteUser.clicked.connect(self.deleteUser)
         self.btnUserManagement.clicked.connect(lambda: self.changeAnimation('horizontal'))
@@ -625,10 +630,6 @@ class MainWin(QMainWindow):
             self.close()
         else:
             os.system('poweroff')
-
-    def close(self, event):
-        saveUser(self.usersData)
-        return super().close()
 
     def restartForUpdate(self):
         self.restartCounter -= 1
@@ -1822,38 +1823,54 @@ class MainWin(QMainWindow):
         else:
             self.usersTable.sortItems(2, Qt.AscendingOrder)
 
-    def loadToTabel(self):
-        users = self.usersData.values()
-        self.usersTable.setRowCount(len(users))
-        self.lblTotalUsersCount.setText(f'{len(users)}')
-        row = 0
-        for user in users:
-            action = Action(self.usersTable, user.phoneNumber)
-            action.btnInfo.pressed.connect(self.touchSound.play)
-            action.info.connect(self.info)
-            action.btnDel.pressed.connect(self.touchSound.play)
-            action.delete.connect(self.removeUser)
-            self.usersTable.setCellWidget(row, 3, action)
-            number = QTableWidgetItem(user.phoneNumber)
-            name = QTableWidgetItem(user.name)
-            sessions = QTableWidgetItem(str(user.sessionNumber - 1))
-            number.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-            name.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-            sessions.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-            self.usersTable.setItem(row, 0, number)
-            self.usersTable.setItem(row, 1, name)
-            self.usersTable.setItem(row, 2, sessions)
-            row += 1
+    def addUsersTable(self):
+        for i in range(5):
+            if len(self.usersList) == 0:
+                self.loadUsersFinished()
+                return
+            self.insertToTabel(self.usersList[0])
+            self.usersList.pop(0)
 
-    def removeUser(self):
-        button = self.sender()
-        if button:
-            row = self.usersTable.indexAt(button.pos()).row()
-            number = self.usersTable.item(row, 0).text()
-            del self.usersData[number]
-            self.usersTable.removeRow(row)
-            totalUsers = len(self.usersData)
-            self.lblTotalUsersCount.setText(f'{totalUsers}')
+    def loadUsersFinished(self):
+        self.loadUsersTimer.stop()
+
+    def insertToTabel(self, user):
+        rowPosition = self.usersTable.rowCount()
+        self.usersTable.insertRow(rowPosition)
+        action = Action(self.usersTable, user.phoneNumber)
+        action.btnInfo.pressed.connect(self.touchSound.play)
+        action.info.connect(self.info)
+        action.btnDel.pressed.connect(self.touchSound.play)
+        action.delete.connect(self.removeUser)
+        self.usersTable.setCellWidget(rowPosition, 3, action)
+        number = QTableWidgetItem(user.phoneNumber)
+        name = QTableWidgetItem(user.name)
+        sessions = QTableWidgetItem(str(user.sessionNumber - 1))
+        number.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        name.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        sessions.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.usersTable.setItem(rowPosition, 0, number)
+        self.usersTable.setItem(rowPosition, 1, name)
+        self.usersTable.setItem(rowPosition, 2, sessions)
+        self.lblTotalUsersCount.setText(f'{self.usersTable.rowCount()}')
+
+    def removeUser(self, number=None):
+        if number:
+            for row in range(self.usersTable.rowCount()):
+                if self.usersTable.model().index(row, 0).data() == number:
+                    self.usersTable.removeRow(row)
+                    self.lblTotalUsersCount.setText(f'{self.usersTable.rowCount()}')
+                    return
+                    
+        else:
+            button = self.sender()
+            if button:
+                row = self.usersTable.indexAt(button.pos()).row()
+                number = self.usersTable.item(row, 0).text()
+                del self.usersData[number]
+                self.usersTable.removeRow(row)
+                totalUsers = len(self.usersData)
+                self.lblTotalUsersCount.setText(f'{totalUsers}')
 
     def info(self, num):
         self.stackedWidget.setCurrentWidget(self.editUserPage)
@@ -2047,7 +2064,7 @@ class MainWin(QMainWindow):
     def deleteUser(self):
         number = self.userInfo.phoneNumber        
         del self.usersData[number]
-        self.loadToTabel()
+        self.removeUser(number)
         self.changeAnimation('horizontal')
         self.stackedWidget.setCurrentWidget(self.userManagementPage)
 
@@ -2074,7 +2091,7 @@ class MainWin(QMainWindow):
             return
 
         self.usersData[number] = User(number, name)
-        print(self.usersData)
+        self.insertToTabel(self.usersData[number])
         self.txtNumber.setText(number)
         self.txtNumberSubmit.clear()
         self.txtNameSubmit.clear()
@@ -2163,6 +2180,7 @@ class MainWin(QMainWindow):
         self.user = None
         self.configs['TotalShotCounter'] += self.currentCounter
         saveConfigs(self.configs)
+        saveUser(self.usersData)
         self.lblCounterValue.setText('0')
         self.currentCounter = 0
         self.stackedWidget.setCurrentWidget(self.mainPage)

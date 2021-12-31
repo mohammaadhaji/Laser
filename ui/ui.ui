@@ -52,7 +52,7 @@ color:white;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>8</number>
       </property>
       <widget class="QWidget" name="UUIDPage">
        <layout class="QVBoxLayout" name="verticalLayout_66">
@@ -5874,7 +5874,7 @@ border:3px solid red;
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="3,0">
+           <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="3,2">
             <property name="leftMargin">
              <number>0</number>
             </property>
