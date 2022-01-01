@@ -60,21 +60,23 @@ class MainWin(QMainWindow):
         self.lblSplash.setPixmap(QPixmap(SPLASH))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
-        self.ownerInfoSplash = QLabel(self.lblSplash)
-        self.ownerInfoSplash.setText('')
         font_db = QFontDatabase()
         font_id = font_db.addApplicationFont(IRAN_NASTALIQ)
         font_id = font_db.addApplicationFont(IRANIAN_SANS)
-        self.ownerInfoSplash.setFont(QFont("IranNastaliq", 40))
+        self.ownerInfoSplash = QLabel(self.lblSplash)
+        self.ownerInfoSplash.setText('')
         ownerInfo = self.configs['OwnerInfo']
         if ownerInfo and isFarsi(ownerInfo):
             self.ownerInfoSplash.setStyleSheet(OWNER_INFO_STYLE_FA)
         else:
             self.ownerInfoSplash.setStyleSheet(OWNER_INFO_STYLE_EN)
+        self.ownerInfoSplash.setAlignment(Qt.AlignCenter)
+        self.ownerInfoSplash.setAlignment(Qt.AlignHCenter)
         self.ownerInfoSplash.setText(ownerInfo)
+        self.ownerInfoSplash.move(0, 880)
+        self.ownerInfoSplash.setMinimumHeight(200)
         if not ownerInfo:
             self.ownerInfoSplash.setVisible(False)
-        self.ownerInfoSplash.move(self.geometry().bottomLeft())     
         self.time(edit=True)
         self.changeTheme(self.configs['theme'])
         self.initSounds()       

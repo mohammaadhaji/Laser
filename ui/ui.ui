@@ -43,8 +43,12 @@
 color: white;
 background-color: rgb(58, 58, 58);
 border-radius:5px;
-border:1px solid gray;
+border:2px solid gray;
 padding:10px 10px 10px 10px;
+}
+QLineEdit:focus{
+border:2px solid white;
+background-color: rgb(89, 88, 88);
 }
 
 QLabel{
@@ -52,7 +56,7 @@ color:white;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>8</number>
       </property>
       <widget class="QWidget" name="UUIDPage">
        <layout class="QVBoxLayout" name="verticalLayout_66">
@@ -2401,7 +2405,7 @@ border: 10px solid rgb(0, 170, 255);
                  <number>0</number>
                 </property>
                 <item>
-                 <layout class="QGridLayout" name="gridLayout_2" rowstretch="1,0,0,0,0,0,0,0" columnstretch="2,3,0,0">
+                 <layout class="QGridLayout" name="gridLayout_2" rowstretch="1,0,0,0,0,0,0,0" columnstretch="2,3">
                   <property name="topMargin">
                    <number>0</number>
                   </property>
@@ -3046,7 +3050,7 @@ QPushButton:pressed{
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1248</width>
+                       <width>958</width>
                        <height>848</height>
                       </rect>
                      </property>
@@ -6232,15 +6236,7 @@ border:3px solid red;
                  <enum>Qt::RightToLeft</enum>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">QLineEdit{
-border-radius:10px;
-border:2px solid gray;
-padding:10px 10px 10px 10px;
-background: transparent;
-}
-QLineEdit:focus{
-border:2px solid white;
-}</string>
+                 <string notr="true"/>
                 </property>
                 <property name="placeholderText">
                  <string>Search By Number</string>
@@ -8698,7 +8694,7 @@ background-color: rgb(0, 170, 255);
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1528</width>
+                   <width>1341</width>
                    <height>803</height>
                   </rect>
                  </property>

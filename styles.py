@@ -284,7 +284,7 @@ QLabel {
 	border: 5px solid #FF17365D;
 	border-top-right-radius: 15px;
 	background-color: #FF17365D;
-	padding: 20px 60px 100px 50px;
+    padding: 30px 50px 50px 50px;
 	color: rgb(255, 255, 255);
 }
 '''
@@ -295,7 +295,7 @@ QLabel {
 	border: 5px solid #FF17365D;
 	border-top-right-radius: 15px;
 	background-color: #FF17365D;
-	padding: 40px 50px 60px 50px;
+	padding: 50px 50px;
 	color: rgb(255, 255, 255);
 }
 '''
