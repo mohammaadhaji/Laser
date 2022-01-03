@@ -5,10 +5,10 @@ import jdatetime, platform
 from utility import *
 try:
     import RPi.GPIO as GPIO
+    GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BOARD)
-    chan_list = [12,16]
-    GPIO.setup(chan_list, GPIO.OUT)
-    GPIO.output(chan_list, GPIO.HIGH)
+    GPIO.setup(16, GPIO.OUT)
+    GPIO.output(16, GPIO.HIGH)
 except Exception:
     pass
 
@@ -326,6 +326,7 @@ class SerialTimer(QObject):
                                                 MICRO_DATA[segmentIndex]
                                             )
                                         elif RECEIVED_DATA[FIELD_INDEX] == 250:
+                                            GPIO.output(16, GPIO.HIGH)
                                             serial.write(
                                                 MICRO_DATA[250]
                                             )
@@ -509,6 +510,15 @@ class SerialThread(QThread):
                                                 serial.write(
                                                     MICRO_DATA[segmentIndex]
                                                 )
+                                            elif RECEIVED_DATA[FIELD_INDEX] == 250:
+                                                GPIO.output(16, GPIO.HIGH)
+                                                serial.write(
+                                                    MICRO_DATA[250]
+                                                )
+                                            elif RECEIVED_DATA[FIELD_INDEX] == 251:
+                                                serial.write(
+                                                    MICRO_DATA[251]
+                                                )
 
                             else:
                                 RECEIVED_DATA.append(temp[counter])
@@ -622,10 +632,7 @@ class UpdateFirmware(QThread):
                 int_to_bytes(PACKET_NOB), 
                 UPDATE_PAGE, 251, REPORT
             )
-                
-            chan_list = [12,16]
-            GPIO.output(chan_list, GPIO.LOW)
-            self.sleep(1)
-            GPIO.output(12, GPIO.HIGH)
-            self.sleep(1)
-            GPIO.output(16, GPIO.HIGH)
+
+            GPIO.output(16, GPIO.LOW)
+            os.system(f'umount {MOUNT_DIR}/sda*')
+            shutil.rmtree(MOUNT_DIR)
