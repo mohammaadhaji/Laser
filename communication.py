@@ -521,6 +521,13 @@ class SerialThread(QThread):
                 print(e)
 
 
+def updateCleanup(mountPoint):
+    for mp in mountPoint.values():
+        os.system(f'umount {mp}')
+
+    shutil.rmtree(MOUNT_DIR)
+
+
 class UpdateFirmware(QThread):
     result = pyqtSignal(str)
 
@@ -575,8 +582,7 @@ class UpdateFirmware(QThread):
 
         if not laserFound:
             self.result.emit("Source files not found.")
-            os.system(f'umount {MOUNT_DIR}/sda*')
-            shutil.rmtree(MOUNT_DIR)
+            updateCleanup(partitionsDir)
             return
 
         verifyError = 'The source files are corrupted and can not be replaced.'
@@ -586,14 +592,12 @@ class UpdateFirmware(QThread):
 
             if not md5 == calcMD5(laserDir, f'{VERIFY}'):
                 self.result.emit(verifyError)
-                os.system(f'umount {MOUNT_DIR}/sda*')
-                shutil.rmtree(MOUNT_DIR)
+                updateCleanup(partitionsDir)
                 return
    
         except Exception:
             self.result.emit(verifyError)
-            os.system(f'umount {MOUNT_DIR}/sda*')
-            shutil.rmtree(MOUNT_DIR)
+            updateCleanup(partitionsDir)
             return
         
         microUpdate = False
@@ -602,8 +606,7 @@ class UpdateFirmware(QThread):
         
         if not microUpdate:
             os.system(f'cp -r !({VERIFY}) {laserDir}/* {CURRENT_FILE_DIR}')
-            os.system(f'umount {MOUNT_DIR}/sda*')
-            shutil.rmtree(MOUNT_DIR)
+            updateCleanup(partitionsDir)
             self.result.emit("Done GUI")
 
         else:
@@ -627,5 +630,4 @@ class UpdateFirmware(QThread):
             )
             enterPage(UPDATE_PAGE)
             GPIO.output(16, GPIO.LOW)
-            os.system(f'umount {MOUNT_DIR}/sda*')
-            shutil.rmtree(MOUNT_DIR)
+            updateCleanup(partitionsDir)
