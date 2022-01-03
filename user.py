@@ -1,8 +1,6 @@
 from os.path import join, isfile
 from paths import USERS_DIR
-import jdatetime, pickle, os
-
-from utility import randID
+import jdatetime, pickle
 
 
 class User:

@@ -6,6 +6,21 @@ from os.path import isfile, isdir
 import datetime, jdatetime
 import subprocess, platform, pickle, hashlib
 import random, uuid, os, re, json, shutil
+from communication import *
+try:
+    import RPi.GPIO as GPIO
+    GPIO.setmode(GPIO.BOARD)
+    chan_list = [12,16]
+    GPIO.setup(chan_list, GPIO.OUT)
+    GPIO.output(chan_list, GPIO.HIGH)
+except Exception:
+    pass
+
+def gpioCleanup():
+    try:
+        GPIO.cleanup()
+    except Exception:
+        pass
 
 
 RPI_MODEL = ''
@@ -245,14 +260,26 @@ def calcMD5(directory, verifyFileName):
     return sumMd5
 
 
+
+MOUNT_DIR        ='/media/updateFirmware'
+SOURCE_FOLDER    = 'Laser'
+MICRO_SOURCE     = 'micro.bin'
+MICRO_DATA       = {}
+PACKET_NOB       = 1000
+
+
 class UpdateFirmware(QThread):
     result = pyqtSignal(str)
 
     def run(self):
+        global MICRO_DATA
+        MICRO_DATA.clear()
+
         if platform.system() == 'Windows':
             self.result.emit("We don't do that here.")
             return
-                            
+
+        self.msleep(20)                            
         r1  = subprocess.check_output('lsblk -J', shell=True)
         blocks = json.loads(r1)['blockdevices']
 
@@ -270,9 +297,8 @@ class UpdateFirmware(QThread):
         if not 'children' in sdaBlock:
             self.result.emit("Flash drive doesn't have any partitions.")
             return
-            
-        mountDir ='/media/updateFirmware' 
-        os.mkdir(mountDir)
+             
+        os.mkdir(MOUNT_DIR)
         partitionsDir = {}
 
         for part in sdaBlock['children']:
@@ -280,24 +306,24 @@ class UpdateFirmware(QThread):
 
         for part in partitionsDir:
             if partitionsDir[part] == None:
-                os.mkdir(f'{mountDir}/{part}')
+                os.mkdir(f'{MOUNT_DIR}/{part}')
                 r = subprocess.call(
-                    f'mount /dev/{part} {mountDir}/{part}',
+                    f'mount /dev/{part} {MOUNT_DIR}/{part}',
                     shell=True
                 )
-                partitionsDir[part] = f'{mountDir}/{part}'
+                partitionsDir[part] = f'{MOUNT_DIR}/{part}'
 
         laserFound = False
         laserDir = ''
         for dir in partitionsDir.values():
-            if isdir(f'{dir}/LaserSrc'):
+            if isdir(f'{dir}/{SOURCE_FOLDER}'):
                 laserFound = True
-                laserDir = f'{dir}/LaserSrc'
+                laserDir = f'{dir}/{SOURCE_FOLDER}'
 
         if not laserFound:
             self.result.emit("Source files not found.")
-            os.system(f'umount {mountDir}/sda*')
-            shutil.rmtree(mountDir)
+            os.system(f'umount {MOUNT_DIR}/sda*')
+            shutil.rmtree(MOUNT_DIR)
             return
 
         verifyError = 'The source files are corrupted and can not be replaced.'
@@ -307,17 +333,58 @@ class UpdateFirmware(QThread):
 
             if not md5 == calcMD5(laserDir, 'verify'):
                 self.result.emit(verifyError)
-                os.system(f'umount {mountDir}/sda*')
-                shutil.rmtree(mountDir)
+                os.system(f'umount {MOUNT_DIR}/sda*')
+                shutil.rmtree(MOUNT_DIR)
                 return
    
         except Exception:
             self.result.emit(verifyError)
-            os.system(f'umount {mountDir}/sda*')
-            shutil.rmtree(mountDir)
+            os.system(f'umount {MOUNT_DIR}/sda*')
+            shutil.rmtree(MOUNT_DIR)
             return
+        
+        microUpdate = False
+        if isfile(f'{laserDir}/{SOURCE_FOLDER}/{MICRO_SOURCE}'):
+            microUpdate = True
+        
+        if not microUpdate:
+            os.system(f'cp -r {laserDir}/* {CURRENT_FILE_DIR}')
+            os.system(f'umount {MOUNT_DIR}/sda*')
+            shutil.rmtree(MOUNT_DIR)
+            self.result.emit("Done GUI")
 
-        os.system(f'cp -r {laserDir}/* {CURRENT_FILE_DIR}')
-        os.system(f'umount {mountDir}/sda*')
-        shutil.rmtree(mountDir)
-        self.result.emit("Done")
+        else:
+            file = open(f'{laserDir}/{SOURCE_FOLDER}/{MICRO_SOURCE}', 'rb')
+            data = file.read()
+            file.close()
+            packet = bytearray()
+            for field, i in enumerate(range(0, len(data), PACKET_NOB)):
+                segment = data[i : i + PACKET_NOB]
+                packet.append(0xAA)
+                packet.append(0xBB)
+                packet.append(5 + len(segment))
+                packet.append(UPDATE_PAGE)
+                packet.append(field)
+                packet.append(REPORT)
+                packet += segment
+                crc = Crc16Xmodem.calc(packet[2:])
+                crc_bytes = crc.to_bytes(2, byteorder='big')
+                packet += crc_bytes
+                packet.append(0xCC)
+                MICRO_DATA[field] = packet
+                packet[:] = []
+
+            fieldValues = {
+                'SOURCE_NOB': len(data), 
+                'PACKET': PACKET_NOB
+            }
+            updatePage(fieldValues)
+            chan_list = [12,16]
+            GPIO.output(chan_list, GPIO.LOW)
+            self.sleep(1)
+            GPIO.output(12, GPIO.HIGH)
+            self.sleep(1)
+            GPIO.output(16, GPIO.HIGH)
+
+            
+

@@ -1,4 +1,3 @@
-from os import stat
 from PyQt5 import uic
 from communication import *
 from promotions import *
@@ -35,6 +34,7 @@ class MainWin(QMainWindow):
         self.serialC.productionDate.connect(self.txtProductionDate.setText)
         self.serialC.laserEnergy.connect(self.txtLaserDiodeEnergy.setText)
         self.serialC.firmwareVesion.connect(self.txtFirmwareVersion.setText)
+        self.serialC.updateProgress.connect(self.updateProgress)
         self.serialC.readCooling.connect(
             lambda: laserPage({'cooling': self.cooling})
         )
@@ -112,7 +112,7 @@ class MainWin(QMainWindow):
         if self.configs['LANGUAGE'] == 'fa':
             self.changeLang(self.configs['LANGUAGE'])
         self.shortcut = QShortcut(QKeySequence("Ctrl+x"), self)
-        self.shortcut.activated.connect(self.close)
+        self.shortcut.activated.connect(self.powerOff)
         self.chbSlideTransition.setFixedSize(150, 48)
         self.chbSlideTransition.setCheckState(
             2 if self.configs['slideTransition'] else 0
@@ -328,7 +328,6 @@ class MainWin(QMainWindow):
         self.btnUiSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.uiPage))
         self.btnEnterHw.clicked.connect(self.loginHw)
         self.btnHwSettings.clicked.connect(self.btnHwsettingClicked)
-        # self.btnUserManagement.clicked.connect(self.loadToTabel)
         self.btnSaveInfo.clicked.connect(self.saveUserInfo)
         self.btnDeleteUser.clicked.connect(self.deleteUser)
         self.btnUserManagement.clicked.connect(lambda: self.changeAnimation('horizontal'))
@@ -384,6 +383,7 @@ class MainWin(QMainWindow):
         self.btnSystemLock.clicked.connect(lambda: lockPage(REPORT))
         self.btnSystemLock.clicked.connect(lambda: self.systemTimeTimer.start(1000))
         self.btnAddLock.clicked.connect(self.addLock)
+        self.btnResetLock.clicked.connect(self.resetLock)
         self.btnBackLaser.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnBackLaser.clicked.connect(lambda: self.stackedWidgetLaser.setCurrentWidget(self.bodyPartPage))
         self.btnBackLaser.clicked.connect(lambda: self.btnBackLaser.setVisible(False))
@@ -393,6 +393,8 @@ class MainWin(QMainWindow):
         self.btnUpdateFirmware.clicked.connect(self.updateSystem)
         self.btnShowSplash.clicked.connect(self.showSplash)
         self.btnDelSelectedUsers.clicked.connect(self.removeSelectedUsers)
+        self.btnSelectAll.clicked.connect(self.selectAll)
+        self.selectAllFlag = False
         self.btnColor1.setStyleSheet(BTN_COLOR1)
         self.btnColor2.setStyleSheet(BTN_COLOR2)
         self.btnColor3.setStyleSheet(BTN_COLOR3)
@@ -558,6 +560,13 @@ class MainWin(QMainWindow):
         self.setWaterLevelError(True)
         self.setLock(True)
 
+    def setSensors(self, flags):
+        self.setLock(flags[0])
+        self.setWaterLevelError(flags[1])
+        self.setWaterflowError(flags[2])
+        self.setOverHeatError(flags[3])
+        self.setPhysicalDamage(flags[4])
+
     def changeTheme(self, theme):
         inc = QIcon()
         dec = QIcon()
@@ -648,6 +657,7 @@ class MainWin(QMainWindow):
     def powerOff(self):
         enterPage(SHUTDONW_PAGE)
         self.serialC.closePort()
+        gpioCleanup()
         if platform.system() == 'Windows':
             self.close()
         else:
@@ -663,15 +673,17 @@ class MainWin(QMainWindow):
     def restartForUpdate(self):
         self.restartCounter -= 1
         self.lblUpdateFirmware.setText(
-            f'Your system will restart in {self.restartCounter} seconds...'
+            f'GUI will restart in {self.restartCounter} seconds...'
         )
         if self.restartCounter == -1:
             self.restartTimer.stop()
             self.serialC.closePort()
-            os.system('reboot')
+            os.chdir(CURRENT_FILE_DIR)
+            os.system('python3 app.py -platform linuxfb')
+            exit(0)
 
     def updateResult(self, result):
-        if result == 'Done':
+        if result == 'Done GUI':
             self.restartTimer.start(1000)
         else:
             self.setLabel(
@@ -679,17 +691,23 @@ class MainWin(QMainWindow):
                 self.lblUpdateFirmware,
                 self.updateFirmwareLabelTimer
             )
+            self.btnUpdateFirmware.setDisabled(False)
+
+    def updateProgress(self, status):
+        self.lblUpdateFirmware.setText(status)
+        if status == 'successfully updated':
+            self.btnUpdateFirmware.setDisabled(False)
+            self.setLabel(
+                status, 
+                self.lblUpdateFirmware,
+                self.updateFirmwareLabelTimer
+            )
+
 
     def updateSystem(self):
+        self.btnUpdateFirmware.setDisabled(True)
         self.lblUpdateFirmware.setText('Please wait...')
         self.updateT.start()
-
-    def setSensors(self, flags):
-        self.setLock(flags[0])
-        self.setWaterLevelError(flags[1])
-        self.setWaterflowError(flags[2])
-        self.setOverHeatError(flags[3])
-        self.setPhysicalDamage(flags[4])
 
     def shot(self):
         self.currentCounter += 1
@@ -754,22 +772,6 @@ class MainWin(QMainWindow):
             self.txtEditHour.setText(hour)
             self.txtEditMinute.setText(minute)
 
-    def getLocks(self):
-        locks = []
-        for lock in self.configs['LOCK']:
-            if not lock.paid and lock.getStatus() <= 0:
-                locks.append(lock)
-
-        locks.sort(key=lambda x: x.date)
-        return locks
-
-    def anyLockBefor(self, date):
-        for lock in self.configs['LOCK']:
-            if (date - lock.date).days <= 0:
-                return True
-    
-        return False
-
     def addLock(self):
         try:
             year = int(self.txtLockYear.text())
@@ -810,14 +812,14 @@ class MainWin(QMainWindow):
                 )
             return
 
-        if self.anyLockBefor(date):
-            self.setLabel(
+        for lock in self.configs['LOCK']:
+            if (date - lock.date).days <= 0:
+                self.setLabel(
                     TEXT['anyLockBefor'][self.langIndex], 
                     self.lblLockError, 
                     self.lockErrorLabel, 5
                 )
-            return  
-
+            return
         
         license = self.license[f'LICENSE{numOfLocks + 1}']
         lock = Lock(date, license)
@@ -851,30 +853,16 @@ class MainWin(QMainWindow):
 
             status = TableWidgetItem(status)
             self.tableLock.setItem(i, 1, status)
-            paid = TableWidgetItem(TEXT['yes'][self.langIndex] if lock.paid else TEXT['no'][self.langIndex])
+            paid = TableWidgetItem(
+                TEXT['yes'][self.langIndex] if lock.paid else TEXT['no'][self.langIndex]
+            )
             self.tableLock.setItem(i, 2, paid)
-            btnDelete = QPushButton(self)
-            deleteIcon = QIcon()
-            deleteIcon.addPixmap(QPixmap(DELETE_ICON), QIcon.Normal, QIcon.Off)
-            btnDelete.setIcon(deleteIcon)
-            btnDelete.setIconSize(QSize(60, 60))
-            btnDelete.setStyleSheet(ACTION_BTN)
-            btnDelete.clicked.connect(self.removeLock)
-            btnDelete.pressed.connect(self.playTouchSound)
-            self.tableLock.setCellWidget(i, 3, btnDelete)
-
-    def removeLock(self):
-        button = qApp.focusWidget()
-        index = self.tableLock.indexAt(button.pos())
-        if index.isValid():
-            year, month, day = self.tableLock.item(index.row(), 0).text().split('-')
-            date = jdatetime.datetime(int(year), int(month), int(day))
-            for lock in self.configs['LOCK']:
-                if (date - lock.date).days == 0:
-                    self.configs['LOCK'].remove(lock)
-                    saveConfigs(self.configs)
-
-            self.loadLocksTable()
+            
+    def resetLock(self):
+        self.configs['LOCK'] = []
+        saveConfigs(self.configs)
+        self.time(edit=True)
+        self.loadLocksTable()
 
     def unlockUUID(self):
         user_pass = self.txtPassUUID.text().upper()
@@ -907,7 +895,12 @@ class MainWin(QMainWindow):
 
     def unlockLIC(self, auto=False):
         userPass = self.txtPassword.text().strip()
-        locks = self.getLocks()
+        locks = []
+        for lock in self.configs['LOCK']:
+            if not lock.paid and lock.getStatus() <= 0:
+                locks.append(lock)
+
+        locks.sort(key=lambda x: x.date)
 
         if len(locks) > 0:
             index = self.stackedWidget.indexOf(self.loginPage)
@@ -1892,9 +1885,8 @@ class MainWin(QMainWindow):
         action = Action(self.usersTable, user.phoneNumber)
         action.btnInfo.pressed.connect(self.playTouchSound)
         action.info.connect(self.info)
-        action.chbDel.toggled.connect(self.playTouchSound)
+        action.chbDel.pressed.connect(self.playTouchSound)
         action.delete.connect(self.selecetCheckedUsers)
-        # action.delete.connect(self.removeUser)
         self.usersTable.setCellWidget(rowPosition, 3, action)
         number = QTableWidgetItem(user.phoneNumber)
         name = QTableWidgetItem(user.name)
@@ -1907,7 +1899,6 @@ class MainWin(QMainWindow):
         self.usersTable.setItem(rowPosition, 2, sessions)
         self.lblTotalUsersCount.setText(f'{self.usersTable.rowCount()}')
 
-
     def selecetCheckedUsers(self, number):
         if number in self.selectedUsers:
             self.selectedUsers.remove(number)
@@ -1916,12 +1907,25 @@ class MainWin(QMainWindow):
         
         self.lblSelectedUsersValue.setText(f'{len(self.selectedUsers)}')
 
+    def selectAll(self):
+        self.selectAllFlag = not self.selectAllFlag
+
+        for row in range(self.usersTable.rowCount()):
+            self.usersTable.cellWidget(row, 3).chbDel.setChecked(self.selectAllFlag)
+
+        if self.selectAllFlag:
+            self.btnSelectAll.setText(TEXT['btnDeselectAll'][self.langIndex])
+        else:
+            self.btnSelectAll.setText(TEXT['btnSelectAll'][self.langIndex])
+
     def removeSelectedUsers(self):
         for num in self.selectedUsers:
             self.removeUser(num)
             del self.usersData[num]
         
         self.lblSelectedUsersValue.setText('0')
+        self.btnSelectAll.setText(TEXT['btnSelectAll'][self.langIndex])
+        self.selectAllFlag = False
         self.selectedUsers.clear()
 
     def removeUser(self, number=None):
@@ -1941,6 +1945,17 @@ class MainWin(QMainWindow):
                 self.usersTable.removeRow(row)
                 totalUsers = len(self.usersData)
                 self.lblTotalUsersCount.setText(f'{totalUsers}')
+
+    def deleteUser(self):
+        number = self.userInfo.phoneNumber        
+        del self.usersData[number]
+        for row in range(self.usersTable.rowCount()):
+            if self.usersTable.model().index(row, 0).data() == number:
+                self.usersTable.cellWidget(row, 3).chbDel.setChecked(False)
+        self.removeUser(number)
+        saveUser(self.usersData)
+        self.changeAnimation('horizontal')
+        self.stackedWidget.setCurrentWidget(self.userManagementPage)
 
     def info(self, num):
         self.stackedWidget.setCurrentWidget(self.editUserPage)
@@ -2122,14 +2137,6 @@ class MainWin(QMainWindow):
                 self.lblEditUser,
                 self.editLabelTimer, 3
             )
-
-    def deleteUser(self):
-        number = self.userInfo.phoneNumber        
-        del self.usersData[number]
-        self.removeUser(number)
-        saveUser(self.usersData)
-        self.changeAnimation('horizontal')
-        self.stackedWidget.setCurrentWidget(self.userManagementPage)
 
     def submit(self):
         number = self.txtNumberSubmit.text()
@@ -2315,13 +2322,13 @@ class MainWin(QMainWindow):
             self.tableAfterTomorrow.horizontalHeaderItem(i).setText(
                 TEXT[f'tbFsessions{i}'][self.langIndex]
             )
+            self.tableLock.horizontalHeaderItem(i).setText(
+                TEXT[f'tableLock{i}'][self.langIndex]
+            )
 
         for i in range(4):
             self.usersTable.horizontalHeaderItem(i).setText(
                 TEXT[f'usersTable{i}'][self.langIndex]
-            )
-            self.tableLock.horizontalHeaderItem(i).setText(
-                TEXT[f'tableLock{i}'][self.langIndex]
             )
 
         for i in range(8):

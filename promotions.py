@@ -25,14 +25,6 @@ class Action(QWidget):
         self.btnInfo.setStyleSheet(stylesheet)
         self.btnInfo.clicked.connect(lambda: self.info.emit(self.number))
 
-        # self.btnDel = QPushButton(self)
-        # delIcon = QIcon()
-        # delIcon.addPixmap(QPixmap(DELETE_ICON), QIcon.Normal, QIcon.Off)
-        # self.btnDel.setIcon(delIcon)
-        # self.btnDel.setIconSize(QSize(60, 60))
-        # self.btnDel.setStyleSheet(stylesheet)
-        # self.btnDel.clicked.connect(lambda: self.delete.emit())
-
         self.chbDel = QCheckBox(self)
         self.chbDel.setMinimumSize(QtCore.QSize(60, 60))
         self.chbDel.setStyleSheet(CHECKBOX_DEL)

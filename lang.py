@@ -126,7 +126,6 @@ TEXT = {
     'tableLock0': ['Date', 'تاریخ'],
     'tableLock1': ['Status' ,'وضعیت'],
     'tableLock2': ['Paid', 'پرداخت شده'],
-    'tableLock3': ['Remove', 'پاک کردن'],
     'anyLockBefor': ['The lock date must be earlier than the last one.', 'تاریخ قفل باید از تاریخ اخرین قفل جلوتر باشد.'],
     'maxLock': ['A maximum of 3 locks can be defined.', 'حداکثر 3 قفل می تواند تعریف شود.'],
     'yes': ['Yes', 'بله'],
@@ -151,5 +150,7 @@ TEXT = {
     'btnPower': [' Power Off', '     خاموش'],
     'btnRestart': [' Restart     ', 'ری استارت'],
     'lblSelectedUsers': ['Selected Users', 'انتخاب شده'],
-    'btnDelSelectedUsers': ['Remove', 'حذف کردن']
+    'btnDelSelectedUsers': ['Remove', 'حذف کردن'],
+    'btnDeselectAll': ['Deselect All', 'لغو انتخاب'],
+    'btnSelectAll': ['Select All', 'انتخاب همه'],
 }

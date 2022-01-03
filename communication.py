@@ -2,6 +2,7 @@ from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from crccheck.crc import Crc16Xmodem
 from serial import Serial
 import jdatetime, platform 
+from utility import *
 
 if platform.system() == 'Windows':
     serial = Serial('COM2', 115200)
@@ -24,6 +25,7 @@ LOCK_TIME_PAGE = 2
 BODY_PART_PAGE = 3
 MAIN_PAGE      = 4
 SHUTDONW_PAGE  = 5
+UPDATE_PAGE    = 6
 
 REPORT = 0x0A
 WRITE  = 0x0B 
@@ -150,6 +152,11 @@ def lockPage(cmdType):
     sendPacket(fieldsIndex, fieldValues, LOCK_TIME_PAGE, cmdType)
 
 
+def updatePage(fieldValues):
+    fieldsIndex = {'SOURCE_NOB': 250, 'PACKET': 251}
+    sendPacket(fieldsIndex, fieldValues, UPDATE_PAGE)
+
+
 class SerialTimer(QObject):
     sensorFlags = pyqtSignal(list)
     tempValue = pyqtSignal(int)
@@ -164,6 +171,7 @@ class SerialTimer(QObject):
     readFrequency = pyqtSignal()
     sysClock = pyqtSignal(tuple)
     sysDate = pyqtSignal(tuple)
+    updateProgress = pyqtSignal(str)
 
     def __init__(self):
         super(QObject, self).__init__()
@@ -253,6 +261,11 @@ class SerialTimer(QObject):
                                             date = date.split('-')
                                             date = tuple( int(x) for x in date )
                                             self.sysDate.emit(date)
+                                    elif RECEIVED_DATA[PAGE_INDEX] == UPDATE_PAGE:
+                                        if RECEIVED_DATA[FIELD_INDEX] == 252:
+                                            status = RECEIVED_DATA[4:-2].decode()
+                                            self.updateProgress.emit(status)
+
 
                                 elif RECEIVED_DATA[CMD_TYPE_INDEX] == WRITE:
 
@@ -300,6 +313,13 @@ class SerialTimer(QObject):
                                         elif RECEIVED_DATA[FIELD_INDEX] == 6:
                                             self.readFrequency.emit()
 
+                                    elif RECEIVED_DATA[PAGE_INDEX] == UPDATE_PAGE:
+                                        segmentIndex = RECEIVED_DATA[FIELD_INDEX]
+                                        if segmentIndex in MICRO_DATA.keys():
+                                            serial.write(
+                                                MICRO_DATA[segmentIndex]
+                                            )
+
                         else:
                             RECEIVED_DATA.append(temp[counter])
 
@@ -322,6 +342,7 @@ class SerialThread(QThread):
     readFrequency = pyqtSignal()
     sysClock = pyqtSignal(tuple)
     sysDate = pyqtSignal(tuple)
+    updateProgress = pyqtSignal(str)
 
     def __init__(self):
         super(QThread, self).__init__()
@@ -410,6 +431,11 @@ class SerialThread(QThread):
                                                 date = date.split('-')
                                                 date = tuple( int(x) for x in date )
                                                 self.sysDate.emit(date)
+                                        
+                                        elif RECEIVED_DATA[PAGE_INDEX] == UPDATE_PAGE:
+                                            if RECEIVED_DATA[FIELD_INDEX] == 252:
+                                                status = RECEIVED_DATA[4:-2].decode()
+                                                self.updateProgress.emit(status)
 
                                     elif RECEIVED_DATA[CMD_TYPE_INDEX] == WRITE:
 
@@ -456,6 +482,13 @@ class SerialThread(QThread):
                                                 self.readPulseWidht.emit()
                                             elif RECEIVED_DATA[FIELD_INDEX] == 6:
                                                 self.readFrequency.emit()
+
+                                        elif RECEIVED_DATA[PAGE_INDEX] == LASER_PAGE:
+                                            segmentIndex = RECEIVED_DATA[FIELD_INDEX]
+                                            if segmentIndex in MICRO_DATA.keys():
+                                                serial.write(
+                                                    MICRO_DATA[segmentIndex]
+                                                )
 
                             else:
                                 RECEIVED_DATA.append(temp[counter])
