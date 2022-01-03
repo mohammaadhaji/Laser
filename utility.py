@@ -347,7 +347,7 @@ class UpdateFirmware(QThread):
             return
         
         microUpdate = False
-        if isfile(f'{laserDir}/{SOURCE_FOLDER}/{MICRO_SOURCE}'):
+        if isfile(f'{laserDir}/{MICRO_SOURCE}'):
             microUpdate = True
         
         if not microUpdate:
