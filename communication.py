@@ -25,13 +25,15 @@ else:
 
 HEADER_1   = 1
 HEADER_2   = 2
-CHECK_NOB  = 3
-IN_MESSAGE = 4
+CHECK_NOB_1  = 3
+CHECK_NOB_2  = 4
+IN_MESSAGE = 5
 STATE      = HEADER_1
 
-PAGE_INDEX     = 1
-FIELD_INDEX    = 2
-CMD_TYPE_INDEX = 3
+PAGE_INDEX     = 2
+FIELD_INDEX    = 3
+CMD_TYPE_INDEX = 4
+DATA_INDEX     = 5
 
 LASER_PAGE     = 0
 SETTING_PAGE   = 1
@@ -54,6 +56,8 @@ PACKET_NOB       = 1000
 
 
 RECEIVED_DATA = bytearray()
+NOB_BYTES = bytearray(2)
+
 
 
 def printPacket(packet):
@@ -95,7 +99,7 @@ def buildPacket(data, page, field, cmdType):
     packet = bytearray()
     packet.append(0xAA)
     packet.append(0xBB)
-    packet.append(5 + len(data))
+    packet += (5 + len(data)).to_bytes(2, byteorder='big')
     packet.append(page)
     packet.append(field)
     packet.append(cmdType)
@@ -115,41 +119,16 @@ def sendPacket(fieldsIndex, fieldValues, page, cmdType=REPORT):
 
 
 def enterPage(page):
-    packet = bytearray(9)
-    packet[0] = 0xAA
-    packet[1] = 0xBB
-    packet[2] = 0x05 
-    packet[3] = page 
-    packet[4] = 0xAA 
-    packet[5] = REPORT  
-    crc = Crc16Xmodem.calc(packet[2:-3])
-    crc_bytes = crc.to_bytes(2, byteorder='big')
-    packet[6] = crc_bytes[0]
-    packet[7] = crc_bytes[1]
-    packet[8] = 0xCC
+    packet = buildPacket(b'', page, 0xAA, REPORT)
     serial.write(packet)
 
 
 def readTime():
-    packet = bytearray(9)
-    packet[0] = 0xAA
-    packet[1] = 0xBB
-    packet[2] = 0x05 
-    packet[3] = LOCK_TIME_PAGE 
-    packet[4] = 0x01 
-    packet[5] = READ  
-    crc = Crc16Xmodem.calc(packet[2:-3])
-    crc_bytes = crc.to_bytes(2, byteorder='big')
-    packet[6] = crc_bytes[0]
-    packet[7] = crc_bytes[1]
-    packet[8] = 0xCC
-    serial.write(packet)
-    packet[4] = 0x00
-    crc = Crc16Xmodem.calc(packet[2:-3])
-    crc_bytes = crc.to_bytes(2, byteorder='big')
-    packet[6] = crc_bytes[0]
-    packet[7] = crc_bytes[1]
-    serial.write(packet)
+    packet1 = buildPacket(b'', LOCK_TIME_PAGE, 0x01, READ)
+    packet2 = buildPacket(b'', LOCK_TIME_PAGE, 0x00, READ)
+    serial.write(packet1)
+    serial.write(packet2)
+    
 
 
 def laserPage(fieldValues):
@@ -206,8 +185,10 @@ class SerialTimer(QObject):
             self.readDate()
 
     def readDate(self):
-        global STATE, RECEIVED_DATA
-        nob = 0
+        global STATE, RECEIVED_DATA, NOB_BYTES
+        nob  = 0
+        nob1 = 0 
+        nob2 = 0
 
         try:
             temp = serial.read_all()
@@ -224,21 +205,25 @@ class SerialTimer(QObject):
                     elif STATE == HEADER_2:
 
                         if temp[counter] == 0xBB:
-                            STATE = CHECK_NOB
+                            STATE = CHECK_NOB_1
                             RECEIVED_DATA[:] = []
 
-                    elif STATE == CHECK_NOB:
-                        nob = temp[counter]
+                    elif STATE == CHECK_NOB_1:
+                        nob1 = temp[counter]
+                        STATE = CHECK_NOB_2
+                    
+                    elif STATE == CHECK_NOB_2:
+                        nob2 = temp[counter]
+                        NOB_BYTES[0] = nob1
+                        NOB_BYTES[1] = nob2
+                        nob = int.from_bytes(NOB_BYTES, "big")  
                         STATE = IN_MESSAGE
 
                     elif STATE == IN_MESSAGE:
                     
                         if len(RECEIVED_DATA) == nob:
                             STATE = HEADER_1
-                            RECEIVED_DATA[0:0] = nob.to_bytes(
-                                length=1, 
-                                byteorder='big'
-                            )
+                            RECEIVED_DATA += nob.to_bytes(2, 'big')
 
                             crc_s = int.from_bytes(
                                 RECEIVED_DATA[-2:], 
@@ -255,7 +240,7 @@ class SerialTimer(QObject):
                                     
                                     if RECEIVED_DATA[PAGE_INDEX] == SETTING_PAGE:
                                         if RECEIVED_DATA[FIELD_INDEX] == 0:
-                                            serNum = RECEIVED_DATA[4:-2].decode()
+                                            serNum = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                             d = serNum[-2:]
                                             m = serNum[-4:-2]
                                             y = serNum[-8:-4]
@@ -264,27 +249,27 @@ class SerialTimer(QObject):
                                             self.serialNumber.emit(serNum)
 
                                         elif RECEIVED_DATA[FIELD_INDEX] == 3:
-                                            lEnergy = RECEIVED_DATA[4:-2].decode()
+                                            lEnergy = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                             self.laserEnergy.emit(lEnergy)
 
                                         elif RECEIVED_DATA[FIELD_INDEX] == 8:
-                                            firmware = RECEIVED_DATA[4:-2].decode()
+                                            firmware = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                             self.firmwareVesion.emit(firmware)
 
                                     elif RECEIVED_DATA[PAGE_INDEX] == LOCK_TIME_PAGE:
                                         if RECEIVED_DATA[FIELD_INDEX] == 0:
-                                            clock = RECEIVED_DATA[4:-2].decode()
+                                            clock = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                             clock = clock.split(':')
                                             clock = tuple( int(x) for x in clock )
                                             self.sysClock.emit(clock)
                                         elif RECEIVED_DATA[FIELD_INDEX] == 1:
-                                            date = RECEIVED_DATA[4:-2].decode()
+                                            date = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                             date = date.split('-')
                                             date = tuple( int(x) for x in date )
                                             self.sysDate.emit(date)
                                     elif RECEIVED_DATA[PAGE_INDEX] == UPDATE_PAGE:
                                         if RECEIVED_DATA[FIELD_INDEX] == 252:
-                                            status = RECEIVED_DATA[4:-2].decode()
+                                            status = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                             self.updateProgress.emit(status)
 
 
@@ -296,17 +281,17 @@ class SerialTimer(QObject):
                                             self.sensorFlags.emit(flags)
 
                                         if RECEIVED_DATA[FIELD_INDEX] == 1:
-                                            t = RECEIVED_DATA[4:-2].decode()
+                                            t = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                             self.tempValue.emit(int(t))
 
                                         if RECEIVED_DATA[FIELD_INDEX] == 7:
-                                            shot = RECEIVED_DATA[4:-2].hex()
+                                            shot = RECEIVED_DATA[DATA_INDEX:-2].hex()
                                             if int(shot, 16) == 1:
                                                 self.shot.emit()
 
                                     elif RECEIVED_DATA[PAGE_INDEX] == SETTING_PAGE:
                                         if RECEIVED_DATA[FIELD_INDEX] == 0:
-                                            serNum = RECEIVED_DATA[4:-2].decode()
+                                            serNum = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                             d = serNum[-2:]
                                             m = serNum[-4:-2]
                                             y = serNum[-8:-4]
@@ -315,11 +300,11 @@ class SerialTimer(QObject):
                                             self.serialNumber.emit(serNum)
 
                                         elif RECEIVED_DATA[FIELD_INDEX] == 3:
-                                            lEnergy = RECEIVED_DATA[4:-2].decode()
+                                            lEnergy = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                             self.laserEnergy.emit(lEnergy)
 
                                         elif RECEIVED_DATA[FIELD_INDEX] == 8:
-                                            firmware = RECEIVED_DATA[4:-2].decode()
+                                            firmware = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                             self.firmwareVesion.emit(firmware)
                                 
                                 elif RECEIVED_DATA[CMD_TYPE_INDEX] == READ:
@@ -384,8 +369,10 @@ class SerialThread(QThread):
 
 
     def run(self):
-        global STATE, RECEIVED_DATA
-        nob = 0
+        global STATE, RECEIVED_DATA, NOB_BYTES
+        nob  = 0
+        nob1 = 0 
+        nob2 = 0
         while self.loop:
             try:
                 temp = serial.read_all()
@@ -402,21 +389,25 @@ class SerialThread(QThread):
                         elif STATE == HEADER_2:
 
                             if temp[counter] == 0xBB:
-                                STATE = CHECK_NOB
+                                STATE = CHECK_NOB_1
                                 RECEIVED_DATA[:] = []
 
-                        elif STATE == CHECK_NOB:
-                            nob = temp[counter]
+                        elif STATE == CHECK_NOB_1:
+                            nob1 = temp[counter]
+                            STATE = CHECK_NOB_2
+                        
+                        elif STATE == CHECK_NOB_2:
+                            nob2 = temp[counter]
+                            NOB_BYTES[0] = nob1
+                            NOB_BYTES[1] = nob2
+                            nob = int.from_bytes(NOB_BYTES, "big")  
                             STATE = IN_MESSAGE
 
                         elif STATE == IN_MESSAGE:
                         
                             if len(RECEIVED_DATA) == nob:
                                 STATE = HEADER_1
-                                RECEIVED_DATA[0:0] = nob.to_bytes(
-                                    length=1, 
-                                    byteorder='big'
-                                )
+                                RECEIVED_DATA += nob.to_bytes(2, 'big')
 
                                 crc_s = int.from_bytes(
                                     RECEIVED_DATA[-2:], 
@@ -433,7 +424,7 @@ class SerialThread(QThread):
                                         
                                         if RECEIVED_DATA[PAGE_INDEX] == SETTING_PAGE:
                                             if RECEIVED_DATA[FIELD_INDEX] == 0:
-                                                serNum = RECEIVED_DATA[4:-2].decode()
+                                                serNum = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                                 d = serNum[-2:]
                                                 m = serNum[-4:-2]
                                                 y = serNum[-8:-4]
@@ -442,28 +433,28 @@ class SerialThread(QThread):
                                                 self.serialNumber.emit(serNum)
 
                                             elif RECEIVED_DATA[FIELD_INDEX] == 3:
-                                                lEnergy = RECEIVED_DATA[4:-2].decode()
+                                                lEnergy = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                                 self.laserEnergy.emit(lEnergy)
 
                                             elif RECEIVED_DATA[FIELD_INDEX] == 8:
-                                                firmware = RECEIVED_DATA[4:-2].decode()
+                                                firmware = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                                 self.firmwareVesion.emit(firmware)
 
                                         elif RECEIVED_DATA[PAGE_INDEX] == LOCK_TIME_PAGE:
                                             if RECEIVED_DATA[FIELD_INDEX] == 0:
-                                                clock = RECEIVED_DATA[4:-2].decode()
+                                                clock = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                                 clock = clock.split(':')
                                                 clock = tuple( int(x) for x in clock )
                                                 self.sysClock.emit(clock)
                                             elif RECEIVED_DATA[FIELD_INDEX] == 1:
-                                                date = RECEIVED_DATA[4:-2].decode()
+                                                date = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                                 date = date.split('-')
                                                 date = tuple( int(x) for x in date )
                                                 self.sysDate.emit(date)
                                         
                                         elif RECEIVED_DATA[PAGE_INDEX] == UPDATE_PAGE:
                                             if RECEIVED_DATA[FIELD_INDEX] == 252:
-                                                status = RECEIVED_DATA[4:-2].decode()
+                                                status = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                                 self.updateProgress.emit(status)
 
                                     elif RECEIVED_DATA[CMD_TYPE_INDEX] == WRITE:
@@ -474,17 +465,17 @@ class SerialThread(QThread):
                                                 self.sensorFlags.emit(flags)
 
                                             if RECEIVED_DATA[FIELD_INDEX] == 1:
-                                                t = RECEIVED_DATA[4:-2].decode()
+                                                t = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                                 self.tempValue.emit(int(t))
 
                                             if RECEIVED_DATA[FIELD_INDEX] == 7:
-                                                shot = RECEIVED_DATA[4:-2].hex()
+                                                shot = RECEIVED_DATA[DATA_INDEX:-2].hex()
                                                 if int(shot, 16) == 1:
                                                     self.shot.emit()
 
                                         elif RECEIVED_DATA[PAGE_INDEX] == SETTING_PAGE:
                                             if RECEIVED_DATA[FIELD_INDEX] == 0:
-                                                serNum = RECEIVED_DATA[4:-2].decode()
+                                                serNum = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                                 d = serNum[-2:]
                                                 m = serNum[-4:-2]
                                                 y = serNum[-8:-4]
@@ -493,11 +484,11 @@ class SerialThread(QThread):
                                                 self.serialNumber.emit(serNum)
 
                                             elif RECEIVED_DATA[FIELD_INDEX] == 3:
-                                                lEnergy = RECEIVED_DATA[4:-2].decode()
+                                                lEnergy = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                                 self.laserEnergy.emit(lEnergy)
 
                                             elif RECEIVED_DATA[FIELD_INDEX] == 8:
-                                                firmware = RECEIVED_DATA[4:-2].decode()
+                                                firmware = RECEIVED_DATA[DATA_INDEX:-2].decode()
                                                 self.firmwareVesion.emit(firmware)
                                     
                                     elif RECEIVED_DATA[CMD_TYPE_INDEX] == READ:
@@ -616,6 +607,13 @@ class UpdateFirmware(QThread):
             file = open(f'{laserDir}/{MICRO_SOURCE}', 'rb')
             data = file.read()
             file.close()
+
+            for field, i in enumerate(range(0, len(data), PACKET_NOB)):
+                segment = data[i : i + PACKET_NOB]                
+                MICRO_DATA[field] = buildPacket(
+                    segment, UPDATE_PAGE, field, REPORT
+                )
+            
             MICRO_DATA[250] = buildPacket(
                 int_to_bytes(len(data)), 
                 UPDATE_PAGE, 250, REPORT
@@ -624,23 +622,7 @@ class UpdateFirmware(QThread):
                 int_to_bytes(PACKET_NOB), 
                 UPDATE_PAGE, 251, REPORT
             )
-            packet = bytearray()
-            for field, i in enumerate(range(0, len(data), PACKET_NOB)):
-                segment = data[i : i + PACKET_NOB]
-                packet.append(0xAA)
-                packet.append(0xBB)
-                packet.append(5 + len(segment))
-                packet.append(UPDATE_PAGE)
-                packet.append(field)
-                packet.append(REPORT)
-                packet += segment
-                crc = Crc16Xmodem.calc(packet[2:])
-                crc_bytes = crc.to_bytes(2, byteorder='big')
-                packet += crc_bytes
-                packet.append(0xCC)
-                MICRO_DATA[field] = packet
-                packet[:] = []
-
+                
             chan_list = [12,16]
             GPIO.output(chan_list, GPIO.LOW)
             self.sleep(1)
