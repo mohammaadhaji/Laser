@@ -23,12 +23,12 @@ if platform.system() == 'Windows':
 else:
     serial = Serial('/dev/ttyS0', 115200)
 
-HEADER_1   = 1
-HEADER_2   = 2
-CHECK_NOB_1  = 3
-CHECK_NOB_2  = 4
-IN_MESSAGE = 5
-STATE      = HEADER_1
+HEADER_1    = 1
+HEADER_2    = 2
+CHECK_NOB_1 = 3
+CHECK_NOB_2 = 4
+IN_MESSAGE  = 5
+STATE       = HEADER_1
 
 PAGE_INDEX     = 2
 FIELD_INDEX    = 3
@@ -47,7 +47,7 @@ REPORT = 0x0A
 WRITE  = 0x0B 
 READ   = 0x0C
 
-MOUNT_DIR        ='/media/updateFirmware'
+MOUNT_DIR        = '/media/updateFirmware'
 SOURCE_FOLDER    = 'Laser'
 VERIFY           = 'verify'
 MICRO_SOURCE     = 'Application_v1.0.bin'
@@ -55,7 +55,7 @@ MICRO_DATA       = {}
 PACKET_NOB       = 1000
 
 RECEIVED_DATA = bytearray()
-NOB_BYTES = bytearray(2)
+NOB_BYTES     = bytearray(2)
 
 
 def sensors(packet):
@@ -584,7 +584,7 @@ class UpdateFirmware(QThread):
             with open(f'{laserDir}/{VERIFY}', 'r') as f:
                 md5 = int(f.read())
 
-            if not md5 == calcMD5(laserDir, '{VERIFY}'):
+            if not md5 == calcMD5(laserDir, f'{VERIFY}'):
                 self.result.emit(verifyError)
                 os.system(f'umount {MOUNT_DIR}/sda*')
                 shutil.rmtree(MOUNT_DIR)
