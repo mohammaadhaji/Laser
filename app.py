@@ -822,7 +822,7 @@ class MainWin(QMainWindow):
                     self.lblLockError, 
                     self.lockErrorLabel, 5
                 )
-            return
+                return
         
         license = self.license[f'LICENSE{numOfLocks + 1}']
         lock = Lock(date, license)
