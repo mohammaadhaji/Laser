@@ -1,3 +1,4 @@
+from os import error
 from PyQt5 import uic
 from communication import *
 from promotions import *
@@ -370,8 +371,12 @@ class MainWin(QMainWindow):
         self.btnDecCooling.clicked.connect(lambda: self.setCooling('dec'))
         self.btnIncCooling.clicked.connect(lambda: self.setCooling('inc'))
         self.btnSaveCase.clicked.connect(self.saveCase)
-        self.btnSaveCase.pressed.connect(lambda: self.sliderChgColor('pressed'))
-        self.btnSaveCase.released.connect(lambda: self.sliderChgColor('released'))
+        self.btnSaveCase.pressed.connect(
+            lambda: self.chgSliderColor(SLIDER_SAVED_GB, SLIDER_SAVED_GW)
+        )
+        self.btnSaveCase.released.connect(
+            lambda: self.chgSliderColor(SLIDER_GB, SLIDER_GW)
+        )
         self.btnSaveHw.clicked.connect(self.saveHwSettings)
         self.btnResetCounter.clicked.connect(self.resetTotalShot)
         self.btnReady.clicked.connect(lambda: self.setReady(True))
@@ -1255,46 +1260,38 @@ class MainWin(QMainWindow):
 
     def setReady(self, ready):
         if ready:
+            errors = ''
+            error_duration = 5
             if not 5 <= self.temperature <= 40:
-                self.setLabel(
-                    TEXT['tempError'][self.langIndex],
-                    self.lblReadyError,
-                    self.readyErrorTimer, 4
-                )
-
-            elif self.waterflowError:
-                self.setLabel(
-                    TEXT['waterflowError'][self.langIndex],
-                    self.lblReadyError,
-                    self.readyErrorTimer, 4
-                )
+                errors += TEXT['tempError'][self.langIndex] + '\n'
+                error_duration += 1
                 
-            elif self.waterLevelError:
-                self.setLabel(
-                    TEXT['waterLevelError'][self.langIndex],
-                    self.lblReadyError,
-                    self.readyErrorTimer, 4
-                )
+            if self.waterflowError:
+                errors += TEXT['waterflowError'][self.langIndex] + '\n'
+                error_duration += 1
+                
+            if self.waterLevelError:
+                errors += TEXT['waterLevelError'][self.langIndex] + '\n'
+                error_duration += 1
             
-            elif self.interLockError:
-                self.setLabel(
-                    TEXT['interLockError'][self.langIndex],
-                    self.lblReadyError,
-                    self.readyErrorTimer, 4
-                )
+            if self.interLockError:
+                errors += TEXT['interLockError'][self.langIndex] + '\n'
+                error_duration += 1
 
-            elif self.overHeatError:
-                self.setLabel(
-                    TEXT['overHeatError'][self.langIndex],
-                    self.lblReadyError,
-                    self.readyErrorTimer, 4
-                )
+            if self.overHeatError:
+                errors += TEXT['overHeatError'][self.langIndex] + '\n'
+                
+                error_duration += 1
 
-            elif self.physicalDamage:
+            if self.physicalDamage:
+                errors += TEXT['physicalDamage'][self.langIndex] + '\n'
+                error_duration += 1
+            
+            if errors:
                 self.setLabel(
-                    TEXT['physicalDamage'][self.langIndex],
+                    errors,
                     self.lblReadyError,
-                    self.readyErrorTimer, 4
+                    self.readyErrorTimer, error_duration
                 )
             else:
                 self.ready = True
@@ -1309,14 +1306,7 @@ class MainWin(QMainWindow):
                 self.btnStandby.setStyleSheet(READY_NOT_SELECTED)
                 self.btnReady.setStyleSheet(READY_SELECTED)
                 self.epfSkinGradeLayout.setEnabled(False)
-                if self.configs['theme'] in ['C1', 'C2', 'C4']:
-                    self.sliderEnergy.setStyleSheet(SLIDER_DISABLED_GB)
-                    self.sliderFrequency.setStyleSheet(SLIDER_DISABLED_GB)
-                    self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED_GB)
-                else:
-                    self.sliderEnergy.setStyleSheet(SLIDER_DISABLED_GW)
-                    self.sliderFrequency.setStyleSheet(SLIDER_DISABLED_GW)
-                    self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED_GW)
+                self.chgSliderColor(SLIDER_DISABLED_GB, SLIDER_DISABLED_GW)
 
         else:
             self.ready = False
@@ -1324,14 +1314,7 @@ class MainWin(QMainWindow):
             self.btnStandby.setStyleSheet(READY_SELECTED)
             self.btnReady.setStyleSheet(READY_NOT_SELECTED)
             self.epfSkinGradeLayout.setEnabled(True)
-            if self.configs['theme'] in ['C1', 'C2', 'C4']:
-                self.sliderEnergy.setStyleSheet(SLIDER_GB)
-                self.sliderFrequency.setStyleSheet(SLIDER_GB)
-                self.sliderPulseWidth.setStyleSheet(SLIDER_GB)
-            else:
-                self.sliderEnergy.setStyleSheet(SLIDER_GW)                
-                self.sliderFrequency.setStyleSheet(SLIDER_GW)                
-                self.sliderPulseWidth.setStyleSheet(SLIDER_GW)                    
+            self.chgSliderColor(SLIDER_GB, SLIDER_GW)                    
 
     def setCooling(self, operation):
         buttons = layout_widgets(self.coolingLayout)
@@ -1358,26 +1341,15 @@ class MainWin(QMainWindow):
                 self.cooling -= 1       
                 laserPage({'cooling': self.cooling})
 
-    def sliderChgColor(self, i):
-        if i == 'pressed':
-            if self.configs['theme'] in ['C1', 'C2', 'C4']:
-                self.sliderEnergy.setStyleSheet(SLIDER_SAVED_GB)
-                self.sliderFrequency.setStyleSheet(SLIDER_SAVED_GB)
-                self.sliderPulseWidth.setStyleSheet(SLIDER_SAVED_GB)         
-            else:
-                self.sliderEnergy.setStyleSheet(SLIDER_SAVED_GW)                
-                self.sliderFrequency.setStyleSheet(SLIDER_SAVED_GW)                
-                self.sliderPulseWidth.setStyleSheet(SLIDER_SAVED_GW) 
-
+    def chgSliderColor(self, c1, c2):
+        if self.configs['theme'] in ['C1', 'C2', 'C4']:
+            self.sliderEnergy.setStyleSheet(c1)
+            self.sliderFrequency.setStyleSheet(c1)
+            self.sliderPulseWidth.setStyleSheet(c1)
         else:
-            if self.configs['theme'] in ['C1', 'C2', 'C4']:
-                self.sliderEnergy.setStyleSheet(SLIDER_GB)
-                self.sliderFrequency.setStyleSheet(SLIDER_GB)
-                self.sliderPulseWidth.setStyleSheet(SLIDER_GB)
-            else:
-                self.sliderEnergy.setStyleSheet(SLIDER_GW)                
-                self.sliderFrequency.setStyleSheet(SLIDER_GW)                
-                self.sliderPulseWidth.setStyleSheet(SLIDER_GW)               
+            self.sliderEnergy.setStyleSheet(c2)                
+            self.sliderFrequency.setStyleSheet(c2)                
+            self.sliderPulseWidth.setStyleSheet(c2)
 
     def setEnergy(self, operation):
         e = self.energy

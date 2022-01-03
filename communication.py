@@ -47,21 +47,15 @@ REPORT = 0x0A
 WRITE  = 0x0B 
 READ   = 0x0C
 
-
 MOUNT_DIR        ='/media/updateFirmware'
 SOURCE_FOLDER    = 'Laser'
+VERIFY           = 'verify'
 MICRO_SOURCE     = 'Application_v1.0.bin'
 MICRO_DATA       = {}
 PACKET_NOB       = 1000
 
-
 RECEIVED_DATA = bytearray()
 NOB_BYTES = bytearray(2)
-
-
-
-def printPacket(packet):
-    print( " ".join(packet.hex()[i:i+2].upper() for i in range(0, len(packet.hex()), 2)))
 
 
 def sensors(packet):
@@ -129,7 +123,6 @@ def readTime():
     serial.write(packet1)
     serial.write(packet2)
     
-
 
 def laserPage(fieldValues):
     fieldsIndex = {
@@ -588,10 +581,10 @@ class UpdateFirmware(QThread):
 
         verifyError = 'The source files are corrupted and can not be replaced.'
         try:
-            with open(f'{laserDir}/verify', 'r') as f:
+            with open(f'{laserDir}/{VERIFY}', 'r') as f:
                 md5 = int(f.read())
 
-            if not md5 == calcMD5(laserDir, 'verify'):
+            if not md5 == calcMD5(laserDir, '{VERIFY}'):
                 self.result.emit(verifyError)
                 os.system(f'umount {MOUNT_DIR}/sda*')
                 shutil.rmtree(MOUNT_DIR)
@@ -608,7 +601,7 @@ class UpdateFirmware(QThread):
             microUpdate = True
         
         if not microUpdate:
-            os.system(f'cp -r {laserDir}/* {CURRENT_FILE_DIR}')
+            os.system(f'cp -r !({VERIFY}) {laserDir}/* {CURRENT_FILE_DIR}')
             os.system(f'umount {MOUNT_DIR}/sda*')
             shutil.rmtree(MOUNT_DIR)
             self.result.emit("Done GUI")
@@ -632,7 +625,7 @@ class UpdateFirmware(QThread):
                 int_to_bytes(PACKET_NOB), 
                 UPDATE_PAGE, 251, REPORT
             )
-
+            enterPage(UPDATE_PAGE)
             GPIO.output(16, GPIO.LOW)
             os.system(f'umount {MOUNT_DIR}/sda*')
             shutil.rmtree(MOUNT_DIR)
