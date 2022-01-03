@@ -260,10 +260,13 @@ def calcMD5(directory, verifyFileName):
     return sumMd5
 
 
+def int_to_bytes(x: int) -> bytes:
+    return x.to_bytes((x.bit_length() + 7) // 8, 'big')
+
 
 MOUNT_DIR        ='/media/updateFirmware'
 SOURCE_FOLDER    = 'Laser'
-MICRO_SOURCE     = 'micro.bin'
+MICRO_SOURCE     = 'Application_v1.0.bin'
 MICRO_DATA       = {}
 PACKET_NOB       = 1000
 
@@ -357,6 +360,14 @@ class UpdateFirmware(QThread):
             file = open(f'{laserDir}/{SOURCE_FOLDER}/{MICRO_SOURCE}', 'rb')
             data = file.read()
             file.close()
+            MICRO_DATA[250] = buildPacket(
+                int_to_bytes(len(data)), 
+                UPDATE_PAGE, 250, REPORT
+            )
+            MICRO_DATA[251] = buildPacket(
+                int_to_bytes(PACKET_NOB), 
+                UPDATE_PAGE, 251, REPORT
+            )
             packet = bytearray()
             for field, i in enumerate(range(0, len(data), PACKET_NOB)):
                 segment = data[i : i + PACKET_NOB]
@@ -374,11 +385,6 @@ class UpdateFirmware(QThread):
                 MICRO_DATA[field] = packet
                 packet[:] = []
 
-            fieldValues = {
-                'SOURCE_NOB': len(data), 
-                'PACKET': PACKET_NOB
-            }
-            updatePage(fieldValues)
             chan_list = [12,16]
             GPIO.output(chan_list, GPIO.LOW)
             self.sleep(1)

@@ -69,23 +69,27 @@ def sensors(packet):
     return flags
 
 
-def sendPacket(fieldsIndex, fieldValues, page, cmdType=REPORT):
+def buildPacket(data, page, field, cmdType):
     packet = bytearray()
+    packet.append(0xAA)
+    packet.append(0xBB)
+    packet.append(5 + len(data))
+    packet.append(page)
+    packet.append(field)
+    packet.append(cmdType)
+    packet += data
+    crc = Crc16Xmodem.calc(packet[2:])
+    crc_bytes = crc.to_bytes(2, byteorder='big')
+    packet += crc_bytes
+    packet.append(0xCC)
+    return packet
+
+
+def sendPacket(fieldsIndex, fieldValues, page, cmdType=REPORT):
+    
     for field, value in fieldValues.items():
-        packet.append(0xAA)
-        packet.append(0xBB)
-        fieldValue = str(value).encode()
-        packet.append(5 + len(fieldValue))
-        packet.append(page)
-        packet.append(fieldsIndex[field])
-        packet.append(cmdType)
-        packet += fieldValue
-        crc = Crc16Xmodem.calc(packet[2:])
-        crc_bytes = crc.to_bytes(2, byteorder='big')
-        packet += crc_bytes
-        packet.append(0xCC)
+        packet = buildPacket(str(value).encode(), page, fieldsIndex[field], cmdType)
         serial.write(packet)
-        packet[:] = []
 
 
 def enterPage(page):
@@ -150,11 +154,6 @@ def lockPage(cmdType):
     date  = jdatetime.datetime.now().togregorian().strftime('%Y-%m-%d')
     fieldValues = {'clock': clock, 'date': date}
     sendPacket(fieldsIndex, fieldValues, LOCK_TIME_PAGE, cmdType)
-
-
-def updatePage(fieldValues):
-    fieldsIndex = {'SOURCE_NOB': 250, 'PACKET': 251}
-    sendPacket(fieldsIndex, fieldValues, UPDATE_PAGE)
 
 
 class SerialTimer(QObject):
@@ -318,6 +317,14 @@ class SerialTimer(QObject):
                                         if segmentIndex in MICRO_DATA.keys():
                                             serial.write(
                                                 MICRO_DATA[segmentIndex]
+                                            )
+                                        elif RECEIVED_DATA[FIELD_INDEX] == 250:
+                                            serial.write(
+                                                MICRO_DATA[250]
+                                            )
+                                        elif RECEIVED_DATA[FIELD_INDEX] == 251:
+                                            serial.write(
+                                                MICRO_DATA[251]
                                             )
 
                         else:

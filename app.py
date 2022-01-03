@@ -673,14 +673,13 @@ class MainWin(QMainWindow):
     def restartForUpdate(self):
         self.restartCounter -= 1
         self.lblUpdateFirmware.setText(
-            f'GUI will restart in {self.restartCounter} seconds...'
+            f'Your system will restart in {self.restartCounter} seconds...'
         )
         if self.restartCounter == -1:
             self.restartTimer.stop()
             self.serialC.closePort()
-            os.chdir(CURRENT_FILE_DIR)
-            os.system('python3 app.py -platform linuxfb')
-            exit(0)
+            gpioCleanup()
+            os.system('reboot')
 
     def updateResult(self, result):
         if result == 'Done GUI':
@@ -698,11 +697,10 @@ class MainWin(QMainWindow):
         if status == 'successfully updated':
             self.btnUpdateFirmware.setDisabled(False)
             self.setLabel(
-                status, 
+                'Successfully updated.', 
                 self.lblUpdateFirmware,
                 self.updateFirmwareLabelTimer
             )
-
 
     def updateSystem(self):
         self.btnUpdateFirmware.setDisabled(True)
@@ -935,14 +933,9 @@ class MainWin(QMainWindow):
     def unlock(self, frameNumber):
         if frameNumber == self.movie.frameCount() - 1: 
             self.movie.stop()
-            os.chdir(CURRENT_FILE_DIR)
-            self.serialC.closePort()
-            QApplication.processEvents()
-            if platform.system() == 'Windows':
-                os.system('python app.py')
-            else:
-                os.system('python3 app.py -platform linuxfb')
-            exit(0)  
+            index = self.stackedWidget.indexOf(self.splashPage)
+            self.stackedWidget.setCurrentIndex(index)
+            self.changeTheme(self.configs['theme']) 
 
     def loginHw(self):
         password = self.txtHwPass.text()
