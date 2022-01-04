@@ -16,10 +16,8 @@ import jdatetime, math, sys, time
 class MainWin(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWin, self).__init__(*args, **kwargs)
-        # s = time.time()
         uic.loadUi(APP_UI, self)
         self.setupUi()
-        # print(time.time() - s)
         
     def setupUi(self):
         # self.setCursor(Qt.BlankCursor)
@@ -56,22 +54,13 @@ class MainWin(QMainWindow):
         self.updateT.result.connect(self.updateResult)
         self.license = self.configs['LICENSE']
         self.movie = QMovie(LOCK_GIF)
-        self.shutdownMovie = QMovie(SHUTDOWN_GIF)
-        # self.shutdownMovie.setScaledSize(QSize(1920, 1080))
-        self.lblShutdownGif.setMovie(self.shutdownMovie)
         self.movie.frameChanged.connect(self.unlock)
         self.lblLock.setMovie(self.movie)
         self.movie.start()
         self.movie.stop()
-        self.adssMovie = QMovie(ADSS_GIF)
-        self.adssMovie.setScaledSize(QSize(1920, 1080))
-        self.adssMovie.frameChanged.connect(self.adssStop)
-        self.lblAdssGif.setMovie(self.adssMovie)
         self.lblSplash.setPixmap(QPixmap(SPLASH))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
-        self.lblAdssGif.clicked.connect(lambda: self.changeAnimation('vertical'))
-        self.lblAdssGif.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         font_db = QFontDatabase()
         font_id = font_db.addApplicationFont(IRAN_NASTALIQ)
         font_id = font_db.addApplicationFont(IRANIAN_SANS)
@@ -124,7 +113,7 @@ class MainWin(QMainWindow):
         if self.configs['LANGUAGE'] == 'fa':
             self.changeLang(self.configs['LANGUAGE'])
         self.shortcut = QShortcut(QKeySequence("Ctrl+x"), self)
-        self.shortcut.activated.connect(self.powerOff)
+        self.shortcut.activated.connect(self.close)
         self.chbSlideTransition.setFixedSize(150, 48)
         self.chbSlideTransition.setCheckState(
             2 if self.configs['slideTransition'] else 0
@@ -145,7 +134,6 @@ class MainWin(QMainWindow):
         self.initSensors()
         self.checkUUID()
         readTime()
-        self.playSound(STARTUP_SOUND)
 
     def setTouchSound(self, state):
         volume = 100 if state == 2 else 0
@@ -328,15 +316,13 @@ class MainWin(QMainWindow):
         self.btnFaLang.clicked.connect(lambda: self.changeLang('fa'))
         self.btnEnter.clicked.connect(self.unlockLIC)
         self.btnSort.clicked.connect(self.sort)
-        self.btnAdss.clicked.connect(self.adss)
         self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
         self.btnEndSession.clicked.connect(lambda: enterPage(MAIN_PAGE))
         self.btnPowerOption.clicked.connect(lambda: self.powerOption('show'))
-        # self.btnPower.clicked.connect(self.powerOff)
-        self.btnPower.clicked.connect(self.shutDown)
+        self.btnPower.clicked.connect(self.powerOff)
+        self.btnPower_2.clicked.connect(self.powerOff)
+        self.btnPower_3.clicked.connect(self.powerOff)
         self.btnRestart.clicked.connect(self.restart)
-        self.btnPower_2.clicked.connect(self.shutDown)
-        self.btnPower_3.clicked.connect(self.shutDown)
         self.btnStartSession.clicked.connect(self.startSession)
         self.btnSubmit.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnSubmit.clicked.connect(self.submit)
@@ -645,15 +631,6 @@ class MainWin(QMainWindow):
 
         self.configs['theme'] = theme
         saveConfigs(self.configs)
-
-    def adss(self):
-        index = self.stackedWidget.indexOf(self.adssPage)
-        self.stackedWidget.setCurrentIndex(index)
-        self.adssMovie.start()
-    
-    def adssStop(self, frameNumber):
-        if frameNumber == self.adssMovie.frameCount() - 1: 
-            self.adssMovie.stop()
        
     def setOwnerInfo(self, text):
         self.ownerInfoSplash.setText(text)
@@ -691,13 +668,6 @@ class MainWin(QMainWindow):
                 self.unlockLIC(auto=True)
         except Exception:
             pass
-
-    def shutDown(self):
-        self.shutDownTimer.start(4000)
-        self.playSound(SHUTDOWN_SOUND)
-        self.changeAnimation('vertical')
-        self.stackedWidget.setCurrentWidget(self.shutdonwPage)
-        self.shutdownMovie.start()
 
     def powerOff(self):
         enterPage(SHUTDONW_PAGE)
