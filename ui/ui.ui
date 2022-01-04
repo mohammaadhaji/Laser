@@ -56,8 +56,54 @@ color:white;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>10</number>
+       <number>0</number>
       </property>
+      <widget class="QWidget" name="shutdonwPage">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(0, 0, 0);</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_92">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="lblShutdownGif">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="adssPage">
+       <layout class="QVBoxLayout" name="verticalLayout_93">
+        <item>
+         <widget class="Label" name="lblAdssGif">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="UUIDPage">
        <layout class="QVBoxLayout" name="verticalLayout_66">
         <item>
@@ -883,8 +929,8 @@ QPushButton:pressed {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1612</width>
-             <height>835</height>
+             <width>1623</width>
+             <height>957</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -1371,7 +1417,7 @@ border: 1px solid white;
           <item>
            <layout class="QHBoxLayout" name="powerLayout">
             <property name="leftMargin">
-             <number>0</number>
+             <number>20</number>
             </property>
             <property name="topMargin">
              <number>20</number>
@@ -1379,6 +1425,36 @@ border: 1px solid white;
             <property name="rightMargin">
              <number>20</number>
             </property>
+            <item>
+             <widget class="QPushButton" name="btnAdss">
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+background-color: rgb(255, 255, 255);
+outline:0;
+border-radius:70px;
+border:0px
+}
+
+QPushButton:pressed{
+	background-color: rgb(143, 203, 255);
+}
+</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>images/adssLogo.png</normaloff>images/adssLogo.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>150</width>
+                <height>150</height>
+               </size>
+              </property>
+             </widget>
+            </item>
             <item>
              <spacer name="horizontalSpacer_5">
               <property name="orientation">
@@ -3066,7 +3142,7 @@ QPushButton:pressed{
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1265</width>
+                       <width>1276</width>
                        <height>848</height>
                       </rect>
                      </property>
@@ -5152,8 +5228,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>312</width>
-               <height>413</height>
+               <width>1599</width>
+               <height>803</height>
               </rect>
              </property>
              <property name="styleSheet">
@@ -6274,7 +6350,7 @@ border:3px solid red;
                  <string notr="true"/>
                 </property>
                 <property name="placeholderText">
-                 <string>Search By Number</string>
+                 <string>Search</string>
                 </property>
                 <property name="clearButtonEnabled">
                  <bool>false</bool>
@@ -8770,9 +8846,9 @@ background-color: rgb(0, 170, 255);
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-102</y>
+                   <y>0</y>
                    <width>1556</width>
-                   <height>883</height>
+                   <height>803</height>
                   </rect>
                  </property>
                  <property name="styleSheet">
@@ -10281,7 +10357,7 @@ border: 10px solid rgb(0, 170, 255);
                           <number>0</number>
                          </property>
                          <item>
-                          <layout class="QVBoxLayout" name="verticalLayout_36" stretch="3,1,1,1,4,1,0">
+                          <layout class="QVBoxLayout" name="verticalLayout_36" stretch="4,1,1,4,1,0">
                            <property name="spacing">
                             <number>0</number>
                            </property>
@@ -10342,19 +10418,6 @@ border: 10px solid rgb(0, 170, 255);
                               </spacer>
                              </item>
                             </layout>
-                           </item>
-                           <item>
-                            <spacer name="verticalSpacer_35">
-                             <property name="orientation">
-                              <enum>Qt::Vertical</enum>
-                             </property>
-                             <property name="sizeHint" stdset="0">
-                              <size>
-                               <width>20</width>
-                               <height>40</height>
-                              </size>
-                             </property>
-                            </spacer>
                            </item>
                            <item>
                             <layout class="QHBoxLayout" name="horizontalLayout_18">

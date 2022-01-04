@@ -58,30 +58,34 @@ RECEIVED_DATA = bytearray()
 NOB_BYTES     = bytearray(2)
 
 
+
+def printPacket(packet):
+    print( " ".join(packet.hex()[i:i+2].upper() for i in range(0, len(packet.hex()), 2)))
+
 def sensors(packet):
     flags = [False] * 5
 
-    if packet[4]:
+    if packet[5]:
         flags[0] = False
     else:
         flags[0] = True
 
-    if packet[5]:
+    if packet[6]:
         flags[1] = False
     else:
         flags[1] = True
 
-    if packet[6]:
+    if packet[7]:
         flags[2] = False
     else:
         flags[2] = True
 
-    if packet[7]:
+    if packet[8]:
         flags[3] = False
     else:
         flags[3] = True
 
-    if packet[8]:
+    if packet[9]:
         flags[4] = False
     else:
         flags[4] = True
@@ -216,7 +220,7 @@ class SerialTimer(QObject):
                     
                         if len(RECEIVED_DATA) == nob:
                             STATE = HEADER_1
-                            RECEIVED_DATA += nob.to_bytes(2, 'big')
+                            RECEIVED_DATA[0:0] = nob.to_bytes(2, 'big')
 
                             crc_s = int.from_bytes(
                                 RECEIVED_DATA[-2:], 
@@ -394,14 +398,15 @@ class SerialThread(QThread):
                             nob2 = temp[counter]
                             NOB_BYTES[0] = nob1
                             NOB_BYTES[1] = nob2
-                            nob = int.from_bytes(NOB_BYTES, "big")  
+                            nob = int.from_bytes(NOB_BYTES, "big")
+                            # print(nob)  
                             STATE = IN_MESSAGE
 
                         elif STATE == IN_MESSAGE:
                         
                             if len(RECEIVED_DATA) == nob:
                                 STATE = HEADER_1
-                                RECEIVED_DATA += nob.to_bytes(2, 'big')
+                                RECEIVED_DATA[0:0] = nob.to_bytes(2, 'big')
 
                                 crc_s = int.from_bytes(
                                     RECEIVED_DATA[-2:], 
@@ -412,7 +417,7 @@ class SerialThread(QThread):
                                 crc_r = Crc16Xmodem.calc(
                                     RECEIVED_DATA[:-2]
                                 )
-                                
+
                                 if crc_r == crc_s:
                                     if RECEIVED_DATA[CMD_TYPE_INDEX] == REPORT:
                                         
@@ -535,99 +540,102 @@ class UpdateFirmware(QThread):
         global MICRO_DATA
         MICRO_DATA.clear()
 
-        if platform.system() == 'Windows':
-            self.result.emit("We don't do that here.")
-            return
+        # if platform.system() == 'Windows':
+        #     self.result.emit("We don't do that here.")
+        #     return
 
-        self.msleep(20)                            
-        r1  = subprocess.check_output('lsblk -J', shell=True)
-        blocks = json.loads(r1)['blockdevices']
+        # self.msleep(20)                            
+        # r1  = subprocess.check_output('lsblk -J', shell=True)
+        # blocks = json.loads(r1)['blockdevices']
 
-        sdaFound = False
-        sdaBlock = None
-        for blk in blocks:
-            if blk['name'] == 'sda':
-                sdaFound = True
-                sdaBlock = blk
+        # sdaFound = False
+        # sdaBlock = None
+        # for blk in blocks:
+        #     if blk['name'] == 'sda':
+        #         sdaFound = True
+        #         sdaBlock = blk
 
-        if not sdaFound:
-            self.result.emit("Flash drive not found.")
-            return
+        # if not sdaFound:
+        #     self.result.emit("Flash drive not found.")
+        #     return
                 
-        if not 'children' in sdaBlock:
-            self.result.emit("Flash drive doesn't have any partitions.")
-            return
+        # if not 'children' in sdaBlock:
+        #     self.result.emit("Flash drive doesn't have any partitions.")
+        #     return
              
-        os.mkdir(MOUNT_DIR)
-        partitionsDir = {}
+        # os.mkdir(MOUNT_DIR)
+        # partitionsDir = {}
 
-        for part in sdaBlock['children']:
-            partitionsDir[part['name']] = part['mountpoint']
+        # for part in sdaBlock['children']:
+        #     partitionsDir[part['name']] = part['mountpoint']
 
-        for part in partitionsDir:
-            if partitionsDir[part] == None:
-                os.mkdir(f'{MOUNT_DIR}/{part}')
-                r = subprocess.call(
-                    f'mount /dev/{part} {MOUNT_DIR}/{part}',
-                    shell=True
-                )
-                partitionsDir[part] = f'{MOUNT_DIR}/{part}'
+        # for part in partitionsDir:
+        #     if partitionsDir[part] == None:
+        #         os.mkdir(f'{MOUNT_DIR}/{part}')
+        #         r = subprocess.call(
+        #             f'mount /dev/{part} {MOUNT_DIR}/{part}',
+        #             shell=True
+        #         )
+        #         partitionsDir[part] = f'{MOUNT_DIR}/{part}'
 
-        laserFound = False
-        laserDir = ''
-        for dir in partitionsDir.values():
-            if isdir(f'{dir}/{SOURCE_FOLDER}'):
-                laserFound = True
-                laserDir = f'{dir}/{SOURCE_FOLDER}'
+        # laserFound = False
+        # laserDir = ''
+        # for dir in partitionsDir.values():
+        #     if isdir(f'{dir}/{SOURCE_FOLDER}'):
+        #         laserFound = True
+        #         laserDir = f'{dir}/{SOURCE_FOLDER}'
 
-        if not laserFound:
-            self.result.emit("Source files not found.")
-            updateCleanup(partitionsDir)
-            return
+        # if not laserFound:
+        #     self.result.emit("Source files not found.")
+        #     updateCleanup(partitionsDir)
+        #     return
 
-        verifyError = 'The source files are corrupted and can not be replaced.'
-        try:
-            with open(f'{laserDir}/{VERIFY}', 'r') as f:
-                md5 = int(f.read())
+        # verifyError = 'The source files are corrupted and can not be replaced.'
+        # try:
+        #     with open(f'{laserDir}/{VERIFY}', 'r') as f:
+        #         md5 = int(f.read())
 
-            if not md5 == calcMD5(laserDir, f'{VERIFY}'):
-                self.result.emit(verifyError)
-                updateCleanup(partitionsDir)
-                return
+        #     if not md5 == calcMD5(laserDir, f'{VERIFY}'):
+        #         self.result.emit(verifyError)
+        #         updateCleanup(partitionsDir)
+        #         return
    
-        except Exception:
-            self.result.emit(verifyError)
-            updateCleanup(partitionsDir)
-            return
+        # except Exception:
+        #     self.result.emit(verifyError)
+        #     updateCleanup(partitionsDir)
+        #     return
         
-        microUpdate = False
-        if isfile(f'{laserDir}/{MICRO_SOURCE}'):
-            microUpdate = True
+        # microUpdate = False
+        # if isfile(f'{laserDir}/{MICRO_SOURCE}'):
+        #     microUpdate = True
         
-        if not microUpdate:
-            os.system(f'cp -r !({VERIFY}) {laserDir}/* {CURRENT_FILE_DIR}')
-            updateCleanup(partitionsDir)
-            self.result.emit("Done GUI")
+        # if not microUpdate:
+        #     os.system(f'cp -r !({VERIFY}) {laserDir}/* {CURRENT_FILE_DIR}')
+        #     updateCleanup(partitionsDir)
+        #     self.result.emit("Done GUI")
 
-        else:
-            file = open(f'{laserDir}/{MICRO_SOURCE}', 'rb')
-            data = file.read()
-            file.close()
+        # else:
+        # file = open(f'{laserDir}/{MICRO_SOURCE}', 'rb')
+        file = open(f"../LaserSrc/{MICRO_SOURCE}", 'rb')
+        data = file.read()
+        file.close()
 
-            for field, i in enumerate(range(0, len(data), PACKET_NOB)):
-                segment = data[i : i + PACKET_NOB]                
-                MICRO_DATA[field] = buildPacket(
-                    segment, UPDATE_PAGE, field, REPORT
-                )
-            
-            MICRO_DATA[250] = buildPacket(
-                int_to_bytes(len(data)), 
-                UPDATE_PAGE, 250, REPORT
+        for field, i in enumerate(range(0, len(data), PACKET_NOB)):
+            segment = data[i : i + PACKET_NOB]                
+            MICRO_DATA[field] = buildPacket(
+                segment, UPDATE_PAGE, field, REPORT
             )
-            MICRO_DATA[251] = buildPacket(
-                int_to_bytes(PACKET_NOB), 
-                UPDATE_PAGE, 251, REPORT
-            )
-            enterPage(UPDATE_PAGE)
-            GPIO.output(16, GPIO.LOW)
-            updateCleanup(partitionsDir)
+        
+        MICRO_DATA[250] = buildPacket(
+            int_to_bytes(len(data)), 
+            UPDATE_PAGE, 250, REPORT
+        )
+        MICRO_DATA[251] = buildPacket(
+            int_to_bytes(PACKET_NOB), 
+            UPDATE_PAGE, 251, REPORT
+        )
+        enterPage(UPDATE_PAGE)
+        self.result.emit('Updating...')
+        # GPIO.output(16, GPIO.LOW)
+        # print(MICRO_DATA)
+        # updateCleanup(partitionsDir)

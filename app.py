@@ -10,14 +10,16 @@ from user import *
 from lock import *
 from itertools import chain
 from pathlib import Path
-import jdatetime, math, sys
+import jdatetime, math, sys, time
 
 
 class MainWin(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWin, self).__init__(*args, **kwargs)
+        # s = time.time()
         uic.loadUi(APP_UI, self)
         self.setupUi()
+        # print(time.time() - s)
         
     def setupUi(self):
         # self.setCursor(Qt.BlankCursor)
@@ -54,13 +56,22 @@ class MainWin(QMainWindow):
         self.updateT.result.connect(self.updateResult)
         self.license = self.configs['LICENSE']
         self.movie = QMovie(LOCK_GIF)
+        self.shutdownMovie = QMovie(SHUTDOWN_GIF)
+        # self.shutdownMovie.setScaledSize(QSize(1920, 1080))
+        self.lblShutdownGif.setMovie(self.shutdownMovie)
         self.movie.frameChanged.connect(self.unlock)
         self.lblLock.setMovie(self.movie)
         self.movie.start()
         self.movie.stop()
+        self.adssMovie = QMovie(ADSS_GIF)
+        self.adssMovie.setScaledSize(QSize(1920, 1080))
+        self.adssMovie.frameChanged.connect(self.adssStop)
+        self.lblAdssGif.setMovie(self.adssMovie)
         self.lblSplash.setPixmap(QPixmap(SPLASH))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
+        self.lblAdssGif.clicked.connect(lambda: self.changeAnimation('vertical'))
+        self.lblAdssGif.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         font_db = QFontDatabase()
         font_id = font_db.addApplicationFont(IRAN_NASTALIQ)
         font_id = font_db.addApplicationFont(IRANIAN_SANS)
@@ -134,6 +145,7 @@ class MainWin(QMainWindow):
         self.initSensors()
         self.checkUUID()
         readTime()
+        self.playSound(STARTUP_SOUND)
 
     def setTouchSound(self, state):
         volume = 100 if state == 2 else 0
@@ -167,6 +179,14 @@ class MainWin(QMainWindow):
     def playTouchSound(self):
         self.touchSound.stop()
         self.touchSound.play()
+
+    def playSound(self, sound):
+        self.mediaPlayer.setMedia(
+                    QMediaContent(
+                        QUrl.fromLocalFile(sound)
+                    )
+                )
+        self.mediaPlayer.play()
 
     def initPages(self):
         self.stackedWidget.setCurrentWidget(self.splashPage)
@@ -231,8 +251,10 @@ class MainWin(QMainWindow):
         self.sparkTimer = QTimer()
         self.restartTimer = QTimer()
         self.loadUsersTimer = QTimer()
+        self.shutDownTimer = QTimer()
         self.restartCounter = 6
         self.loadUsersTimer.timeout.connect(self.addUsersTable)
+        self.shutDownTimer.timeout.connect(self.powerOff)
         self.loadUsersTimer.start(20)
         self.restartTimer.timeout.connect(self.restartForUpdate)
         self.systemTimeTimer.timeout.connect(self.time)
@@ -306,13 +328,15 @@ class MainWin(QMainWindow):
         self.btnFaLang.clicked.connect(lambda: self.changeLang('fa'))
         self.btnEnter.clicked.connect(self.unlockLIC)
         self.btnSort.clicked.connect(self.sort)
+        self.btnAdss.clicked.connect(self.adss)
         self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
         self.btnEndSession.clicked.connect(lambda: enterPage(MAIN_PAGE))
         self.btnPowerOption.clicked.connect(lambda: self.powerOption('show'))
-        self.btnPower.clicked.connect(self.powerOff)
+        # self.btnPower.clicked.connect(self.powerOff)
+        self.btnPower.clicked.connect(self.shutDown)
         self.btnRestart.clicked.connect(self.restart)
-        self.btnPower_2.clicked.connect(self.powerOff)
-        self.btnPower_3.clicked.connect(self.powerOff)
+        self.btnPower_2.clicked.connect(self.shutDown)
+        self.btnPower_3.clicked.connect(self.shutDown)
         self.btnStartSession.clicked.connect(self.startSession)
         self.btnSubmit.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnSubmit.clicked.connect(self.submit)
@@ -621,7 +645,16 @@ class MainWin(QMainWindow):
 
         self.configs['theme'] = theme
         saveConfigs(self.configs)
-            
+
+    def adss(self):
+        index = self.stackedWidget.indexOf(self.adssPage)
+        self.stackedWidget.setCurrentIndex(index)
+        self.adssMovie.start()
+    
+    def adssStop(self, frameNumber):
+        if frameNumber == self.adssMovie.frameCount() - 1: 
+            self.adssMovie.stop()
+       
     def setOwnerInfo(self, text):
         self.ownerInfoSplash.setText(text)
         self.ownerInfoSplash.adjustSize()
@@ -658,6 +691,13 @@ class MainWin(QMainWindow):
                 self.unlockLIC(auto=True)
         except Exception:
             pass
+
+    def shutDown(self):
+        self.shutDownTimer.start(4000)
+        self.playSound(SHUTDOWN_SOUND)
+        self.changeAnimation('vertical')
+        self.stackedWidget.setCurrentWidget(self.shutdonwPage)
+        self.shutdownMovie.start()
 
     def powerOff(self):
         enterPage(SHUTDONW_PAGE)
@@ -919,12 +959,7 @@ class MainWin(QMainWindow):
                 self.keyboard('hide')
                 self.movie.start()
                 self.txtPassword.clear()
-                self.mediaPlayer.setMedia(
-                    QMediaContent(
-                        QUrl.fromLocalFile(WELLCOME_SOUND)
-                    )
-                )
-                self.mediaPlayer.play()
+                self.playSound(WELLCOME_SOUND)
                 return
 
             else:
@@ -1656,8 +1691,11 @@ class MainWin(QMainWindow):
     def search(self):
         name = self.txtSearch.text().lower()
         for row in range(self.usersTable.rowCount()):
-            item = self.usersTable.item(row, 0)
-            self.usersTable.setRowHidden(row, name not in item.text().lower())
+            item1 = self.usersTable.item(row, 0)
+            item2 = self.usersTable.item(row, 1)
+            self.usersTable.setRowHidden(
+                row, name not in item1.text().lower() and name not in item2.text().lower()
+            )
 
     def type(self, letter):
         def wrapper():

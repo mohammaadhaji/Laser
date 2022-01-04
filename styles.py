@@ -477,7 +477,7 @@ QWidget#centralwidget {
 """
 
 CHECKBOX_DEL = """
-QCheckBox { margin-bottom: 5px;}
+QCheckBox { margin-bottom: 5px; outline:0}
 QCheckBox::indicator { width : 50; height : 50; }
 QCheckBox::indicator::unchecked { image : url(ui/images/unchecked.png); }
 QCheckBox::indicator::checked { image : url(ui/images/checked.png); }
