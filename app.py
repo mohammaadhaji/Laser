@@ -649,6 +649,8 @@ class MainWin(QMainWindow):
     def adss(self):
         index = self.stackedWidget.indexOf(self.adssPage)
         self.stackedWidget.setCurrentIndex(index)
+        self.adssMovie.setSpeed(150)
+        print(self.adssMovie.speed())
         self.adssMovie.start()
     
     def adssStop(self, frameNumber):
