@@ -701,8 +701,9 @@ class MainWin(QMainWindow):
         self.lblUpdateFirmware.setText(
             f'Your system will restart in {self.restartCounter} seconds...'
         )
-        if self.restartCounter == -1:
+        if self.restartCounter == 0:
             self.updateRestartTimer.stop()
+            time.sleep(0.5)
             self.playShutdown('restart')
             
 

@@ -610,7 +610,7 @@ class UpdateFirmware(QThread):
             microUpdate = True
         
         if not microUpdate:
-            os.system(f'cp -r !({VERIFY}) {laserDir}/* {CURRENT_FILE_DIR}')
+            os.system(f'cp -r {laserDir}/* {CURRENT_FILE_DIR}')
             updateCleanup(partitionsDir)
             self.result.emit("Done GUI")
 
