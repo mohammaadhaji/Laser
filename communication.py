@@ -529,8 +529,8 @@ class SerialThread(QThread):
 def updateCleanup(mountPoint):
     for mp in mountPoint.values():
         os.system(f'umount {mp}')
-
-    shutil.rmtree(MOUNT_DIR)
+    if isdir(MOUNT_DIR):
+        shutil.rmtree(MOUNT_DIR)
 
 
 class UpdateFirmware(QThread):

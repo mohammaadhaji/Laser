@@ -16,8 +16,10 @@ import jdatetime, math, sys, time
 class MainWin(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWin, self).__init__(*args, **kwargs)
+        s = time.time()
         uic.loadUi(APP_UI, self)
         self.setupUi()
+        print(time.time() - s)
         
     def setupUi(self):
         # self.setCursor(Qt.BlankCursor)
@@ -218,16 +220,13 @@ class MainWin(QMainWindow):
         self.readyErrorTimer =  QTimer()
         self.monitorSensorsTimer = QTimer()
         self.sparkTimer = QTimer()
-        self.updateRestartTimer = QTimer()
         self.loadUsersTimer = QTimer()
         self.shutdownTimer = QTimer()
         self.restartTimer = QTimer()
-        self.restartCounter = 6
         self.shutdownTimer.timeout.connect(self.powerOff)
         self.restartTimer.timeout.connect(self.restart)
         self.loadUsersTimer.timeout.connect(self.addUsersTable)
         self.loadUsersTimer.start(20)
-        self.updateRestartTimer.timeout.connect(self.restartForUpdate)
         self.systemTimeTimer.timeout.connect(self.time)
         self.loginLabelTimer.timeout.connect(
             lambda: self.clearLabel(self.lblLogin, self.loginLabelTimer)
@@ -560,11 +559,9 @@ class MainWin(QMainWindow):
         self.setLock(True)
 
     def adss(self):
-        # index = self.stackedWidget.indexOf(self.adssPage)
         self.changeAnimation('vertical')
         self.playSound(ADSS_DEMO)
         self.stackedWidget.setCurrentWidget(self.adssPage)
-        # self.appSound.setMedia(QMediaContent(QUrl.fromLocalFile(ADSS_DEMO)))
     
     def adssDemoEnd(self):
         index = self.stackedWidget.indexOf(self.adssPage)
@@ -572,7 +569,6 @@ class MainWin(QMainWindow):
             if not self.appSound.state() == QMediaPlayer.PlayingState:
                 self.stackedWidget.setCurrentWidget(self.mainPage)
             
-
     def setSensors(self, flags):
         self.setLock(flags[0])
         self.setWaterLevelError(flags[1])
@@ -696,20 +692,15 @@ class MainWin(QMainWindow):
         else:
             os.system('reboot')
 
-    def restartForUpdate(self):
-        self.restartCounter -= 1
-        self.lblUpdateFirmware.setText(
-            f'Your system will restart in {self.restartCounter} seconds...'
-        )
-        if self.restartCounter == 0:
-            self.updateRestartTimer.stop()
-            time.sleep(0.5)
-            self.playShutdown('restart')
-            
-
     def updateResult(self, result):
         if result == 'Done GUI':
-            self.updateRestartTimer.start(1000)
+            for i in range(5, -1, -1):
+                self.lblUpdateFirmware.setText(
+                    f'Your system will restart in {i} seconds...'
+                )
+                QApplication.processEvents()
+                time.sleep(1)
+            self.playShutdown('restart')
         else:
             self.setLabel(
                 result, 
