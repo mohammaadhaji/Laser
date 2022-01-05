@@ -24,10 +24,7 @@ class MainWin(QMainWindow):
         self.configs = loadConfigs()
         self.usersData = loadUsers()
         self.usersList = list(self.usersData.values())
-        if RPI_VERSION == '3':
-            self.serialC = SerialTimer()
-        else:
-            self.serialC = SerialThread()
+        self.serialC = SerialTimer() if RPI_VERSION == '3' else SerialThread()
         self.serialC.sensorFlags.connect(self.setSensors)
         self.serialC.tempValue.connect(self.setTemp)
         self.serialC.shot.connect(self.shot)
@@ -36,18 +33,10 @@ class MainWin(QMainWindow):
         self.serialC.laserEnergy.connect(self.txtLaserDiodeEnergy.setText)
         self.serialC.firmwareVesion.connect(self.txtFirmwareVersion.setText)
         self.serialC.updateProgress.connect(self.updateProgress)
-        self.serialC.readCooling.connect(
-            lambda: laserPage({'cooling': self.cooling})
-        )
-        self.serialC.readEnergy.connect(
-            lambda: laserPage({'energy': self.energy})
-        )
-        self.serialC.readPulseWidht.connect(
-            lambda: laserPage({'pulseWidht': self.pulseWidth})
-        )
-        self.serialC.readFrequency.connect(
-            lambda: laserPage({'frequency': self.frequency})
-        )
+        self.serialC.readCooling.connect(lambda: laserPage({'cooling': self.cooling}))
+        self.serialC.readEnergy.connect(lambda: laserPage({'energy': self.energy}))
+        self.serialC.readPulseWidht.connect(lambda: laserPage({'pulseWidht': self.pulseWidth}))
+        self.serialC.readFrequency.connect(lambda: laserPage({'frequency': self.frequency}))
         self.serialC.sysDate.connect(self.receiveDate)
         self.serialC.sysClock.connect(self.adjustTime)
         self.updateT = UpdateFirmware()
@@ -60,6 +49,11 @@ class MainWin(QMainWindow):
         self.lblLock.setMovie(self.lockMovie)
         self.lockMovie.start()
         self.lockMovie.stop()
+        self.appSound = QMediaPlayer()
+        self.adssVideo = QVideoWidget()
+        self.appSound.setVideoOutput(self.adssVideo)
+        self.appSound.stateChanged.connect(self.adssDemoEnd)
+        self.adssLayout.addWidget(self.adssVideo)
         self.lblSplash.setPixmap(QPixmap(SPLASH))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
@@ -78,8 +72,7 @@ class MainWin(QMainWindow):
         self.ownerInfoSplash.setText(ownerInfo)
         self.ownerInfoSplash.move(0, 880)
         self.ownerInfoSplash.setMinimumHeight(200)
-        if not ownerInfo:
-            self.ownerInfoSplash.setVisible(False)
+        if not ownerInfo: self.ownerInfoSplash.setVisible(False)
         self.time(edit=True)
         self.changeTheme(self.configs['theme'])
         self.initSounds()       
@@ -112,8 +105,7 @@ class MainWin(QMainWindow):
         self.lblSpark.setPixmap(icon.scaled(120, 120))
         self.lblSpark.setVisible(False)
         self.lblLasing.setVisible(False)
-        if self.configs['LANGUAGE'] == 'fa':
-            self.changeLang(self.configs['LANGUAGE'])
+        if self.configs['LANGUAGE'] == 'fa': self.changeLang(self.configs['LANGUAGE'])
         self.shortcut = QShortcut(QKeySequence("Ctrl+x"), self)
         self.shortcut.activated.connect(self.close)
         self.chbSlideTransition.setFixedSize(150, 48)
@@ -139,7 +131,6 @@ class MainWin(QMainWindow):
         saveConfigs(self.configs)
 
     def initSounds(self):
-        self.appSound = QMediaPlayer()
         self.touchSound = QMediaPlayer()
         self.shotSound = QMediaPlayer()
         volume = 100 if self.configs['touchSound'] else 0
@@ -308,6 +299,7 @@ class MainWin(QMainWindow):
         self.btnFaLang.clicked.connect(lambda: self.changeLang('fa'))
         self.btnEnter.clicked.connect(self.unlockLIC)
         self.btnSort.clicked.connect(self.sort)
+        self.btnAdss.clicked.connect(self.adss)
         self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
         self.btnEndSession.clicked.connect(lambda: enterPage(MAIN_PAGE))
         self.btnPowerOption.clicked.connect(lambda: self.powerOption('show'))
@@ -566,6 +558,20 @@ class MainWin(QMainWindow):
         self.setWaterflowError(True)
         self.setWaterLevelError(True)
         self.setLock(True)
+
+    def adss(self):
+        # index = self.stackedWidget.indexOf(self.adssPage)
+        self.changeAnimation('vertical')
+        self.playSound(ADSS_DEMO)
+        self.stackedWidget.setCurrentWidget(self.adssPage)
+        # self.appSound.setMedia(QMediaContent(QUrl.fromLocalFile(ADSS_DEMO)))
+    
+    def adssDemoEnd(self):
+        index = self.stackedWidget.indexOf(self.adssPage)
+        if self.stackedWidget.currentIndex() == index:
+            if not self.appSound.state() == QMediaPlayer.PlayingState:
+                self.stackedWidget.setCurrentWidget(self.mainPage)
+            
 
     def setSensors(self, flags):
         self.setLock(flags[0])

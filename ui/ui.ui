@@ -58,6 +58,16 @@ color:white;
       <property name="currentIndex">
        <number>0</number>
       </property>
+      <widget class="QWidget" name="adssPage">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_94">
+        <item>
+         <layout class="QVBoxLayout" name="adssLayout"/>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="shutdownPage">
        <property name="styleSheet">
         <string notr="true">background-color: rgb(0, 0, 0);</string>
@@ -87,7 +97,7 @@ color:white;
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_18">
+         <widget class="QLabel" name="lblShuttingdown">
           <property name="font">
            <font>
             <family>Arial</family>
@@ -1438,6 +1448,36 @@ border: 1px solid white;
             <property name="rightMargin">
              <number>20</number>
             </property>
+            <item>
+             <widget class="QPushButton" name="btnAdss">
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+background-color: rgb(255, 255, 255);
+outline:0;
+border-radius:70px;
+border:0px
+}
+
+QPushButton:pressed{
+background-color: rgb(174, 220, 255);
+}
+</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>images/adssLogo.png</normaloff>images/adssLogo.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>150</width>
+                <height>150</height>
+               </size>
+              </property>
+             </widget>
+            </item>
             <item>
              <spacer name="horizontalSpacer_5">
               <property name="orientation">
@@ -3125,7 +3165,7 @@ QPushButton:pressed{
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>958</width>
+                       <width>1276</width>
                        <height>848</height>
                       </rect>
                      </property>
@@ -5211,8 +5251,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>312</width>
-               <height>413</height>
+               <width>1599</width>
+               <height>803</height>
               </rect>
              </property>
              <property name="styleSheet">
@@ -8830,7 +8870,7 @@ background-color: rgb(0, 170, 255);
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1341</width>
+                   <width>1556</width>
                    <height>803</height>
                   </rect>
                  </property>
