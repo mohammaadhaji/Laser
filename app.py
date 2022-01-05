@@ -53,11 +53,13 @@ class MainWin(QMainWindow):
         self.updateT = UpdateFirmware()
         self.updateT.result.connect(self.updateResult)
         self.license = self.configs['LICENSE']
-        self.movie = QMovie(LOCK_GIF)
-        self.movie.frameChanged.connect(self.unlock)
-        self.lblLock.setMovie(self.movie)
-        self.movie.start()
-        self.movie.stop()
+        self.lockMovie = QMovie(LOCK_GIF)
+        self.shutdownMovie = QMovie(SHUTDONW_GIF)
+        self.lblShutdownGif.setMovie(self.shutdownMovie)
+        self.lockMovie.frameChanged.connect(self.unlock)
+        self.lblLock.setMovie(self.lockMovie)
+        self.lockMovie.start()
+        self.lockMovie.stop()
         self.lblSplash.setPixmap(QPixmap(SPLASH))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
@@ -115,17 +117,12 @@ class MainWin(QMainWindow):
         self.shortcut = QShortcut(QKeySequence("Ctrl+x"), self)
         self.shortcut.activated.connect(self.close)
         self.chbSlideTransition.setFixedSize(150, 48)
-        self.chbSlideTransition.setCheckState(
-            2 if self.configs['slideTransition'] else 0
-        )
-        self.chbSlideTransition.pressed.connect(self.touchSound.play)
-        self.chbSlideTransition.stateChanged.connect(self.setTransition)
+        self.chbSlideTransition.setChecked(self.configs['slideTransition'])
+        self.chbSlideTransition.toggled.connect(self.setTransition)
         self.chbTouchSound.setFixedSize(150, 48)
-        self.chbTouchSound.setCheckState(
-            2 if self.configs['touchSound'] else 0
-        )
-        self.chbTouchSound.pressed.connect(self.touchSound.play)
-        self.chbTouchSound.stateChanged.connect(self.setTouchSound)
+        self.chbTouchSound.setChecked(self.configs['touchSound'])
+        self.chbTouchSound.toggled.connect(self.setTouchSound)
+        self.playSound(STARTUP_SOUND)
         self.loadLocksTable()
         self.bodyPartsSignals()
         self.keyboardSignals()
@@ -136,45 +133,39 @@ class MainWin(QMainWindow):
         readTime()
 
     def setTouchSound(self, state):
-        volume = 100 if state == 2 else 0
-        self.keyboardSound.setVolume(volume)
+        volume = 100 if state else 0
         self.touchSound.setVolume(volume)
-        self.configs['touchSound'] = True if state == 2 else False 
+        self.configs['touchSound'] = state
         saveConfigs(self.configs)
 
     def initSounds(self):
-        self.keyboardSound = QMediaPlayer()
+        self.appSound = QMediaPlayer()
         self.touchSound = QMediaPlayer()
         self.shotSound = QMediaPlayer()
-        self.keyboardSound.setVolume(100 if self.configs['touchSound'] else 0)
-        self.touchSound.setVolume(100 if self.configs['touchSound'] else 0)        
-        self.keyboardSound.setMedia(
-            QMediaContent(
-                QUrl.fromLocalFile(KEYBOARD_SOUND)
-            )
-        )
-        self.touchSound.setMedia(
-            QMediaContent(
-                QUrl.fromLocalFile(TOUCH_SOUND)
-            )
-        )
+        volume = 100 if self.configs['touchSound'] else 0
+        self.touchSound.setVolume(volume)        
         self.shotSound.setMedia(
             QMediaContent(
                 QUrl.fromLocalFile(SHOT_SOUND)
             )
         )
 
-    def playTouchSound(self):
+    def playTouchSound(self, i):
         self.touchSound.stop()
+        self.touchSound.setMedia(
+            QMediaContent(
+                QUrl.fromLocalFile(i)
+            )
+        )
         self.touchSound.play()
 
     def playSound(self, sound):
-        self.mediaPlayer.setMedia(
-                    QMediaContent(
-                        QUrl.fromLocalFile(sound)
-                    )
-                )
-        self.mediaPlayer.play()
+        self.appSound.setMedia(
+            QMediaContent(
+                QUrl.fromLocalFile(sound)
+            )
+        )
+        self.appSound.play()
 
     def initPages(self):
         self.stackedWidget.setCurrentWidget(self.splashPage)
@@ -202,8 +193,7 @@ class MainWin(QMainWindow):
         self.hwStackedWidget.setTransitionEasingCurve(QEasingCurve.OutQuart)
         self.hwStackedWidget.setSlideTransition(self.configs['slideTransition'])
 
-    def setTransition(self, state):
-        checked = True if state == 2 else False
+    def setTransition(self, checked):
         self.stackedWidget.setSlideTransition(checked)
         self.stackedWidgetSex.setSlideTransition(checked)
         self.stackedWidgetLaser.setSlideTransition(checked)
@@ -240,7 +230,9 @@ class MainWin(QMainWindow):
         self.restartTimer = QTimer()
         self.loadUsersTimer = QTimer()
         self.shutDownTimer = QTimer()
+        self.shutdownTimer = QTimer()
         self.restartCounter = 6
+        self.shutdownTimer.timeout.connect(self.powerOff)
         self.loadUsersTimer.timeout.connect(self.addUsersTable)
         self.shutDownTimer.timeout.connect(self.powerOff)
         self.loadUsersTimer.start(20)
@@ -319,7 +311,7 @@ class MainWin(QMainWindow):
         self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
         self.btnEndSession.clicked.connect(lambda: enterPage(MAIN_PAGE))
         self.btnPowerOption.clicked.connect(lambda: self.powerOption('show'))
-        self.btnPower.clicked.connect(self.powerOff)
+        self.btnPower.clicked.connect(self.shutdown)
         self.btnPower_2.clicked.connect(self.powerOff)
         self.btnPower_3.clicked.connect(self.powerOff)
         self.btnRestart.clicked.connect(self.restart)
@@ -451,11 +443,11 @@ class MainWin(QMainWindow):
 
             elif btn in keyboardButtons:
                 self.touchSignals[btn.objectName()] = btn.pressed.connect(
-                    self.keyboardSound.play
+                    lambda: self.playTouchSound(KEYBOARD_SOUND)
                 )
             elif btn.objectName() not in sensors:
                 self.touchSignals[btn.objectName()] = btn.pressed.connect(
-                    self.playTouchSound
+                    lambda: self.playTouchSound(TOUCH_SOUND)
                 )
 
     def initTextboxes(self):
@@ -668,6 +660,13 @@ class MainWin(QMainWindow):
                 self.unlockLIC(auto=True)
         except Exception:
             pass
+
+    def shutdown(self):
+        self.playSound(SHUTDOWN_SOUND)
+        self.shutdownTimer.start(4000)
+        self.shutdownMovie.start()
+        self.changeAnimation('vertical')
+        self.stackedWidget.setCurrentWidget(self.shutdownPage)
 
     def powerOff(self):
         enterPage(SHUTDONW_PAGE)
@@ -927,7 +926,7 @@ class MainWin(QMainWindow):
             if lock.checkPassword(userPass):
                 saveConfigs(self.configs)
                 self.keyboard('hide')
-                self.movie.start()
+                self.lockMovie.start()
                 self.txtPassword.clear()
                 self.playSound(WELLCOME_SOUND)
                 return
@@ -941,8 +940,8 @@ class MainWin(QMainWindow):
                             )
 
     def unlock(self, frameNumber):
-        if frameNumber == self.movie.frameCount() - 1: 
-            self.movie.stop()
+        if frameNumber == self.lockMovie.frameCount() - 1: 
+            self.lockMovie.stop()
             index = self.stackedWidget.indexOf(self.splashPage)
             self.stackedWidget.setCurrentIndex(index)
             self.changeTheme(self.configs['theme']) 
