@@ -540,83 +540,83 @@ class UpdateFirmware(QThread):
         global MICRO_DATA
         MICRO_DATA.clear()
 
-        # if platform.system() == 'Windows':
-        #     self.result.emit("We don't do that here.")
-        #     return
+        if platform.system() == 'Windows':
+            self.result.emit("We don't do that here.")
+            return
 
-        # self.msleep(20)                            
-        # r1  = subprocess.check_output('lsblk -J', shell=True)
-        # blocks = json.loads(r1)['blockdevices']
+        self.msleep(20)                            
+        r1  = subprocess.check_output('lsblk -J', shell=True)
+        blocks = json.loads(r1)['blockdevices']
 
-        # sdaFound = False
-        # sdaBlock = None
-        # for blk in blocks:
-        #     if blk['name'] == 'sda':
-        #         sdaFound = True
-        #         sdaBlock = blk
+        sdaFound = False
+        sdaBlock = None
+        for blk in blocks:
+            if blk['name'] == 'sda':
+                sdaFound = True
+                sdaBlock = blk
 
-        # if not sdaFound:
-        #     self.result.emit("Flash drive not found.")
-        #     return
+        if not sdaFound:
+            self.result.emit("Flash drive not found.")
+            return
                 
-        # if not 'children' in sdaBlock:
-        #     self.result.emit("Flash drive doesn't have any partitions.")
-        #     return
+        if not 'children' in sdaBlock:
+            self.result.emit("Flash drive doesn't have any partitions.")
+            return
              
-        # os.mkdir(MOUNT_DIR)
-        # partitionsDir = {}
+        os.mkdir(MOUNT_DIR)
+        partitionsDir = {}
 
-        # for part in sdaBlock['children']:
-        #     partitionsDir[part['name']] = part['mountpoint']
+        for part in sdaBlock['children']:
+            partitionsDir[part['name']] = part['mountpoint']
 
-        # for part in partitionsDir:
-        #     if partitionsDir[part] == None:
-        #         os.mkdir(f'{MOUNT_DIR}/{part}')
-        #         r = subprocess.call(
-        #             f'mount /dev/{part} {MOUNT_DIR}/{part}',
-        #             shell=True
-        #         )
-        #         partitionsDir[part] = f'{MOUNT_DIR}/{part}'
+        for part in partitionsDir:
+            if partitionsDir[part] == None:
+                os.mkdir(f'{MOUNT_DIR}/{part}')
+                r = subprocess.call(
+                    f'mount /dev/{part} {MOUNT_DIR}/{part}',
+                    shell=True
+                )
+                partitionsDir[part] = f'{MOUNT_DIR}/{part}'
 
-        # laserFound = False
-        # laserDir = ''
-        # for dir in partitionsDir.values():
-        #     if isdir(f'{dir}/{SOURCE_FOLDER}'):
-        #         laserFound = True
-        #         laserDir = f'{dir}/{SOURCE_FOLDER}'
+        laserFound = False
+        laserDir = ''
+        for dir in partitionsDir.values():
+            if isdir(f'{dir}/{SOURCE_FOLDER}'):
+                laserFound = True
+                laserDir = f'{dir}/{SOURCE_FOLDER}'
 
-        # if not laserFound:
-        #     self.result.emit("Source files not found.")
-        #     updateCleanup(partitionsDir)
-        #     return
+        if not laserFound:
+            self.result.emit("Source files not found.")
+            updateCleanup(partitionsDir)
+            return
 
-        # verifyError = 'The source files are corrupted and can not be replaced.'
-        # try:
-        #     with open(f'{laserDir}/{VERIFY}', 'r') as f:
-        #         md5 = int(f.read())
+        verifyError = 'The source files are corrupted and can not be replaced.'
+        try:
+            with open(f'{laserDir}/{VERIFY}', 'r') as f:
+                md5 = int(f.read())
 
-        #     if not md5 == calcMD5(laserDir, f'{VERIFY}'):
-        #         self.result.emit(verifyError)
-        #         updateCleanup(partitionsDir)
-        #         return
+            if not md5 == calcMD5(laserDir, f'{VERIFY}'):
+                self.result.emit(verifyError)
+                updateCleanup(partitionsDir)
+                return
    
-        # except Exception:
-        #     self.result.emit(verifyError)
-        #     updateCleanup(partitionsDir)
-        #     return
+        except Exception:
+            self.result.emit(verifyError)
+            updateCleanup(partitionsDir)
+            return
         
-        # microUpdate = False
-        # if isfile(f'{laserDir}/{MICRO_SOURCE}'):
-        #     microUpdate = True
+        microUpdate = False
+        if isfile(f'{laserDir}/{MICRO_SOURCE}'):
+            microUpdate = True
         
-        # if not microUpdate:
-        #     os.system(f'cp -r !({VERIFY}) {laserDir}/* {CURRENT_FILE_DIR}')
-        #     updateCleanup(partitionsDir)
-        #     self.result.emit("Done GUI")
+        if not microUpdate:
+            os.system(f'cp -r !({VERIFY}) {laserDir}/* {CURRENT_FILE_DIR}')
+            updateCleanup(partitionsDir)
+            self.result.emit("Done GUI")
 
-        # else:
-        # file = open(f'{laserDir}/{MICRO_SOURCE}', 'rb')
-        file = open(f"../LaserSrc/{MICRO_SOURCE}", 'rb')
+        else:
+        file = open(f'{laserDir}/{MICRO_SOURCE}', 'rb')
+        # file = open(f"../LaserSrc/{MICRO_SOURCE}", 'rb')
         data = file.read()
         file.close()
 
