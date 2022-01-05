@@ -615,27 +615,27 @@ class UpdateFirmware(QThread):
             self.result.emit("Done GUI")
 
         else:
-        file = open(f'{laserDir}/{MICRO_SOURCE}', 'rb')
-        # file = open(f"../LaserSrc/{MICRO_SOURCE}", 'rb')
-        data = file.read()
-        file.close()
+            file = open(f'{laserDir}/{MICRO_SOURCE}', 'rb')
+            # file = open(f"../LaserSrc/{MICRO_SOURCE}", 'rb')
+            data = file.read()
+            file.close()
 
-        for field, i in enumerate(range(0, len(data), PACKET_NOB)):
-            segment = data[i : i + PACKET_NOB]                
-            MICRO_DATA[field] = buildPacket(
-                segment, UPDATE_PAGE, field, REPORT
+            for field, i in enumerate(range(0, len(data), PACKET_NOB)):
+                segment = data[i : i + PACKET_NOB]                
+                MICRO_DATA[field] = buildPacket(
+                    segment, UPDATE_PAGE, field, REPORT
+                )
+            
+            MICRO_DATA[250] = buildPacket(
+                int_to_bytes(len(data)), 
+                UPDATE_PAGE, 250, REPORT
             )
-        
-        MICRO_DATA[250] = buildPacket(
-            int_to_bytes(len(data)), 
-            UPDATE_PAGE, 250, REPORT
-        )
-        MICRO_DATA[251] = buildPacket(
-            int_to_bytes(PACKET_NOB), 
-            UPDATE_PAGE, 251, REPORT
-        )
-        enterPage(UPDATE_PAGE)
-        self.result.emit('Updating...')
-        # GPIO.output(16, GPIO.LOW)
-        # print(MICRO_DATA)
-        # updateCleanup(partitionsDir)
+            MICRO_DATA[251] = buildPacket(
+                int_to_bytes(PACKET_NOB), 
+                UPDATE_PAGE, 251, REPORT
+            )
+            enterPage(UPDATE_PAGE)
+            self.result.emit('Updating...')
+            GPIO.output(16, GPIO.LOW)
+            print(MICRO_DATA)
+            updateCleanup(partitionsDir)
