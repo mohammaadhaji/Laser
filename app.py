@@ -218,16 +218,16 @@ class MainWin(QMainWindow):
         self.readyErrorTimer =  QTimer()
         self.monitorSensorsTimer = QTimer()
         self.sparkTimer = QTimer()
-        self.restartTimer = QTimer()
+        self.updateRestartTimer = QTimer()
         self.loadUsersTimer = QTimer()
-        self.shutDownTimer = QTimer()
         self.shutdownTimer = QTimer()
+        self.restartTimer = QTimer()
         self.restartCounter = 6
         self.shutdownTimer.timeout.connect(self.powerOff)
+        self.restartTimer.timeout.connect(self.restart)
         self.loadUsersTimer.timeout.connect(self.addUsersTable)
-        self.shutDownTimer.timeout.connect(self.powerOff)
         self.loadUsersTimer.start(20)
-        self.restartTimer.timeout.connect(self.restartForUpdate)
+        self.updateRestartTimer.timeout.connect(self.restartForUpdate)
         self.systemTimeTimer.timeout.connect(self.time)
         self.loginLabelTimer.timeout.connect(
             lambda: self.clearLabel(self.lblLogin, self.loginLabelTimer)
@@ -303,10 +303,10 @@ class MainWin(QMainWindow):
         self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
         self.btnEndSession.clicked.connect(lambda: enterPage(MAIN_PAGE))
         self.btnPowerOption.clicked.connect(lambda: self.powerOption('show'))
-        self.btnPower.clicked.connect(self.shutdown)
-        self.btnPower_2.clicked.connect(self.powerOff)
-        self.btnPower_3.clicked.connect(self.powerOff)
-        self.btnRestart.clicked.connect(self.restart)
+        self.btnPower.clicked.connect(lambda: self.playShutdown('powerOff'))
+        self.btnPower_2.clicked.connect(lambda: self.playShutdown('powerOff'))
+        self.btnPower_3.clicked.connect(lambda: self.playShutdown('powerOff'))
+        self.btnRestart.clicked.connect(lambda: self.playShutdown('restart'))
         self.btnStartSession.clicked.connect(self.startSession)
         self.btnSubmit.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnSubmit.clicked.connect(self.submit)
@@ -667,9 +667,13 @@ class MainWin(QMainWindow):
         except Exception:
             pass
 
-    def shutdown(self):
+    def playShutdown(self, i):
         self.playSound(SHUTDOWN_SOUND)
-        self.shutdownTimer.start(4000)
+        if i == 'powerOff':
+            self.shutdownTimer.start(4000)
+        else:
+            self.restartTimer.start(4000)
+            self.lblShuttingdown.setText('Restarting...')
         self.shutdownMovie.start()
         self.changeAnimation('vertical')
         self.stackedWidget.setCurrentWidget(self.shutdownPage)
@@ -685,6 +689,8 @@ class MainWin(QMainWindow):
         
     def restart(self):
         enterPage(SHUTDONW_PAGE)
+        self.serialC.closePort()
+        gpioCleanup()
         if platform.system() == 'Windows':
             self.close()
         else:
@@ -696,14 +702,13 @@ class MainWin(QMainWindow):
             f'Your system will restart in {self.restartCounter} seconds...'
         )
         if self.restartCounter == -1:
-            self.restartTimer.stop()
-            self.serialC.closePort()
-            gpioCleanup()
-            os.system('reboot')
+            self.updateRestartTimer.stop()
+            self.playShutdown('restart')
+            
 
     def updateResult(self, result):
         if result == 'Done GUI':
-            self.restartTimer.start(1000)
+            self.updateRestartTimer.start(1000)
         else:
             self.setLabel(
                 result, 
@@ -1861,9 +1866,9 @@ class MainWin(QMainWindow):
         rowPosition = self.usersTable.rowCount()
         self.usersTable.insertRow(rowPosition)
         action = Action(self.usersTable, user.phoneNumber)
-        action.btnInfo.pressed.connect(self.playTouchSound)
+        action.btnInfo.pressed.connect(lambda: self.playTouchSound(TOUCH_SOUND))
         action.info.connect(self.info)
-        action.chbDel.pressed.connect(self.playTouchSound)
+        action.chbDel.pressed.connect(lambda: self.playTouchSound(TOUCH_SOUND))
         action.delete.connect(self.selecetCheckedUsers)
         self.usersTable.setCellWidget(rowPosition, 3, action)
         number = QTableWidgetItem(user.phoneNumber)

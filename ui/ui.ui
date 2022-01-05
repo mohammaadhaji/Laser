@@ -63,8 +63,27 @@ color:white;
         <string notr="true"/>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_94">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item>
-         <layout class="QVBoxLayout" name="adssLayout"/>
+         <layout class="QVBoxLayout" name="adssLayout">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+         </layout>
         </item>
        </layout>
       </widget>
