@@ -482,3 +482,53 @@ QCheckBox::indicator { width : 50; height : 50; }
 QCheckBox::indicator::unchecked { image : url(ui/images/unchecked.png); }
 QCheckBox::indicator::checked { image : url(ui/images/checked.png); }
 """
+
+POWER_OPTION_L = """
+QLabel{
+	background-color: rgb(153, 153, 153);
+}
+
+QFrame#frame_8{
+	background-color: rgb(153, 153, 153);
+}
+QPushButton {
+    background-color: rgb(68, 68, 68);
+    min-height: 80px;
+    border-radius: 10px;
+    border: 1px solid gray;
+    margin: 0 5px 0 5px;
+    outline:0;
+    color:white;
+    padding-left:5px;
+    padding-right:5px;
+}
+QPushButton:hover:!pressed{
+    background-color:rgb(77, 77, 77);
+    border: 1px solid white;
+}
+"""
+
+POWER_OPTION_D = """
+QLabel{
+	background-color: rgb(26, 26, 26);
+}
+
+QFrame#frame_8{
+	background-color: rgb(26, 26, 26);
+}
+QPushButton {
+    background-color: rgb(68, 68, 68);
+    min-height: 80px;
+    border-radius: 10px;
+    border: 1px solid gray;
+    margin: 0 5px 0 5px;
+    outline:0;
+    color:white;
+    padding-left:5px;
+    padding-right:5px;
+}
+QPushButton:hover:!pressed{
+    background-color:rgb(77, 77, 77);
+    border: 1px solid white;
+}
+"""

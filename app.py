@@ -1,4 +1,5 @@
-from os import error
+import jdatetime, math, sys, time
+start = time.time()
 from PyQt5 import uic
 from communication import *
 from promotions import *
@@ -10,16 +11,13 @@ from user import *
 from lock import *
 from itertools import chain
 from pathlib import Path
-import jdatetime, math, sys, time
 
 
 class MainWin(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWin, self).__init__(*args, **kwargs)
-        s = time.time()
         uic.loadUi(APP_UI, self)
         self.setupUi()
-        print(time.time() - s)
         
     def setupUi(self):
         # self.setCursor(Qt.BlankCursor)
@@ -622,6 +620,10 @@ class MainWin(QMainWindow):
         elif theme == 'C4':
             self.centralWidget().setStyleSheet(COLOR4)
 
+        if theme.startswith('T') or theme == 'C3':
+            self.powerFrame.setStyleSheet(POWER_OPTION_L)
+        else:
+            self.powerFrame.setStyleSheet(POWER_OPTION_D)
 
         self.configs['theme'] = theme
         saveConfigs(self.configs)
@@ -2317,4 +2319,5 @@ class MainWin(QMainWindow):
 app = QApplication(sys.argv)
 mainWin = MainWin()
 mainWin.showFullScreen()
+print(time.time() - start)
 sys.exit(app.exec_())

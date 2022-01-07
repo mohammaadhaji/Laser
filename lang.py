@@ -20,7 +20,7 @@ TEXT = {
     'usersTable2': ['Sessions', 'تعداد جلسات'],
     'usersTable3': ['Action', 'عملیات'],
     'btnSort': ['Sort By Session', 'مرتب سازی جلسات'],
-    'txtSearch': ['Search By Number', 'جستوجو شماره تلفن'],
+    'txtSearch': ['Search', 'جستوجو'],
     'lblNote': ['Note', 'یادداشت'],
     'lblName': ['Name', 'نام'],
     'lblPhoneNumber': ['Phone Number', 'شماره تلفن'],
