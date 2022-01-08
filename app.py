@@ -559,7 +559,8 @@ class MainWin(QMainWindow):
     def adss(self):
         self.changeAnimation('vertical')
         self.playSound(ADSS_DEMO)
-        self.stackedWidget.setCurrentWidget(self.adssPage)
+        index = self.stackedWidget.indexOf(self.adssPage)
+        self.stackedWidget.setCurrentIndex(index)
     
     def adssDemoEnd(self):
         index = self.stackedWidget.indexOf(self.adssPage)
@@ -668,9 +669,9 @@ class MainWin(QMainWindow):
     def playShutdown(self, i):
         self.playSound(SHUTDOWN_SOUND)
         if i == 'powerOff':
-            self.shutdownTimer.start(4000)
+            self.shutdownTimer.start(3000)
         else:
-            self.restartTimer.start(4000)
+            self.restartTimer.start(3000)
             self.lblShuttingdown.setText('Restarting...')
         self.shutdownMovie.start()
         self.changeAnimation('vertical')
