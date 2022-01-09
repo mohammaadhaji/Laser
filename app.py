@@ -50,11 +50,11 @@ class MainWin(QMainWindow):
         self.lblLock.setMovie(self.lockMovie)
         self.lockMovie.start()
         self.lockMovie.stop()
-        self.appSound = QMediaPlayer()
-        self.adssVideo = QVideoWidget()
-        self.appSound.setVideoOutput(self.adssVideo)
-        self.appSound.stateChanged.connect(self.adssDemoEnd)
-        self.adssLayout.addWidget(self.adssVideo)
+        self.appSound = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+        # self.adssVideo = QVideoWidget()
+        # self.appSound.setVideoOutput(self.adssVideo)
+        # self.appSound.stateChanged.connect(self.adssDemoEnd)
+        # self.adssLayout.addWidget(self.adssVideo)
         self.lblSplash.setPixmap(QPixmap(SPLASH))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
@@ -331,6 +331,7 @@ class MainWin(QMainWindow):
         self.btnBackNotify.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnTutorials.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnTutorials.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.tutorialPage))
+        self.btnTutorials.clicked.connect(lambda: self.mediaPlayer.setMedia(QMediaContent()))
         self.btnBackTutorials.clicked.connect(lambda: self.mediaPlayer.setMedia(QMediaContent()))
         self.btnBackTutorials.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnNextSession.clicked.connect(lambda: self.changeAnimation('vertical'))
@@ -565,7 +566,10 @@ class MainWin(QMainWindow):
 
     def adss(self):
         self.changeAnimation('vertical')
-        self.playSound(ADSS_DEMO)
+        self.videoLayout.removeWidget(self.videoWidget)
+        self.adssLayout.addWidget(self.videoWidget)
+        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(ADSS_DEMO)))
+        self.mediaPlayer.play()
         index = self.stackedWidget.indexOf(self.adssPage)
         self.stackedWidget.setCurrentIndex(index)
     
@@ -574,6 +578,8 @@ class MainWin(QMainWindow):
         if self.stackedWidget.currentIndex() == index:
             if not self.appSound.state() == QMediaPlayer.PlayingState:
                 self.stackedWidget.setCurrentWidget(self.mainPage)
+                self.adssLayout.removeWidget(self.videoWidget)
+                self.videoLayout.addWidget(self.videoWidget)
             
     def setSensors(self, flags):
         self.setLock(flags[0])
@@ -1116,6 +1122,7 @@ class MainWin(QMainWindow):
         self.sliderVolume.valueChanged.connect(self.mediaPlayer.setVolume)
         self.mediaPlayer.setVideoOutput(self.videoWidget)
         self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
+        self.mediaPlayer.stateChanged.connect(self.adssDemoEnd)
         self.mediaPlayer.positionChanged.connect(self.positionChanged)
         self.mediaPlayer.durationChanged.connect(self.durationChanged)
         self.playIco = QIcon()
