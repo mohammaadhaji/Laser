@@ -1,3 +1,4 @@
+print('GUI Starting...')
 import jdatetime, math, sys, time
 start = time.time()
 from PyQt5 import uic
@@ -450,7 +451,9 @@ class MainWin(QMainWindow):
         self.txtEditName.fIn.connect(lambda: self.keyboard('show'))
         self.textEditNote.fIn.connect(lambda: self.keyboard('show'))
         self.txtSearch.fIn.connect(lambda: self.keyboard('show'))
-        self.txtDate.fIn.connect(lambda: self.keyboard('show'))
+        self.txtNsDay.fIn.connect(lambda: self.keyboard('show'))
+        self.txtNsMonth.fIn.connect(lambda: self.keyboard('show'))
+        self.txtNsYear.fIn.connect(lambda: self.keyboard('show'))
         self.txtDays.fIn.connect(lambda: self.keyboard('show'))
         self.txtPassword.fIn.connect(lambda: self.keyboard('show'))
         self.txtHwPass.fIn.connect(lambda: self.keyboard('show'))
@@ -477,9 +480,10 @@ class MainWin(QMainWindow):
         self.txtOwnerInfo.setText(self.configs['OwnerInfo'])
         self.txtOwnerInfo.textChanged.connect(self.setOwnerInfo)
         self.txtDays.textChanged.connect(self.setDateText)
-        self.txtDate.textChanged.connect(self.setDaysText)
-        reg_ex = QRegExp("[0-9\(\)]*")
-        input_validator = QRegExpValidator(reg_ex, self.txtDays)
+        self.txtNsYear.textChanged.connect(self.setDaysText)
+        self.txtNsMonth.textChanged.connect(self.setDaysText)
+        self.txtNsDay.textChanged.connect(self.setDaysText)
+        input_validator = QRegExpValidator(QRegExp("\d*"), self.txtDays)
         self.txtDays.setValidator(input_validator)
         self.txtEditMinute.setValidator(input_validator)
         self.txtEditHour.setValidator(input_validator)
@@ -489,6 +493,9 @@ class MainWin(QMainWindow):
         self.txtEditDay.setValidator(input_validator)
         self.txtEditMonth.setValidator(input_validator)
         self.txtEditYear.setValidator(input_validator)        
+        self.txtNsYear.setValidator(input_validator)    
+        self.txtNsMonth.setValidator(input_validator)
+        self.txtNsDay.setValidator(input_validator)    
         self.txtDays.setText('30')
         self.txtSearch.textChanged.connect(self.search)
 
@@ -1181,9 +1188,9 @@ class MainWin(QMainWindow):
 
     def isDateValid(self):
         try:
-            text = self.txtDate.text()
-            text = text.replace(' ', '').split('/')
-            year, month, day = tuple([int(x) for x in text])
+            year = int(self.txtNsYear.text())
+            month = int(self.txtNsMonth.text())
+            day = int(self.txtNsDay.text())
             nextSessionDate = jdatetime.datetime(year, month, day)
             return True, nextSessionDate
         except Exception:
@@ -1191,34 +1198,27 @@ class MainWin(QMainWindow):
 
     def saveNextSession(self):
         try:
-            text = self.txtDate.text()
-            text = text.replace(' ', '').split('/')
-            year, month, day = tuple([int(x) for x in text])
-            try:
-                date = jdatetime.datetime(year, month, day)
-                if getDiff(date) <= -1:
-                    self.setLabel(
-                            TEXT['passedDate'][self.langIndex], 
-                            self.lblErrNextSession, 
-                            self.nextSessionLabelTimer
-                        )
-                    return
-                self.userNextSession.setNextSession(date)
-                if self.userNextSession.currentSession == 'started':
-                    self.endSession()
-                else:
-                    self.info(self.userNextSession.phoneNumber)
-            except ValueError as e:
+            year = int(self.txtNsYear.text())
+            month = int(self.txtNsMonth.text())
+            day = int(self.txtNsDay.text())
+            date = jdatetime.datetime(year, month, day)
+            if getDiff(date) <= -1:
                 self.setLabel(
-                        str(e).capitalize() + '.', 
-                        self.lblErrNextSession,
+                        TEXT['passedDate'][self.langIndex], 
+                        self.lblErrNextSession, 
                         self.nextSessionLabelTimer
                     )
+                return
+            self.userNextSession.setNextSession(date)
+            if self.userNextSession.currentSession == 'started':
+                self.endSession()
+            else:
+                self.info(self.userNextSession.phoneNumber)
 
-        except Exception:
+        except Exception as e:
             self.setLabel(
-                    TEXT['invalidDateF'][self.langIndex], 
-                    self.lblErrNextSession, 
+                    str(e).capitalize() + '.', 
+                    self.lblErrNextSession,
                     self.nextSessionLabelTimer
                 )
 
@@ -1248,7 +1248,9 @@ class MainWin(QMainWindow):
             year = str(nextSessionDate.year)
             month = str(nextSessionDate.month).zfill(2)
             day = str(nextSessionDate.day).zfill(2)
-            self.txtDate.setText(year + ' / ' + month + ' / ' + day)
+            self.txtNsYear.setText(year)
+            self.txtNsMonth.setText(month)
+            self.txtNsDay.setText(day)
 
     def setDaysText(self):
         valid, nextSessionDate = self.isDateValid()
