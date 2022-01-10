@@ -1,4 +1,3 @@
-print('GUI Starting...')
 import jdatetime, math, sys, time
 start = time.time()
 from PyQt5 import uic
@@ -25,6 +24,16 @@ class MainWin(QMainWindow):
         self.configs = loadConfigs()
         self.usersData = loadUsers()
         self.usersList = list(self.usersData.values())
+        self.langIndex = 0 if self.configs['LANGUAGE'] == 'en' else 1
+        self.langIndex = 0
+        icon = QPixmap(SELECTED_LANG_ICON)
+        self.lblEnSelected.setPixmap(icon.scaled(70, 70))
+        self.loadLocksTable()
+        self.bodyPartsSignals()
+        self.keyboardSignals()
+        self.casesSignals()
+        self.checkUUID()
+        readTime()
         self.serialC = SerialTimer() if RPI_VERSION == '3' else SerialThread()
         self.serialC.sensorFlags.connect(self.setSensors)
         self.serialC.tempValue.connect(self.setTemp)
@@ -75,14 +84,15 @@ class MainWin(QMainWindow):
         self.ownerInfoSplash.setMinimumHeight(200)
         if not ownerInfo: self.ownerInfoSplash.setVisible(False)
         self.time(edit=True)
-        self.changeTheme(self.configs['theme'])
         self.tutorials()
         self.initSounds()       
         self.initPages()
         self.initTimers()
         self.initButtons()
         self.initTables()
+        self.initSensors()
         self.initTextboxes()
+        self.changeTheme(self.configs['theme'])
         self.user = None
         self.userNextSession = None
         self.sortBySession = False
@@ -100,9 +110,6 @@ class MainWin(QMainWindow):
         self.receivedTime = ()
         self.startupEditTime = False
         self.ready = False
-        self.langIndex = 0 if self.configs['LANGUAGE'] == 'en' else 1
-        icon = QPixmap(SELECTED_LANG_ICON)
-        self.lblEnSelected.setPixmap(icon.scaled(70, 70))
         icon = QPixmap(SPARK_ICON)
         self.lblSpark.setPixmap(icon.scaled(120, 120))
         self.lblSpark.setVisible(False)
@@ -116,20 +123,18 @@ class MainWin(QMainWindow):
         self.chbTouchSound.setFixedSize(150, 48)
         self.chbTouchSound.setChecked(self.configs['touchSound'])
         self.chbTouchSound.toggled.connect(self.setTouchSound)
-        self.playSound(STARTUP_SOUND)
-        self.loadLocksTable()
-        self.bodyPartsSignals()
-        self.keyboardSignals()
-        self.casesSignals()
-        self.initSensors()
-        self.checkUUID()
-        readTime()
+        self.playSound(STARTUP_SOUND) 
 
     def setTouchSound(self, state):
         volume = 100 if state else 0
         self.touchSound.setVolume(volume)
         self.configs['touchSound'] = state
-        saveConfigs(self.configs)
+        if not saveConfigs(self.configs):
+            self.setLabel(
+                TEXT['saveConfigError'][self.langIndex], 
+                self.lblUiError, 
+                self.uiLabelTimer, 4
+            )
 
     def initSounds(self):
         self.touchSound = QMediaPlayer()
@@ -155,6 +160,7 @@ class MainWin(QMainWindow):
         self.appSound.setMedia(
             QMediaContent(
                 QUrl.fromLocalFile(sound)
+            
             )
         )
         self.appSound.play()
@@ -192,7 +198,12 @@ class MainWin(QMainWindow):
         self.stackedWidgetSettings.setSlideTransition(checked)
         self.hwStackedWidget.setSlideTransition(checked)
         self.configs['slideTransition'] = checked
-        saveConfigs(self.configs)
+        if not saveConfigs(self.configs):
+            self.setLabel(
+                TEXT['saveConfigError'][self.langIndex], 
+                self.lblUiError, 
+                self.uiLabelTimer, 4
+            )
 
     def initTimers(self):
         if RPI_VERSION == '3':
@@ -215,6 +226,8 @@ class MainWin(QMainWindow):
         self.sysTimeStatusLabelTimer = QTimer()
         self.lockErrorLabel = QTimer()
         self.updateFirmwareLabelTimer = QTimer()
+        self.uiLabelTimer = QTimer()
+        self.sensorsReportLabelTimer = QTimer()
         self.systemTimeTimer = QTimer()
         self.readyErrorTimer =  QTimer()
         self.monitorSensorsTimer = QTimer()
@@ -260,13 +273,19 @@ class MainWin(QMainWindow):
         self.updateFirmwareLabelTimer.timeout.connect(
             lambda: self.clearLabel(self.lblUpdateFirmware, self.updateFirmwareLabelTimer)
         )
+        self.uiLabelTimer.timeout.connect(
+            lambda: self.clearLabel(self.lblUiError, self.uiLabelTimer)
+        )
+        self.sensorsReportLabelTimer.timeout.connect(
+            lambda: self.clearLabel(self.lblSensorDateError, self.sensorsReportLabelTimer)
+        )
+
         self.incDaysTimer.timeout.connect(lambda: self.incDecDay('inc'))
         self.decDaysTimer.timeout.connect(lambda: self.incDecDay('dec'))
         self.backspaceTimer.timeout.connect(self.type(lambda: 'backspace'))
         self.hwWrongPassTimer.timeout.connect(self.hwWrongPass)
         self.sparkTimer.timeout.connect(self.hideSpark)
         self.monitorSensorsTimer.timeout.connect(self.monitorSensors)
-        self.monitorSensorsTimer.start(1000)
 
     def initTables(self):
         self.usersTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
@@ -308,6 +327,8 @@ class MainWin(QMainWindow):
         self.btnStartSession.clicked.connect(self.startSession)
         self.btnSubmit.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnSubmit.clicked.connect(self.submit)
+        self.btnSensorsReport.clicked.connect(self.enterSensorsReportPage)
+        self.btnFindReport.clicked.connect(self.showSensorsReport)
         self.btnBackNewSession.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackManagement.clicked.connect(lambda: self.txtSearch.clear())
@@ -497,6 +518,12 @@ class MainWin(QMainWindow):
         self.txtNsYear.setValidator(input_validator)    
         self.txtNsMonth.setValidator(input_validator)
         self.txtNsDay.setValidator(input_validator)    
+        self.txtFYearSensor.setValidator(input_validator)        
+        self.txtFMonthSensor.setValidator(input_validator)        
+        self.txtFDaySensor.setValidator(input_validator)        
+        self.txtToYearSensor.setValidator(input_validator)        
+        self.txtToMonthSensor.setValidator(input_validator)        
+        self.txtToDaySensor.setValidator(input_validator)        
         self.txtDays.setText('30')
         self.txtSearch.textChanged.connect(self.search)
 
@@ -640,13 +667,24 @@ class MainWin(QMainWindow):
             self.powerFrame.setStyleSheet(POWER_OPTION_D)
 
         self.configs['theme'] = theme
-        saveConfigs(self.configs)
-       
+        if not saveConfigs(self.configs):
+            self.setLabel(
+                TEXT['saveConfigError'][self.langIndex], 
+                self.lblUiError, 
+                self.uiLabelTimer, 4
+            )
+
     def setOwnerInfo(self, text):
         self.ownerInfoSplash.setText(text)
         self.ownerInfoSplash.adjustSize()
         self.configs['OwnerInfo'] = text
-        saveConfigs(self.configs)
+        if not saveConfigs(self.configs):
+            self.setLabel(
+                TEXT['saveConfigError'][self.langIndex], 
+                self.lblUiError, 
+                self.uiLabelTimer, 4
+            )
+
         if not text:
             self.ownerInfoSplash.setVisible(False)
         else:
@@ -678,9 +716,10 @@ class MainWin(QMainWindow):
                 self.unlockLIC(auto=True)
         except Exception:
             pass
-
+            
     def playShutdown(self, i):
         self.playSound(SHUTDOWN_SOUND)
+        self.keyboard('hide')
         if i == 'powerOff':
             self.shutdownTimer.start(3000)
         else:
@@ -756,29 +795,50 @@ class MainWin(QMainWindow):
         self.lblSpark.setVisible(False)
 
     def monitorSensors(self):
+        info = ''
         if not 5 <= self.temperature <= 40:
+            info += f'[Temperature]       Value : {self.temperature}\n'
             if self.ready:
                 self.setReady(False)
 
-        elif self.waterflowError:
+        if self.waterflowError:
+            info += '[Water Flow]        Status: Not OK\n'
             if self.ready:
                 self.setReady(False)
         
-        elif self.waterLevelError:
+        if self.waterLevelError:
+            info += '[Water Level]       Status: Not OK\n'
             if self.ready:
                 self.setReady(False)
         
-        elif self.interLockError:
+        if self.interLockError:
+            info += '[Inter Lock Switch] Status: Not OK\n'
             if self.ready:
                 self.setReady(False)
 
-        elif self.overHeatError:
+        if self.overHeatError:
+            info += '[Over Heat]          Status: Not OK\n'
             if self.ready:
                 self.setReady(False)
 
-        elif self.physicalDamage:
+        if self.physicalDamage:
+            info += '[Physical Damage]   Status: Not OK\n'
             if self.ready:
                 self.setReady(False)
+
+        if info:
+            try:
+                filePath = join(
+                    LOGS_DIR, jdatetime.datetime.now().strftime('%Y-%m-%d')
+                )
+                with open(join(LOGS_DIR, filePath), 'a') as f:
+                    f.write(
+                        jdatetime.datetime.now().strftime('[%H:%M:%S]') + \
+                        ' Sensor Monitoring:\n'
+                    )
+                    f.write(info + '\n')
+            except Exception:
+                pass
 
     def time(self, edit=False):
         now = jdatetime.datetime.now()
@@ -855,7 +915,12 @@ class MainWin(QMainWindow):
         license = self.license[f'LICENSE{numOfLocks + 1}']
         lock = Lock(date, license)
         self.configs['LOCK'].append(lock)
-        saveConfigs(self.configs)
+        if not saveConfigs(self.configs):
+            self.setLabel(
+                    TEXT['saveConfigError'][self.langIndex], 
+                    self.lblLockError, 
+                    self.lockErrorLabel, 4
+                )
         nextDate = date + jdatetime.timedelta(120) 
         self.txtLockYear.setText(str(nextDate.year))
         self.txtLockMonth.setText(str(nextDate.month))
@@ -891,7 +956,12 @@ class MainWin(QMainWindow):
             
     def resetLock(self):
         self.configs['LOCK'] = []
-        saveConfigs(self.configs)
+        if not saveConfigs(self.configs):
+            self.setLabel(
+                    TEXT['saveConfigError'][self.langIndex], 
+                    self.lblLockError, 
+                    self.lockErrorLabel, 4
+                )
         self.time(edit=True)
         self.loadLocksTable()
 
@@ -1036,19 +1106,12 @@ class MainWin(QMainWindow):
         self.txtGuiVersion.setText(self.configs['GuiVersion'])
 
     def saveHwSettings(self):
-        self.configs['SerialNumber'] = self.txtSerialNumber.text()            
-        self.configs['TotalShotCounter'] = int(self.txtTotalShotCounter.text())
-        self.configs['LaserDiodeEnergy'] = self.txtLaserDiodeEnergy.text()            
-        self.configs['LaserBarType'] = self.txtLaserBarType.text()            
-        self.configs['LaserWavelength'] = self.txtLaserWavelength.text()            
-        self.configs['DriverVersion'] = self.txtDriverVersion.text()            
-        self.configs['MainControlVersion'] = self.txtMainControlVersion.text()            
-        self.configs['FirmwareVersion'] = self.txtFirmwareVersion.text()
-        self.configs['ProductionDate'] = self.txtProductionDate.text()
-        self.configs['GuiVersion'] = self.txtGuiVersion.text()  
-        saveConfigs(self.configs)
-        lockIndex = self.hwStackedWidget.indexOf(self.lockSettingsPage)
-        if self.hwStackedWidget.currentIndex() == lockIndex:
+        index = self.hwStackedWidget.indexOf(self.sensorReportPage)
+        if self.hwStackedWidget.currentIndex() == index:
+            return
+ 
+        index = self.hwStackedWidget.indexOf(self.lockSettingsPage)
+        if self.hwStackedWidget.currentIndex() == index:
             try:
                 year = int(self.txtEditYear.text())
                 month = int(self.txtEditMonth.text())
@@ -1067,23 +1130,48 @@ class MainWin(QMainWindow):
                 self.txtLockYear.setText(str(nextDate.year))
                 self.txtLockMonth.setText(str(nextDate.month))
                 self.txtLockDay.setText(str(nextDate.day)) 
-            except Exception:
+                lockPage(WRITE)
+            except Exception as e:
+                print(e)
                 self.setLabel(
-                        TEXT['systemTimeStatus'][self.langIndex], 
+                        TEXT['systemTimeStatusError'][self.langIndex], 
                         self.lblSystemTimeStatus, 
                         self.sysTimeStatusLabelTimer, 4
                     )
 
-            lockPage(WRITE)
+            self.setLabel(
+                    TEXT['systemTimeStatus'][self.langIndex], 
+                    self.lblSystemTimeStatus, 
+                    self.sysTimeStatusLabelTimer, 4
+                )
+
         
-        else:
+        index = self.hwStackedWidget.indexOf(self.infoPage)
+        if self.hwStackedWidget.currentIndex() == index:
+            self.configs['SerialNumber'] = self.txtSerialNumber.text()            
+            self.configs['TotalShotCounter'] = int(self.txtTotalShotCounter.text())
+            self.configs['LaserDiodeEnergy'] = self.txtLaserDiodeEnergy.text()            
+            self.configs['LaserBarType'] = self.txtLaserBarType.text()            
+            self.configs['LaserWavelength'] = self.txtLaserWavelength.text()            
+            self.configs['DriverVersion'] = self.txtDriverVersion.text()            
+            self.configs['MainControlVersion'] = self.txtMainControlVersion.text()            
+            self.configs['FirmwareVersion'] = self.txtFirmwareVersion.text()
+            self.configs['ProductionDate'] = self.txtProductionDate.text()
+            self.configs['GuiVersion'] = self.txtGuiVersion.text() 
             self.enterSettingPage(WRITE)
 
-        self.setLabel(
-                TEXT['saveHw'][self.langIndex], 
-                self.lblSaveHw, 
-                self.hwUpdatedLabelTimer, 2
-            )
+            if not saveConfigs(self.configs):
+                self.setLabel(
+                    TEXT['saveConfigError'][self.langIndex], 
+                    self.lblSaveHw, 
+                    self.hwUpdatedLabelTimer, 4
+                )
+            else:
+                self.setLabel(
+                        TEXT['saveHw'][self.langIndex], 
+                        self.lblSaveHw, 
+                        self.hwUpdatedLabelTimer, 2
+                    )
         
         self.loadLocksTable()
 
@@ -1108,7 +1196,12 @@ class MainWin(QMainWindow):
     def resetTotalShot(self):
         self.txtTotalShotCounter.setText('0')
         self.configs['TotalShotCounter'] = 0
-        saveConfigs(self.configs)
+        if not saveConfigs(self.configs):
+            self.setLabel(
+                TEXT['saveConfigError'][self.langIndex], 
+                self.lblSaveHw, 
+                self.hwUpdatedLabelTimer, 4
+            )
 
     def tutorials(self):
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
@@ -1271,8 +1364,10 @@ class MainWin(QMainWindow):
         if page == 'lazer':
             self.userNextSession = self.user
             self.setReady(False)
+            self.btnCancelNS.setText(TEXT['btnLaterNS'][self.langIndex])
         elif page == 'edit':
             self.userNextSession = self.userInfo
+            self.btnCancelNS.setText(TEXT['btnCancelNS'][self.langIndex])
             
         self.changeAnimation('vertical')
         self.stackedWidget.setCurrentWidget(self.nextSessionPage)
@@ -1312,6 +1407,16 @@ class MainWin(QMainWindow):
                     self.lblReadyError,
                     self.readyErrorTimer, error_duration
                 )
+                filePath = join(LOGS_DIR, jdatetime.datetime.now().strftime('%Y-%m-%d'))
+                try:
+                    with open(join(LOGS_DIR, filePath), 'a') as f:
+                        info = jdatetime.datetime.now().strftime('[%H:%M:%S]')
+                        info += ' Hit Ready Button:\n'
+                        f.write(info)
+                        f.write(errors + '\n')
+                except Exception:
+                    pass
+            
             else:
                 self.ready = True
                 laserPage({'ready-standby': 'Ready'})
@@ -2159,80 +2264,38 @@ class MainWin(QMainWindow):
     def startSession(self):
         numberEntered = self.txtNumber.text()
 
-        if (not self.user) or (self.user.currentSession == 'finished'):
-
-            if not numberEntered:
-                self.setLabel(
-                        TEXT['emptyNumber'][self.langIndex], 
-                        self.lblLogin, 
-                        self.loginLabelTimer
-                    )
-                self.txtNumber.setFocus()
-                self.txtNumber.selectAll()
-                return
+        if not numberEntered:
+            self.setLabel(
+                    TEXT['emptyNumber'][self.langIndex], 
+                    self.lblLogin, 
+                    self.loginLabelTimer
+                )
+            self.txtNumber.setFocus()
+            self.txtNumber.selectAll()
+            return
 
 
-            if not numberEntered in  self.usersData:
-                self.txtNumberSubmit.setText(numberEntered)
-                self.txtNameSubmit.setFocus()
-                self.changeAnimation('vertical')
-                self.stackedWidget.setCurrentWidget(self.newUserPage)
-                return
+        if not numberEntered in  self.usersData:
+            self.txtNumberSubmit.setText(numberEntered)
+            self.txtNameSubmit.setFocus()
+            self.changeAnimation('vertical')
+            self.stackedWidget.setCurrentWidget(self.newUserPage)
+            return
 
-            self.user = self.usersData[numberEntered]
-            self.user.setCurrentSession('started')
-            self.txtCurrentUser.setText(self.user.name)
-            self.txtCurrentSnumber.setText(str(self.user.sessionNumber))
-            self.keyboard('hide')
-            self.changeAnimation('horizontal')
-            self.stackedWidget.setCurrentWidget(self.laserMainPage)
-            self.mainPage.setVisible(False)
-            enterPage(BODY_PART_PAGE)
+        self.user = self.usersData[numberEntered]
+        self.user.setCurrentSession('started')
+        self.txtCurrentUser.setText(self.user.name)
+        self.txtCurrentSnumber.setText(str(self.user.sessionNumber))
+        self.keyboard('hide')
+        self.changeAnimation('horizontal')
+        self.stackedWidget.setCurrentWidget(self.laserMainPage)
+        self.mainPage.setVisible(False)
+        enterPage(BODY_PART_PAGE)
+        self.monitorSensorsTimer.start(1000)
 
-        elif self.user and self.user.currentSession == 'started':
-            if not self.user.phoneNumber in self.usersData:
-                    self.setLabel(
-                            TEXT['userBeenDeleted'][self.langIndex], 
-                            self.lblLogin, 
-                            self.loginLabelTimer
-                        )
-                    self.txtNumber.setFocus()
-                    self.txtNumber.selectAll()
-                    self.user = None
-                    return
-            elif numberEntered != self.user.phoneNumber:
-                text = f'{TEXT["sssionNotOver"][self.langIndex]} ({self.user.phoneNumber})'
-
-                self.setLabel(
-                        text, 
-                        self.lblLogin, 
-                        self.loginLabelTimer
-                    )
-                self.txtNumber.setFocus()
-                self.txtNumber.selectAll()
-                return
-            else:
-                if not self.user.phoneNumber in self.usersData:
-                    self.setLabel(
-                            TEXT['userBeenDeleted'][self.langIndex], 
-                            self.lblLogin, 
-                            self.loginLabelTimer
-                        )
-                    self.txtNumber.setFocus()
-                    self.txtNumber.selectAll()
-                    self.user = None
-                    return
-                    
-                self.user.setCurrentSession('started')
-                self.txtCurrentUser.setText(self.user.name)
-                self.txtCurrentSnumber.setText(str(self.user.sessionNumber))
-                self.keyboard('hide')
-                self.changeAnimation('horizontal')
-                self.stackedWidget.setCurrentWidget(self.laserMainPage)
-                self.mainPage.setVisible(False)
-                enterPage(BODY_PART_PAGE)
 
     def endSession(self):
+        self.monitorSensorsTimer.stop()
         self.user.setCurrentSession('finished')
         self.user.addSession()
         self.removeUser(self.user.phoneNumber)
@@ -2282,7 +2345,12 @@ class MainWin(QMainWindow):
             self.configs['LANGUAGE'] = 'en'
             self.langIndex = 0
 
-        saveConfigs(self.configs)
+        if not saveConfigs(self.configs):
+            self.setLabel(
+                TEXT['saveConfigError'][self.langIndex], 
+                self.lblUiError, 
+                self.uiLabelTimer, 4
+            )
         self.ownerInfoSplash.adjustSize()
         txt = self.ownerInfoSplash.text()
         if txt and isFarsi(txt):
@@ -2323,6 +2391,90 @@ class MainWin(QMainWindow):
                 TEXT[f'userInfoTable{i}'][self.langIndex]
             )        
         
+    def enterSensorsReportPage(self):
+        logs = os.listdir(LOGS_DIR)
+        if '.gitignore' in logs:
+            logs.remove('.gitignore')
+
+        if len(logs) == 0:
+            self.setLabel(
+                TEXT['NoLogFile'][self.langIndex],
+                self.lblSaveHw,
+                self.hwUpdatedLabelTimer, 4
+            )
+            return
+        
+        logs = sorted(logs, key=lambda x: datetime.datetime.strptime(x, '%Y-%m-%d')) 
+        first = logs[0].split('-')
+        last  = logs[-1].split('-')
+        self.lblStartDate.setText(f'{first[0]} / {first[1]} / {first[2]}')
+        self.lblEndDate.setText(f'{last[0]} / {last[1]} / {last[2]}')
+        self.txtFYearSensor.setText(first[0])
+        self.txtFMonthSensor.setText(first[1])
+        self.txtFDaySensor.setText(first[2])
+        self.txtToYearSensor.setText(last[0])
+        self.txtToMonthSensor.setText(last[1])
+        self.txtToDaySensor.setText(last[2])
+        self.hwStackedWidget.setCurrentWidget(self.sensorReportPage)
+        enterPage(OTHER_PAGE)
+        
+    def showSensorsReport(self):                
+        try:
+            startYear  = int(self.txtFYearSensor.text())
+            startMonth = int(self.txtFMonthSensor.text())
+            startDay   = int(self.txtFDaySensor.text())
+            endYear    = int(self.txtToYearSensor.text())
+            endMonth   = int(self.txtToMonthSensor.text())
+            endDay     = int(self.txtToDaySensor.text())
+            if not 1390 <= startYear <= 1420 or not 1390 <= endYear <= 1420:
+                raise ValueError(TEXT['likeHuman'][self.langIndex])
+
+            start_date = jdatetime.date(startYear, startMonth, startDay) 
+            end_date = jdatetime.date(endYear, endMonth, endDay)    
+            delta = end_date - start_date  
+        except Exception as e:
+            self.setLabel(
+                str(e),
+                self.lblSensorDateError,
+                self.sensorsReportLabelTimer
+            )
+            self.lblTotalDaysHavingLog.setText('...')                
+            self.lblTempReport.setText('...')            
+            self.lblWaterflowReport.setText('...')            
+            self.lblWaterlevelReport.setText('...')            
+            self.lblInterLockReport.setText('...')            
+            self.lblOverheatReport.setText('...')            
+            self.lblPhysicalDamageReport.setText('...')            
+            self.lblHitReadyBtn.setText('...')
+            return
+
+        sensors = {
+            '[Temperature]': 0 , '[Water Flow]': 0, 
+            '[Water Level]': 0, '[Inter Lock Switch]': 0,
+            '[Over Heat]': 0, '[Physical Damage]': 0
+        }
+        hitReadyBtnCounter = 0
+        validDays = 0 
+        for i in range(delta.days + 1):
+            day = start_date + jdatetime.timedelta(days=i)
+            if isfile(join(LOGS_DIR, str(day))):
+                validDays += 1
+                file = open(join(LOGS_DIR, str(day)), 'r')
+                for line in file:
+                    if 'Hit' in line: hitReadyBtnCounter += 1
+                    for sensor in sensors.keys():
+                        if sensor in line:
+                            sensors[sensor] += 1
+                file.close()
+
+        self.lblTotalDaysHavingLog.setText(str(validDays))
+        self.lblTempReport.setText(formatTime(sensors["[Temperature]"]))
+        self.lblWaterflowReport.setText(formatTime(sensors["[Water Flow]"]))
+        self.lblWaterlevelReport.setText(formatTime(sensors["[Water Level]"]))
+        self.lblInterLockReport.setText(formatTime(sensors["[Inter Lock Switch]"]))
+        self.lblOverheatReport.setText(formatTime(sensors["[Over Heat]"]))
+        self.lblPhysicalDamageReport.setText(formatTime(sensors["[Physical Damage]"]))
+        self.lblHitReadyBtn.setText(str(hitReadyBtnCounter))
         
         
 

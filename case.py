@@ -24,17 +24,19 @@ class Case:
             return self.female[bodyPart]
 
     def save(self, sex, bodyPart, values):
-        if sex == 'male':
-            self.male[bodyPart] = values
+        try:
+            if sex == 'male':
+                self.male[bodyPart] = values
 
-        else:
-            self.female[bodyPart] = values
+            else:
+                self.female[bodyPart] = values
 
-        filePath = join(CASES_DIR, self.name)
-        fileHandler = open(filePath, 'wb')
-        pickle.dump(self, fileHandler)
-        fileHandler.close()
-        
+            filePath = join(CASES_DIR, self.name)
+            fileHandler = open(filePath, 'wb')
+            pickle.dump(self, fileHandler)
+            fileHandler.close()
+        except Exception as e:
+            print(e)
 
 def openCase(name):
     filePath = join(CASES_DIR, name)

@@ -56,7 +56,7 @@ color:white;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>13</number>
+       <number>7</number>
       </property>
       <widget class="QWidget" name="adssPage">
        <property name="styleSheet">
@@ -971,8 +971,8 @@ QPushButton:pressed {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1623</width>
-             <height>957</height>
+             <width>100</width>
+             <height>30</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -2515,7 +2515,7 @@ border: 10px solid rgb(0, 170, 255);
                  <number>0</number>
                 </property>
                 <item>
-                 <layout class="QGridLayout" name="gridLayout_2" rowstretch="1,0,0,0,0,0,0,0" columnstretch="2,3">
+                 <layout class="QGridLayout" name="gridLayout_2" rowstretch="1,5,0,0,0,0,0,0,0" columnstretch="2,3">
                   <property name="topMargin">
                    <number>0</number>
                   </property>
@@ -2525,7 +2525,23 @@ border: 10px solid rgb(0, 170, 255);
                   <property name="spacing">
                    <number>0</number>
                   </property>
-                  <item row="1" column="1">
+                  <item row="6" column="0">
+                   <widget class="QLabel" name="lblTouchSound">
+                    <property name="font">
+                     <font>
+                      <family>Arial</family>
+                      <pointsize>25</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Touch Sound</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
                    <layout class="QHBoxLayout" name="horizontalLayout_46">
                     <item>
                      <widget class="LineEdit" name="txtOwnerInfo">
@@ -2586,8 +2602,8 @@ border: 1px solid white;
                     </item>
                    </layout>
                   </item>
-                  <item row="5" column="0">
-                   <widget class="QLabel" name="lblTouchSound">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="lblLanguage">
                     <property name="font">
                      <font>
                       <family>Arial</family>
@@ -2595,14 +2611,37 @@ border: 1px solid white;
                      </font>
                     </property>
                     <property name="text">
-                     <string>Touch Sound</string>
+                     <string>Language</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="1">
+                  <item row="4" column="1">
+                   <widget class="ToggleButton" name="chbSlideTransition">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="lblSlideTransition">
+                    <property name="font">
+                     <font>
+                      <family>Arial</family>
+                      <pointsize>25</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Slide Transition</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
                    <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0,1">
                     <property name="rightMargin">
                      <number>0</number>
@@ -2772,53 +2811,20 @@ QPushButton:pressed{
                     </item>
                    </layout>
                   </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="lblSlideTransition">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>25</pointsize>
-                     </font>
+                  <item row="7" column="0">
+                   <spacer name="verticalSpacer_81">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
                     </property>
-                    <property name="text">
-                     <string>Slide Transition</string>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
                     </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
+                   </spacer>
                   </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="lblLanguage">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>25</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Language</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="1">
-                   <widget class="ToggleButton" name="chbSlideTransition">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="1">
-                   <widget class="ToggleButton" name="chbTouchSound">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
+                  <item row="2" column="0">
                    <widget class="QLabel" name="lblOwnerInfo">
                     <property name="font">
                      <font>
@@ -2834,20 +2840,7 @@ QPushButton:pressed{
                     </property>
                    </widget>
                   </item>
-                  <item row="6" column="0">
-                   <spacer name="verticalSpacer_81">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="4" column="0">
+                  <item row="5" column="0">
                    <spacer name="verticalSpacer_80">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
@@ -2860,10 +2853,17 @@ QPushButton:pressed{
                     </property>
                    </spacer>
                   </item>
-                  <item row="7" column="1">
+                  <item row="6" column="1">
+                   <widget class="ToggleButton" name="chbTouchSound">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="1">
                    <layout class="QHBoxLayout" name="horizontalLayout_69"/>
                   </item>
-                  <item row="2" column="0">
+                  <item row="3" column="0">
                    <spacer name="verticalSpacer_38">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
@@ -2875,6 +2875,22 @@ QPushButton:pressed{
                      </size>
                     </property>
                    </spacer>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="lblUiError">
+                    <property name="font">
+                     <font>
+                      <family>Arial</family>
+                      <pointsize>18</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </item>
@@ -3125,7 +3141,7 @@ QPushButton:pressed{
               <item>
                <widget class="StackedWidget" name="hwStackedWidget">
                 <property name="currentIndex">
-                 <number>1</number>
+                 <number>2</number>
                 </property>
                 <widget class="QWidget" name="infoPage">
                  <property name="styleSheet">
@@ -4965,6 +4981,1068 @@ QHeaderView::section
                   </item>
                  </layout>
                 </widget>
+                <widget class="QWidget" name="sensorReportPage">
+                 <layout class="QVBoxLayout" name="verticalLayout_95">
+                  <item>
+                   <widget class="QScrollArea" name="scrollArea_5">
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="verticalScrollBarPolicy">
+                     <enum>Qt::ScrollBarAlwaysOff</enum>
+                    </property>
+                    <property name="horizontalScrollBarPolicy">
+                     <enum>Qt::ScrollBarAlwaysOff</enum>
+                    </property>
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="scrollAreaWidgetContents_5">
+                     <property name="geometry">
+                      <rect>
+                       <x>-148</x>
+                       <y>0</y>
+                       <width>1564</width>
+                       <height>759</height>
+                      </rect>
+                     </property>
+                     <layout class="QVBoxLayout" name="verticalLayout_98">
+                      <item>
+                       <layout class="QHBoxLayout" name="horizontalLayout_83" stretch="0,0">
+                        <property name="leftMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="rightMargin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <layout class="QVBoxLayout" name="verticalLayout_96" stretch="1,3,0,2,1,5,0,0,4">
+                          <property name="leftMargin">
+                           <number>100</number>
+                          </property>
+                          <property name="rightMargin">
+                           <number>30</number>
+                          </property>
+                          <property name="bottomMargin">
+                           <number>0</number>
+                          </property>
+                          <item>
+                           <spacer name="verticalSpacer_78">
+                            <property name="orientation">
+                             <enum>Qt::Vertical</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>20</width>
+                              <height>40</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                          <item>
+                           <widget class="QLabel" name="lblSensorsReport">
+                            <property name="font">
+                             <font>
+                              <family>Arial</family>
+                              <pointsize>30</pointsize>
+                             </font>
+                            </property>
+                            <property name="text">
+                             <string>Sensors Report</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QLabel" name="lblRecordedLogs">
+                            <property name="font">
+                             <font>
+                              <family>Arial</family>
+                              <pointsize>20</pointsize>
+                             </font>
+                            </property>
+                            <property name="text">
+                             <string>Recorded Logs</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <layout class="QHBoxLayout" name="horizontalLayout_82">
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <item>
+                             <widget class="QLabel" name="lblStartDate">
+                              <property name="font">
+                               <font>
+                                <family>Arial</family>
+                                <pointsize>20</pointsize>
+                               </font>
+                              </property>
+                              <property name="text">
+                               <string>1400 / 10 / 01</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignHCenter|Qt::AlignTop</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QLabel" name="label_25">
+                              <property name="font">
+                               <font>
+                                <family>Arial</family>
+                                <pointsize>20</pointsize>
+                               </font>
+                              </property>
+                              <property name="text">
+                               <string> → </string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignHCenter|Qt::AlignTop</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QLabel" name="lblEndDate">
+                              <property name="font">
+                               <font>
+                                <family>Arial</family>
+                                <pointsize>20</pointsize>
+                               </font>
+                              </property>
+                              <property name="text">
+                               <string>1400 / 10 / 01</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignHCenter|Qt::AlignTop</set>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </item>
+                          <item>
+                           <widget class="QLabel" name="lblSensorDateError">
+                            <property name="font">
+                             <font>
+                              <family>Arial</family>
+                              <pointsize>18</pointsize>
+                             </font>
+                            </property>
+                            <property name="text">
+                             <string/>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <layout class="QGridLayout" name="gridLayout_9" rowstretch="1,1">
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                            <item row="0" column="2">
+                             <widget class="QLabel" name="label_21">
+                              <property name="font">
+                               <font>
+                                <family>Arial</family>
+                                <pointsize>20</pointsize>
+                               </font>
+                              </property>
+                              <property name="text">
+                               <string>/</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="3">
+                             <widget class="LineEdit" name="txtFMonthSensor">
+                              <property name="maximumSize">
+                               <size>
+                                <width>75</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="font">
+                               <font>
+                                <family>Arial</family>
+                                <pointsize>20</pointsize>
+                               </font>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="0">
+                             <widget class="QLabel" name="lblFrom">
+                              <property name="font">
+                               <font>
+                                <family>Arial</family>
+                                <pointsize>20</pointsize>
+                               </font>
+                              </property>
+                              <property name="text">
+                               <string>From</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="1">
+                             <widget class="LineEdit" name="txtFYearSensor">
+                              <property name="maximumSize">
+                               <size>
+                                <width>130</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="font">
+                               <font>
+                                <family>Arial</family>
+                                <pointsize>20</pointsize>
+                               </font>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="4">
+                             <widget class="QLabel" name="label_22">
+                              <property name="font">
+                               <font>
+                                <family>Arial</family>
+                                <pointsize>20</pointsize>
+                               </font>
+                              </property>
+                              <property name="text">
+                               <string>/</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="5">
+                             <widget class="LineEdit" name="txtFDaySensor">
+                              <property name="maximumSize">
+                               <size>
+                                <width>75</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="font">
+                               <font>
+                                <family>Arial</family>
+                                <pointsize>20</pointsize>
+                               </font>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="5">
+                             <widget class="LineEdit" name="txtToDaySensor">
+                              <property name="maximumSize">
+                               <size>
+                                <width>75</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="font">
+                               <font>
+                                <family>Arial</family>
+                                <pointsize>20</pointsize>
+                               </font>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="4">
+                             <widget class="QLabel" name="label_27">
+                              <property name="font">
+                               <font>
+                                <family>Arial</family>
+                                <pointsize>20</pointsize>
+                               </font>
+                              </property>
+                              <property name="text">
+                               <string>/</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="1">
+                             <widget class="LineEdit" name="txtToYearSensor">
+                              <property name="maximumSize">
+                               <size>
+                                <width>130</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="font">
+                               <font>
+                                <family>Arial</family>
+                                <pointsize>20</pointsize>
+                               </font>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="2">
+                             <widget class="QLabel" name="label_26">
+                              <property name="font">
+                               <font>
+                                <family>Arial</family>
+                                <pointsize>20</pointsize>
+                               </font>
+                              </property>
+                              <property name="text">
+                               <string>/</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="0">
+                             <widget class="QLabel" name="lblTo">
+                              <property name="font">
+                               <font>
+                                <family>Arial</family>
+                                <pointsize>20</pointsize>
+                               </font>
+                              </property>
+                              <property name="text">
+                               <string>To</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="3">
+                             <widget class="LineEdit" name="txtToMonthSensor">
+                              <property name="maximumSize">
+                               <size>
+                                <width>75</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="font">
+                               <font>
+                                <family>Arial</family>
+                                <pointsize>20</pointsize>
+                               </font>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="6">
+                             <spacer name="horizontalSpacer_57">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                           </layout>
+                          </item>
+                          <item>
+                           <spacer name="verticalSpacer_88">
+                            <property name="orientation">
+                             <enum>Qt::Vertical</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>20</width>
+                              <height>40</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                          <item>
+                           <widget class="QPushButton" name="btnFindReport">
+                            <property name="minimumSize">
+                             <size>
+                              <width>262</width>
+                              <height>102</height>
+                             </size>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>250</width>
+                              <height>16777215</height>
+                             </size>
+                            </property>
+                            <property name="font">
+                             <font>
+                              <family>Arial</family>
+                              <pointsize>20</pointsize>
+                             </font>
+                            </property>
+                            <property name="styleSheet">
+                             <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+color:white;
+min-width: 250px;
+min-height: 100px;
+border-radius: 5px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                            </property>
+                            <property name="text">
+                             <string>Show Results</string>
+                            </property>
+                            <property name="iconSize">
+                             <size>
+                              <width>90</width>
+                              <height>90</height>
+                             </size>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <spacer name="verticalSpacer_87">
+                            <property name="orientation">
+                             <enum>Qt::Vertical</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>20</width>
+                              <height>40</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                         </layout>
+                        </item>
+                        <item>
+                         <layout class="QVBoxLayout" name="verticalLayout_93" stretch="1,9,1">
+                          <property name="topMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="rightMargin">
+                           <number>50</number>
+                          </property>
+                          <property name="bottomMargin">
+                           <number>0</number>
+                          </property>
+                          <item>
+                           <spacer name="verticalSpacer_91">
+                            <property name="orientation">
+                             <enum>Qt::Vertical</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>20</width>
+                              <height>40</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                          <item>
+                           <widget class="QFrame" name="verticalFrame">
+                            <property name="styleSheet">
+                             <string notr="true">QFrame{
+border:3px solid gray;
+padding: 10px;
+background-color: rgb(255, 255, 255);
+border-radius:10px;
+}
+QLabel{
+border:0px;
+color:Black;
+}</string>
+                            </property>
+                            <layout class="QVBoxLayout" name="verticalLayout_97" stretch="1,0,2,0,1">
+                             <property name="topMargin">
+                              <number>1</number>
+                             </property>
+                             <property name="bottomMargin">
+                              <number>1</number>
+                             </property>
+                             <item>
+                              <layout class="QHBoxLayout" name="horizontalLayout_11">
+                               <property name="topMargin">
+                                <number>0</number>
+                               </property>
+                               <item>
+                                <widget class="QLabel" name="label_23">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>Total days having recorded log</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="QLabel" name="label_43">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string> → </string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="QLabel" name="lblTotalDaysHavingLog">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>...</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <spacer name="horizontalSpacer_121">
+                                 <property name="orientation">
+                                  <enum>Qt::Horizontal</enum>
+                                 </property>
+                                 <property name="sizeHint" stdset="0">
+                                  <size>
+                                   <width>40</width>
+                                   <height>20</height>
+                                  </size>
+                                 </property>
+                                </spacer>
+                               </item>
+                              </layout>
+                             </item>
+                             <item>
+                              <spacer name="verticalSpacer_89">
+                               <property name="orientation">
+                                <enum>Qt::Vertical</enum>
+                               </property>
+                               <property name="sizeHint" stdset="0">
+                                <size>
+                                 <width>20</width>
+                                 <height>40</height>
+                                </size>
+                               </property>
+                              </spacer>
+                             </item>
+                             <item>
+                              <layout class="QGridLayout" name="gridLayout_10">
+                               <property name="topMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="horizontalSpacing">
+                                <number>7</number>
+                               </property>
+                               <property name="verticalSpacing">
+                                <number>2</number>
+                               </property>
+                               <item row="6" column="0">
+                                <widget class="QLabel" name="label_35">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>[Over Heat]</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="0" column="0">
+                                <widget class="QLabel" name="label_24">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>[Sensor]</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="0" column="4">
+                                <widget class="QLabel" name="label_29">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>Time elapsed in warning mode</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="0" column="2">
+                                <widget class="QLabel" name="label_28">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>→</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="3" column="0">
+                                <widget class="QLabel" name="label_31">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>[Water Flow]</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="2" column="0">
+                                <widget class="QLabel" name="label_30">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>[Temperature]</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="4" column="0">
+                                <widget class="QLabel" name="label_32">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>[Water Level]</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="7" column="0">
+                                <widget class="QLabel" name="label_36">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>[Physical Damage]</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="5" column="0">
+                                <widget class="QLabel" name="label_34">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>[Inter Lock Switch]</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="3" column="2">
+                                <widget class="QLabel" name="label_38">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>→</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="4" column="2">
+                                <widget class="QLabel" name="label_39">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>→</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="2" column="2">
+                                <widget class="QLabel" name="label_37">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>→</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="5" column="2">
+                                <widget class="QLabel" name="label_40">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>→</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="7" column="2">
+                                <widget class="QLabel" name="label_42">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>→</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="6" column="2">
+                                <widget class="QLabel" name="label_41">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>→</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="2" column="4">
+                                <widget class="QLabel" name="lblTempReport">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>...</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="4" column="4">
+                                <widget class="QLabel" name="lblWaterlevelReport">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>...</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="3" column="4">
+                                <widget class="QLabel" name="lblWaterflowReport">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>...</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="5" column="4">
+                                <widget class="QLabel" name="lblInterLockReport">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>...</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="7" column="4">
+                                <widget class="QLabel" name="lblPhysicalDamageReport">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>...</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="6" column="4">
+                                <widget class="QLabel" name="lblOverheatReport">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>...</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="0" column="5">
+                                <spacer name="horizontalSpacer_118">
+                                 <property name="orientation">
+                                  <enum>Qt::Horizontal</enum>
+                                 </property>
+                                 <property name="sizeHint" stdset="0">
+                                  <size>
+                                   <width>40</width>
+                                   <height>20</height>
+                                  </size>
+                                 </property>
+                                </spacer>
+                               </item>
+                               <item row="0" column="1">
+                                <spacer name="horizontalSpacer_119">
+                                 <property name="orientation">
+                                  <enum>Qt::Horizontal</enum>
+                                 </property>
+                                 <property name="sizeHint" stdset="0">
+                                  <size>
+                                   <width>40</width>
+                                   <height>20</height>
+                                  </size>
+                                 </property>
+                                </spacer>
+                               </item>
+                               <item row="0" column="3">
+                                <spacer name="horizontalSpacer_120">
+                                 <property name="orientation">
+                                  <enum>Qt::Horizontal</enum>
+                                 </property>
+                                 <property name="sizeHint" stdset="0">
+                                  <size>
+                                   <width>40</width>
+                                   <height>20</height>
+                                  </size>
+                                 </property>
+                                </spacer>
+                               </item>
+                               <item row="1" column="0">
+                                <spacer name="verticalSpacer_93">
+                                 <property name="orientation">
+                                  <enum>Qt::Vertical</enum>
+                                 </property>
+                                 <property name="sizeHint" stdset="0">
+                                  <size>
+                                   <width>20</width>
+                                   <height>40</height>
+                                  </size>
+                                 </property>
+                                </spacer>
+                               </item>
+                               <item row="8" column="0">
+                                <spacer name="verticalSpacer_94">
+                                 <property name="orientation">
+                                  <enum>Qt::Vertical</enum>
+                                 </property>
+                                 <property name="sizeHint" stdset="0">
+                                  <size>
+                                   <width>20</width>
+                                   <height>40</height>
+                                  </size>
+                                 </property>
+                                </spacer>
+                               </item>
+                              </layout>
+                             </item>
+                             <item>
+                              <spacer name="verticalSpacer_90">
+                               <property name="orientation">
+                                <enum>Qt::Vertical</enum>
+                               </property>
+                               <property name="sizeHint" stdset="0">
+                                <size>
+                                 <width>20</width>
+                                 <height>40</height>
+                                </size>
+                               </property>
+                              </spacer>
+                             </item>
+                             <item>
+                              <layout class="QHBoxLayout" name="horizontalLayout_84">
+                               <property name="topMargin">
+                                <number>0</number>
+                               </property>
+                               <item>
+                                <widget class="QLabel" name="label_49">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>Hitting Ready button in warning mode</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="QLabel" name="label_45">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string> → </string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="QLabel" name="lblHitReadyBtn">
+                                 <property name="font">
+                                  <font>
+                                   <family>Arial</family>
+                                   <pointsize>20</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>...</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <spacer name="horizontalSpacer_122">
+                                 <property name="orientation">
+                                  <enum>Qt::Horizontal</enum>
+                                 </property>
+                                 <property name="sizeHint" stdset="0">
+                                  <size>
+                                   <width>40</width>
+                                   <height>20</height>
+                                  </size>
+                                 </property>
+                                </spacer>
+                               </item>
+                              </layout>
+                             </item>
+                            </layout>
+                           </widget>
+                          </item>
+                          <item>
+                           <spacer name="verticalSpacer_92">
+                            <property name="orientation">
+                             <enum>Qt::Vertical</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>20</width>
+                              <height>40</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                         </layout>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
+                    </widget>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
                </widget>
               </item>
               <item alignment="Qt::AlignVCenter">
@@ -5108,6 +6186,35 @@ border: 1px solid white;
                    </property>
                   </widget>
                  </item>
+                 <item>
+                  <widget class="QPushButton" name="btnSensorsReport">
+                   <property name="font">
+                    <font>
+                     <family>Arial</family>
+                     <pointsize>20</pointsize>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+color:white;
+min-width: 200px;
+min-height: 100px;
+border-radius: 5px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                   </property>
+                   <property name="text">
+                    <string>Sensors Log</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </widget>
               </item>
@@ -5246,8 +6353,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>1599</width>
-               <height>803</height>
+               <width>312</width>
+               <height>413</height>
               </rect>
              </property>
              <property name="styleSheet">
@@ -8865,7 +9972,7 @@ background-color: rgb(0, 170, 255);
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1556</width>
+                   <width>1341</width>
                    <height>803</height>
                   </rect>
                  </property>
@@ -10383,7 +11490,7 @@ border: 10px solid rgb(0, 170, 255);
                             <number>0</number>
                            </property>
                            <property name="bottomMargin">
-                            <number>10</number>
+                            <number>15</number>
                            </property>
                            <item>
                             <layout class="QVBoxLayout" name="verticalLayout_76">

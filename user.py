@@ -47,23 +47,29 @@ class User:
 
 
 def saveUser(usersData):
-    filePath = join(USERS_DIR, 'USERS_DATA')
-    fileHandler = open(filePath, 'wb')
-    usersData = pickle.dump(usersData, fileHandler)
-    fileHandler.close()
-   
-
-def loadUsers():
-    filePath = join(USERS_DIR, 'USERS_DATA')
-    if isfile(filePath):
-        fileHandler = open(filePath, 'rb')
-        usersData = pickle.load(fileHandler)
-        fileHandler.close()
-        return usersData
-    else:
-        usersData = {}
+    try:
+        filePath = join(USERS_DIR, 'USERS_DATA')
         fileHandler = open(filePath, 'wb')
         pickle.dump(usersData, fileHandler)
         fileHandler.close()
+    except Exception as e:
+        print(e)
+
+def loadUsers():
+    try:
+        filePath = join(USERS_DIR, 'USERS_DATA')
+        if isfile(filePath):
+            fileHandler = open(filePath, 'rb')
+            usersData = pickle.load(fileHandler)
+            fileHandler.close()
+        else:
+            usersData = {}
+            fileHandler = open(filePath, 'wb')
+            pickle.dump(usersData, fileHandler)
+            fileHandler.close()
+
         return usersData
+    except Exception as e:
+        print(e)
+
 

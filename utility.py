@@ -33,16 +33,16 @@ def monitorInfo():
     screen =  QtWidgets.QApplication.primaryScreen() 
     resolution = f'{screen.size().width()}x{screen.size().height()}'
     if platform.system() == 'Windows':
-        proc = subprocess.Popen(
-            ['powershell', 'Get-WmiObject win32_desktopmonitor;'], 
-            stdout=subprocess.PIPE
-        )
-        res = proc.communicate()
-        monitors = re.findall(
-            '(?s)\r\nName\s+:\s(.*?)\r\n', 
-            res[0].decode("utf-8")
-        )
-        info = monitors[0]
+        # proc = subprocess.Popen(
+        #     ['powershell', 'Get-WmiObject win32_desktopmonitor;'], 
+        #     stdout=subprocess.PIPE
+        # )
+        # res = proc.communicate()
+        # monitors = re.findall(
+        #     '(?s)\r\nName\s+:\s(.*?)\r\n', 
+        #     res[0].decode("utf-8")
+        # )
+        info = 'Unknown'
 
     else:
         subprocess.call(f'chmod 755 {MONITOR_COMMAND}', shell=True)
@@ -163,13 +163,12 @@ def EncryptDecrypt(filename, key):
 
 def loadConfigs():
     if not isfile(CONFIG_FILE):
-        print("Don't be an asshole")
+        print("Config file not found.")
         exit(1)
     
-    EncryptDecrypt(CONFIG_FILE, 15)
-    file = open(CONFIG_FILE, 'rb')
-    
     try:
+        EncryptDecrypt(CONFIG_FILE, 15)
+        file = open(CONFIG_FILE, 'rb')
         configs = pickle.load(file)
         if len(configs) == 0:
             file.close()
@@ -202,16 +201,23 @@ def loadConfigs():
 
         return configs
 
-    except Exception:
-        print("Don't be an asshole")
+    except Exception as e:
+        print(e)
         exit(1)
 
 
 def saveConfigs(configs):
-    with open(CONFIG_FILE, 'wb') as f:
-        pickle.dump(configs, f)
+    try:
+        with open(CONFIG_FILE, 'wb') as f:
+            pickle.dump(configs, f)
 
-    EncryptDecrypt(CONFIG_FILE, 15)
+        EncryptDecrypt(CONFIG_FILE, 15)
+        return True
+    
+    except Exception as e:
+        print('Error in saving config file.')
+        print(e)
+        return False
 
 
 def getID():
@@ -250,3 +256,7 @@ def int_to_bytes(x: int) -> bytes:
     return x.to_bytes((x.bit_length() + 7) // 8, 'big')
 
 
+def formatTime(s):
+    hours, remainder = divmod(s, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return '{:02}:{:02}:{:02}'.format(int(hours), int(minutes), int(seconds))

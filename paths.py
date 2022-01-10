@@ -5,6 +5,7 @@ from os.path import join
 CURRENT_FILE_DIR   = Path(__file__).parent.absolute()
 IMAGES_DIR         = join(CURRENT_FILE_DIR, 'ui/images')
 APP_UI             = join(CURRENT_FILE_DIR, 'ui/ui.ui')
+LOGS_DIR           = join(CURRENT_FILE_DIR, 'logs')
 USERS_DIR          = join(CURRENT_FILE_DIR, 'users')
 CASES_DIR          = join(CURRENT_FILE_DIR, 'cases')
 TUTORIALS_DIR      = join(CURRENT_FILE_DIR, 'tutorials')
