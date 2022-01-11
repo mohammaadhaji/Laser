@@ -2483,14 +2483,17 @@ class LoadingWindow(QMainWindow):
         QMainWindow.__init__(self)
         self.setStyleSheet('background-image: url(ui/images/splashLoading.jpg)')
         self.showFullScreen()
-        QApplication.processEvents()
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.showMain)
+        self.timer.start(500)
         print(time.time() - start)
+    
+    def showMain(self):
+        self.timer.stop()
         self.main = MainWin()
         self.main.showFullScreen()
-        QApplication.processEvents()
         self.close()
 
 app = QApplication(sys.argv)
 loadingWin = LoadingWindow()
-# mainWin.showFullScreen()
 sys.exit(app.exec_())
