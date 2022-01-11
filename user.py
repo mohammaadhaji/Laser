@@ -1,5 +1,5 @@
 from os.path import join, isfile
-from paths import USERS_DIR
+from paths import USERS_DATA
 import jdatetime, pickle
 
 
@@ -45,31 +45,18 @@ class User:
         return '<' + self.name + '> ' + '(' + self.phoneNumber + ')'
 
 
-
-def saveUser(usersData):
-    try:
-        filePath = join(USERS_DIR, 'USERS_DATA')
-        fileHandler = open(filePath, 'wb')
-        pickle.dump(usersData, fileHandler)
-        fileHandler.close()
-    except Exception as e:
-        print(e)
-
 def loadUsers():
     try:
-        filePath = join(USERS_DIR, 'USERS_DATA')
-        if isfile(filePath):
-            fileHandler = open(filePath, 'rb')
+        if isfile(USERS_DATA):
+            fileHandler = open(USERS_DATA, 'rb')
             usersData = pickle.load(fileHandler)
             fileHandler.close()
         else:
             usersData = {}
-            fileHandler = open(filePath, 'wb')
+            fileHandler = open(USERS_DATA, 'wb')
             pickle.dump(usersData, fileHandler)
             fileHandler.close()
 
         return usersData
     except Exception as e:
         print(e)
-
-

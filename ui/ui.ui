@@ -56,11 +56,11 @@ color:white;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>7</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="adssPage">
        <property name="styleSheet">
-        <string notr="true"/>
+        <string notr="true">background-color: rgb(0, 0, 0);</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_94">
         <property name="spacing">
@@ -3176,7 +3176,7 @@ QPushButton:pressed{
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1276</width>
+                       <width>958</width>
                        <height>848</height>
                       </rect>
                      </property>
@@ -5000,9 +5000,9 @@ QHeaderView::section
                     <widget class="QWidget" name="scrollAreaWidgetContents_5">
                      <property name="geometry">
                       <rect>
-                       <x>-148</x>
+                       <x>0</x>
                        <y>0</y>
-                       <width>1564</width>
+                       <width>1584</width>
                        <height>759</height>
                       </rect>
                      </property>

@@ -129,7 +129,7 @@ class MainWin(QMainWindow):
         volume = 100 if state else 0
         self.touchSound.setVolume(volume)
         self.configs['touchSound'] = state
-        if not saveConfigs(self.configs):
+        if not self.saveConfigs():
             self.setLabel(
                 TEXT['saveConfigError'][self.langIndex], 
                 self.lblUiError, 
@@ -198,7 +198,7 @@ class MainWin(QMainWindow):
         self.stackedWidgetSettings.setSlideTransition(checked)
         self.hwStackedWidget.setSlideTransition(checked)
         self.configs['slideTransition'] = checked
-        if not saveConfigs(self.configs):
+        if not self.saveConfigs():
             self.setLabel(
                 TEXT['saveConfigError'][self.langIndex], 
                 self.lblUiError, 
@@ -332,7 +332,7 @@ class MainWin(QMainWindow):
         self.btnBackNewSession.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackManagement.clicked.connect(lambda: self.txtSearch.clear())
-        self.btnBackManagement.clicked.connect(lambda: saveUser(self.usersData))
+        self.btnBackManagement.clicked.connect(self.saveUsers)
         self.btnBackSettings.clicked.connect(self.backSettings)
         self.btnBackSettings.clicked.connect(self.systemTimeTimer.stop)
         self.btnBackEditUser.clicked.connect(lambda: self.changeAnimation('horizontal'))
@@ -667,7 +667,7 @@ class MainWin(QMainWindow):
             self.powerFrame.setStyleSheet(POWER_OPTION_D)
 
         self.configs['theme'] = theme
-        if not saveConfigs(self.configs):
+        if not self.saveConfigs():
             self.setLabel(
                 TEXT['saveConfigError'][self.langIndex], 
                 self.lblUiError, 
@@ -678,7 +678,7 @@ class MainWin(QMainWindow):
         self.ownerInfoSplash.setText(text)
         self.ownerInfoSplash.adjustSize()
         self.configs['OwnerInfo'] = text
-        if not saveConfigs(self.configs):
+        if not self.saveConfigs():
             self.setLabel(
                 TEXT['saveConfigError'][self.langIndex], 
                 self.lblUiError, 
@@ -915,7 +915,7 @@ class MainWin(QMainWindow):
         license = self.license[f'LICENSE{numOfLocks + 1}']
         lock = Lock(date, license)
         self.configs['LOCK'].append(lock)
-        if not saveConfigs(self.configs):
+        if not self.saveConfigs():
             self.setLabel(
                     TEXT['saveConfigError'][self.langIndex], 
                     self.lblLockError, 
@@ -956,7 +956,7 @@ class MainWin(QMainWindow):
             
     def resetLock(self):
         self.configs['LOCK'] = []
-        if not saveConfigs(self.configs):
+        if not self.saveConfigs():
             self.setLabel(
                     TEXT['saveConfigError'][self.langIndex], 
                     self.lblLockError, 
@@ -974,7 +974,7 @@ class MainWin(QMainWindow):
             index = self.stackedWidget.indexOf(self.splashPage)
             self.stackedWidget.setCurrentIndex(index)
             self.configs['PASSWORD'] = user_pass
-            saveConfigs(self.configs)
+            self.saveConfigs()
             self.keyboard('hide')
         else:
             self.setLabel(
@@ -1013,7 +1013,7 @@ class MainWin(QMainWindow):
         
         for lock in locks:
             if lock.checkPassword(userPass):
-                saveConfigs(self.configs)
+                self.saveConfigs()
                 self.keyboard('hide')
                 self.lockMovie.start()
                 self.txtPassword.clear()
@@ -1160,7 +1160,7 @@ class MainWin(QMainWindow):
             self.configs['GuiVersion'] = self.txtGuiVersion.text() 
             self.enterSettingPage(WRITE)
 
-            if not saveConfigs(self.configs):
+            if not self.saveConfigs():
                 self.setLabel(
                     TEXT['saveConfigError'][self.langIndex], 
                     self.lblSaveHw, 
@@ -1196,7 +1196,7 @@ class MainWin(QMainWindow):
     def resetTotalShot(self):
         self.txtTotalShotCounter.setText('0')
         self.configs['TotalShotCounter'] = 0
-        if not saveConfigs(self.configs):
+        if not self.saveConfigs():
             self.setLabel(
                 TEXT['saveConfigError'][self.langIndex], 
                 self.lblSaveHw, 
@@ -2045,7 +2045,7 @@ class MainWin(QMainWindow):
             if self.usersTable.model().index(row, 0).data() == number:
                 self.usersTable.cellWidget(row, 3).chbDel.setChecked(False)
         self.removeUser(number)
-        saveUser(self.usersData)
+        self.saveUsers()
         self.changeAnimation('horizontal')
         self.stackedWidget.setCurrentWidget(self.userManagementPage)
 
@@ -2293,7 +2293,6 @@ class MainWin(QMainWindow):
         enterPage(BODY_PART_PAGE)
         self.monitorSensorsTimer.start(1000)
 
-
     def endSession(self):
         self.monitorSensorsTimer.stop()
         self.user.setCurrentSession('finished')
@@ -2302,8 +2301,8 @@ class MainWin(QMainWindow):
         self.insertToTabel(self.user)
         self.user = None
         self.configs['TotalShotCounter'] += self.currentCounter
-        saveConfigs(self.configs)
-        saveUser(self.usersData)
+        self.saveConfigs()
+        self.saveUsers()
         self.lblCounterValue.setText('0')
         self.currentCounter = 0
         self.stackedWidget.setCurrentWidget(self.mainPage)
@@ -2345,7 +2344,7 @@ class MainWin(QMainWindow):
             self.configs['LANGUAGE'] = 'en'
             self.langIndex = 0
 
-        if not saveConfigs(self.configs):
+        if not self.saveConfigs():
             self.setLabel(
                 TEXT['saveConfigError'][self.langIndex], 
                 self.lblUiError, 
@@ -2476,7 +2475,26 @@ class MainWin(QMainWindow):
         self.lblPhysicalDamageReport.setText(formatTime(sensors["[Physical Damage]"]))
         self.lblHitReadyBtn.setText(str(hitReadyBtnCounter))
         
+    def saveUsers(self):
+        try:
+            fileHandler = open(USERS_DATA, 'wb')
+            pickle.dump(self.usersData, fileHandler)
+            fileHandler.close()
+        except Exception as e:
+            print(e)
         
+    def saveConfigs(self):
+        try:
+            with open(CONFIG_FILE, 'wb') as f:
+                pickle.dump(self.configs, f)
+
+            EncryptDecrypt(CONFIG_FILE, 15)
+            return True
+        
+        except Exception as e:
+            print('Error in saving config file.')
+            print(e)
+            return False
 
 class LoadingWindow(QMainWindow):
     def __init__(self):
