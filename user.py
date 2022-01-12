@@ -1,6 +1,7 @@
 from os.path import join, isfile
 from paths import USERS_DATA
-import jdatetime, pickle
+import datetime, pickle
+
 
 
 class User:
@@ -36,7 +37,7 @@ class User:
 
     def addSession(self):
         session = self.shot.copy()
-        session['date'] = jdatetime.datetime.now()  
+        session['date'] = datetime.datetime.now()
         self.sessions[self.sessionNumber] = session
         self.shot = dict.fromkeys(self.shot, 0)
         self.sessionNumber += 1

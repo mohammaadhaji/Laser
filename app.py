@@ -28,12 +28,6 @@ class MainWin(QMainWindow):
         self.langIndex = 0
         icon = QPixmap(SELECTED_LANG_ICON)
         self.lblEnSelected.setPixmap(icon.scaled(70, 70))
-        self.loadLocksTable()
-        self.bodyPartsSignals()
-        self.keyboardSignals()
-        self.casesSignals()
-        self.checkUUID()
-        readTime()
         self.serialC = SerialTimer() if RPI_VERSION == '3' else SerialThread()
         self.serialC.sensorFlags.connect(self.setSensors)
         self.serialC.tempValue.connect(self.setTemp)
@@ -93,6 +87,12 @@ class MainWin(QMainWindow):
         self.initSensors()
         self.initTextboxes()
         self.changeTheme(self.configs['theme'])
+        self.loadLocksTable()
+        self.bodyPartsSignals()
+        self.keyboardSignals()
+        self.casesSignals()
+        # self.checkUUID()
+        readTime()
         self.user = None
         self.userNextSession = None
         self.sortBySession = False
@@ -913,7 +913,7 @@ class MainWin(QMainWindow):
                 return
         
         license = self.license[f'LICENSE{numOfLocks + 1}']
-        lock = Lock(date, license)
+        lock = Lock(date.togregorian(), license)
         self.configs['LOCK'].append(lock)
         if not self.saveConfigs():
             self.setLabel(
@@ -932,9 +932,9 @@ class MainWin(QMainWindow):
         locks = self.configs['LOCK']
         self.tableLock.setRowCount(len(locks))
         for i, lock in enumerate(locks):
-            date = TableWidgetItem(str(lock.date.date()))
+            date = TableWidgetItem(str(toJalali(lock.date).date()))
             self.tableLock.setItem(i, 0, date)
-            diff = lock.getStatus()
+            diff = getDiff(toJalali(lock.date))
             status = ''
             if diff == 0:
                 status = TEXT['today'][self.langIndex]
@@ -998,7 +998,8 @@ class MainWin(QMainWindow):
         userPass = self.txtPassword.text().strip()
         locks = []
         for lock in self.configs['LOCK']:
-            if not lock.paid and lock.getStatus() <= 0:
+            date = toJalali(lock.date)
+            if not lock.paid and getDiff(date) <= 0:
                 locks.append(lock)
 
         locks.sort(key=lambda x: x.date)
@@ -1309,7 +1310,7 @@ class MainWin(QMainWindow):
                         self.nextSessionLabelTimer
                     )
                 return
-            self.userNextSession.setNextSession(date)
+            self.userNextSession.setNextSession(date.togregorian())
             if self.userNextSession.currentSession == 'started':
                 self.endSession()
             else:
@@ -2052,7 +2053,7 @@ class MainWin(QMainWindow):
     def info(self, num):
         self.stackedWidget.setCurrentWidget(self.editUserPage)
         self.userInfo = self.usersData[num]
-        nextSessionDate = self.userInfo.nextSession
+        nextSessionDate = toJalali(self.userInfo.nextSession)
         if not nextSessionDate:
             self.txtNextSession.setText(TEXT['notSet'][self.langIndex])
         else:
@@ -2076,7 +2077,7 @@ class MainWin(QMainWindow):
         totalSessions = len(sessions)+1 if len(sessions) > 0 else 0
         self.userInfoTable.setRowCount(totalSessions)
         for sn in sessions:
-            date = TableWidgetItem(str(sessions[sn]['date'].date()))
+            date = TableWidgetItem(str(toJalali(sessions[sn]['date']).date()))
             face = TableWidgetItem(str(sessions[sn]['face']))
             armpit = TableWidgetItem(str(sessions[sn]['armpit']))
             arm = TableWidgetItem(str(sessions[sn]['arm']))
@@ -2132,7 +2133,7 @@ class MainWin(QMainWindow):
         rowAfterTomorrow = 0
         for user in users:
             if user.sessionNumber == 1:
-                nextSession = user.nextSession
+                nextSession = toJalali(user.nextSession)
                 num = TableWidgetItem(user.phoneNumber)
                 name = TableWidgetItem(user.name)
                 text = TEXT['firstTime'][self.langIndex] 
@@ -2154,8 +2155,8 @@ class MainWin(QMainWindow):
                     rowAfterTomorrow += 1
 
             else:
-                nextSession = user.nextSession
-                lastSession = user.sessions[user.sessionNumber -1]['date']
+                nextSession = toJalali(user.nextSession)
+                lastSession = toJalali(user.sessions[user.sessionNumber -1]['date'])
                 lastSession = TableWidgetItem(str(lastSession.date()))
                 num = TableWidgetItem(user.phoneNumber)
                 name = TableWidgetItem(user.name)
@@ -2301,10 +2302,10 @@ class MainWin(QMainWindow):
         self.insertToTabel(self.user)
         self.user = None
         self.configs['TotalShotCounter'] += self.currentCounter
+        self.currentCounter = 0
+        self.lblCounterValue.setText('0')
         self.saveConfigs()
         self.saveUsers()
-        self.lblCounterValue.setText('0')
-        self.currentCounter = 0
         self.stackedWidget.setCurrentWidget(self.mainPage)
         self.stackedWidgetLaser.setCurrentIndex(0)
         self.btnBackLaser.setVisible(False)

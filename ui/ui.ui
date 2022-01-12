@@ -56,7 +56,7 @@ color:white;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>7</number>
       </property>
       <widget class="QWidget" name="adssPage">
        <property name="styleSheet">
@@ -3176,7 +3176,7 @@ QPushButton:pressed{
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>958</width>
+                       <width>1276</width>
                        <height>848</height>
                       </rect>
                      </property>
@@ -4985,6 +4985,10 @@ QHeaderView::section
                  <layout class="QVBoxLayout" name="verticalLayout_95">
                   <item>
                    <widget class="QScrollArea" name="scrollArea_5">
+                    <property name="styleSheet">
+                     <string notr="true">background:transparent;
+</string>
+                    </property>
                     <property name="frameShape">
                      <enum>QFrame::NoFrame</enum>
                     </property>
@@ -5002,9 +5006,12 @@ QHeaderView::section
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1584</width>
+                       <width>1591</width>
                        <height>759</height>
                       </rect>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true"/>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_98">
                       <item>
@@ -5118,6 +5125,19 @@ QHeaderView::section
                               </property>
                              </widget>
                             </item>
+                            <item>
+                             <spacer name="horizontalSpacer_123">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
                            </layout>
                           </item>
                           <item>
@@ -5168,6 +5188,19 @@ QHeaderView::section
                                 <pointsize>20</pointsize>
                                </font>
                               </property>
+                              <property name="styleSheet">
+                               <string notr="true">QLineEdit{
+color: white;
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:2px solid gray;
+padding:10px 10px 10px 10px;
+}
+QLineEdit:focus{
+border:2px solid white;
+background-color: rgb(89, 88, 88);
+}</string>
+                              </property>
                               <property name="alignment">
                                <set>Qt::AlignCenter</set>
                               </property>
@@ -5199,6 +5232,19 @@ QHeaderView::section
                                 <family>Arial</family>
                                 <pointsize>20</pointsize>
                                </font>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">QLineEdit{
+color: white;
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:2px solid gray;
+padding:10px 10px 10px 10px;
+}
+QLineEdit:focus{
+border:2px solid white;
+background-color: rgb(89, 88, 88);
+}</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignCenter</set>
@@ -5235,6 +5281,19 @@ QHeaderView::section
                                 <pointsize>20</pointsize>
                                </font>
                               </property>
+                              <property name="styleSheet">
+                               <string notr="true">QLineEdit{
+color: white;
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:2px solid gray;
+padding:10px 10px 10px 10px;
+}
+QLineEdit:focus{
+border:2px solid white;
+background-color: rgb(89, 88, 88);
+}</string>
+                              </property>
                               <property name="alignment">
                                <set>Qt::AlignCenter</set>
                               </property>
@@ -5253,6 +5312,19 @@ QHeaderView::section
                                 <family>Arial</family>
                                 <pointsize>20</pointsize>
                                </font>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">QLineEdit{
+color: white;
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:2px solid gray;
+padding:10px 10px 10px 10px;
+}
+QLineEdit:focus{
+border:2px solid white;
+background-color: rgb(89, 88, 88);
+}</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignCenter</set>
@@ -5288,6 +5360,19 @@ QHeaderView::section
                                 <family>Arial</family>
                                 <pointsize>20</pointsize>
                                </font>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">QLineEdit{
+color: white;
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:2px solid gray;
+padding:10px 10px 10px 10px;
+}
+QLineEdit:focus{
+border:2px solid white;
+background-color: rgb(89, 88, 88);
+}</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignCenter</set>
@@ -5336,6 +5421,19 @@ QHeaderView::section
                                 <family>Arial</family>
                                 <pointsize>20</pointsize>
                                </font>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">QLineEdit{
+color: white;
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:2px solid gray;
+padding:10px 10px 10px 10px;
+}
+QLineEdit:focus{
+border:2px solid white;
+background-color: rgb(89, 88, 88);
+}</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignCenter</set>
