@@ -157,8 +157,8 @@ TEXT = {
     'btnSelectAll': ['Select All', 'انتخاب همه'],
     'saveConfigError': ['Error while saving settings.', 'خطا هنگام ذخیره تنظیمات.'],
     'btnSystemLogs': ['System Logs', 'لاگ سیستم'],
-    'btnFindNext': ['Find next', 'بعدی'],
-    'btnFindBefor': ['Find previous', 'قبلی'],
+    'btnFindNext': ['Find Next', 'بعدی'],
+    'btnFindBefor': ['Find Previous', 'قبلی'],
     'txtSearchLogs': ['Search...', 'جستوجو...'],
     'btnDeleteLogs': ['Delete Logs', 'حذف لاگ ها']   
 }

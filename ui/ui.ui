@@ -2130,7 +2130,7 @@ border: 1px solid white;
       <widget class="QWidget" name="settingsPage">
        <layout class="QVBoxLayout" name="verticalLayout_50" stretch="1,9">
         <property name="bottomMargin">
-         <number>11</number>
+         <number>0</number>
         </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_40" stretch="1,1,1,2">
@@ -2246,7 +2246,7 @@ border:3px solid red;
         <item>
          <widget class="StackedWidget" name="stackedWidgetSettings">
           <property name="currentIndex">
-           <number>2</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="settingsMenuPage">
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -2496,12 +2496,12 @@ border: 10px solid rgb(0, 170, 255);
           <widget class="QWidget" name="uiPage">
            <layout class="QVBoxLayout" name="verticalLayout_54">
             <item>
-             <layout class="QVBoxLayout" name="verticalLayout_53" stretch="9,2">
+             <layout class="QVBoxLayout" name="verticalLayout_53" stretch="8,2">
               <property name="spacing">
                <number>0</number>
               </property>
               <property name="leftMargin">
-               <number>0</number>
+               <number>20</number>
               </property>
               <property name="topMargin">
                <number>0</number>
@@ -2515,7 +2515,7 @@ border: 10px solid rgb(0, 170, 255);
                  <number>0</number>
                 </property>
                 <item>
-                 <layout class="QGridLayout" name="gridLayout_2" rowstretch="1,5,0,0,0,0,0,0,0" columnstretch="2,3">
+                 <layout class="QGridLayout" name="gridLayout_2" rowstretch="1,4,0,0,0,0,0,0" columnstretch="1,2" rowminimumheight="0,0,0,0,0,0,0,0">
                   <property name="topMargin">
                    <number>0</number>
                   </property>
@@ -2525,6 +2525,35 @@ border: 10px solid rgb(0, 170, 255);
                   <property name="spacing">
                    <number>0</number>
                   </property>
+                  <item row="3" column="0">
+                   <spacer name="verticalSpacer_38">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="lblUiError">
+                    <property name="font">
+                     <font>
+                      <family>Arial</family>
+                      <pointsize>18</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="6" column="0">
                    <widget class="QLabel" name="lblTouchSound">
                     <property name="font">
@@ -2535,6 +2564,22 @@ border: 10px solid rgb(0, 170, 255);
                     </property>
                     <property name="text">
                      <string>Touch Sound</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="lblLanguage">
+                    <property name="font">
+                     <font>
+                      <family>Arial</family>
+                      <pointsize>25</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Language</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -2602,22 +2647,6 @@ border: 1px solid white;
                     </item>
                    </layout>
                   </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="lblLanguage">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>25</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Language</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="4" column="1">
                    <widget class="ToggleButton" name="chbSlideTransition">
                     <property name="text">
@@ -2640,6 +2669,19 @@ border: 1px solid white;
                      <set>Qt::AlignCenter</set>
                     </property>
                    </widget>
+                  </item>
+                  <item row="7" column="0">
+                   <spacer name="verticalSpacer_81">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                   <item row="1" column="1">
                    <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0,1">
@@ -2811,19 +2853,6 @@ QPushButton:pressed{
                     </item>
                    </layout>
                   </item>
-                  <item row="7" column="0">
-                   <spacer name="verticalSpacer_81">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
                   <item row="2" column="0">
                    <widget class="QLabel" name="lblOwnerInfo">
                     <property name="font">
@@ -2857,38 +2886,6 @@ QPushButton:pressed{
                    <widget class="ToggleButton" name="chbTouchSound">
                     <property name="text">
                      <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="8" column="1">
-                   <layout class="QHBoxLayout" name="horizontalLayout_69"/>
-                  </item>
-                  <item row="3" column="0">
-                   <spacer name="verticalSpacer_38">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="lblUiError">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>18</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
                     </property>
                    </widget>
                   </item>
@@ -3125,10 +3122,13 @@ QPushButton:pressed{
              <number>11</number>
             </property>
             <property name="bottomMargin">
-             <number>11</number>
+             <number>0</number>
             </property>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_47">
+              <property name="spacing">
+               <number>0</number>
+              </property>
               <property name="leftMargin">
                <number>0</number>
               </property>
@@ -3149,16 +3149,16 @@ QPushButton:pressed{
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_71">
                   <property name="leftMargin">
-                   <number>0</number>
+                   <number>30</number>
                   </property>
                   <property name="topMargin">
                    <number>0</number>
                   </property>
                   <property name="rightMargin">
-                   <number>0</number>
+                   <number>30</number>
                   </property>
                   <property name="bottomMargin">
-                   <number>0</number>
+                   <number>30</number>
                   </property>
                   <item>
                    <widget class="QScrollArea" name="scrollArea">
@@ -3176,24 +3176,33 @@ QPushButton:pressed{
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1276</width>
-                       <height>848</height>
+                       <width>1223</width>
+                       <height>824</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_73" stretch="1,9">
+                      <property name="leftMargin">
+                       <number>0</number>
+                      </property>
                       <property name="topMargin">
-                       <number>11</number>
+                       <number>0</number>
+                      </property>
+                      <property name="rightMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="bottomMargin">
+                       <number>0</number>
                       </property>
                       <item>
                        <layout class="QHBoxLayout" name="horizontalLayout_68" stretch="0,0,1">
                         <property name="leftMargin">
-                         <number>20</number>
+                         <number>0</number>
                         </property>
                         <property name="topMargin">
                          <number>0</number>
                         </property>
                         <property name="rightMargin">
-                         <number>20</number>
+                         <number>0</number>
                         </property>
                         <item>
                          <widget class="QPushButton" name="btnUpdateFirmware">
@@ -3281,16 +3290,16 @@ background-color: rgb(63, 63, 63);
                         </property>
                         <layout class="QHBoxLayout" name="horizontalLayout_54" stretch="0,0">
                          <property name="leftMargin">
-                          <number>20</number>
+                          <number>0</number>
                          </property>
                          <property name="topMargin">
-                          <number>1</number>
+                          <number>0</number>
                          </property>
                          <property name="rightMargin">
-                          <number>20</number>
+                          <number>0</number>
                          </property>
                          <property name="bottomMargin">
-                          <number>1</number>
+                          <number>0</number>
                          </property>
                          <item>
                           <layout class="QVBoxLayout" name="verticalLayout_64">
@@ -4205,26 +4214,19 @@ color:white;
                  </layout>
                 </widget>
                 <widget class="QWidget" name="lockSettingsPage">
-                 <layout class="QHBoxLayout" name="horizontalLayout_58" stretch="0,3,0,2,0">
+                 <layout class="QHBoxLayout" name="horizontalLayout_58" stretch="3,0,2">
                   <property name="leftMargin">
-                   <number>11</number>
+                   <number>30</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
                   </property>
                   <property name="rightMargin">
-                   <number>11</number>
+                   <number>30</number>
                   </property>
-                  <item>
-                   <spacer name="horizontalSpacer_91">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
                   <item>
                    <layout class="QVBoxLayout" name="verticalLayout_72" stretch="1,0,0,0,4,3">
                     <property name="topMargin">
@@ -4966,34 +4968,21 @@ QHeaderView::section
                     </item>
                    </layout>
                   </item>
-                  <item>
-                   <spacer name="horizontalSpacer_92">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
                  </layout>
                 </widget>
                 <widget class="QWidget" name="systemLogPage">
                  <layout class="QVBoxLayout" name="verticalLayout_95">
                   <property name="leftMargin">
-                   <number>50</number>
+                   <number>30</number>
                   </property>
                   <property name="topMargin">
                    <number>30</number>
                   </property>
                   <property name="rightMargin">
-                   <number>50</number>
+                   <number>30</number>
                   </property>
                   <property name="bottomMargin">
-                   <number>50</number>
+                   <number>30</number>
                   </property>
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_11" stretch="1,0,0,0,0">
@@ -5038,7 +5027,7 @@ border: 1px solid white;
 }</string>
                       </property>
                       <property name="text">
-                       <string>Find next</string>
+                       <string>Find Next</string>
                       </property>
                      </widget>
                     </item>
@@ -5067,7 +5056,7 @@ border: 1px solid white;
 }</string>
                       </property>
                       <property name="text">
-                       <string>Find previous</string>
+                       <string>Find Previous</string>
                       </property>
                      </widget>
                     </item>
@@ -5127,6 +5116,9 @@ border: 1px solid white;
                      <string notr="true">QWidget {
 background-color: rgb(13, 13, 13);
 color: rgb(255, 255, 255);
+}
+QTextEdit{
+padding-left:20;
 }
 </string>
                     </property>

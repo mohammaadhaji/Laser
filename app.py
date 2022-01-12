@@ -112,8 +112,8 @@ class MainWin(QMainWindow):
         self.lblSpark.setVisible(False)
         self.lblLasing.setVisible(False)
         if self.configs['LANGUAGE'] == 'fa': self.changeLang(self.configs['LANGUAGE'])
-        self.shortcut = QShortcut(QKeySequence("Ctrl+x"), self)
-        self.shortcut.activated.connect(self.close)
+        self.shortcut = QShortcut(QKeySequence("Ctrl+Shift+E"), self)
+        self.shortcut.activated.connect(self.exit)
         self.chbSlideTransition.setFixedSize(150, 48)
         self.chbSlideTransition.setChecked(self.configs['slideTransition'])
         self.chbSlideTransition.toggled.connect(self.setTransition)
@@ -673,6 +673,10 @@ class MainWin(QMainWindow):
         self.shutdownMovie.start()
         self.changeAnimation('vertical')
         self.stackedWidget.setCurrentWidget(self.shutdownPage)
+
+    def exit(self):
+        log('Exit Shortcut', 'Shortcut activated. Exiting from UI...\n')
+        self.close()
 
     def powerOff(self):
         enterPage(SHUTDONW_PAGE)
@@ -1342,7 +1346,7 @@ class MainWin(QMainWindow):
                     self.lblReadyError,
                     self.readyErrorTimer, error_duration
                 )
-                log('Hit Ready Button', errors)
+                log('Sensors', errors)
 
             
             else:
