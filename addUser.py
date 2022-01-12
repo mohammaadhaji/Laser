@@ -1,7 +1,6 @@
-from genericpath import isfile
 import sys, pickle, os
 from user import User
-from os.path import join
+from os.path import join, isfile
 from paths import USERS_DIR
 from utility import randID
 help = """

@@ -1,22 +1,24 @@
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from crccheck.crc import Crc16Xmodem
 from serial import Serial
-import jdatetime, platform 
+import jdatetime, platform
+from os.path import isfile, isdir 
 from utility import *
+import shutil, json
 try:
     import RPi.GPIO as GPIO
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(16, GPIO.OUT)
     GPIO.output(16, GPIO.HIGH)
-except Exception:
-    pass
+except Exception as e:
+    log('GPIO', str(e) + '\n')
 
 def gpioCleanup():
     try:
         GPIO.cleanup()
-    except Exception:
-        pass
+    except Exception as e:
+        log('GPIO', str(e) + '\n')
 
 if platform.system() == 'Windows':
     serial = Serial('COM2', 115200)
@@ -339,6 +341,7 @@ class SerialTimer(QObject):
                     counter = counter + 1
         except Exception as e:
             print(e)
+            log('Serial Unhandled Exception', str(e) + '\n')
 
 
 class SerialThread(QThread):
@@ -525,13 +528,17 @@ class SerialThread(QThread):
                         counter = counter + 1
             except Exception as e:
                 print(e)
+                log('Serial Unhandled Exception', str(e) + '\n')
 
 
 def updateCleanup(mountPoint):
-    for mp in mountPoint.values():
-        os.system(f'umount {mp}')
-    if isdir(MOUNT_DIR):
-        shutil.rmtree(MOUNT_DIR)
+    try:
+        for mp in mountPoint.values():
+            os.system(f'umount {mp}')
+        if isdir(MOUNT_DIR):
+            shutil.rmtree(MOUNT_DIR)
+    except Exception as e:
+        log('Update Firmware', str(e) + '\n')
 
 
 class UpdateFirmware(QThread):
@@ -540,103 +547,115 @@ class UpdateFirmware(QThread):
     def run(self):
         global MICRO_DATA
         MICRO_DATA.clear()
-
-        if platform.system() == 'Windows':
-            self.result.emit("We don't do that here.")
-            return
-
-        self.msleep(20)                            
-        r1  = subprocess.check_output('lsblk -J', shell=True)
-        blocks = json.loads(r1)['blockdevices']
-
-        sdaFound = False
-        sdaBlock = None
-        for blk in blocks:
-            if blk['name'] == 'sda':
-                sdaFound = True
-                sdaBlock = blk
-
-        if not sdaFound:
-            self.result.emit("Flash drive not found.")
-            return
-                
-        if not 'children' in sdaBlock:
-            self.result.emit("Flash drive doesn't have any partitions.")
-            return
-             
-        os.mkdir(MOUNT_DIR)
-        partitionsDir = {}
-
-        for part in sdaBlock['children']:
-            partitionsDir[part['name']] = part['mountpoint']
-
-        for part in partitionsDir:
-            if partitionsDir[part] == None:
-                os.mkdir(f'{MOUNT_DIR}/{part}')
-                r = subprocess.call(
-                    f'mount /dev/{part} {MOUNT_DIR}/{part}',
-                    shell=True
-                )
-                partitionsDir[part] = f'{MOUNT_DIR}/{part}'
-
-        laserFound = False
-        laserDir = ''
-        for dir in partitionsDir.values():
-            if isdir(f'{dir}/{SOURCE_FOLDER}'):
-                laserFound = True
-                laserDir = f'{dir}/{SOURCE_FOLDER}'
-
-        if not laserFound:
-            self.result.emit("Source files not found.")
-            updateCleanup(partitionsDir)
-            return
-
-        verifyError = 'The source files are corrupted and can not be replaced.'
         try:
-            with open(f'{laserDir}/{VERIFY}', 'r') as f:
-                md5 = int(f.read())
+            if platform.system() == 'Windows':
+                self.result.emit("We don't do that here.")
+                return
 
-            if not md5 == calcMD5(laserDir, f'{VERIFY}'):
-                self.result.emit(verifyError)
+            self.msleep(20)                            
+            r1  = subprocess.check_output('lsblk -J', shell=True)
+            blocks = json.loads(r1)['blockdevices']
+
+            sdaFound = False
+            sdaBlock = None
+            for blk in blocks:
+                if blk['name'] == 'sda':
+                    sdaFound = True
+                    sdaBlock = blk
+
+            if not sdaFound:
+                err = "Flash drive not found."
+                self.result.emit(err)
+                log('Update Firmware', err)
+                return
+                    
+            if not 'children' in sdaBlock:
+                err = "Flash drive doesn't have any partitions."
+                self.result.emit(err)
+                log('Update Firmware', err + '\n')
+                return
+                
+            os.mkdir(MOUNT_DIR)
+            partitionsDir = {}
+
+            for part in sdaBlock['children']:
+                partitionsDir[part['name']] = part['mountpoint']
+
+            for part in partitionsDir:
+                if partitionsDir[part] == None:
+                    os.mkdir(f'{MOUNT_DIR}/{part}')
+                    r = subprocess.call(
+                        f'mount /dev/{part} {MOUNT_DIR}/{part}',
+                        shell=True
+                    )
+                    partitionsDir[part] = f'{MOUNT_DIR}/{part}'
+
+            laserFound = False
+            laserDir = ''
+            for dir in partitionsDir.values():
+                if isdir(f'{dir}/{SOURCE_FOLDER}'):
+                    laserFound = True
+                    laserDir = f'{dir}/{SOURCE_FOLDER}'
+
+            if not laserFound:
+                err = "Source files not found."
+                self.result.emit(err)
+                log('Update Firmware', err + '\n')
                 updateCleanup(partitionsDir)
                 return
-   
-        except Exception:
-            self.result.emit(verifyError)
-            updateCleanup(partitionsDir)
-            return
-        
-        microUpdate = False
-        if isfile(f'{laserDir}/{MICRO_SOURCE}'):
-            microUpdate = True
-        
-        if not microUpdate:
-            os.system(f'cp -r {laserDir}/* {CURRENT_FILE_DIR}')
-            updateCleanup(partitionsDir)
-            self.result.emit("Done GUI")
 
-        else:
-            file = open(f'{laserDir}/{MICRO_SOURCE}', 'rb')
-            # file = open(f"../LaserSrc/{MICRO_SOURCE}", 'rb')
-            data = file.read()
-            file.close()
+            verifyError = 'The source files are corrupted and can not be replaced.'
+            try:
+                with open(f'{laserDir}/{VERIFY}', 'r') as f:
+                    md5 = int(f.read())
 
-            for field, i in enumerate(range(0, len(data), PACKET_NOB)):
-                segment = data[i : i + PACKET_NOB]                
-                MICRO_DATA[field] = buildPacket(
-                    segment, UPDATE_PAGE, field, REPORT
-                )
+                if not md5 == calcMD5(laserDir, f'{VERIFY}'):
+                    self.result.emit(verifyError)
+                    log('Update Firmware', verifyError + '\n')
+                    updateCleanup(partitionsDir)
+                    return
+    
+            except Exception:
+                self.result.emit(verifyError)
+                log('Update Firmware', verifyError + '\n')
+                updateCleanup(partitionsDir)
+                return
             
-            MICRO_DATA[250] = buildPacket(
-                int_to_bytes(len(data)), 
-                UPDATE_PAGE, 250, REPORT
-            )
-            MICRO_DATA[251] = buildPacket(
-                int_to_bytes(PACKET_NOB), 
-                UPDATE_PAGE, 251, REPORT
-            )
-            enterPage(UPDATE_PAGE)
-            self.result.emit('Updating...')
-            GPIO.output(16, GPIO.LOW)
-            print(MICRO_DATA)
-            updateCleanup(partitionsDir)
+            microUpdate = False
+            if isfile(f'{laserDir}/{MICRO_SOURCE}'):
+                microUpdate = True
+            
+            if not microUpdate:
+                os.system(f'cp -r {laserDir}/* {CURRENT_FILE_DIR}')
+                updateCleanup(partitionsDir)
+                self.result.emit("Done GUI")
+
+            else:
+                file = open(f'{laserDir}/{MICRO_SOURCE}', 'rb')
+                # file = open(f"../LaserSrc/{MICRO_SOURCE}", 'rb')
+                data = file.read()
+                file.close()
+
+                for field, i in enumerate(range(0, len(data), PACKET_NOB)):
+                    segment = data[i : i + PACKET_NOB]                
+                    MICRO_DATA[field] = buildPacket(
+                        segment, UPDATE_PAGE, field, REPORT
+                    )
+                
+                MICRO_DATA[250] = buildPacket(
+                    int_to_bytes(len(data)), 
+                    UPDATE_PAGE, 250, REPORT
+                )
+                MICRO_DATA[251] = buildPacket(
+                    int_to_bytes(PACKET_NOB), 
+                    UPDATE_PAGE, 251, REPORT
+                )
+                enterPage(UPDATE_PAGE)
+                self.result.emit('Updating...')
+                GPIO.output(16, GPIO.LOW)
+                print(MICRO_DATA)
+                updateCleanup(partitionsDir)
+
+        except Exception as e:
+            self.result.emit('Operation failed please restart and try again.')
+            log('Update Firmware, Unhandled Exception', str(e) + '\n')

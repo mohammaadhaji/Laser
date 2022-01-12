@@ -1,11 +1,10 @@
 from uuid import getnode as get_mac
-from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5 import QtWidgets
 from paths import *
-from os.path import isfile, isdir
+from os.path import isfile
 import datetime, jdatetime
 import subprocess, platform, pickle, hashlib
-import random, uuid, os, re, json, shutil
+import random, uuid, os
 
 
 
@@ -267,3 +266,13 @@ def toJalali(date):
     m = date.month
     d = date.day
     return jdatetime.datetime.fromgregorian(year=y, month=m, day=d)
+
+
+def log(title, info):
+    time = str(jdatetime.datetime.now().strftime('[%Y-%m-%d %H:%M:%S]'))
+    time += ' <' + title + '>\n'
+    try:
+        with open(LOGS_PATH, 'a') as f:
+            f.write(time + info + '\n')
+    except Exception as e:
+        print(e)
