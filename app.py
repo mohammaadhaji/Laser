@@ -904,7 +904,7 @@ class MainWin(QMainWindow):
             return
 
         for lock in self.configs['LOCK']:
-            if (date - lock.date).days <= 0:
+            if (date - toJalali(lock.date)).days <= 0:
                 self.setLabel(
                     TEXT['anyLockBefor'][self.langIndex], 
                     self.lblLockError, 
