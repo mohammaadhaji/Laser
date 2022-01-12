@@ -299,7 +299,7 @@ class MainWin(QMainWindow):
         self.btnStartSession.clicked.connect(self.startSession)
         self.btnSubmit.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnSubmit.clicked.connect(self.submit)
-        self.btnSensorsReport.clicked.connect(self.enterLogsPage)
+        self.btnSystemLogs.clicked.connect(self.enterLogsPage)
         self.btnBackNewSession.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackManagement.clicked.connect(lambda: self.txtSearch.clear())

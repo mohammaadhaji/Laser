@@ -156,12 +156,6 @@ TEXT = {
     'btnDeselectAll': ['Deselect All', 'لغو انتخاب'],
     'btnSelectAll': ['Select All', 'انتخاب همه'],
     'saveConfigError': ['Error while saving settings.', 'خطا هنگام ذخیره تنظیمات.'],
-    'NoLogFile': ['No log file.', 'داده ای ثبت نشده.'],
-    'likeHuman': ['Please enter date like a human.', 'لطفا مثل ادم تاریخ را وارد کنید.'],
-    'btnSensorsReport': ['Sensors Log', 'لاگ سنسورها'],
-    'btnFindReport': ['Show Results', 'دیدن نتایج'],
-    'lblSensorsReport': ['Sensors Report', 'گزارش سنسورها'],
-    'lblRecordedLogs': ['Recorded Logs', 'لاگ های ثبت شده'],
-    'lblFrom': ['From', 'از'],
-    'lblTo': ['To', 'تا'],
+    'btnSensorsReport': ['System Logs', 'لاگ سیستم'],
+    
 }
