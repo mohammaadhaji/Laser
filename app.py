@@ -448,6 +448,7 @@ class MainWin(QMainWindow):
         for txt in self.findChildren(LineEdit):
             if isinstance(txt, LineEdit):
                 txt.fIn.connect(lambda: self.keyboard('show'))
+        self.textEditNote.fIn.connect(lambda: self.keyboard('show'))
 
         self.txtOwnerInfo.setText(self.configs['OwnerInfo'])
         self.txtOwnerInfo.textChanged.connect(self.setOwnerInfo)
@@ -1030,12 +1031,13 @@ class MainWin(QMainWindow):
         self.txtGuiVersion.setText(self.configs['GuiVersion'])
 
     def saveHwSettings(self):
-        index = self.hwStackedWidget.indexOf(self.sensorReportPage)
+        index = self.hwStackedWidget.indexOf(self.systemLogPage)
         if self.hwStackedWidget.currentIndex() == index:
             return
  
         index = self.hwStackedWidget.indexOf(self.lockSettingsPage)
         if self.hwStackedWidget.currentIndex() == index:
+            self.loadLocksTable()
             try:
                 year = int(self.txtEditYear.text())
                 month = int(self.txtEditMonth.text())
@@ -1063,6 +1065,7 @@ class MainWin(QMainWindow):
                         self.lblSystemTimeStatus, 
                         self.sysTimeStatusLabelTimer, 4
                     )
+                return
 
             self.setLabel(
                     TEXT['systemTimeStatus'][self.langIndex], 
@@ -1097,8 +1100,6 @@ class MainWin(QMainWindow):
                         self.lblSaveHw, 
                         self.hwUpdatedLabelTimer, 2
                     )
-        
-        self.loadLocksTable()
 
     def enterSettingPage(self, cmdType):
         fieldValues = {
@@ -1223,10 +1224,18 @@ class MainWin(QMainWindow):
 
     def saveNextSession(self):
         try:
-            year = int(self.txtNsYear.text())
-            month = int(self.txtNsMonth.text())
-            day = int(self.txtNsDay.text())
-            date = jdatetime.datetime(year, month, day)
+            year = self.txtNsYear.text()
+            month = self.txtNsMonth.text()
+            day = self.txtNsDay.text()
+            if '' in [year, month, day]:
+                self.setLabel(
+                    'Please fill in the fields.', 
+                    self.lblErrNextSession, 
+                    self.nextSessionLabelTimer, 4
+                )
+                return
+
+            date = jdatetime.datetime(int(year), int(month), int(day))
             if getDiff(date) <= -1:
                 self.setLabel(
                         TEXT['passedDate'][self.langIndex], 
@@ -2249,6 +2258,7 @@ class MainWin(QMainWindow):
             self.userInfoFrame.setLayoutDirection(Qt.RightToLeft)
             self.nextSessionFrame.setLayoutDirection(Qt.RightToLeft)
             self.hwFrame.setLayoutDirection(Qt.RightToLeft)
+            self.nsDateFrame.setLayoutDirection(Qt.LeftToRight)
             self.currentUserFrame.setLayoutDirection(Qt.RightToLeft)
             icon = QPixmap(SELECTED_LANG_ICON)
             self.lblFaSelected.setPixmap(icon.scaled(70, 70))
@@ -2261,6 +2271,7 @@ class MainWin(QMainWindow):
             self.userInfoFrame.setLayoutDirection(Qt.LeftToRight)
             self.nextSessionFrame.setLayoutDirection(Qt.LeftToRight)
             self.hwFrame.setLayoutDirection(Qt.LeftToRight)
+            self.nsDateFrame.setLayoutDirection(Qt.LeftToRight)
             self.currentUserFrame.setLayoutDirection(Qt.LeftToRight)
             icon = QPixmap(SELECTED_LANG_ICON)
             self.lblEnSelected.setPixmap(icon.scaled(70, 70))
@@ -2316,10 +2327,12 @@ class MainWin(QMainWindow):
             )        
         
     def enterLogsPage(self):
-        f = open(LOGS_PATH, 'r')
-        self.txtLogs.setText(f.read())
-        f.close()
-        self.hwStackedWidget.setCurrentWidget(self.sensorReportPage)
+        if isfile(LOGS_PATH):
+            f = open(LOGS_PATH, 'r')
+            self.txtLogs.setText(f.read())
+            f.close()
+
+        self.hwStackedWidget.setCurrentWidget(self.systemLogPage)
         enterPage(OTHER_PAGE)
 
     def deleteLogs(self):

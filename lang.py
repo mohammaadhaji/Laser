@@ -20,7 +20,7 @@ TEXT = {
     'usersTable2': ['Sessions', 'تعداد جلسات'],
     'usersTable3': ['Action', 'عملیات'],
     'btnSort': ['Sort By Session', 'مرتب سازی جلسات'],
-    'txtSearch': ['Search', 'جستوجو'],
+    'txtSearch': ['Search...', 'جستوجو...'],
     'lblNote': ['Note', 'یادداشت'],
     'lblName': ['Name', 'نام'],
     'lblPhoneNumber': ['Phone Number', 'شماره تلفن'],
@@ -156,6 +156,9 @@ TEXT = {
     'btnDeselectAll': ['Deselect All', 'لغو انتخاب'],
     'btnSelectAll': ['Select All', 'انتخاب همه'],
     'saveConfigError': ['Error while saving settings.', 'خطا هنگام ذخیره تنظیمات.'],
-    'btnSensorsReport': ['System Logs', 'لاگ سیستم'],
-    
+    'btnSystemLogs': ['System Logs', 'لاگ سیستم'],
+    'btnFindNext': ['Find next', 'بعدی'],
+    'btnFindBefor': ['Find previous', 'قبلی'],
+    'txtSearchLogs': ['Search...', 'جستوجو...'],
+    'btnDeleteLogs': ['Delete Logs', 'حذف لاگ ها']   
 }
