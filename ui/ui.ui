@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1623</width>
+    <width>1629</width>
     <height>957</height>
    </rect>
   </property>
@@ -971,7 +971,7 @@ QPushButton:pressed {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1623</width>
+             <width>1629</width>
              <height>957</height>
             </rect>
            </property>
@@ -1446,7 +1446,7 @@ border: 1px solid white;
       <widget class="QWidget" name="mainPage">
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,3,1">
+         <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,3,1">
           <property name="spacing">
            <number>0</number>
           </property>
@@ -1457,20 +1457,21 @@ border: 1px solid white;
            <number>0</number>
           </property>
           <item>
-           <layout class="QHBoxLayout" name="powerLayout">
-            <property name="leftMargin">
-             <number>20</number>
-            </property>
-            <property name="topMargin">
-             <number>20</number>
-            </property>
-            <property name="rightMargin">
-             <number>20</number>
-            </property>
-            <item>
-             <widget class="QPushButton" name="btnAdss">
-              <property name="styleSheet">
-               <string notr="true">QPushButton {
+           <widget class="QFrame" name="menuFrame">
+            <layout class="QHBoxLayout" name="powerLayout">
+             <property name="leftMargin">
+              <number>20</number>
+             </property>
+             <property name="topMargin">
+              <number>20</number>
+             </property>
+             <property name="rightMargin">
+              <number>20</number>
+             </property>
+             <item>
+              <widget class="QPushButton" name="btnAdss">
+               <property name="styleSheet">
+                <string notr="true">QPushButton {
 background-color: rgb(255, 255, 255);
 outline:0;
 border-radius:70px;
@@ -1481,39 +1482,39 @@ QPushButton:pressed{
 background-color: rgb(174, 220, 255);
 }
 </string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>images/adssLogo.png</normaloff>images/adssLogo.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>150</width>
-                <height>150</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_5">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnTutorials">
-              <property name="styleSheet">
-               <string notr="true">QPushButton {
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>images/adssLogo.png</normaloff>images/adssLogo.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>140</width>
+                 <height>140</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_5">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btnTutorials">
+               <property name="styleSheet">
+                <string notr="true">QPushButton {
 outline:0;
 border-radius:70px;
 border:0px
@@ -1523,26 +1524,26 @@ QPushButton:pressed{
 margin: 20px 0 0 0;
 }
 </string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>images/tutorial.png</normaloff>images/tutorial.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>150</width>
-                <height>150</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnNotify">
-              <property name="styleSheet">
-               <string notr="true">QPushButton {
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>images/tutorial.png</normaloff>images/tutorial.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>150</width>
+                 <height>150</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btnMusic">
+               <property name="styleSheet">
+                <string notr="true">QPushButton {
 outline:0;
 border-radius:70px;
 border:0px
@@ -1552,26 +1553,26 @@ QPushButton:pressed{
 margin: 20px 0 0 0;
 }
 </string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>images/nextSessions.png</normaloff>images/nextSessions.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>150</width>
-                <height>150</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnUserManagement">
-              <property name="styleSheet">
-               <string notr="true">QPushButton {
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>images/music.png</normaloff>images/music.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>150</width>
+                 <height>150</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btnNotify">
+               <property name="styleSheet">
+                <string notr="true">QPushButton {
 outline:0;
 border-radius:70px;
 border:0px
@@ -1581,26 +1582,26 @@ QPushButton:pressed{
 margin: 20px 0 0 0;
 }
 </string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>images/userManagement.png</normaloff>images/userManagement.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>150</width>
-                <height>150</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnSettings">
-              <property name="styleSheet">
-               <string notr="true">QPushButton {
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>images/nextSessions.png</normaloff>images/nextSessions.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>150</width>
+                 <height>150</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btnUserManagement">
+               <property name="styleSheet">
+                <string notr="true">QPushButton {
 outline:0;
 border-radius:70px;
 border:0px
@@ -1610,26 +1611,26 @@ QPushButton:pressed{
 margin: 20px 0 0 0;
 }
 </string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>images/settings.png</normaloff>images/settings.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>150</width>
-                <height>150</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnPowerOption">
-              <property name="styleSheet">
-               <string notr="true">QPushButton {
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>images/userManagement.png</normaloff>images/userManagement.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>150</width>
+                 <height>150</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btnSettings">
+               <property name="styleSheet">
+                <string notr="true">QPushButton {
 outline:0;
 border-radius:70px;
 border:0px
@@ -1639,23 +1640,53 @@ QPushButton:pressed{
 margin: 20px 0 0 0;
 }
 </string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>images/shutdown.png</normaloff>images/shutdown.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>150</width>
-                <height>150</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-           </layout>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>images/settings.png</normaloff>images/settings.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>150</width>
+                 <height>150</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btnPowerOption">
+               <property name="styleSheet">
+                <string notr="true">QPushButton {
+outline:0;
+border-radius:70px;
+border:0px
+}
+
+QPushButton:pressed{
+margin: 20px 0 0 0;
+}
+</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>images/shutdown.png</normaloff>images/shutdown.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>150</width>
+                 <height>150</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_79" stretch="2,6,2">
@@ -1942,10 +1973,10 @@ border: 1px solid white;
                   <number>0</number>
                  </property>
                  <property name="topMargin">
-                  <number>20</number>
+                  <number>10</number>
                  </property>
                  <property name="rightMargin">
-                  <number>40</number>
+                  <number>47</number>
                  </property>
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_81" stretch="9,1,1">
@@ -2110,6 +2141,136 @@ border: 1px solid white;
            <layout class="QVBoxLayout" name="verticalLayout_8">
             <item>
              <spacer name="verticalSpacer_33">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="musicPage">
+       <layout class="QVBoxLayout" name="verticalLayout_96">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_93" stretch="1,9">
+          <property name="bottomMargin">
+           <number>20</number>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_69" stretch="1,1,1,2">
+            <property name="leftMargin">
+             <number>20</number>
+            </property>
+            <property name="topMargin">
+             <number>20</number>
+            </property>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_82">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="btnBackMusic">
+                <property name="styleSheet">
+                 <string notr="true">QPushButton {
+outline:0;
+border-radius:50px;
+}
+QPushButton:hover:!pressed{
+border:3px solid white;
+}
+QPushButton:pressed{
+border:3px solid red;
+}
+</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>images/back.png</normaloff>images/back.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>100</width>
+                  <height>100</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_118">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_91">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="lblMusicHeader">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>50</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Musics</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_92">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_97">
+            <item>
+             <spacer name="verticalSpacer_78">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
@@ -3176,7 +3337,7 @@ QPushButton:pressed{
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1223</width>
+                       <width>896</width>
                        <height>824</height>
                       </rect>
                      </property>
@@ -5439,8 +5600,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>1599</width>
-               <height>803</height>
+               <width>312</width>
+               <height>413</height>
               </rect>
              </property>
              <property name="styleSheet">
@@ -9058,7 +9219,7 @@ background-color: rgb(0, 170, 255);
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1556</width>
+                   <width>1562</width>
                    <height>803</height>
                   </rect>
                  </property>
