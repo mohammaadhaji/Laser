@@ -53,7 +53,9 @@ class MainWin(QMainWindow):
         self.lblLock.setMovie(self.lockMovie)
         self.lockMovie.start()
         self.lockMovie.stop()
-        self.appSound = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+        self.appSound = QMediaPlayer()
+        self.shotSound = QMediaPlayer()
+        self.shotSound.setMedia(QMediaContent(QUrl.fromLocalFile(SHOT_SOUND)))
         self.lblSplash.setPixmap(QPixmap(SPLASH))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
@@ -74,8 +76,7 @@ class MainWin(QMainWindow):
         self.ownerInfoSplash.setMinimumHeight(200)
         if not ownerInfo: self.ownerInfoSplash.setVisible(False)
         self.time(edit=True)
-        self.tutorials()
-        self.initSounds()       
+        self.tutorials()   
         self.initPages()
         self.initTimers()
         self.initButtons()
@@ -107,6 +108,7 @@ class MainWin(QMainWindow):
         self.startupEditTime = False
         self.ready = False
         self.findIndex = -1
+        self.touchSignals = {}
         icon = QPixmap(SPARK_ICON)
         self.lblSpark.setPixmap(icon.scaled(120, 120))
         self.lblSpark.setVisible(False)
@@ -120,12 +122,51 @@ class MainWin(QMainWindow):
         self.chbTouchSound.setFixedSize(150, 48)
         self.chbTouchSound.setChecked(self.configs['touchSound'])
         self.chbTouchSound.toggled.connect(self.setTouchSound)
+        self.setTouchSound(self.configs['touchSound'])
         self.playSound(STARTUP_SOUND) 
 
-    def setTouchSound(self, state):
-        volume = 100 if state else 0
-        self.touchSound.setVolume(volume)
-        self.configs['touchSound'] = state
+    def setTouchSound(self, active):
+        sensors = [
+            'btnPhysicalDamage', 'btnOverHeat', 'btnTemp',
+            'btnLock', 'btnWaterLevel', 'btnWaterflow',
+        ]
+        keyboardButtons = list(chain(
+            layout_widgets(self.keyboardRow1),
+            layout_widgets(self.keyboardRow2),
+            layout_widgets(self.keyboardRow3),
+            layout_widgets(self.numRow1),
+            layout_widgets(self.numRow2),
+            layout_widgets(self.numRow3)
+        ))
+        keyboardButtons.append(self.btnBackspace)
+        keyboardButtons.append(self.btnReturn)
+        keyboardButtons.append(self.btnShift)
+        keyboardButtons.append(self.btnFa)
+        keyboardButtons.append(self.btnSpace)
+        allButtons = self.findChildren(QPushButton)
+        if active:
+            for btn in allButtons:
+                if btn.objectName() == 'btnSelectedBodyPart':
+                    continue
+
+                elif btn in keyboardButtons:
+                    self.touchSignals[btn.objectName()] = btn.pressed.connect(
+                        lambda: self.playSound(KEYBOARD_SOUND)
+                    )
+                elif btn.objectName() not in sensors:
+                    self.touchSignals[btn.objectName()] = btn.pressed.connect(
+                        lambda: self.playSound(TOUCH_SOUND)
+                    )
+        else:
+            for btn in allButtons:
+                if btn.objectName() == 'btnSelectedBodyPart':
+                    continue
+
+                elif btn.objectName() not in sensors:
+                    if btn.objectName():
+                        btn.disconnect(self.touchSignals[btn.objectName()])
+        
+        self.configs['touchSound'] = active
         if not self.saveConfigs():
             self.setLabel(
                 TEXT['saveConfigError'][self.langIndex], 
@@ -133,31 +174,11 @@ class MainWin(QMainWindow):
                 self.uiLabelTimer, 4
             )
 
-    def initSounds(self):
-        self.touchSound = QMediaPlayer()
-        self.shotSound = QMediaPlayer()
-        volume = 100 if self.configs['touchSound'] else 0
-        self.touchSound.setVolume(volume)        
-        self.shotSound.setMedia(
-            QMediaContent(
-                QUrl.fromLocalFile(SHOT_SOUND)
-            )
-        )
-
-    def playTouchSound(self, i):
-        self.touchSound.stop()
-        self.touchSound.setMedia(
-            QMediaContent(
-                QUrl.fromLocalFile(i)
-            )
-        )
-        self.touchSound.play()
-
     def playSound(self, sound):
+        self.appSound.stop()
         self.appSound.setMedia(
             QMediaContent(
                 QUrl.fromLocalFile(sound)
-            
             )
         )
         self.appSound.play()
@@ -408,37 +429,6 @@ class MainWin(QMainWindow):
         self.btnTheme2.clicked.connect(lambda: self.changeTheme('T2'))        
         self.btnTheme3.clicked.connect(lambda: self.changeTheme('T3'))
         self.btnTheme4.clicked.connect(lambda: self.changeTheme('T4'))        
-        sensors = [
-            'btnPhysicalDamage', 'btnOverHeat', 'btnTemp',
-            'btnLock', 'btnWaterLevel', 'btnWaterflow',
-        ]
-        keyboardButtons = list(chain(
-            layout_widgets(self.keyboardRow1),
-            layout_widgets(self.keyboardRow2),
-            layout_widgets(self.keyboardRow3),
-            layout_widgets(self.numRow1),
-            layout_widgets(self.numRow2),
-            layout_widgets(self.numRow3)
-        ))
-        keyboardButtons.append(self.btnBackspace)
-        keyboardButtons.append(self.btnReturn)
-        keyboardButtons.append(self.btnShift)
-        keyboardButtons.append(self.btnFa)
-        keyboardButtons.append(self.btnSpace)
-        self.touchSignals = {}
-        allButtons = self.findChildren(QPushButton)
-        for btn in allButtons:
-            if btn.objectName() == 'btnSelectedBodyPart':
-                continue
-
-            elif btn in keyboardButtons:
-                self.touchSignals[btn.objectName()] = btn.pressed.connect(
-                    lambda: self.playTouchSound(KEYBOARD_SOUND)
-                )
-            elif btn.objectName() not in sensors:
-                self.touchSignals[btn.objectName()] = btn.pressed.connect(
-                    lambda: self.playTouchSound(TOUCH_SOUND)
-                )
 
     def initTextboxes(self):
         self.txtNumber.returnPressed.connect(self.startSession)
@@ -548,7 +538,7 @@ class MainWin(QMainWindow):
     def adssDemoEnd(self):
         index = self.stackedWidget.indexOf(self.adssPage)
         if self.stackedWidget.currentIndex() == index:
-            if not self.appSound.state() == QMediaPlayer.PlayingState:
+            if not self.mediaPlayer.state() == QMediaPlayer.PlayingState:
                 self.stackedWidget.setCurrentWidget(self.mainPage)
                 self.adssLayout.removeWidget(self.videoWidget)
                 self.videoLayout.addWidget(self.videoWidget)
@@ -1907,9 +1897,9 @@ class MainWin(QMainWindow):
         rowPosition = self.usersTable.rowCount()
         self.usersTable.insertRow(rowPosition)
         action = Action(self.usersTable, user.phoneNumber)
-        action.btnInfo.pressed.connect(lambda: self.playTouchSound(TOUCH_SOUND))
+        action.btnInfo.pressed.connect(lambda: self.playSound(TOUCH_SOUND))
         action.info.connect(self.info)
-        action.chbDel.pressed.connect(lambda: self.playTouchSound(TOUCH_SOUND))
+        action.chbDel.pressed.connect(lambda: self.playSound(TOUCH_SOUND))
         action.delete.connect(self.selecetCheckedUsers)
         self.usersTable.setCellWidget(rowPosition, 3, action)
         number = QTableWidgetItem(user.phoneNumber)
