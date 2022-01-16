@@ -353,7 +353,7 @@ class ReadMusics(QThread):
         for dir in partitionsDir.values():
             for r,d,f in os.walk(dir):
                 for file in f:
-                    fPath = os.path.join(dir, file)
+                    fPath = os.path.join(r, file)
                     name, extension = os.path.splitext(fPath)
                     if extension in ['.mp3', '.wav']:
                         musicFiles.append(fPath)
