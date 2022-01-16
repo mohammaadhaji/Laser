@@ -296,7 +296,7 @@ def musicCleanup(mountPoint):
         if isdir(MOUNT_DIR):
             shutil.rmtree(MOUNT_DIR)
     except Exception as e:
-        log('Update Firmware', str(e) + '\n')
+        log('Read Music', str(e) + '\n')
 
 
 class ReadMusics(QThread):
@@ -304,64 +304,70 @@ class ReadMusics(QThread):
     paths = pyqtSignal(list)
 
     def run(self):
-        if platform.system() == 'Windows':
-            self.result.emit("We don't do that here.")
-            return
-                         
-        r1  = subprocess.check_output('lsblk -J', shell=True)
-        blocks = json.loads(r1)['blockdevices']
+        try:
+            if platform.system() == 'Windows':
+                self.result.emit("Not in windows.")
+                return
+                            
+            r1  = subprocess.check_output('lsblk -J', shell=True)
+            blocks = json.loads(r1)['blockdevices']
 
-        sdaFound = False
-        sdaBlock = None
-        for blk in blocks:
-            if blk['name'] == 'sda':
-                sdaFound = True
-                sdaBlock = blk
+            sdaFound = False
+            sdaBlock = None
+            for blk in blocks:
+                if blk['name'] in ['sda', 'sdb']:
+                    sdaFound = True
+                    sdaBlock = blk
 
-        if not sdaFound:
-            err = "Flash drive not found."
-            self.result.emit(err)
-            log('Read Music', err)
-            return
-                
-        if not 'children' in sdaBlock:
-            err = "Flash drive doesn't have any partitions."
-            self.result.emit(err)
-            log('Read Music', err + '\n')
-            return
+            if not sdaFound:
+                err = "Flash drive not found."
+                self.result.emit(err)
+                log('Read Music', err)
+                return
+                    
+            if not 'children' in sdaBlock:
+                err = "Flash drive doesn't have any partitions."
+                self.result.emit(err)
+                log('Read Music', err + '\n')
+                return
+            
+
+            MOUNT_DIR = '/media/musics'
+            if not isdir(MOUNT_DIR):
+                os.mkdir(MOUNT_DIR)
+
+            partitionsDir = {}
+            for part in sdaBlock['children']:
+                partitionsDir[part['name']] = part['mountpoint']
+
+            for part in partitionsDir:
+                if partitionsDir[part] == None:
+                    if not isdir(f'{MOUNT_DIR}/{part}'):
+                        os.mkdir(f'{MOUNT_DIR}/{part}')
+                    r = subprocess.call(
+                        f'mount /dev/{part} {MOUNT_DIR}/{part}',
+                        shell=True
+                    )
+                    partitionsDir[part] = f'{MOUNT_DIR}/{part}'
+
+            musicFiles = []
+            for dir in partitionsDir.values():
+                for r,d,f in os.walk(dir):
+                    for file in f:
+                        fPath = os.path.join(r, file)
+                        name, extension = os.path.splitext(fPath)
+                        if extension in ['.mp3', '.wav']:
+                            musicFiles.append(fPath)
+
+
+            if len(musicFiles) == 0:
+                self.result.emit('No music found.')
+                musicCleanup(partitionsDir)
+                return
+
+            self.paths.emit(musicFiles)
         
-
-        MOUNT_DIR = '/media/musics'
-        if not isdir(MOUNT_DIR):
-            os.mkdir(MOUNT_DIR)
-
-        partitionsDir = {}
-        for part in sdaBlock['children']:
-            partitionsDir[part['name']] = part['mountpoint']
-
-        for part in partitionsDir:
-            if partitionsDir[part] == None:
-                if not isdir(f'{MOUNT_DIR}/{part}'):
-                    os.mkdir(f'{MOUNT_DIR}/{part}')
-                r = subprocess.call(
-                    f'mount /dev/{part} {MOUNT_DIR}/{part}',
-                    shell=True
-                )
-                partitionsDir[part] = f'{MOUNT_DIR}/{part}'
-
-        musicFiles = []
-        for dir in partitionsDir.values():
-            for r,d,f in os.walk(dir):
-                for file in f:
-                    fPath = os.path.join(r, file)
-                    name, extension = os.path.splitext(fPath)
-                    if extension in ['.mp3', '.wav']:
-                        musicFiles.append(fPath)
-
-
-        if len(musicFiles) == 0:
-            self.result.emit('No music found.')
+        except Exception as e:
+            self.result.emit(str(e))
+            log('Read Music, Unhandled Exception', str(e) + '\n')
             musicCleanup(partitionsDir)
-            return
-
-        self.paths.emit(musicFiles)

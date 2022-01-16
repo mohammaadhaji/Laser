@@ -368,19 +368,11 @@ class MainWin(QMainWindow):
         self.btnDeleteLogs.clicked.connect(self.deleteLogs)
         self.btnPlay.clicked.connect(lambda: self.play('video'))
         self.btnPlayMusic.clicked.connect(lambda: self.play('music'))
-        self.btnRefreshMusic.clicked.connect(self.readMusicT.start)
-        self.btnFindNext.clicked.connect(
-            lambda : self.findWord(self.txtSearchLogs.text())
-        )
-        self.btnFindBefor.clicked.connect(
-            lambda : self.findWord(self.txtSearchLogs.text(), True)
-        )
-        self.btnSaveCase.pressed.connect(
-            lambda: self.chgSliderColor(SLIDER_SAVED_GB, SLIDER_SAVED_GW)
-        )
-        self.btnSaveCase.released.connect(
-            lambda: self.chgSliderColor(SLIDER_GB, SLIDER_GW)
-        )
+        self.btnRefreshMusic.clicked.connect(self.readMusic)
+        self.btnFindNext.clicked.connect(lambda : self.findWord(self.txtSearchLogs.text()))
+        self.btnFindBefor.clicked.connect(lambda : self.findWord(self.txtSearchLogs.text(), True))
+        self.btnSaveCase.pressed.connect(lambda: self.chgSliderColor(SLIDER_SAVED_GB, SLIDER_SAVED_GW))
+        self.btnSaveCase.released.connect(lambda: self.chgSliderColor(SLIDER_GB, SLIDER_GW))
         self.btnSaveHw.clicked.connect(self.saveHwSettings)
         self.btnResetCounter.clicked.connect(self.resetTotalShot)
         self.btnReady.clicked.connect(lambda: self.setReady(True))
@@ -444,18 +436,13 @@ class MainWin(QMainWindow):
                 continue
 
             elif btn in keyboardButtons:
-                btn.pressed.connect(
-                    lambda: self.playSound(KEYBOARD_SOUND)
-                )
+                btn.pressed.connect(lambda: self.playSound(KEYBOARD_SOUND))
             elif btn.objectName() not in sensors:
-                btn.pressed.connect(
-                    lambda: self.playSound(TOUCH_SOUND)
-                )       
+                btn.pressed.connect(lambda: self.playSound(TOUCH_SOUND))       
 
     def addMusics(self, paths):
         self.musicFiles = paths
         for path in paths:
-            name, extension = os.path.splitext(path)
             name = os.path.basename(path)
             rowPosition = self.tableMusic.rowCount()
             self.tableMusic.insertRow(rowPosition)
@@ -465,6 +452,13 @@ class MainWin(QMainWindow):
 
     def readMusicResult(self, res):
         self.setLabel(res, self.lblMusicRefresh, self.musicRefreshLableTimer)
+        self.musicFiles.clear()
+        self.tableMusic.setRowCount(0)
+    
+    def readMusic(self):
+        self.musicFiles.clear()
+        self.tableMusic.setRowCount(0)
+        self.readMusicT.start()
 
     def initMusics(self):
         self.musicLength = '00:00:00'

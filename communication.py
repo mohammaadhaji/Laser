@@ -559,7 +559,7 @@ class UpdateFirmware(QThread):
             sdaFound = False
             sdaBlock = None
             for blk in blocks:
-                if blk['name'] == 'sda':
+                if blk['name'] in ['sda', 'sdb']:
                     sdaFound = True
                     sdaBlock = blk
 
@@ -574,16 +574,18 @@ class UpdateFirmware(QThread):
                 self.result.emit(err)
                 log('Update Firmware', err + '\n')
                 return
-                
-            os.mkdir(MOUNT_DIR)
-            partitionsDir = {}
 
+            if not isdir(MOUNT_DIR):    
+                os.mkdir(MOUNT_DIR)
+
+            partitionsDir = {}
             for part in sdaBlock['children']:
                 partitionsDir[part['name']] = part['mountpoint']
 
             for part in partitionsDir:
                 if partitionsDir[part] == None:
-                    os.mkdir(f'{MOUNT_DIR}/{part}')
+                    if not isdir(f'{MOUNT_DIR}/{part}'):
+                        os.mkdir(f'{MOUNT_DIR}/{part}')
                     r = subprocess.call(
                         f'mount /dev/{part} {MOUNT_DIR}/{part}',
                         shell=True
