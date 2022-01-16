@@ -2163,7 +2163,7 @@ border: 1px solid white;
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_93" stretch="1,9">
           <property name="bottomMargin">
-           <number>20</number>
+           <number>0</number>
           </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_69" stretch="1,1,1,2">
@@ -2268,19 +2268,461 @@ border:3px solid red;
            </layout>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_97">
+           <layout class="QHBoxLayout" name="horizontalLayout_83" stretch="1,1">
+            <property name="spacing">
+             <number>7</number>
+            </property>
             <item>
-             <spacer name="verticalSpacer_78">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
+             <layout class="QVBoxLayout" name="verticalLayout_98">
+              <property name="leftMargin">
+               <number>30</number>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
+              <property name="topMargin">
+               <number>30</number>
               </property>
-             </spacer>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>30</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="lblMusicRefresh">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>18</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_85">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="LineEdit" name="txtSearchMusic">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>20</pointsize>
+                   </font>
+                  </property>
+                  <property name="placeholderText">
+                   <string>Search...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btnRefreshMusic">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>20</pointsize>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+min-width: 220px;
+min-height: 100px;
+border-radius: 5px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+color:white;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string>Refresh</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QTableWidget" name="tableMusic">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>20</pointsize>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QHeaderView::section
+{
+    background-color:lightblue;
+	color:black;
+} 
+ 
+QWidget {
+background-color: rgb(236, 236, 236);
+color:black;
+}
+
+QHeaderView::section
+{
+    background-color:lightblue;
+	color:black;
+} 
+ </string>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarAsNeeded</enum>
+                </property>
+                <property name="autoScroll">
+                 <bool>true</bool>
+                </property>
+                <property name="editTriggers">
+                 <set>QAbstractItemView::NoEditTriggers</set>
+                </property>
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::SingleSelection</enum>
+                </property>
+                <property name="verticalScrollMode">
+                 <enum>QAbstractItemView::ScrollPerPixel</enum>
+                </property>
+                <property name="horizontalScrollMode">
+                 <enum>QAbstractItemView::ScrollPerPixel</enum>
+                </property>
+                <attribute name="horizontalHeaderVisible">
+                 <bool>false</bool>
+                </attribute>
+                <column>
+                 <property name="text">
+                  <string>Name</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_97" stretch="1,0,4,1">
+              <property name="leftMargin">
+               <number>20</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>30</number>
+              </property>
+              <property name="bottomMargin">
+               <number>30</number>
+              </property>
+              <item>
+               <spacer name="verticalSpacer_78">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLabel" name="lblMusicName">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>20</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QFrame" name="frame_9">
+                <property name="styleSheet">
+                 <string notr="true">QFrame{
+background-color: rgb(0, 0, 0);
+border-top-left-radius: 170px;
+border-top-right-radius: 170px;
+border-bottom-left-radius: 15px;
+border-bottom-right-radius: 15px;
+}
+QFrame#frame_9{
+border:2px solid  rgb(85, 170, 255);
+}</string>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_100" stretch="3,0">
+                 <item>
+                  <widget class="QLabel" name="lblMusicGif">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_84" stretch="0,0,0,0,1">
+                   <property name="leftMargin">
+                    <number>10</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>10</number>
+                   </property>
+                   <item>
+                    <widget class="QSlider" name="sliderVolumeMusic">
+                     <property name="minimumSize">
+                      <size>
+                       <width>50</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">QSlider::groove:vertical {
+    background: red;
+    position: absolute; /* absolutely position 4px from the left and right of the widget. setting margins on the widget should work too... */
+    left: 4px; right: 4px;
+	width: 10px;
+}
+
+QSlider{
+background-color: rgb(0, 0, 0);
+}
+
+QSlider::handle:vertical {
+    height: 30px;
+	width: 30px;
+	border-radius:5px;
+    background: rgb(85, 170, 255);
+    margin: 0 -20px; 
+
+}
+
+QSlider::add-page:vertical {
+	background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+  stop: 0 #ABCD44, 
+  stop: 0.5 #ABCD44,
+  stop: 0.51 #A1C72E,
+  stop: 0.54 #A1C72E,
+  stop: 1.0 #9CC322);
+}
+
+QSlider::sub-page:vertical {
+    background: #fff;
+}
+QSlider::handle:vertical:pressed {
+    background-color: rgb(65, 255, 195);
+}</string>
+                     </property>
+                     <property name="maximum">
+                      <number>100</number>
+                     </property>
+                     <property name="value">
+                      <number>100</number>
+                     </property>
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_120">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btnPlayMusic">
+                     <property name="styleSheet">
+                      <string notr="true">QPushButton{
+outline : 0;
+background-color: rgb(213, 213, 213);
+border-radius: 60px;
+border:10px solid rgb(74, 74, 74);
+
+}
+
+QPushButton:pressed{
+background-color: rgb(0, 170, 255);
+
+}
+</string>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="icon">
+                      <iconset>
+                       <normaloff>images/play.png</normaloff>images/play.png</iconset>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_121">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <layout class="QVBoxLayout" name="verticalLayout_99" stretch="0,0,0">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="label_21">
+                       <property name="font">
+                        <font>
+                         <family>Arial</family>
+                         <pointsize>18</pointsize>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSlider" name="positionSliderMusic">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>70</height>
+                        </size>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QSlider {
+min-height:70px;
+}
+QSlider::groove:horizontal {
+    border-radius: 1px;
+    height: 10px;
+    margin: 0px;
+    background-color: rgb(52, 59, 72);
+}
+
+QSlider{
+background-color: rgb(0, 0, 0);
+}
+
+QSlider::handle:horizontal {
+    background-color: rgb(85, 170, 255);
+    border: none;
+    height: 70px;
+    width: 60px;
+    border-radius:25px;
+    margin: -25px 0;
+    padding: -25px 0px;
+}
+QSlider::handle:horizontal:pressed {
+    background-color: rgb(65, 255, 195);
+}
+
+QSlider::sub-page:horizontal {
+background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+  stop: 0 #ABCD44, 
+  stop: 0.5 #ABCD44,
+  stop: 0.51 #A1C72E,
+  stop: 0.54 #A1C72E,
+  stop: 1.0 #9CC322);
+border: 1px solid #777;
+height: 10px;
+border-radius: 4px;
+}
+
+QSlider::add-page:horizontal {
+background: #fff;
+border: 1px solid #777;
+height: 10px;
+border-radius: 4px;
+}
+</string>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="lblLengthMusic">
+                       <property name="font">
+                        <font>
+                         <family>Arial</family>
+                         <pointsize>18</pointsize>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignCenter</set>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_87">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
@@ -2407,7 +2849,7 @@ border:3px solid red;
         <item>
          <widget class="StackedWidget" name="stackedWidgetSettings">
           <property name="currentIndex">
-           <number>1</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="settingsMenuPage">
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -3337,7 +3779,7 @@ QPushButton:pressed{
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>896</width>
+                       <width>1229</width>
                        <height>824</height>
                       </rect>
                      </property>
@@ -4661,6 +5103,9 @@ QHeaderView::section
 } 
  </string>
                       </property>
+                      <property name="editTriggers">
+                       <set>QAbstractItemView::NoEditTriggers</set>
+                      </property>
                       <property name="selectionBehavior">
                        <enum>QAbstractItemView::SelectRows</enum>
                       </property>
@@ -5600,8 +6045,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>312</width>
-               <height>413</height>
+               <width>1605</width>
+               <height>803</height>
               </rect>
              </property>
              <property name="styleSheet">
@@ -6754,6 +7199,9 @@ QHeaderView::section
 	color:black;
 } 
  </string>
+                </property>
+                <property name="editTriggers">
+                 <set>QAbstractItemView::NoEditTriggers</set>
                 </property>
                 <property name="selectionMode">
                  <enum>QAbstractItemView::NoSelection</enum>
@@ -11585,7 +12033,7 @@ border: 1px solid white;
       </widget>
      </widget>
     </item>
-    <item alignment="Qt::AlignHCenter">
+    <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
      <widget class="QFrame" name="keyboardFrame">
       <property name="minimumSize">
        <size>

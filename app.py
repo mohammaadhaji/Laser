@@ -44,10 +44,17 @@ class MainWin(QMainWindow):
         self.serialC.sysDate.connect(self.receiveDate)
         self.serialC.sysClock.connect(self.adjustTime)
         self.updateT = UpdateFirmware()
+        self.readMusicT = ReadMusics()
+        self.readMusicT.result.connect(self.readMusicResult)
+        self.readMusicT.paths.connect(self.addMusics)
         self.updateT.result.connect(self.updateResult)
         self.license = self.configs['LICENSE']
         self.lockMovie = QMovie(LOCK_GIF)
         self.shutdownMovie = QMovie(SHUTDONW_GIF)
+        self.musicMovie = QMovie('ui/images/music.gif')
+        self.lblMusicGif.setMovie(self.musicMovie)
+        self.musicMovie.start()
+        self.musicMovie.stop()
         self.lblShutdownGif.setMovie(self.shutdownMovie)
         self.lockMovie.frameChanged.connect(self.unlock)
         self.lblLock.setMovie(self.lockMovie)
@@ -55,6 +62,7 @@ class MainWin(QMainWindow):
         self.lockMovie.stop()
         self.appSound = QMediaPlayer()
         self.shotSound = QMediaPlayer()
+        self.musicSound = QMediaPlayer()
         self.shotSound.setMedia(QMediaContent(QUrl.fromLocalFile(SHOT_SOUND)))
         self.lblSplash.setPixmap(QPixmap(SPLASH))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
@@ -75,21 +83,6 @@ class MainWin(QMainWindow):
         self.ownerInfoSplash.move(0, 880)
         self.ownerInfoSplash.setMinimumHeight(200)
         if not ownerInfo: self.ownerInfoSplash.setVisible(False)
-        self.time(edit=True)
-        self.tutorials()   
-        self.initPages()
-        self.initTimers()
-        self.initButtons()
-        self.initTables()
-        self.initSensors()
-        self.initTextboxes()
-        self.changeTheme(self.configs['theme'])
-        self.loadLocksTable()
-        self.bodyPartsSignals()
-        self.keyboardSignals()
-        self.casesSignals()
-        # self.checkUUID()
-        readTime()
         self.user = None
         self.userNextSession = None
         self.sortBySession = False
@@ -108,7 +101,23 @@ class MainWin(QMainWindow):
         self.startupEditTime = False
         self.ready = False
         self.findIndex = -1
-        self.touchSignals = {}
+        self.musicFiles = []
+        self.time(edit=True)
+        self.tutorials()   
+        self.initPages()
+        self.initTimers()
+        self.initButtons()
+        self.initTables()
+        self.initSensors()
+        self.initTextboxes()
+        self.changeTheme(self.configs['theme'])
+        self.loadLocksTable()
+        self.bodyPartsSignals()
+        self.keyboardSignals()
+        self.casesSignals()
+        self.initMusics()
+        # self.checkUUID()
+        readTime()
         icon = QPixmap(SPARK_ICON)
         self.lblSpark.setPixmap(icon.scaled(120, 120))
         self.lblSpark.setVisible(False)
@@ -122,50 +131,14 @@ class MainWin(QMainWindow):
         self.chbTouchSound.setFixedSize(150, 48)
         self.chbTouchSound.setChecked(self.configs['touchSound'])
         self.chbTouchSound.toggled.connect(self.setTouchSound)
-        self.setTouchSound(self.configs['touchSound'])
+        op=QGraphicsOpacityEffect(self)
+        op.setOpacity(0.8) 
+        self.frame_9.setGraphicsEffect(op)
+        if self.configs['touchSound']:
+            self.setTouchSound(True)
         self.playSound(STARTUP_SOUND) 
 
     def setTouchSound(self, active):
-        sensors = [
-            'btnPhysicalDamage', 'btnOverHeat', 'btnTemp',
-            'btnLock', 'btnWaterLevel', 'btnWaterflow',
-        ]
-        keyboardButtons = list(chain(
-            layout_widgets(self.keyboardRow1),
-            layout_widgets(self.keyboardRow2),
-            layout_widgets(self.keyboardRow3),
-            layout_widgets(self.numRow1),
-            layout_widgets(self.numRow2),
-            layout_widgets(self.numRow3)
-        ))
-        keyboardButtons.append(self.btnBackspace)
-        keyboardButtons.append(self.btnReturn)
-        keyboardButtons.append(self.btnShift)
-        keyboardButtons.append(self.btnFa)
-        keyboardButtons.append(self.btnSpace)
-        allButtons = self.findChildren(QPushButton)
-        if active:
-            for btn in allButtons:
-                if btn.objectName() == 'btnSelectedBodyPart':
-                    continue
-
-                elif btn in keyboardButtons:
-                    self.touchSignals[btn.objectName()] = btn.pressed.connect(
-                        lambda: self.playSound(KEYBOARD_SOUND)
-                    )
-                elif btn.objectName() not in sensors:
-                    self.touchSignals[btn.objectName()] = btn.pressed.connect(
-                        lambda: self.playSound(TOUCH_SOUND)
-                    )
-        else:
-            for btn in allButtons:
-                if btn.objectName() == 'btnSelectedBodyPart':
-                    continue
-
-                elif btn.objectName() not in sensors:
-                    if btn.objectName():
-                        btn.disconnect(self.touchSignals[btn.objectName()])
-        
         self.configs['touchSound'] = active
         if not self.saveConfigs():
             self.setLabel(
@@ -181,7 +154,11 @@ class MainWin(QMainWindow):
                 QUrl.fromLocalFile(sound)
             )
         )
-        self.appSound.play()
+        if sound == TOUCH_SOUND:
+            if self.configs['touchSound']:
+                self.appSound.play()
+        else:
+            self.appSound.play()
 
     def initPages(self):
         self.stackedWidget.setCurrentWidget(self.splashPage)
@@ -235,6 +212,7 @@ class MainWin(QMainWindow):
         self.updateFirmwareLabelTimer = QTimer()
         self.uiLabelTimer = QTimer()
         self.sensorsReportLabelTimer = QTimer()
+        self.musicRefreshLableTimer = QTimer()
         self.systemTimeTimer = QTimer()
         self.readyErrorTimer =  QTimer()
         self.monitorSensorsTimer = QTimer()
@@ -286,6 +264,9 @@ class MainWin(QMainWindow):
         self.sensorsReportLabelTimer.timeout.connect(
             lambda: self.clearLabel(self.lblSensorDateError, self.sensorsReportLabelTimer)
         )
+        self.musicRefreshLableTimer.timeout.connect(
+            lambda: self.clearLabel(self.lblMusicRefresh, self.musicRefreshLableTimer)
+        )
 
         self.incDaysTimer.timeout.connect(lambda: self.incDecDay('inc'))
         self.decDaysTimer.timeout.connect(lambda: self.incDecDay('dec'))
@@ -296,13 +277,17 @@ class MainWin(QMainWindow):
 
     def initTables(self):
         for tbl in self.findChildren(QTableWidget):
-            tbl.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)                    
+            op=QGraphicsOpacityEffect(self)
+            op.setOpacity(0.8)
             tbl.verticalHeader().setDefaultSectionSize(75)                
             tbl.horizontalHeader().setFixedHeight(60)                
+            tbl.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)                    
             tbl.verticalHeader().setVisible(False)                    
+            tbl.setGraphicsEffect(op)
         
         header = self.userInfoTable.horizontalHeader()
-        header.setSectionResizeMode(0,  QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(0,  QHeaderView.ResizeToContents) 
+        self.tableMusic.cellClicked.connect(self.musicSelected)
 
     def initButtons(self):
         self.btnEnLang.clicked.connect(lambda: self.changeLang('en'))
@@ -381,6 +366,9 @@ class MainWin(QMainWindow):
         self.btnIncCooling.clicked.connect(lambda: self.setCooling('inc'))
         self.btnSaveCase.clicked.connect(self.saveCase)
         self.btnDeleteLogs.clicked.connect(self.deleteLogs)
+        self.btnPlay.clicked.connect(lambda: self.play('video'))
+        self.btnPlayMusic.clicked.connect(lambda: self.play('music'))
+        self.btnRefreshMusic.clicked.connect(self.readMusicT.start)
         self.btnFindNext.clicked.connect(
             lambda : self.findWord(self.txtSearchLogs.text())
         )
@@ -431,7 +419,62 @@ class MainWin(QMainWindow):
         self.btnTheme1.clicked.connect(lambda: self.changeTheme('T1'))
         self.btnTheme2.clicked.connect(lambda: self.changeTheme('T2'))        
         self.btnTheme3.clicked.connect(lambda: self.changeTheme('T3'))
-        self.btnTheme4.clicked.connect(lambda: self.changeTheme('T4'))        
+        self.btnTheme4.clicked.connect(lambda: self.changeTheme('T4')) 
+        sensors = [
+            'btnPhysicalDamage', 'btnOverHeat', 'btnTemp',
+            'btnLock', 'btnWaterLevel', 'btnWaterflow',
+        ]
+        keyboardButtons = list(chain(
+            layout_widgets(self.keyboardRow1),
+            layout_widgets(self.keyboardRow2),
+            layout_widgets(self.keyboardRow3),
+            layout_widgets(self.numRow1),
+            layout_widgets(self.numRow2),
+            layout_widgets(self.numRow3)
+        ))
+        keyboardButtons.append(self.btnBackspace)
+        keyboardButtons.append(self.btnReturn)
+        keyboardButtons.append(self.btnShift)
+        keyboardButtons.append(self.btnFa)
+        keyboardButtons.append(self.btnSpace)
+        allButtons = self.findChildren(QPushButton)
+
+        for btn in allButtons:
+            if btn.objectName() == 'btnSelectedBodyPart':
+                continue
+
+            elif btn in keyboardButtons:
+                btn.pressed.connect(
+                    lambda: self.playSound(KEYBOARD_SOUND)
+                )
+            elif btn.objectName() not in sensors:
+                btn.pressed.connect(
+                    lambda: self.playSound(TOUCH_SOUND)
+                )       
+
+    def addMusics(self, paths):
+        self.musicFiles = paths
+        for path in paths:
+            name, extension = os.path.splitext(path)
+            name = os.path.basename(path)
+            rowPosition = self.tableMusic.rowCount()
+            self.tableMusic.insertRow(rowPosition)
+            item = QTableWidgetItem(name)
+            item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+            self.tableMusic.setItem(rowPosition, 0, item)
+
+    def readMusicResult(self, res):
+        self.setLabel(res, self.lblMusicRefresh, self.musicRefreshLableTimer)
+
+    def initMusics(self):
+        self.musicLength = '00:00:00'
+        self.lblLengthMusic.setText(self.musicLength)
+        self.sliderVolumeMusic.valueChanged.connect(self.musicSound.setVolume)
+        self.musicSound.stateChanged.connect(lambda: self.mediaStateChanged('music'))
+        self.musicSound.positionChanged.connect(self.positionChangedMusic)
+        self.musicSound.durationChanged.connect(self.durationChangedMusic)
+        self.positionSliderMusic.sliderMoved.connect(self.setPositionMusic)
+        self.positionSliderMusic.setRange(0, 0)
 
     def initTextboxes(self):
         self.txtNumber.returnPressed.connect(self.startSession)
@@ -464,6 +507,7 @@ class MainWin(QMainWindow):
         self.txtNsDay.setValidator(input_validator)     
         self.txtDays.setText('30')
         self.txtSearch.textChanged.connect(self.search)
+        self.txtSearchMusic.textChanged.connect(self.searchMusic)
 
     def initSensors(self):
         self.waterflowIco = QIcon()
@@ -1130,14 +1174,13 @@ class MainWin(QMainWindow):
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         self.videoWidget = VideoWidget()
         self.videoLayout.addWidget(self.videoWidget)
-        self.btnPlay.clicked.connect(self.play)
         self.listWidgetVideos.itemClicked.connect(self.videoSelected)
         self.positionSlider.setRange(0, 0)
         self.positionSlider.sliderMoved.connect(self.setPosition)
         self.mediaPlayer.setVolume(self.sliderVolume.value())
         self.sliderVolume.valueChanged.connect(self.mediaPlayer.setVolume)
         self.mediaPlayer.setVideoOutput(self.videoWidget)
-        self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
+        self.mediaPlayer.stateChanged.connect(lambda: self.mediaStateChanged('video'))
         self.mediaPlayer.stateChanged.connect(self.adssDemoEnd)
         self.mediaPlayer.positionChanged.connect(self.positionChanged)
         self.mediaPlayer.durationChanged.connect(self.durationChanged)
@@ -1149,7 +1192,6 @@ class MainWin(QMainWindow):
         self.btnPlay.setIconSize(QSize(100, 100))
         self.length = '00:00:00'
         self.lblLength.setText(self.length)
-
         tutoriasl = os.listdir(TUTORIALS_DIR)
         if '.gitignore' in tutoriasl:
             tutoriasl.remove('.gitignore')
@@ -1164,43 +1206,67 @@ class MainWin(QMainWindow):
         path = join(TUTORIALS_DIR, addExtenstion(stem))
         self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(path)))
         
-    def play(self):
-        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-            self.mediaPlayer.pause()
+    def musicSelected(self, r, c):
+        name = os.path.basename(self.musicFiles[r])
+        name = name[:50] + '...' if len(name) > 50 else name
+        self.lblMusicName.setText(name)
+        self.musicSound.setMedia(QMediaContent(QUrl.fromLocalFile(self.musicFiles[r])))
+    
+    def play(self, i):
+        if i == 'video':
+            if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+                self.mediaPlayer.pause()
+            else:
+                self.mediaPlayer.play()
         else:
-            self.mediaPlayer.play()
+            if self.musicSound.state() == QMediaPlayer.PlayingState:
+                self.musicSound.pause()
+                self.musicMovie.stop()
+            else:
+                self.musicSound.play()
+                if self.btnPlayMusic.icon() == self.pauseIco:
+                    self.musicMovie.start()
 
+                    
     def setPosition(self, position):
         self.mediaPlayer.setPosition(position)
+    
+    def setPositionMusic(self, position):
+        self.musicSound.setPosition(position)
 
-    def mediaStateChanged(self):
-        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-            self.btnPlay.setIcon(self.pauseIco)
+    def mediaStateChanged(self, i):
+        if i == 'video':
+            if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+                self.btnPlay.setIcon(self.pauseIco)
+            else:
+                self.btnPlay.setIcon(self.playIco)
         else:
-            self.btnPlay.setIcon(self.playIco)
+            if self.musicSound.state() == QMediaPlayer.PlayingState:
+                self.btnPlayMusic.setIcon(self.pauseIco)
+                self.musicMovie.start()
+            else:
+                self.btnPlayMusic.setIcon(self.playIco)
+                self.musicMovie.stop()
 
     def positionChanged(self, position):
         self.positionSlider.setValue(position)
-        seconds = int((position/1000) % 60)
-        minutes = int((position/60000) % 60)
-        hours = int((position/3600000) % 24)
-        current = '{:02d}:{:02d}:{:02d} / '.format(hours, minutes, seconds) + self.length
+        current = '{:02d}:{:02d}:{:02d} / '.format(*calcPosition(position)) + self.length
         self.lblLength.setText(current)
 
+    def positionChangedMusic(self, position):
+        self.positionSliderMusic.setValue(position)
+        current = '{:02d}:{:02d}:{:02d} / '.format(*calcPosition(position)) + self.musicLength
+        self.lblLengthMusic.setText(current)
+
     def durationChanged(self, duration):
-        seconds = int((duration/1000) % 60)
-        minutes = int((duration/60000) % 60)
-        hours = int((duration/3600000) % 24)
-        self.length = '{:02d}:{:02d}:{:02d}'.format(hours, minutes, seconds)
+        self.length = '{:02d}:{:02d}:{:02d}'.format(*calcPosition(duration))
         self.lblLength.setText('00:00:00 / ' + self.length)
         self.positionSlider.setRange(0, duration)
 
-    def pause(self):
-        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-            self.mediaPlayer.pause()
-            self.btnPlay.setIcon(self.playIco)
-
-        self.mediaPlayer.setPosition(0)
+    def durationChangedMusic(self, duration):
+        self.musicLength = '{:02d}:{:02d}:{:02d}'.format(*calcPosition(duration))
+        self.lblLengthMusic.setText('00:00:00 / ' + self.musicLength)
+        self.positionSliderMusic.setRange(0, duration)
 
     def changeAnimation(self, animation):
         if animation == 'horizontal':
@@ -1306,31 +1372,36 @@ class MainWin(QMainWindow):
 
     def setReady(self, ready):
         if ready:
-            errors = ''
+            logErrors, errors = '', ''
             error_duration = 5
             if not 5 <= self.temperature <= 40:
                 errors += TEXT['tempError'][self.langIndex] + '\n'
+                logErrors += TEXT['tempError'][0] + '\n'
                 error_duration += 1
                 
             if self.waterflowError:
                 errors += TEXT['waterflowError'][self.langIndex] + '\n'
+                logErrors += TEXT['waterflowError'][0] + '\n'
                 error_duration += 1
                 
             if self.waterLevelError:
                 errors += TEXT['waterLevelError'][self.langIndex] + '\n'
+                logErrors += TEXT['waterLevelError'][0] + '\n'
                 error_duration += 1
             
             if self.interLockError:
                 errors += TEXT['interLockError'][self.langIndex] + '\n'
+                logErrors += TEXT['interLockError'][0] + '\n'
                 error_duration += 1
 
             if self.overHeatError:
                 errors += TEXT['overHeatError'][self.langIndex] + '\n'
-                
+                logErrors += TEXT['overHeatError'][0] + '\n'
                 error_duration += 1
 
             if self.physicalDamage:
                 errors += TEXT['physicalDamage'][self.langIndex] + '\n'
+                logErrors += TEXT['physicalDamage'][0] + '\n'
                 error_duration += 1
             
             if errors:
@@ -1339,7 +1410,7 @@ class MainWin(QMainWindow):
                     self.lblReadyError,
                     self.readyErrorTimer, error_duration
                 )
-                log('Sensors', errors)
+                log('Sensors', logErrors)
 
             
             else:
@@ -1710,6 +1781,12 @@ class MainWin(QMainWindow):
             self.usersTable.setRowHidden(
                 row, name not in item1.text().lower() and name not in item2.text().lower()
             )
+
+    def searchMusic(self):
+        name = self.txtSearchMusic.text().lower()
+        for row in range(self.tableMusic.rowCount()):
+            item = self.tableMusic.item(row, 0)
+            self.tableMusic.setRowHidden(row, name not in item.text().lower())
 
     def type(self, letter):
         def wrapper():
@@ -2325,7 +2402,7 @@ class MainWin(QMainWindow):
         
     def enterLogsPage(self):
         if isfile(LOGS_PATH):
-            f = open(LOGS_PATH, 'r')
+            f = open(LOGS_PATH, 'r', encoding="utf-8")
             self.txtLogs.setText(f.read())
             f.close()
 

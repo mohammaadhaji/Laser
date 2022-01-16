@@ -657,5 +657,5 @@ class UpdateFirmware(QThread):
                 updateCleanup(partitionsDir)
 
         except Exception as e:
-            self.result.emit('Operation failed please restart and try again.')
+            self.result.emit('Operation failed. Please restart and try again.')
             log('Update Firmware, Unhandled Exception', str(e) + '\n')

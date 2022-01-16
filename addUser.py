@@ -1,7 +1,7 @@
 import sys, pickle, os
 from user import User
 from os.path import join, isfile
-from paths import USERS_DIR
+from paths import USERS_DATA
 from utility import randID
 help = """
 help:   python addUser.py N  ---> adds N users.
@@ -13,14 +13,15 @@ if not len(arg) == 2:
     print(help)
 else:
     if arg[1].isnumeric():
-        filePath = join(USERS_DIR, 'USERS_DATA')
-        if isfile(filePath):
-            os.remove(filePath)
-        fileHandler = open(filePath, 'wb')
+        if isfile(USERS_DATA):
+            os.remove(USERS_DATA)
+        fileHandler = open(USERS_DATA, 'wb')
         usersData = {}
         for i in range(int(arg[1])):
             num = randID(11)
-            usersData[num] = User(num, randID(5))
+            x = User(num, randID(5))
+            x.addSession()
+            usersData[num] = x
 
         usersData = pickle.dump(usersData, fileHandler)
         fileHandler.close()

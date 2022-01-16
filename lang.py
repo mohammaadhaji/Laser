@@ -160,5 +160,7 @@ TEXT = {
     'btnFindNext': ['Find Next', 'بعدی'],
     'btnFindBefor': ['Find Previous', 'قبلی'],
     'txtSearchLogs': ['Search...', 'جستوجو...'],
-    'btnDeleteLogs': ['Delete Logs', 'حذف لاگ ها']   
+    'btnDeleteLogs': ['Delete Logs', 'حذف لاگ ها'],
+    'txtSearchMusic': ['Search...', 'جستوجو...'],
+    'lblMusicHeader': ['Musics', 'آهنگ ها']   
 }

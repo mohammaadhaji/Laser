@@ -1,10 +1,11 @@
 from uuid import getnode as get_mac
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import QThread, pyqtSignal
 from paths import *
-from os.path import isfile
+from os.path import isfile, isdir
 import datetime, jdatetime
 import subprocess, platform, pickle, hashlib
-import random, uuid, os
+import random, uuid, os, json, shutil
 
 
 
@@ -262,17 +263,105 @@ def formatTime(s):
 
 
 def toJalali(date):
-    y = date.year
-    m = date.month
-    d = date.day
-    return jdatetime.datetime.fromgregorian(year=y, month=m, day=d)
+    if date:
+        y = date.year
+        m = date.month
+        d = date.day
+        return jdatetime.datetime.fromgregorian(year=y, month=m, day=d)
 
 
 def log(title, info):
     time = str(jdatetime.datetime.now().strftime('[%Y-%m-%d %H:%M:%S]'))
     time += ' <' + title + '>\n'
     try:
-        with open(LOGS_PATH, 'a') as f:
+        with open(LOGS_PATH, 'a', encoding="utf-8") as f:
             f.write(time + info + '\n')
     except Exception as e:
         print(e)
+
+
+def calcPosition(pos):
+    seconds = int((pos/1000) % 60)
+    minutes = int((pos/60000) % 60)
+    hours = int((pos/3600000) % 24)
+    return hours, minutes, seconds
+
+
+
+MOUNT_DIR = '/media/musics'
+def musicCleanup(mountPoint):
+    try:
+        for mp in mountPoint.values():
+            os.system(f'umount {mp}')
+        if isdir(MOUNT_DIR):
+            shutil.rmtree(MOUNT_DIR)
+    except Exception as e:
+        log('Update Firmware', str(e) + '\n')
+
+
+class ReadMusics(QThread):
+    result = pyqtSignal(str)
+    paths = pyqtSignal(list)
+
+    def run(self):
+        if platform.system() == 'Windows':
+            self.result.emit("We don't do that here.")
+            return
+                         
+        r1  = subprocess.check_output('lsblk -J', shell=True)
+        blocks = json.loads(r1)['blockdevices']
+
+        sdaFound = False
+        sdaBlock = None
+        for blk in blocks:
+            if blk['name'] == 'sda':
+                sdaFound = True
+                sdaBlock = blk
+
+        if not sdaFound:
+            err = "Flash drive not found."
+            self.result.emit(err)
+            log('Read Music', err)
+            return
+                
+        if not 'children' in sdaBlock:
+            err = "Flash drive doesn't have any partitions."
+            self.result.emit(err)
+            log('Read Music', err + '\n')
+            return
+        
+
+        MOUNT_DIR = '/media/musics'
+        if not isdir(MOUNT_DIR):
+            os.mkdir(MOUNT_DIR)
+
+        partitionsDir = {}
+        for part in sdaBlock['children']:
+            partitionsDir[part['name']] = part['mountpoint']
+
+        for part in partitionsDir:
+            if partitionsDir[part] == None:
+                if not isdir(f'{MOUNT_DIR}/{part}'):
+                    os.mkdir(f'{MOUNT_DIR}/{part}')
+                r = subprocess.call(
+                    f'mount /dev/{part} {MOUNT_DIR}/{part}',
+                    shell=True
+                )
+                partitionsDir[part] = f'{MOUNT_DIR}/{part}'
+
+        musicFiles = []
+        for dir in partitionsDir.values():
+            for r,d,f in os.walk(dir):
+                for file in f:
+                    fPath = os.path.join(dir, file)
+                    name, extension = os.path.splitext(fPath)
+                    if extension in ['.mp3', '.wav']:
+                        musicFiles.append(fPath)
+
+
+        if len(musicFiles) == 0:
+            self.result.emit('No music found.')
+            musicCleanup(partitionsDir)
+            return
+
+        self.paths.emit(musicFiles)
