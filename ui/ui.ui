@@ -2268,7 +2268,7 @@ border:3px solid red;
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_83" stretch="1,1">
+           <layout class="QHBoxLayout" name="horizontalLayout_83" stretch="6,6">
             <property name="spacing">
              <number>7</number>
             </property>
@@ -2471,7 +2471,7 @@ border:2px solid  rgb(85, 170, 255);
                 <property name="frameShadow">
                  <enum>QFrame::Raised</enum>
                 </property>
-                <layout class="QVBoxLayout" name="verticalLayout_100" stretch="3,0">
+                <layout class="QVBoxLayout" name="verticalLayout_100" stretch="2,0">
                  <item>
                   <widget class="QLabel" name="lblMusicGif">
                    <property name="text">
@@ -2483,158 +2483,42 @@ border:2px solid  rgb(85, 170, 255);
                   </widget>
                  </item>
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_84" stretch="0,0,0,0,1">
+                  <layout class="QVBoxLayout" name="verticalLayout_99" stretch="0,0,0">
+                   <property name="spacing">
+                    <number>0</number>
+                   </property>
                    <property name="leftMargin">
-                    <number>10</number>
+                    <number>0</number>
                    </property>
                    <property name="topMargin">
                     <number>0</number>
                    </property>
-                   <property name="rightMargin">
-                    <number>10</number>
-                   </property>
                    <item>
-                    <widget class="QSlider" name="sliderVolumeMusic">
-                     <property name="minimumSize">
-                      <size>
-                       <width>50</width>
-                       <height>0</height>
-                      </size>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">QSlider::groove:vertical {
-    background: red;
-    position: absolute; /* absolutely position 4px from the left and right of the widget. setting margins on the widget should work too... */
-    left: 4px; right: 4px;
-	width: 10px;
-}
-
-QSlider{
-background-color: rgb(0, 0, 0);
-}
-
-QSlider::handle:vertical {
-    height: 30px;
-	width: 30px;
-	border-radius:5px;
-    background: rgb(85, 170, 255);
-    margin: 0 -20px; 
-
-}
-
-QSlider::add-page:vertical {
-	background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-  stop: 0 #ABCD44, 
-  stop: 0.5 #ABCD44,
-  stop: 0.51 #A1C72E,
-  stop: 0.54 #A1C72E,
-  stop: 1.0 #9CC322);
-}
-
-QSlider::sub-page:vertical {
-    background: #fff;
-}
-QSlider::handle:vertical:pressed {
-    background-color: rgb(65, 255, 195);
-}</string>
-                     </property>
-                     <property name="maximum">
-                      <number>100</number>
-                     </property>
-                     <property name="value">
-                      <number>100</number>
-                     </property>
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_120">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="btnPlayMusic">
-                     <property name="styleSheet">
-                      <string notr="true">QPushButton{
-outline : 0;
-background-color: rgb(213, 213, 213);
-border-radius: 60px;
-border:10px solid rgb(74, 74, 74);
-
-}
-
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-
-}
-</string>
+                    <widget class="QLabel" name="lblLengthMusic">
+                     <property name="font">
+                      <font>
+                       <family>Arial</family>
+                       <pointsize>18</pointsize>
+                      </font>
                      </property>
                      <property name="text">
                       <string/>
                      </property>
-                     <property name="icon">
-                      <iconset>
-                       <normaloff>images/play.png</normaloff>images/play.png</iconset>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <spacer name="horizontalSpacer_121">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
+                    <widget class="QSlider" name="positionSliderMusic">
+                     <property name="minimumSize">
                       <size>
-                       <width>40</width>
-                       <height>20</height>
+                       <width>0</width>
+                       <height>70</height>
                       </size>
                      </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_99" stretch="0,0,0">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <widget class="QLabel" name="label_21">
-                       <property name="font">
-                        <font>
-                         <family>Arial</family>
-                         <pointsize>18</pointsize>
-                        </font>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QSlider" name="positionSliderMusic">
-                       <property name="minimumSize">
-                        <size>
-                         <width>0</width>
-                         <height>70</height>
-                        </size>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true">QSlider {
+                     <property name="styleSheet">
+                      <string notr="true">QSlider {
 min-height:70px;
 }
 QSlider::groove:horizontal {
@@ -2680,27 +2564,180 @@ height: 10px;
 border-radius: 4px;
 }
 </string>
-                       </property>
+                     </property>
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_86" stretch="1,0,0,0,0,0,1">
+                     <property name="topMargin">
+                      <number>10</number>
+                     </property>
+                     <item>
+                      <spacer name="horizontalSpacer_121">
                        <property name="orientation">
                         <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item>
+                      <widget class="QSlider" name="sliderVolumeMusic">
+                       <property name="minimumSize">
+                        <size>
+                         <width>50</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QSlider::groove:vertical {
+    background: red;
+    position: absolute; /* absolutely position 4px from the left and right of the widget. setting margins on the widget should work too... */
+    left: 4px; right: 4px;
+	width: 10px;
+}
+
+QSlider{
+background-color: rgb(0, 0, 0);
+}
+
+QSlider::handle:vertical {
+    height: 30px;
+	width: 30px;
+	border-radius:5px;
+    background: rgb(85, 170, 255);
+    margin: 0 -20px; 
+
+}
+
+QSlider::add-page:vertical {
+	background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+  stop: 0 #ABCD44, 
+  stop: 0.5 #ABCD44,
+  stop: 0.51 #A1C72E,
+  stop: 0.54 #A1C72E,
+  stop: 1.0 #9CC322);
+}
+
+QSlider::sub-page:vertical {
+    background: #fff;
+}
+QSlider::handle:vertical:pressed {
+    background-color: rgb(65, 255, 195);
+}</string>
+                       </property>
+                       <property name="maximum">
+                        <number>100</number>
+                       </property>
+                       <property name="value">
+                        <number>100</number>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Vertical</enum>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QLabel" name="lblLengthMusic">
-                       <property name="font">
-                        <font>
-                         <family>Arial</family>
-                         <pointsize>18</pointsize>
-                        </font>
+                      <spacer name="horizontalSpacer_120">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>20</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="btnPlayMusic">
+                       <property name="styleSheet">
+                        <string notr="true">QPushButton{
+outline : 0;
+background-color: rgb(213, 213, 213);
+border-radius: 60px;
+border:10px solid rgb(74, 74, 74);
+
+}
+
+QPushButton:pressed{
+background-color: rgb(0, 170, 255);
+
+}
+</string>
                        </property>
                        <property name="text">
                         <string/>
                        </property>
-                       <property name="alignment">
-                        <set>Qt::AlignCenter</set>
+                       <property name="icon">
+                        <iconset>
+                         <normaloff>images/play.png</normaloff>images/play.png</iconset>
+                       </property>
+                       <property name="iconSize">
+                        <size>
+                         <width>100</width>
+                         <height>100</height>
+                        </size>
                        </property>
                       </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_119">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>15</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="btnRepeat">
+                       <property name="styleSheet">
+                        <string notr="true">QPushButton{
+outline : 0;
+	background-color: rgb(0, 0, 0);
+}
+
+QPushButton:pressed{
+margin: 10px 0 0 0;
+}
+</string>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="iconSize">
+                        <size>
+                         <width>50</width>
+                         <height>50</height>
+                        </size>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_122">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
                      </item>
                     </layout>
                    </item>
@@ -3779,7 +3816,7 @@ QPushButton:pressed{
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1229</width>
+                       <width>896</width>
                        <height>824</height>
                       </rect>
                      </property>
@@ -6045,8 +6082,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>1605</width>
-               <height>803</height>
+               <width>312</width>
+               <height>413</height>
               </rect>
              </property>
              <property name="styleSheet">
@@ -9667,7 +9704,7 @@ background-color: rgb(0, 170, 255);
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1562</width>
+                   <width>1341</width>
                    <height>803</height>
                   </rect>
                  </property>

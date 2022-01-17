@@ -1,3 +1,4 @@
+from sre_parse import REPEAT_CHARS
 import jdatetime, math, sys, time
 start = time.time()
 from PyQt5 import uic
@@ -54,7 +55,7 @@ class MainWin(QMainWindow):
         self.musicMovie = QMovie('ui/images/music.gif')
         self.lblMusicGif.setMovie(self.musicMovie)
         self.musicMovie.start()
-        self.musicMovie.stop()
+        # self.musicMovie.stop()
         self.lblShutdownGif.setMovie(self.shutdownMovie)
         self.lockMovie.frameChanged.connect(self.unlock)
         self.lblLock.setMovie(self.lockMovie)
@@ -63,7 +64,8 @@ class MainWin(QMainWindow):
         self.appSound = QMediaPlayer()
         self.shotSound = QMediaPlayer()
         self.musicSound = QMediaPlayer()
-        self.appSound.setMedia(QMediaContent(QUrl.fromLocalFile(TOUCH_SOUND)))
+        self.touchSound = QMediaPlayer()
+        self.touchSound.setMedia(QMediaContent(QUrl.fromLocalFile(TOUCH_SOUND)))
         self.shotSound.setMedia(QMediaContent(QUrl.fromLocalFile(SHOT_SOUND)))
         self.lblSplash.setPixmap(QPixmap(SPLASH).scaled(1920,1080))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
@@ -155,11 +157,15 @@ class MainWin(QMainWindow):
                 QUrl.fromLocalFile(sound)
             )
         )
-        if sound in [TOUCH_SOUND, KEYBOARD_SOUND]:
-            if self.configs['touchSound']:
-                self.appSound.play()
-        else:
-            self.appSound.play()
+        self.appSound.play()
+
+    def playTouchSound(self, sound):
+        self.touchSound.setMedia(
+            QMediaContent(
+                QUrl.fromLocalFile(sound)
+            )
+        )
+        self.touchSound.play()
 
     def initPages(self):
         self.stackedWidget.setCurrentWidget(self.splashPage)
@@ -397,6 +403,8 @@ class MainWin(QMainWindow):
         self.btnDelSelectedUsers.clicked.connect(self.removeSelectedUsers)
         self.btnSelectAll.clicked.connect(self.selectAll)
         self.selectAllFlag = False
+        self.btnRepeat.clicked.connect(self.repeatMusic)
+        self.repeatMusicFlag = self.configs['RepeatMusic']
         self.btnColor1.setStyleSheet(BTN_COLOR1)
         self.btnColor2.setStyleSheet(BTN_COLOR2)
         self.btnColor3.setStyleSheet(BTN_COLOR3)
@@ -437,9 +445,9 @@ class MainWin(QMainWindow):
                 continue
 
             elif btn in keyboardButtons:
-                btn.pressed.connect(lambda: self.playSound(KEYBOARD_SOUND))
+                btn.pressed.connect(lambda: self.playTouchSound(KEYBOARD_SOUND))
             elif btn.objectName() not in sensors:
-                btn.pressed.connect(lambda: self.playSound(TOUCH_SOUND))       
+                btn.pressed.connect(lambda: self.playTouchSound(TOUCH_SOUND))       
 
     def addMusics(self, paths):
         self.musicFiles = paths
@@ -472,6 +480,15 @@ class MainWin(QMainWindow):
         self.musicSound.durationChanged.connect(self.durationChangedMusic)
         self.positionSliderMusic.sliderMoved.connect(self.setPositionMusic)
         self.positionSliderMusic.setRange(0, 0)
+        self.repeatIco = QIcon()
+        self.noRepeatIco = QIcon()
+        self.repeatIco.addPixmap(QPixmap(REPEAT_ICON))
+        self.noRepeatIco.addPixmap(QPixmap(NO_REPEAT_ICON))
+        if self.repeatMusicFlag:
+            self.btnRepeat.setIcon(self.repeatIco)
+        else:
+            self.btnRepeat.setIcon(self.noRepeatIco)
+        self.btnRepeat.setIconSize(QSize(60, 60))
 
     def initTextboxes(self):
         self.txtNumber.returnPressed.connect(self.startSession)
@@ -697,6 +714,7 @@ class MainWin(QMainWindow):
             log('Startup Setting Time', str(e) + '\n')
             
     def playShutdown(self, i):
+        self.musicSound.pause()
         self.playSound(SHUTDOWN_SOUND)
         self.keyboard('hide')
         if i == 'powerOff':
@@ -1203,6 +1221,16 @@ class MainWin(QMainWindow):
         self.configs['VideoVolume'] = v
         self.saveConfigs()
 
+    def repeatMusic(self):
+        self.repeatMusicFlag = not self.repeatMusicFlag
+        if self.repeatMusicFlag:
+            self.btnRepeat.setIcon(self.repeatIco)
+        else:
+            self.btnRepeat.setIcon(self.noRepeatIco)
+        
+        self.configs['RepeatMusic'] = self.repeatMusicFlag
+        self.saveConfigs()
+
     def setMusicVolume(self, v):
         self.musicSound.setVolume(v)
         self.configs['MusicVolume'] = v
@@ -1213,12 +1241,14 @@ class MainWin(QMainWindow):
         self.lblTitle.setText(stem)
         path = join(TUTORIALS_DIR, addExtenstion(stem))
         self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(path)))
+        self.play('video')
         
     def musicSelected(self, r, c):
         name = os.path.basename(self.musicFiles[r])
         name = name[:50] + '...' if len(name) > 50 else name
         self.lblMusicName.setText(name)
         self.musicSound.setMedia(QMediaContent(QUrl.fromLocalFile(self.musicFiles[r])))
+        self.play('music')
     
     def play(self, i):
         if i == 'video':
@@ -1985,9 +2015,9 @@ class MainWin(QMainWindow):
         rowPosition = self.usersTable.rowCount()
         self.usersTable.insertRow(rowPosition)
         action = Action(self.usersTable, user.phoneNumber)
-        action.btnInfo.pressed.connect(lambda: self.playSound(TOUCH_SOUND))
+        action.btnInfo.pressed.connect(lambda: self.playTouchSound(TOUCH_SOUND))
         action.info.connect(self.info)
-        action.chbDel.pressed.connect(lambda: self.playSound(TOUCH_SOUND))
+        action.chbDel.pressed.connect(lambda: self.playTouchSound(TOUCH_SOUND))
         action.delete.connect(self.selecetCheckedUsers)
         self.usersTable.setCellWidget(rowPosition, 3, action)
         number = QTableWidgetItem(user.phoneNumber)
