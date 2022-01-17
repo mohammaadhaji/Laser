@@ -200,7 +200,7 @@ def loadConfigs():
             configs['touchSound'] = True
             configs['MusicVolume'] = 100
             configs['VideoVolume'] = 100
-            configs['RepeatMusic'] = True
+            configs['LoopMusic'] = True
             configs['theme'] = 'C1'
             configs['OwnerInfo'] = ''
             configs['SerialNumber'] = ''
