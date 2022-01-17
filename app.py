@@ -122,7 +122,7 @@ class MainWin(QMainWindow):
         self.keyboardSignals()
         self.casesSignals()
         self.initMusics()
-        # self.checkUUID()
+        self.checkUUID()
         readTime()
         icon = QPixmap(SPARK_ICON)
         self.lblSpark.setPixmap(icon.scaled(120, 120))
@@ -319,7 +319,7 @@ class MainWin(QMainWindow):
         self.btnSubmit.clicked.connect(self.submit)
         self.btnSystemLogs.clicked.connect(self.enterLogsPage)
         self.btnMusic.clicked.connect(lambda: self.changeAnimation('horizontal'))
-        self.btnMusic.clicked.connect(self.enterMusicPage)
+        self.btnMusic.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.musicPage))
         self.btnBackMusic.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackNewSession.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
@@ -380,7 +380,7 @@ class MainWin(QMainWindow):
         self.btnDeleteLogs.clicked.connect(self.deleteLogs)
         self.btnPlay.clicked.connect(lambda: self.play('video'))
         self.btnPlayMusic.clicked.connect(lambda: self.play('music'))
-        self.btnRefreshMusic.clicked.connect(self.readMusic)
+        self.btnLoadMusic.clicked.connect(self.readMusic)
         self.btnFindNext.clicked.connect(lambda : self.findWord(self.txtSearchLogs.text()))
         self.btnFindBefor.clicked.connect(lambda : self.findWord(self.txtSearchLogs.text(), True))
         self.btnSaveCase.pressed.connect(lambda: self.chgSliderColor(SLIDER_SAVED_GB, SLIDER_SAVED_GW))
@@ -1149,11 +1149,6 @@ class MainWin(QMainWindow):
                 self.hwUpdatedLabelTimer, 4
             )
 
-    def enterMusicPage(self):
-        self.readMusicT.setAuto(True)
-        self.readMusicT.start()
-        self.stackedWidget.setCurrentWidget(self.musicPage)
-
     def addMusics(self, paths):
         self.musicFiles = paths
         self.musicSound.setPlaylist(self.playlist)
@@ -1168,11 +1163,9 @@ class MainWin(QMainWindow):
             self.tableMusic.setItem(rowPosition, 0, item)
 
     def readMusicResult(self, res):
-        if not self.readMusicT.auto:
-            self.setLabel(
+        self.setLabel(
                 res, self.lblMusicRefresh, self.musicRefreshLableTimer
-            )
-        self.readMusicT.setAuto(False)
+        )
         self.musicFiles.clear()
         self.tableMusic.setRowCount(0)
     

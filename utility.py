@@ -315,12 +315,6 @@ def musicCleanup(mountPoint):
 class ReadMusics(QThread):
     result = pyqtSignal(str)
     paths = pyqtSignal(list)
-    def __init__(self):
-        super(QThread, self).__init__()
-        self.auto = True
-
-    def setAuto(self, i):
-        self.auto = i
 
     def run(self):
         try:

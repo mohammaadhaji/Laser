@@ -2318,7 +2318,7 @@ border:3px solid red;
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="btnRefreshMusic">
+                 <widget class="QPushButton" name="btnLoadMusic">
                   <property name="font">
                    <font>
                     <family>Arial</family>
@@ -2342,7 +2342,7 @@ border: 1px solid white;
 }</string>
                   </property>
                   <property name="text">
-                   <string>Refresh</string>
+                   <string>Load</string>
                   </property>
                  </widget>
                 </item>

@@ -162,5 +162,6 @@ TEXT = {
     'txtSearchLogs': ['Search...', 'جستوجو...'],
     'btnDeleteLogs': ['Delete Logs', 'حذف لاگ ها'],
     'txtSearchMusic': ['Search...', 'جستوجو...'],
-    'lblMusicHeader': ['Musics', 'آهنگ ها']   
+    'lblMusicHeader': ['Musics', 'آهنگ ها'],
+    'btnLoadMusic': ['Load', 'بارگذاری']   
 }
