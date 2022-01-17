@@ -178,6 +178,8 @@ def loadConfigs():
             configs['LANGUAGE'] = 'en'
             configs['slideTransition'] = True
             configs['touchSound'] = True
+            configs['MusicVolume'] = 100
+            configs['VideoVolume'] = 100
             configs['theme'] = 'C1'
             configs['OwnerInfo'] = ''
             configs['SerialNumber'] = ''
@@ -322,7 +324,7 @@ class ReadMusics(QThread):
             if not sdaFound:
                 err = "Flash drive not found."
                 self.result.emit(err)
-                log('Read Music', err)
+                log('Read Music', err + '\n')
                 return
                     
             if not 'children' in sdaBlock:

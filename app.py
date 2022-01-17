@@ -65,7 +65,7 @@ class MainWin(QMainWindow):
         self.musicSound = QMediaPlayer()
         self.appSound.setMedia(QMediaContent(QUrl.fromLocalFile(TOUCH_SOUND)))
         self.shotSound.setMedia(QMediaContent(QUrl.fromLocalFile(SHOT_SOUND)))
-        self.lblSplash.setPixmap(QPixmap(SPLASH))
+        self.lblSplash.setPixmap(QPixmap(SPLASH).scaled(1920,1080))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         font_db = QFontDatabase()
@@ -464,7 +464,9 @@ class MainWin(QMainWindow):
     def initMusics(self):
         self.musicLength = '00:00:00'
         self.lblLengthMusic.setText(self.musicLength)
-        self.sliderVolumeMusic.valueChanged.connect(self.musicSound.setVolume)
+        self.sliderVolumeMusic.valueChanged.connect(self.setMusicVolume)
+        self.musicSound.setVolume(self.configs['MusicVolume'])
+        self.sliderVolumeMusic.setValue(self.configs['MusicVolume'])
         self.musicSound.stateChanged.connect(lambda: self.mediaStateChanged('music'))
         self.musicSound.positionChanged.connect(self.positionChangedMusic)
         self.musicSound.durationChanged.connect(self.durationChangedMusic)
@@ -1172,8 +1174,9 @@ class MainWin(QMainWindow):
         self.listWidgetVideos.itemClicked.connect(self.videoSelected)
         self.positionSlider.setRange(0, 0)
         self.positionSlider.sliderMoved.connect(self.setPosition)
-        self.mediaPlayer.setVolume(self.sliderVolume.value())
-        self.sliderVolume.valueChanged.connect(self.mediaPlayer.setVolume)
+        self.mediaPlayer.setVolume(self.configs['VideoVolume'])
+        self.sliderVolume.setValue(self.configs['VideoVolume'])
+        self.sliderVolume.valueChanged.connect(self.setVideoVolume)
         self.mediaPlayer.setVideoOutput(self.videoWidget)
         self.mediaPlayer.stateChanged.connect(lambda: self.mediaStateChanged('video'))
         self.mediaPlayer.stateChanged.connect(self.adssDemoEnd)
@@ -1194,6 +1197,16 @@ class MainWin(QMainWindow):
             path = os.path.join(TUTORIALS_DIR, file) 
             name = Path(path).stem
             self.listWidgetVideos.addItem(name)
+
+    def setVideoVolume(self, v):
+        self.mediaPlayer.setVolume(v)
+        self.configs['VideoVolume'] = v
+        self.saveConfigs()
+
+    def setMusicVolume(self, v):
+        self.musicSound.setVolume(v)
+        self.configs['MusicVolume'] = v
+        self.saveConfigs()
         
     def videoSelected(self, video):
         stem = video.text()
@@ -2455,7 +2468,7 @@ class MainWin(QMainWindow):
 class LoadingWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
-        self.setStyleSheet('background-image: url(ui/images/splashLoading.jpg)')
+        self.setStyleSheet('border-image: url(ui/images/splashLoading.jpg);')
         self.showFullScreen()
         self.timer = QTimer()
         self.timer.timeout.connect(self.showMain)

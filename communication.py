@@ -566,7 +566,7 @@ class UpdateFirmware(QThread):
             if not sdaFound:
                 err = "Flash drive not found."
                 self.result.emit(err)
-                log('Update Firmware', err)
+                log('Update Firmware', err + '\n')
                 return
                     
             if not 'children' in sdaBlock:
