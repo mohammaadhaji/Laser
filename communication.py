@@ -559,7 +559,7 @@ class UpdateFirmware(QThread):
             sdaFound = False
             sdaBlock = None
             for blk in blocks:
-                if blk['name'] in ['sda', 'sdb']:
+                if blk['name'].startswith('sd'):
                     sdaFound = True
                     sdaBlock = blk
 

@@ -63,6 +63,7 @@ class MainWin(QMainWindow):
         self.appSound = QMediaPlayer()
         self.shotSound = QMediaPlayer()
         self.musicSound = QMediaPlayer()
+        self.appSound.setMedia(QMediaContent(QUrl.fromLocalFile(TOUCH_SOUND)))
         self.shotSound.setMedia(QMediaContent(QUrl.fromLocalFile(SHOT_SOUND)))
         self.lblSplash.setPixmap(QPixmap(SPLASH))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
@@ -154,7 +155,7 @@ class MainWin(QMainWindow):
                 QUrl.fromLocalFile(sound)
             )
         )
-        if sound == TOUCH_SOUND:
+        if sound in [TOUCH_SOUND, KEYBOARD_SOUND]:
             if self.configs['touchSound']:
                 self.appSound.play()
         else:
