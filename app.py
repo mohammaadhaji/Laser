@@ -1,4 +1,3 @@
-from sre_parse import REPEAT_CHARS
 import jdatetime, math, sys, time
 start = time.time()
 from PyQt5 import uic
@@ -52,10 +51,12 @@ class MainWin(QMainWindow):
         self.license = self.configs['LICENSE']
         self.lockMovie = QMovie(LOCK_GIF)
         self.shutdownMovie = QMovie(SHUTDONW_GIF)
-        self.musicMovie = QMovie('ui/images/music.gif')
+        self.musicMovie = QMovie(MUSIC_GIF)
+        self.musicMovie.setCacheMode(QMovie.CacheAll)
+        self.musicMovie.jumpToFrame(95)
         self.lblMusicGif.setMovie(self.musicMovie)
         self.musicMovie.start()
-        # self.musicMovie.stop()
+        self.musicMovie.stop()
         self.lblShutdownGif.setMovie(self.shutdownMovie)
         self.lockMovie.frameChanged.connect(self.unlock)
         self.lblLock.setMovie(self.lockMovie)
@@ -65,6 +66,8 @@ class MainWin(QMainWindow):
         self.shotSound = QMediaPlayer()
         self.musicSound = QMediaPlayer()
         self.touchSound = QMediaPlayer()
+        self.playlist = QMediaPlaylist()
+        self.playlist.currentIndexChanged.connect(self.playlistIndexChanged)
         self.touchSound.setMedia(QMediaContent(QUrl.fromLocalFile(TOUCH_SOUND)))
         self.shotSound.setMedia(QMediaContent(QUrl.fromLocalFile(SHOT_SOUND)))
         self.lblSplash.setPixmap(QPixmap(SPLASH).scaled(1920,1080))
@@ -136,9 +139,10 @@ class MainWin(QMainWindow):
         self.chbTouchSound.toggled.connect(self.setTouchSound)
         op=QGraphicsOpacityEffect(self)
         op.setOpacity(0.8) 
-        self.frame_9.setGraphicsEffect(op)
-        if self.configs['touchSound']:
-            self.setTouchSound(True)
+        self.musicFrame.setGraphicsEffect(op)
+        op=QGraphicsOpacityEffect(self)
+        op.setOpacity(0.8) 
+        self.listWidgetVideos.setGraphicsEffect(op)
         self.playSound(STARTUP_SOUND) 
 
     def setTouchSound(self, active):
@@ -315,7 +319,7 @@ class MainWin(QMainWindow):
         self.btnSubmit.clicked.connect(self.submit)
         self.btnSystemLogs.clicked.connect(self.enterLogsPage)
         self.btnMusic.clicked.connect(lambda: self.changeAnimation('horizontal'))
-        self.btnMusic.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.musicPage))
+        self.btnMusic.clicked.connect(self.enterMusicPage)
         self.btnBackMusic.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackNewSession.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
@@ -404,8 +408,8 @@ class MainWin(QMainWindow):
         self.btnDelSelectedUsers.clicked.connect(self.removeSelectedUsers)
         self.btnSelectAll.clicked.connect(self.selectAll)
         self.selectAllFlag = False
-        self.btnRepeat.clicked.connect(self.repeatMusic)
-        self.repeatMusicFlag = self.configs['RepeatMusic']
+        self.btnLoop.clicked.connect(self.setLoopMusic)
+        self.LoopMusicFlag = self.configs['LoopMusic']
         self.btnColor1.setStyleSheet(BTN_COLOR1)
         self.btnColor2.setStyleSheet(BTN_COLOR2)
         self.btnColor3.setStyleSheet(BTN_COLOR3)
@@ -449,47 +453,6 @@ class MainWin(QMainWindow):
                 btn.pressed.connect(lambda: self.playTouchSound(KEYBOARD_SOUND))
             elif btn.objectName() not in sensors:
                 btn.pressed.connect(lambda: self.playTouchSound(TOUCH_SOUND))       
-
-    def addMusics(self, paths):
-        self.musicFiles = paths
-        for path in paths:
-            name = os.path.basename(path)
-            rowPosition = self.tableMusic.rowCount()
-            self.tableMusic.insertRow(rowPosition)
-            item = QTableWidgetItem(name)
-            item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-            self.tableMusic.setItem(rowPosition, 0, item)
-
-    def readMusicResult(self, res):
-        self.setLabel(res, self.lblMusicRefresh, self.musicRefreshLableTimer)
-        self.musicFiles.clear()
-        self.tableMusic.setRowCount(0)
-    
-    def readMusic(self):
-        self.musicFiles.clear()
-        self.tableMusic.setRowCount(0)
-        self.readMusicT.start()
-
-    def initMusics(self):
-        self.musicLength = '00:00:00'
-        self.lblLengthMusic.setText(self.musicLength)
-        self.sliderVolumeMusic.valueChanged.connect(self.setMusicVolume)
-        self.musicSound.setVolume(self.configs['MusicVolume'])
-        self.sliderVolumeMusic.setValue(self.configs['MusicVolume'])
-        self.musicSound.stateChanged.connect(lambda: self.mediaStateChanged('music'))
-        self.musicSound.positionChanged.connect(self.positionChangedMusic)
-        self.musicSound.durationChanged.connect(self.durationChangedMusic)
-        self.positionSliderMusic.sliderMoved.connect(self.setPositionMusic)
-        self.positionSliderMusic.setRange(0, 0)
-        self.repeatIco = QIcon()
-        self.noRepeatIco = QIcon()
-        self.repeatIco.addPixmap(QPixmap(REPEAT_ICON))
-        self.noRepeatIco.addPixmap(QPixmap(NO_REPEAT_ICON))
-        if self.repeatMusicFlag:
-            self.btnRepeat.setIcon(self.repeatIco)
-        else:
-            self.btnRepeat.setIcon(self.noRepeatIco)
-        self.btnRepeat.setIconSize(QSize(60, 60))
 
     def initTextboxes(self):
         self.txtNumber.returnPressed.connect(self.startSession)
@@ -1186,6 +1149,62 @@ class MainWin(QMainWindow):
                 self.hwUpdatedLabelTimer, 4
             )
 
+    def enterMusicPage(self):
+        self.readMusicT.setAuto(True)
+        self.readMusicT.start()
+        self.stackedWidget.setCurrentWidget(self.musicPage)
+
+    def addMusics(self, paths):
+        self.musicFiles = paths
+        self.musicSound.setPlaylist(self.playlist)
+        for path in paths:
+            url = QUrl.fromLocalFile(path)
+            self.playlist.addMedia(QMediaContent(url))
+            name = os.path.basename(path)
+            rowPosition = self.tableMusic.rowCount()
+            self.tableMusic.insertRow(rowPosition)
+            item = QTableWidgetItem(name)
+            item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+            self.tableMusic.setItem(rowPosition, 0, item)
+
+    def readMusicResult(self, res):
+        if not self.readMusicT.auto:
+            self.setLabel(
+                res, self.lblMusicRefresh, self.musicRefreshLableTimer
+            )
+        self.readMusicT.setAuto(False)
+        self.musicFiles.clear()
+        self.tableMusic.setRowCount(0)
+    
+    def readMusic(self):
+        self.musicFiles.clear()
+        self.playlist.clear()
+        self.tableMusic.setRowCount(0)
+        self.readMusicT.start()
+
+    def initMusics(self):
+        self.musicLength = '00:00:00'
+        self.lblLengthMusic.setText(self.musicLength)
+        self.sliderVolumeMusic.valueChanged.connect(self.setMusicVolume)
+        self.musicSound.setVolume(self.configs['MusicVolume'])
+        self.sliderVolumeMusic.setValue(self.configs['MusicVolume'])
+        self.musicSound.stateChanged.connect(lambda: self.mediaStateChanged('music'))
+        self.musicSound.positionChanged.connect(self.positionChangedMusic)
+        self.musicSound.durationChanged.connect(self.durationChangedMusic)
+        self.positionSliderMusic.sliderMoved.connect(self.setPositionMusic)
+        self.positionSliderMusic.setRange(0, 0)
+        self.loopIco = QIcon()
+        self.singleIco = QIcon()
+        self.loopIco.addPixmap(QPixmap(LOOP_MUSIC_ICON))
+        self.singleIco.addPixmap(QPixmap(SINGLE_MUSIC_ICON))
+        if self.LoopMusicFlag:
+            self.btnLoop.setIcon(self.loopIco)
+            self.playlist.setPlaybackMode(QMediaPlaylist.Loop)
+        else:
+            self.btnLoop.setIcon(self.singleIco)
+            self.playlist.setPlaybackMode(QMediaPlaylist.CurrentItemInLoop)
+        self.btnLoop.setIconSize(QSize(80, 80))
+
     def tutorials(self):
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         self.videoWidget = VideoWidget()
@@ -1222,14 +1241,16 @@ class MainWin(QMainWindow):
         self.configs['VideoVolume'] = v
         self.saveConfigs()
 
-    def repeatMusic(self):
-        self.repeatMusicFlag = not self.repeatMusicFlag
-        if self.repeatMusicFlag:
-            self.btnRepeat.setIcon(self.repeatIco)
+    def setLoopMusic(self):
+        self.LoopMusicFlag = not self.LoopMusicFlag
+        if self.LoopMusicFlag:
+            self.btnLoop.setIcon(self.loopIco)
+            self.playlist.setPlaybackMode(QMediaPlaylist.Loop)
         else:
-            self.btnRepeat.setIcon(self.noRepeatIco)
+            self.btnLoop.setIcon(self.singleIco)
+            self.playlist.setPlaybackMode(QMediaPlaylist.CurrentItemInLoop)
         
-        self.configs['RepeatMusic'] = self.repeatMusicFlag
+        self.configs['LoopMusic'] = self.LoopMusicFlag
         self.saveConfigs()
 
     def setMusicVolume(self, v):
@@ -1248,8 +1269,17 @@ class MainWin(QMainWindow):
         name = os.path.basename(self.musicFiles[r])
         name = name[:50] + '...' if len(name) > 50 else name
         self.lblMusicName.setText(name)
-        self.musicSound.setMedia(QMediaContent(QUrl.fromLocalFile(self.musicFiles[r])))
-        self.play('music')
+        self.musicSound.playlist().setCurrentIndex(r)
+        self.musicSound.play()
+
+    def playlistIndexChanged(self):
+        name = self.playlist.currentMedia().canonicalUrl().fileName()
+        name = name[:50] + '...' if len(name) > 50 else name
+        self.lblMusicName.setText(name)
+        self.tableMusic.clearSelection()
+        self.tableMusic.selectRow(self.playlist.currentIndex())
+        
+
     
     def play(self, i):
         if i == 'video':
@@ -2441,9 +2471,11 @@ class MainWin(QMainWindow):
         
     def enterLogsPage(self):
         if isfile(LOGS_PATH):
-            f = open(LOGS_PATH, 'r', encoding="utf-8")
+            EncryptDecrypt(LOGS_PATH, 15)
+            f = open(LOGS_PATH, 'r')
             self.txtLogs.setText(f.read())
             f.close()
+            EncryptDecrypt(LOGS_PATH, 15)
 
         self.hwStackedWidget.setCurrentWidget(self.systemLogPage)
         enterPage(OTHER_PAGE)

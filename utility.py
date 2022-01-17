@@ -2,11 +2,28 @@ from uuid import getnode as get_mac
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QThread, pyqtSignal
 from paths import *
-from os.path import isfile, isdir
+from os.path import isfile, isdir, expanduser
 import datetime, jdatetime
 import subprocess, platform, pickle, hashlib
 import random, uuid, os, json, shutil
 
+
+
+def log(title, info):
+    time = str(jdatetime.datetime.now().strftime('[%Y-%m-%d %H:%M:%S]'))
+    time += ' <' + title + '>\n'
+    try:
+        if not isfile(LOGS_PATH):
+            open(LOGS_PATH, 'w').close()
+            EncryptDecrypt(LOGS_PATH, 15)
+            
+        EncryptDecrypt(LOGS_PATH, 15)
+        with open(LOGS_PATH, 'a') as f:
+            f.write(time + info + '\n')
+            
+        EncryptDecrypt(LOGS_PATH, 15)
+    except Exception as e:
+        print(e)
 
 
 RPI_MODEL = ''
@@ -150,15 +167,18 @@ def genLicense():
 
 
 def EncryptDecrypt(filename, key):
-    with open(filename, 'rb') as f:
-        data = f.read()
-    
-    data = bytearray(data)
-    for index, value in enumerate(data):
-        data[index] = value ^ key
+    try: 
+        with open(filename, 'rb') as f:
+            data = f.read()
         
-    with open(filename, 'wb') as f:
-        f.write(data)
+        data = bytearray(data)
+        for index, value in enumerate(data):
+            data[index] = value ^ key
+            
+        with open(filename, 'wb') as f:
+            f.write(data)
+    except Exception as e:
+        log('Function: EncryptDecrypt()', str(e) + '\n')
     
 
 def loadConfigs():
@@ -273,22 +293,12 @@ def toJalali(date):
         return jdatetime.datetime.fromgregorian(year=y, month=m, day=d)
 
 
-def log(title, info):
-    time = str(jdatetime.datetime.now().strftime('[%Y-%m-%d %H:%M:%S]'))
-    time += ' <' + title + '>\n'
-    try:
-        with open(LOGS_PATH, 'a', encoding="utf-8") as f:
-            f.write(time + info + '\n')
-    except Exception as e:
-        print(e)
-
 
 def calcPosition(pos):
     seconds = int((pos/1000) % 60)
     minutes = int((pos/60000) % 60)
     hours = int((pos/3600000) % 24)
     return hours, minutes, seconds
-
 
 
 MOUNT_DIR = '/media/musics'
@@ -305,6 +315,12 @@ def musicCleanup(mountPoint):
 class ReadMusics(QThread):
     result = pyqtSignal(str)
     paths = pyqtSignal(list)
+    def __init__(self):
+        super(QThread, self).__init__()
+        self.auto = True
+
+    def setAuto(self, i):
+        self.auto = i
 
     def run(self):
         try:

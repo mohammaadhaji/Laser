@@ -2373,7 +2373,10 @@ QHeaderView::section
     background-color:lightblue;
 	color:black;
 } 
- </string>
+QTableWidget::item{ 
+selection-background-color: rgb(66, 135, 245);
+color:black;
+}</string>
                 </property>
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
@@ -2388,7 +2391,7 @@ QHeaderView::section
                  <set>QAbstractItemView::NoEditTriggers</set>
                 </property>
                 <property name="selectionMode">
-                 <enum>QAbstractItemView::SingleSelection</enum>
+                 <enum>QAbstractItemView::MultiSelection</enum>
                 </property>
                 <property name="verticalScrollMode">
                  <enum>QAbstractItemView::ScrollPerPixel</enum>
@@ -2452,7 +2455,7 @@ QHeaderView::section
                </widget>
               </item>
               <item>
-               <widget class="QFrame" name="frame_9">
+               <widget class="QFrame" name="musicFrame">
                 <property name="styleSheet">
                  <string notr="true">QFrame{
 background-color: rgb(0, 0, 0);
@@ -2703,7 +2706,7 @@ background-color: rgb(0, 170, 255);
                       </spacer>
                      </item>
                      <item>
-                      <widget class="QPushButton" name="btnRepeat">
+                      <widget class="QPushButton" name="btnLoop">
                        <property name="styleSheet">
                         <string notr="true">QPushButton{
 outline : 0;
@@ -6082,8 +6085,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>312</width>
-               <height>413</height>
+               <width>1605</width>
+               <height>803</height>
               </rect>
              </property>
              <property name="styleSheet">
@@ -9704,7 +9707,7 @@ background-color: rgb(0, 170, 255);
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1341</width>
+                   <width>1562</width>
                    <height>803</height>
                   </rect>
                  </property>
