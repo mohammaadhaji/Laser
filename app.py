@@ -165,7 +165,8 @@ class MainWin(QMainWindow):
                 QUrl.fromLocalFile(sound)
             )
         )
-        self.touchSound.play()
+        if self.configs['touchSound']:
+            self.touchSound.play()
 
     def initPages(self):
         self.stackedWidget.setCurrentWidget(self.splashPage)
