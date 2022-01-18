@@ -1057,7 +1057,6 @@ class MainWin(QMainWindow):
  
         index = self.hwStackedWidget.indexOf(self.lockSettingsPage)
         if self.hwStackedWidget.currentIndex() == index:
-            self.loadLocksTable()
             try:
                 year = int(self.txtEditYear.text())
                 month = int(self.txtEditMonth.text())
@@ -1077,6 +1076,7 @@ class MainWin(QMainWindow):
                 self.txtLockMonth.setText(str(nextDate.month))
                 self.txtLockDay.setText(str(nextDate.day)) 
                 lockPage(WRITE)
+                self.loadLocksTable()
             except Exception as e:
                 print(e)
                 log('Setting Time', str(e) + '\n')

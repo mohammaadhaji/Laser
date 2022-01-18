@@ -2,12 +2,21 @@ import sys, pickle, os
 from user import User
 from os.path import join, isfile
 from paths import USERS_DATA
-from utility import randID
+from utility import randID, toJalali
+from random import randint
+import datetime
 help = """
 help:   python addUser.py N  ---> adds N users.
 
 note:   With each execution of this command, previous users will be removed.
 """
+
+def randomPhone():
+    range_start = 10**(11-1)
+    range_end = (10**11)-1
+    return str(randint(range_start, range_end))
+
+
 arg = sys.argv
 if not len(arg) == 2:
     print(help)
@@ -17,10 +26,20 @@ else:
             os.remove(USERS_DATA)
         fileHandler = open(USERS_DATA, 'wb')
         usersData = {}
+        bodyParts = ['face', 'arm', 'armpit', 'body', 'bikini', 'leg']
         for i in range(int(arg[1])):
-            num = randID(11)
+            num = randomPhone()
             x = User(num, randID(5))
-            x.addSession()
+            for s in range(randint(0, 10)):
+                for _ in range(len(bodyParts)):
+                    for shot in range(randint(0, 200)):
+                        x.incShot(bodyParts[randint(0, 5)])
+
+                x.addSession()
+                x.setNextSession(
+                    datetime.datetime.now() + 
+                    datetime.timedelta(days=randint(1, 10))
+                )
             usersData[num] = x
 
         usersData = pickle.dump(usersData, fileHandler)
