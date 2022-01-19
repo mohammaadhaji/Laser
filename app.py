@@ -564,6 +564,7 @@ class MainWin(QMainWindow):
         index = self.stackedWidget.indexOf(self.adssPage)
         if self.stackedWidget.currentIndex() == index:
             if not self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+                self.mediaPlayer.setMedia(QMediaContent())
                 self.stackedWidget.setCurrentWidget(self.mainPage)
                 self.adssLayout.removeWidget(self.videoWidget)
                 self.videoLayout.addWidget(self.videoWidget)
