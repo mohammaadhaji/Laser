@@ -1,5 +1,6 @@
-import jdatetime, math, sys, time
-start = time.time()
+import jdatetime, math, sys, time, os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
+from pygame import mixer
 from PyQt5 import uic
 from communication import *
 from promotions import *
@@ -11,6 +12,8 @@ from user import *
 from lock import *
 from itertools import chain
 from pathlib import Path
+mixer.init()
+mixer.music.load(SHOT_SOUND)
 
 
 class MainWin(QMainWindow):
@@ -61,13 +64,9 @@ class MainWin(QMainWindow):
         self.lblLock.setMovie(self.lockMovie)
         self.lockMovie.start()
         self.lockMovie.stop()
-        self.shotSound = QMediaPlayer()
         self.musicSound = QMediaPlayer()
-        self.touchSound = QMediaPlayer()
         self.playlist = QMediaPlaylist()
         self.playlist.currentIndexChanged.connect(self.playlistIndexChanged)
-        self.touchSound.setMedia(QMediaContent(QUrl.fromLocalFile(TOUCH_SOUND)))
-        self.shotSound.setMedia(QMediaContent(QUrl.fromLocalFile(SHOT_SOUND)))
         self.lblSplash.setPixmap(QPixmap(SPLASH).scaled(1920,1080))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
@@ -141,6 +140,7 @@ class MainWin(QMainWindow):
         op=QGraphicsOpacityEffect(self)
         op.setOpacity(0.8) 
         self.listWidgetVideos.setGraphicsEffect(op)
+        mixer.Channel(0).play(mixer.Sound(STARTUP_SOUND))
 
     def setTouchSound(self, active):
         self.configs['touchSound'] = active
@@ -152,13 +152,10 @@ class MainWin(QMainWindow):
             )
 
     def playTouchSound(self, sound):
-        self.touchSound.setMedia(
-            QMediaContent(
-                QUrl.fromLocalFile(sound)
-            )
-        )
         if self.configs['touchSound']:
-            self.touchSound.play()
+            mixer.Channel(0).play(
+                mixer.Sound(sound)
+            )
 
     def initPages(self):
         self.stackedWidget.setCurrentWidget(self.splashPage)
@@ -667,8 +664,7 @@ class MainWin(QMainWindow):
             log('Startup Setting Time', str(e) + '\n')
             
     def playShutdown(self, i):
-        self.musicSound.setMedia(QMediaContent(QUrl.fromLocalFile(SHUTDOWN_SOUND)))
-        self.musicSound.play()
+        mixer.Channel(0).play(mixer.Sound(SHUTDOWN_SOUND))
         self.keyboard('hide')
         if i == 'powerOff':
             self.shutdownTimer.start(3000)
@@ -740,8 +736,7 @@ class MainWin(QMainWindow):
         self.sparkTimer.start(1000/self.frequency + 100)
         self.lblSpark.setVisible(True)
         self.lblLasing.setVisible(True)
-        self.shotSound.stop()
-        self.shotSound.play()
+        mixer.music.play()
 
     def hideSpark(self):
         self.sparkTimer.stop()
@@ -951,8 +946,7 @@ class MainWin(QMainWindow):
                 self.keyboard('hide')
                 self.lockMovie.start()
                 self.txtPassword.clear()
-                self.shotSound.setMedia(QMediaContent(QUrl.fromLocalFile(WELLCOME_SOUND)))
-                self.shotSound.play()
+                mixer.Channel(0).play(mixer.Sound(SHUTDOWN_SOUND))
                 return
 
             else:
@@ -2519,7 +2513,6 @@ class LoadingWindow(QMainWindow):
         self.timer = QTimer()
         self.timer.timeout.connect(self.showMain)
         self.timer.start(500)
-        print(time.time() - start)
     
     def showMain(self):
         self.timer.stop()
