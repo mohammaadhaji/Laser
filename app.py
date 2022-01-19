@@ -53,7 +53,6 @@ class MainWin(QMainWindow):
         self.shutdownMovie = QMovie(SHUTDONW_GIF)
         self.musicMovie = QMovie(MUSIC_GIF)
         self.musicMovie.setCacheMode(QMovie.CacheAll)
-        self.musicMovie.jumpToFrame(95)
         self.lblMusicGif.setMovie(self.musicMovie)
         self.musicMovie.start()
         self.musicMovie.stop()
@@ -72,7 +71,10 @@ class MainWin(QMainWindow):
         self.lblSplash.setPixmap(QPixmap(SPLASH).scaled(1920,1080))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
-        self.lblSplash.clicked.connect(lambda: self.musicSound.setMedia(QMediaContent()))
+        self.lblSplash.clicked.connect(lambda: self.musicMovie.jumpToFrame(95))
+        self.lblSplash.clicked.connect(
+            lambda: self.shotSound.setMedia(QMediaContent(QUrl.fromLocalFile(SHOT_SOUND)))
+        )
         font_db = QFontDatabase()
         font_id = font_db.addApplicationFont(IRAN_NASTALIQ)
         font_id = font_db.addApplicationFont(IRANIAN_SANS)
@@ -143,8 +145,8 @@ class MainWin(QMainWindow):
         op=QGraphicsOpacityEffect(self)
         op.setOpacity(0.8) 
         self.listWidgetVideos.setGraphicsEffect(op)
-        self.musicSound.setMedia(QMediaContent(QUrl.fromLocalFile(STARTUP_SOUND)))
-        self.musicSound.play()
+        self.shotSound.setMedia(QMediaContent(QUrl.fromLocalFile(STARTUP_SOUND)))
+        self.shotSound.play()
 
     def setTouchSound(self, active):
         self.configs['touchSound'] = active
@@ -671,8 +673,8 @@ class MainWin(QMainWindow):
             log('Startup Setting Time', str(e) + '\n')
             
     def playShutdown(self, i):
-        self.musicSound.setMedia(QMediaContent(QUrl.fromLocalFile(SHUTDOWN_SOUND)))
-        self.musicSound.play()
+        self.shotSound.setMedia(QMediaContent(QUrl.fromLocalFile(SHUTDOWN_SOUND)))
+        self.shotSound.play()
         self.keyboard('hide')
         if i == 'powerOff':
             self.shutdownTimer.start(3000)
@@ -955,8 +957,8 @@ class MainWin(QMainWindow):
                 self.keyboard('hide')
                 self.lockMovie.start()
                 self.txtPassword.clear()
-                self.musicSound.setMedia(QMediaContent(QUrl.fromLocalFile(WELLCOME_SOUND)))
-                self.musicSound.play()
+                self.shotSound.setMedia(QMediaContent(QUrl.fromLocalFile(WELLCOME_SOUND)))
+                self.shotSound.play()
                 return
 
             else:
