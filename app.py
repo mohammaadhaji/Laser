@@ -62,7 +62,6 @@ class MainWin(QMainWindow):
         self.lblLock.setMovie(self.lockMovie)
         self.lockMovie.start()
         self.lockMovie.stop()
-        self.appSound = QMediaPlayer()
         self.shotSound = QMediaPlayer()
         self.musicSound = QMediaPlayer()
         self.touchSound = QMediaPlayer()
@@ -143,7 +142,8 @@ class MainWin(QMainWindow):
         op=QGraphicsOpacityEffect(self)
         op.setOpacity(0.8) 
         self.listWidgetVideos.setGraphicsEffect(op)
-        self.playSound(STARTUP_SOUND) 
+        self.musicSound.setMedia(QMediaContent(QUrl.fromLocalFile(STARTUP_SOUND)))
+        self.musicSound.play()
 
     def setTouchSound(self, active):
         self.configs['touchSound'] = active
@@ -153,15 +153,6 @@ class MainWin(QMainWindow):
                 self.lblUiError, 
                 self.uiLabelTimer, 4
             )
-
-    def playSound(self, sound):
-        self.appSound.stop()
-        self.appSound.setMedia(
-            QMediaContent(
-                QUrl.fromLocalFile(sound)
-            )
-        )
-        self.appSound.play()
 
     def playTouchSound(self, sound):
         self.touchSound.setMedia(
@@ -679,8 +670,8 @@ class MainWin(QMainWindow):
             log('Startup Setting Time', str(e) + '\n')
             
     def playShutdown(self, i):
-        self.musicSound.pause()
-        self.playSound(SHUTDOWN_SOUND)
+        self.musicSound.setMedia(QMediaContent(QUrl.fromLocalFile(SHUTDOWN_SOUND)))
+        self.musicSound.play()
         self.keyboard('hide')
         if i == 'powerOff':
             self.shutdownTimer.start(3000)
@@ -963,7 +954,8 @@ class MainWin(QMainWindow):
                 self.keyboard('hide')
                 self.lockMovie.start()
                 self.txtPassword.clear()
-                self.playSound(WELLCOME_SOUND)
+                self.musicSound.setMedia(QMediaContent(QUrl.fromLocalFile(WELLCOME_SOUND)))
+                self.musicSound.play()
                 return
 
             else:
