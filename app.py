@@ -14,6 +14,7 @@ from itertools import chain
 from pathlib import Path
 mixer.init()
 mixer.music.load(SHOT_SOUND)
+mixer.music.set_volume(0.5)
 
 
 class MainWin(QMainWindow):
@@ -56,6 +57,7 @@ class MainWin(QMainWindow):
         self.shutdownMovie = QMovie(SHUTDONW_GIF)
         self.musicMovie = QMovie(MUSIC_GIF)
         self.musicMovie.setCacheMode(QMovie.CacheAll)
+        self.musicMovie.jumpToFrame(95)
         self.lblMusicGif.setMovie(self.musicMovie)
         self.musicMovie.start()
         self.musicMovie.stop()
@@ -65,8 +67,12 @@ class MainWin(QMainWindow):
         self.lockMovie.start()
         self.lockMovie.stop()
         self.musicSound = QMediaPlayer()
+        self.touchSound = mixer.Sound(TOUCH_SOUND)
+        self.keyboardSound = mixer.Sound(KEYBOARD_SOUND)
         self.playlist = QMediaPlaylist()
         self.playlist.currentIndexChanged.connect(self.playlistIndexChanged)
+        self.touchSound.set_volume(0.5)
+        self.keyboardSound.set_volume(0.5)
         self.lblSplash.setPixmap(QPixmap(SPLASH).scaled(1920,1080))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
@@ -140,6 +146,7 @@ class MainWin(QMainWindow):
         op=QGraphicsOpacityEffect(self)
         op.setOpacity(0.8) 
         self.listWidgetVideos.setGraphicsEffect(op)
+        mixer.Channel(0).set_volume(0.5)
         mixer.Channel(0).play(mixer.Sound(STARTUP_SOUND))
 
     def setTouchSound(self, active):
@@ -153,9 +160,10 @@ class MainWin(QMainWindow):
 
     def playTouchSound(self, sound):
         if self.configs['touchSound']:
-            mixer.Channel(0).play(
-                mixer.Sound(sound)
-            )
+            if sound == 't':
+                self.touchSound.play()
+            else:
+                self.keyboardSound.play()
 
     def initPages(self):
         self.stackedWidget.setCurrentWidget(self.splashPage)
@@ -435,9 +443,9 @@ class MainWin(QMainWindow):
                 continue
 
             elif btn in keyboardButtons:
-                btn.pressed.connect(lambda: self.playTouchSound(KEYBOARD_SOUND))
+                btn.pressed.connect(lambda: self.playTouchSound('k'))
             elif btn.objectName() not in sensors:
-                btn.pressed.connect(lambda: self.playTouchSound(TOUCH_SOUND))       
+                btn.pressed.connect(lambda: self.playTouchSound('t'))       
 
     def initTextboxes(self):
         self.txtNumber.returnPressed.connect(self.startSession)
@@ -665,6 +673,7 @@ class MainWin(QMainWindow):
             
     def playShutdown(self, i):
         mixer.Channel(0).play(mixer.Sound(SHUTDOWN_SOUND))
+        self.musicSound.stop()
         self.keyboard('hide')
         if i == 'powerOff':
             self.shutdownTimer.start(3000)
@@ -2023,9 +2032,9 @@ class MainWin(QMainWindow):
         rowPosition = self.usersTable.rowCount()
         self.usersTable.insertRow(rowPosition)
         action = Action(self.usersTable, user.phoneNumber)
-        action.btnInfo.pressed.connect(lambda: self.playTouchSound(TOUCH_SOUND))
+        action.btnInfo.pressed.connect(lambda: self.playTouchSound('t'))
         action.info.connect(self.info)
-        action.chbDel.pressed.connect(lambda: self.playTouchSound(TOUCH_SOUND))
+        action.chbDel.pressed.connect(lambda: self.playTouchSound('t'))
         action.delete.connect(self.selecetCheckedUsers)
         self.usersTable.setCellWidget(rowPosition, 3, action)
         number = QTableWidgetItem(user.phoneNumber)

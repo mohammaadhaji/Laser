@@ -12,25 +12,28 @@ try:
     GPIO.setup(16, GPIO.OUT)
     GPIO.output(16, GPIO.HIGH)
 except Exception as e:
-    log('GPIO', str(e) + '\n')
+    pass
+    # log('GPIO', str(e) + '\n')
+    
 
 def gpioCleanup():
     try:
         GPIO.cleanup()
     except Exception as e:
-        log('GPIO', str(e) + '\n')
+        # log('GPIO', str(e) + '\n')
+        pass
 
 if platform.system() == 'Windows':
     serial = Serial('COM2', 115200)
 else:
     serial = Serial('/dev/ttyS0', 115200)
 
-HEADER_1    = 1
-HEADER_2    = 2
-CHECK_NOB_1 = 3
-CHECK_NOB_2 = 4
-IN_MESSAGE  = 5
-STATE       = HEADER_1
+HEADER_1       = 1
+HEADER_2       = 2
+CHECK_NOB_1    = 3
+CHECK_NOB_2    = 4
+IN_MESSAGE     = 5
+STATE          = HEADER_1
 
 PAGE_INDEX     = 2
 FIELD_INDEX    = 3
@@ -46,19 +49,19 @@ SHUTDONW_PAGE  = 5
 UPDATE_PAGE    = 6
 OTHER_PAGE     = 7
 
-REPORT = 0x0A
-WRITE  = 0x0B 
-READ   = 0x0C
+REPORT         = 0x0A
+WRITE          = 0x0B 
+READ           = 0x0C
 
-MOUNT_DIR        = '/media/updateFirmware'
-SOURCE_FOLDER    = 'Laser'
-VERIFY           = 'verify'
-MICRO_SOURCE     = 'Application_v1.0.bin'
-MICRO_DATA       = {}
-PACKET_NOB       = 1000
+MOUNT_DIR      = '/media/updateFirmware'
+SOURCE_FOLDER  = 'Laser'
+VERIFY         = 'verify'
+MICRO_SOURCE   = 'Application_v1.0.bin'
+MICRO_DATA     = {}
+PACKET_NOB     = 1000
 
-RECEIVED_DATA = bytearray()
-NOB_BYTES     = bytearray(2)
+RECEIVED_DATA  = bytearray()
+NOB_BYTES      = bytearray(2)
 
 
 
@@ -403,7 +406,6 @@ class SerialThread(QThread):
                             NOB_BYTES[0] = nob1
                             NOB_BYTES[1] = nob2
                             nob = int.from_bytes(NOB_BYTES, "big")
-                            # print(nob)  
                             STATE = IN_MESSAGE
 
                         elif STATE == IN_MESSAGE:
@@ -634,7 +636,6 @@ class UpdateFirmware(QThread):
 
             else:
                 file = open(f'{laserDir}/{MICRO_SOURCE}', 'rb')
-                # file = open(f"../LaserSrc/{MICRO_SOURCE}", 'rb')
                 data = file.read()
                 file.close()
 
@@ -655,7 +656,6 @@ class UpdateFirmware(QThread):
                 enterPage(UPDATE_PAGE)
                 self.result.emit('Updating...')
                 GPIO.output(16, GPIO.LOW)
-                print(MICRO_DATA)
                 updateCleanup(partitionsDir)
 
         except Exception as e:
