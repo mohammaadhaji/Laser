@@ -198,8 +198,8 @@ def loadConfigs():
             configs['LANGUAGE'] = 'en'
             configs['slideTransition'] = True
             configs['touchSound'] = True
-            configs['MusicVolume'] = 100
-            configs['VideoVolume'] = 100
+            configs['MusicVolume'] = 50
+            configs['VideoVolume'] = 50
             configs['LoopMusic'] = True
             configs['theme'] = 'C1'
             configs['OwnerInfo'] = ''
