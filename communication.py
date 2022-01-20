@@ -379,158 +379,158 @@ class SerialThread(QThread):
         nob1 = 0 
         nob2 = 0
         while self.loop:
-            try:
-                temp = serial.read_all()
-                counter = 0
+            # try:
+            temp = serial.read_all()
+            counter = 0
 
-                if temp:
-                    len_temp = len(temp)
-                    while counter < len_temp:
-                        if STATE == HEADER_1:
+            if temp:
+                len_temp = len(temp)
+                while counter < len_temp:
+                    if STATE == HEADER_1:
 
-                            if temp[counter] == 0xAA:
-                                STATE = HEADER_2
+                        if temp[counter] == 0xAA:
+                            STATE = HEADER_2
 
-                        elif STATE == HEADER_2:
+                    elif STATE == HEADER_2:
 
-                            if temp[counter] == 0xBB:
-                                STATE = CHECK_NOB_1
-                                RECEIVED_DATA[:] = []
+                        if temp[counter] == 0xBB:
+                            STATE = CHECK_NOB_1
+                            RECEIVED_DATA[:] = []
 
-                        elif STATE == CHECK_NOB_1:
-                            nob1 = temp[counter]
-                            STATE = CHECK_NOB_2
-                        
-                        elif STATE == CHECK_NOB_2:
-                            nob2 = temp[counter]
-                            NOB_BYTES[0] = nob1
-                            NOB_BYTES[1] = nob2
-                            nob = int.from_bytes(NOB_BYTES, "big")
-                            STATE = IN_MESSAGE
+                    elif STATE == CHECK_NOB_1:
+                        nob1 = temp[counter]
+                        STATE = CHECK_NOB_2
+                    
+                    elif STATE == CHECK_NOB_2:
+                        nob2 = temp[counter]
+                        NOB_BYTES[0] = nob1
+                        NOB_BYTES[1] = nob2
+                        nob = int.from_bytes(NOB_BYTES, "big")
+                        STATE = IN_MESSAGE
 
-                        elif STATE == IN_MESSAGE:
-                        
-                            if len(RECEIVED_DATA) == nob:
-                                STATE = HEADER_1
-                                RECEIVED_DATA[0:0] = nob.to_bytes(2, 'big')
+                    elif STATE == IN_MESSAGE:
+                    
+                        if len(RECEIVED_DATA) == nob:
+                            STATE = HEADER_1
+                            RECEIVED_DATA[0:0] = nob.to_bytes(2, 'big')
 
-                                crc_s = int.from_bytes(
-                                    RECEIVED_DATA[-2:], 
-                                    byteorder='big', 
-                                    signed=False
-                                )
+                            crc_s = int.from_bytes(
+                                RECEIVED_DATA[-2:], 
+                                byteorder='big', 
+                                signed=False
+                            )
 
-                                crc_r = Crc16Xmodem.calc(
-                                    RECEIVED_DATA[:-2]
-                                )
+                            crc_r = Crc16Xmodem.calc(
+                                RECEIVED_DATA[:-2]
+                            )
 
-                                if crc_r == crc_s:
-                                    if RECEIVED_DATA[CMD_TYPE_INDEX] == REPORT:
-                                        
-                                        if RECEIVED_DATA[PAGE_INDEX] == SETTING_PAGE:
-                                            if RECEIVED_DATA[FIELD_INDEX] == 0:
-                                                serNum = RECEIVED_DATA[DATA_INDEX:-2].decode()
-                                                d = serNum[-2:]
-                                                m = serNum[-4:-2]
-                                                y = serNum[-8:-4]
-                                                pdate = y + ' / ' + m + ' / ' + d
-                                                self.productionDate.emit(pdate)
-                                                self.serialNumber.emit(serNum)
-
-                                            elif RECEIVED_DATA[FIELD_INDEX] == 3:
-                                                lEnergy = RECEIVED_DATA[DATA_INDEX:-2].decode()
-                                                self.laserEnergy.emit(lEnergy)
-
-                                            elif RECEIVED_DATA[FIELD_INDEX] == 8:
-                                                firmware = RECEIVED_DATA[DATA_INDEX:-2].decode()
-                                                self.firmwareVesion.emit(firmware)
-
-                                        elif RECEIVED_DATA[PAGE_INDEX] == LOCK_TIME_PAGE:
-                                            if RECEIVED_DATA[FIELD_INDEX] == 0:
-                                                clock = RECEIVED_DATA[DATA_INDEX:-2].decode()
-                                                clock = clock.split(':')
-                                                clock = tuple( int(x) for x in clock )
-                                                self.sysClock.emit(clock)
-                                            elif RECEIVED_DATA[FIELD_INDEX] == 1:
-                                                date = RECEIVED_DATA[DATA_INDEX:-2].decode()
-                                                date = date.split('-')
-                                                date = tuple( int(x) for x in date )
-                                                self.sysDate.emit(date)
-                                        
-                                        elif RECEIVED_DATA[PAGE_INDEX] == UPDATE_PAGE:
-                                            if RECEIVED_DATA[FIELD_INDEX] == 252:
-                                                status = RECEIVED_DATA[DATA_INDEX:-2].decode()
-                                                self.updateProgress.emit(status)
-
-                                    elif RECEIVED_DATA[CMD_TYPE_INDEX] == WRITE:
-
-                                        if RECEIVED_DATA[PAGE_INDEX] in (LASER_PAGE, BODY_PART_PAGE):
-                                            if RECEIVED_DATA[FIELD_INDEX] == 0:     
-                                                flags = sensors(RECEIVED_DATA)
-                                                self.sensorFlags.emit(flags)
-
-                                            if RECEIVED_DATA[FIELD_INDEX] == 1:
-                                                t = RECEIVED_DATA[DATA_INDEX:-2].decode()
-                                                self.tempValue.emit(int(t))
-
-                                            if RECEIVED_DATA[FIELD_INDEX] == 7:
-                                                shot = RECEIVED_DATA[DATA_INDEX:-2].hex()
-                                                if int(shot, 16) == 1:
-                                                    self.shot.emit()
-
-                                        elif RECEIVED_DATA[PAGE_INDEX] == SETTING_PAGE:
-                                            if RECEIVED_DATA[FIELD_INDEX] == 0:
-                                                serNum = RECEIVED_DATA[DATA_INDEX:-2].decode()
-                                                d = serNum[-2:]
-                                                m = serNum[-4:-2]
-                                                y = serNum[-8:-4]
-                                                pdate = y + ' / ' + m + ' / ' + d
-                                                self.productionDate.emit(pdate)
-                                                self.serialNumber.emit(serNum)
-
-                                            elif RECEIVED_DATA[FIELD_INDEX] == 3:
-                                                lEnergy = RECEIVED_DATA[DATA_INDEX:-2].decode()
-                                                self.laserEnergy.emit(lEnergy)
-
-                                            elif RECEIVED_DATA[FIELD_INDEX] == 8:
-                                                firmware = RECEIVED_DATA[DATA_INDEX:-2].decode()
-                                                self.firmwareVesion.emit(firmware)
+                            if crc_r == crc_s:
+                                if RECEIVED_DATA[CMD_TYPE_INDEX] == REPORT:
                                     
-                                    elif RECEIVED_DATA[CMD_TYPE_INDEX] == READ:
-                                        if RECEIVED_DATA[PAGE_INDEX] == LASER_PAGE:
+                                    if RECEIVED_DATA[PAGE_INDEX] == SETTING_PAGE:
+                                        if RECEIVED_DATA[FIELD_INDEX] == 0:
+                                            serNum = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                                            d = serNum[-2:]
+                                            m = serNum[-4:-2]
+                                            y = serNum[-8:-4]
+                                            pdate = y + ' / ' + m + ' / ' + d
+                                            self.productionDate.emit(pdate)
+                                            self.serialNumber.emit(serNum)
 
-                                            if RECEIVED_DATA[FIELD_INDEX] == 3:
-                                                self.readCooling.emit()
-                                            elif RECEIVED_DATA[FIELD_INDEX] == 4:
-                                                self.readEnergy.emit()
-                                            elif RECEIVED_DATA[FIELD_INDEX] == 5:
-                                                self.readPulseWidht.emit()
-                                            elif RECEIVED_DATA[FIELD_INDEX] == 6:
-                                                self.readFrequency.emit()
+                                        elif RECEIVED_DATA[FIELD_INDEX] == 3:
+                                            lEnergy = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                                            self.laserEnergy.emit(lEnergy)
 
-                                        elif RECEIVED_DATA[PAGE_INDEX] == LASER_PAGE:
-                                            segmentIndex = RECEIVED_DATA[FIELD_INDEX]
-                                            if segmentIndex in MICRO_DATA.keys():
-                                                serial.write(
-                                                    MICRO_DATA[segmentIndex]
-                                                )
-                                            elif RECEIVED_DATA[FIELD_INDEX] == 250:
-                                                GPIO.output(16, GPIO.HIGH)
-                                                serial.write(
-                                                    MICRO_DATA[250]
-                                                )
-                                            elif RECEIVED_DATA[FIELD_INDEX] == 251:
-                                                serial.write(
-                                                    MICRO_DATA[251]
-                                                )
+                                        elif RECEIVED_DATA[FIELD_INDEX] == 8:
+                                            firmware = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                                            self.firmwareVesion.emit(firmware)
 
-                            else:
-                                RECEIVED_DATA.append(temp[counter])
+                                    elif RECEIVED_DATA[PAGE_INDEX] == LOCK_TIME_PAGE:
+                                        if RECEIVED_DATA[FIELD_INDEX] == 0:
+                                            clock = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                                            clock = clock.split(':')
+                                            clock = tuple( int(x) for x in clock )
+                                            self.sysClock.emit(clock)
+                                        elif RECEIVED_DATA[FIELD_INDEX] == 1:
+                                            date = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                                            date = date.split('-')
+                                            date = tuple( int(x) for x in date )
+                                            self.sysDate.emit(date)
+                                    
+                                    elif RECEIVED_DATA[PAGE_INDEX] == UPDATE_PAGE:
+                                        if RECEIVED_DATA[FIELD_INDEX] == 252:
+                                            status = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                                            self.updateProgress.emit(status)
 
-                        counter = counter + 1
-            except Exception as e:
-                print(e)
-                log('Serial Unhandled Exception', str(e) + '\n')
+                                elif RECEIVED_DATA[CMD_TYPE_INDEX] == WRITE:
+
+                                    if RECEIVED_DATA[PAGE_INDEX] in (LASER_PAGE, BODY_PART_PAGE):
+                                        if RECEIVED_DATA[FIELD_INDEX] == 0:     
+                                            flags = sensors(RECEIVED_DATA)
+                                            self.sensorFlags.emit(flags)
+
+                                        if RECEIVED_DATA[FIELD_INDEX] == 1:
+                                            t = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                                            self.tempValue.emit(int(t))
+
+                                        if RECEIVED_DATA[FIELD_INDEX] == 7:
+                                            shot = RECEIVED_DATA[DATA_INDEX:-2].hex()
+                                            if int(shot, 16) == 1:
+                                                self.shot.emit()
+
+                                    elif RECEIVED_DATA[PAGE_INDEX] == SETTING_PAGE:
+                                        if RECEIVED_DATA[FIELD_INDEX] == 0:
+                                            serNum = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                                            d = serNum[-2:]
+                                            m = serNum[-4:-2]
+                                            y = serNum[-8:-4]
+                                            pdate = y + ' / ' + m + ' / ' + d
+                                            self.productionDate.emit(pdate)
+                                            self.serialNumber.emit(serNum)
+
+                                        elif RECEIVED_DATA[FIELD_INDEX] == 3:
+                                            lEnergy = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                                            self.laserEnergy.emit(lEnergy)
+
+                                        elif RECEIVED_DATA[FIELD_INDEX] == 8:
+                                            firmware = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                                            self.firmwareVesion.emit(firmware)
+                                
+                                elif RECEIVED_DATA[CMD_TYPE_INDEX] == READ:
+                                    if RECEIVED_DATA[PAGE_INDEX] == LASER_PAGE:
+
+                                        if RECEIVED_DATA[FIELD_INDEX] == 3:
+                                            self.readCooling.emit()
+                                        elif RECEIVED_DATA[FIELD_INDEX] == 4:
+                                            self.readEnergy.emit()
+                                        elif RECEIVED_DATA[FIELD_INDEX] == 5:
+                                            self.readPulseWidht.emit()
+                                        elif RECEIVED_DATA[FIELD_INDEX] == 6:
+                                            self.readFrequency.emit()
+
+                                    elif RECEIVED_DATA[PAGE_INDEX] == LASER_PAGE:
+                                        segmentIndex = RECEIVED_DATA[FIELD_INDEX]
+                                        if segmentIndex in MICRO_DATA.keys():
+                                            serial.write(
+                                                MICRO_DATA[segmentIndex]
+                                            )
+                                        elif RECEIVED_DATA[FIELD_INDEX] == 250:
+                                            GPIO.output(16, GPIO.HIGH)
+                                            serial.write(
+                                                MICRO_DATA[250]
+                                            )
+                                        elif RECEIVED_DATA[FIELD_INDEX] == 251:
+                                            serial.write(
+                                                MICRO_DATA[251]
+                                            )
+
+                        else:
+                            RECEIVED_DATA.append(temp[counter])
+
+                    counter = counter + 1
+            # except Exception as e:
+            #     print(e)
+            #     log('Serial Unhandled Exception', str(e) + '\n')
 
 
 def updateCleanup(mountPoint):
