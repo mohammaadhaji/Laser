@@ -1,3 +1,4 @@
+import numbers
 import jdatetime, math, sys, time, os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 from pygame import mixer
@@ -12,7 +13,7 @@ from user import *
 from lock import *
 from itertools import chain
 from pathlib import Path
-mixer.init(buffer=1024)
+mixer.init(buffer=2048)
 mixer.music.load(SHOT_SOUND)
 mixer.music.set_volume(0.5)
 
@@ -546,6 +547,7 @@ class MainWin(QMainWindow):
 
     def adss(self):
         self.changeAnimation('vertical')
+        self.keyboard('hide')
         self.videoLayout.removeWidget(self.videoWidget)
         self.adssLayout.addWidget(self.videoWidget)
         self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(ADSS_DEMO)))
@@ -2039,7 +2041,8 @@ class MainWin(QMainWindow):
         self.usersTable.setCellWidget(rowPosition, 3, action)
         number = QTableWidgetItem(user.phoneNumber)
         name = QTableWidgetItem(user.name)
-        sessions = QTableWidgetItem(str(user.sessionNumber - 1))
+        sessions = QTableWidgetItem()
+        sessions.setData(Qt.EditRole, user.sessionNumber - 1)
         number.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         name.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         sessions.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
@@ -2292,7 +2295,7 @@ class MainWin(QMainWindow):
         name = self.txtNameSubmit.text()
         name = name if name else 'User ' + str(len(self.usersData) + 1)
 
-        if not number:
+        if not number or number.isspace():
             self.setLabel(
                     TEXT['emptyNumber'][self.langIndex], 
                     self.lblSubmit, 
@@ -2321,7 +2324,7 @@ class MainWin(QMainWindow):
     def startSession(self):
         numberEntered = self.txtNumber.text()
 
-        if not numberEntered:
+        if not numberEntered or numberEntered.isspace():
             self.setLabel(
                     TEXT['emptyNumber'][self.langIndex], 
                     self.lblLogin, 
