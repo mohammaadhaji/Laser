@@ -12,7 +12,7 @@ from user import *
 from lock import *
 from itertools import chain
 from pathlib import Path
-mixer.init()
+mixer.init(buffer=1024)
 mixer.music.load(SHOT_SOUND)
 mixer.music.set_volume(0.5)
 
