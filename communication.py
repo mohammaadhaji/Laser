@@ -54,7 +54,7 @@ WRITE          = 0x0B
 READ           = 0x0C
 
 MOUNT_DIR      = '/media/updateFirmware'
-SOURCE_TAR     = 'Laser.tar'
+SOURCE_ZIP     = 'Laser.zip'
 VERIFY         = 'verify'
 MICRO_SOURCE   = 'Application_v1.0.bin'
 MICRO_DATA     = {}
@@ -604,9 +604,9 @@ class UpdateFirmware(QThread):
             laserDir = ''
             laserUnpackDir = ''
             for dir in partitionsDir.values():
-                if isfile(f'{dir}/{SOURCE_TAR}'):
+                if isfile(f'{dir}/{SOURCE_ZIP}'):
                     laserFound = True
-                    laserTarDir = f'{dir}/{SOURCE_TAR}'
+                    laserTarDir = f'{dir}/{SOURCE_ZIP}'
                     laserDir = str(Path(laserTarDir).with_suffix(''))
                     laserUnpackDir = Path(laserTarDir).parent.absolute()
 
@@ -618,33 +618,33 @@ class UpdateFirmware(QThread):
                 return
 
             
+            if isdir(laserDir):
+                shutil.rmtree(laserDir)
 
-            verifyError = 'The source files are corrupted and can not be replaced.'
-            try:
-                if isdir(laserDir):
-                    shutil.rmtree(laserDir)
-                os.system(f'tar -xf {laserTarDir} -C {laserUnpackDir}/')
+            shutil.unpack_archive(laserTarDir, laserUnpackDir)
 
-                with open(f'{laserDir}/{VERIFY}', 'r') as f:
-                    md5 = int(f.read())
-
-                if not md5 == calcMD5(laserDir, f'{VERIFY}'):
-                    self.result.emit(verifyError)
-                    log('Update Firmware', verifyError + '\n')
-                    updateCleanup(partitionsDir, laserD=laserDir)
-                    return
-
-            except Exception as e:
-                self.result.emit(verifyError)
-                log('Update Firmware', str(e) + '\n')
-                updateCleanup(partitionsDir)
-                return
-            
             microUpdate = False
             if isfile(f'{laserDir}/{MICRO_SOURCE}'):
                 microUpdate = True
-            
+
             if not microUpdate:
+                try:
+                    verifyError = 'The source files are corrupted and can not be replaced.'
+                    with open(f'{laserDir}/{VERIFY}', 'r') as f:
+                        md5 = int(f.read())
+
+                    if not md5 == calcMD5(laserDir, f'{VERIFY}'):
+                        self.result.emit(verifyError)
+                        log('Update Firmware', verifyError + '\n')
+                        updateCleanup(partitionsDir, laserD=laserDir)
+                        return
+
+                except Exception as e:
+                    self.result.emit(verifyError)
+                    log('Update Firmware', str(e) + '\n')
+                    updateCleanup(partitionsDir)
+                    return
+
                 os.system(f'cp -r {laserDir}/* {CURRENT_FILE_DIR}')
                 updateCleanup(partitionsDir, laserD=laserDir)
                 self.result.emit("Done GUI")
