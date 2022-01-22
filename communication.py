@@ -54,7 +54,7 @@ WRITE          = 0x0B
 READ           = 0x0C
 
 MOUNT_DIR      = '/media/updateFirmware'
-SOURCE_FOLDER  = 'Laser'
+SOURCE_TAR  = 'Laser.tar'
 VERIFY         = 'verify'
 MICRO_SOURCE   = 'Application_v1.0.bin'
 MICRO_DATA     = {}
@@ -533,12 +533,17 @@ class SerialThread(QThread):
             #     log('Serial Unhandled Exception', str(e) + '\n')
 
 
-def updateCleanup(mountPoint):
+def updateCleanup(mountPoint, laserD=''):
     try:
         for mp in mountPoint.values():
             os.system(f'umount {mp}')
+
+        if isdir(laserD):
+            shutil.rmtree(laserD)
+
         if isdir(MOUNT_DIR):
             shutil.rmtree(MOUNT_DIR)
+        
     except Exception as e:
         log('Update Firmware', str(e) + '\n')
 
@@ -595,11 +600,15 @@ class UpdateFirmware(QThread):
                     partitionsDir[part] = f'{MOUNT_DIR}/{part}'
 
             laserFound = False
+            laserTarDir = ''
             laserDir = ''
+            laserUnpackDir = ''
             for dir in partitionsDir.values():
-                if isdir(f'{dir}/{SOURCE_FOLDER}'):
+                if isdir(f'{dir}/{SOURCE_TAR}'):
                     laserFound = True
-                    laserDir = f'{dir}/{SOURCE_FOLDER}'
+                    laserTarDir = f'{dir}/{SOURCE_TAR}'
+                    laserDir = str(Path(laserTarDir).with_suffix(''))
+                    laserUnpackDir = Path(laserTarDir).parent.absolute()
 
             if not laserFound:
                 err = "Source files not found."
@@ -608,20 +617,26 @@ class UpdateFirmware(QThread):
                 updateCleanup(partitionsDir)
                 return
 
+            
+
             verifyError = 'The source files are corrupted and can not be replaced.'
             try:
+                if isdir(laserDir):
+                    shutil.rmtree(laserDir)
+                r = subprocess.call(f'tar -xf {laserTarDir} -C {laserUnpackDir }')
+
                 with open(f'{laserDir}/{VERIFY}', 'r') as f:
                     md5 = int(f.read())
 
                 if not md5 == calcMD5(laserDir, f'{VERIFY}'):
                     self.result.emit(verifyError)
                     log('Update Firmware', verifyError + '\n')
-                    updateCleanup(partitionsDir)
+                    updateCleanup(partitionsDir, laserD=laserDir)
                     return
     
-            except Exception:
+            except Exception as e:
                 self.result.emit(verifyError)
-                log('Update Firmware', verifyError + '\n')
+                log('Update Firmware', str(e) + '\n')
                 updateCleanup(partitionsDir)
                 return
             
@@ -631,7 +646,7 @@ class UpdateFirmware(QThread):
             
             if not microUpdate:
                 os.system(f'cp -r {laserDir}/* {CURRENT_FILE_DIR}')
-                updateCleanup(partitionsDir)
+                updateCleanup(partitionsDir, laserD=laserDir)
                 self.result.emit("Done GUI")
 
             else:
@@ -656,7 +671,7 @@ class UpdateFirmware(QThread):
                 enterPage(UPDATE_PAGE)
                 self.result.emit('Updating...')
                 GPIO.output(16, GPIO.LOW)
-                updateCleanup(partitionsDir)
+                updateCleanup(partitionsDir, laserD=laserDir)
 
         except Exception as e:
             self.result.emit('Operation failed. Please restart and try again.')
