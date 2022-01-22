@@ -535,11 +535,11 @@ class SerialThread(QThread):
 
 def updateCleanup(mountPoint, laserD=''):
     try:
-        for mp in mountPoint.values():
-            os.system(f'umount {mp}')
-
         if isdir(laserD):
             shutil.rmtree(laserD)
+
+        for mp in mountPoint.values():
+            os.system(f'umount {mp}')
 
         if isdir(MOUNT_DIR):
             shutil.rmtree(MOUNT_DIR)
