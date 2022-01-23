@@ -44,6 +44,7 @@ class MainWin(QMainWindow):
         self.serialC.driverVersion.connect(self.txtDriverVersion.setText)
         self.serialC.mainControl.connect(self.txtMainControlVersion.setText)
         self.serialC.firmwareVesion.connect(self.txtFirmwareVersion.setText)
+        self.serialC.receivingSensors.connect(self.setReceivingSensorsData)
         self.serialC.updateProgress.connect(self.updateProgress)
         self.serialC.readCooling.connect(lambda: laserPage({'cooling': self.cooling}))
         self.serialC.readEnergy.connect(lambda: laserPage({'energy': self.energy}))
@@ -225,6 +226,7 @@ class MainWin(QMainWindow):
         self.systemTimeTimer = QTimer()
         self.readyErrorTimer =  QTimer()
         self.monitorSensorsTimer = QTimer()
+        self.monitorReceivingSensors = QTimer()
         self.sparkTimer = QTimer()
         self.loadUsersTimer = QTimer()
         self.shutdownTimer = QTimer()
@@ -283,6 +285,7 @@ class MainWin(QMainWindow):
         self.hwWrongPassTimer.timeout.connect(self.hwWrongPass)
         self.sparkTimer.timeout.connect(self.hideSpark)
         self.monitorSensorsTimer.timeout.connect(self.monitorSensors)
+        self.monitorReceivingSensors.timeout.connect(lambda: self.setReceivingSensorsData(False))
 
     def initTables(self):
         for tbl in self.findChildren(QTableWidget):
@@ -542,11 +545,12 @@ class MainWin(QMainWindow):
         self.waterflowError = False
         self.physicalDamage = False
         self.overHeatError = False
+        self.receivingSensorsData = True
         self.temperature = 0
         self.setTemp(0)
-        self.setWaterflowError(True)
-        self.setWaterLevelError(True)
-        self.setLock(True)
+        self.setWaterflowError(False)
+        self.setWaterLevelError(False)
+        self.setLock(False)
 
     def adss(self):
         self.changeAnimation('vertical')
@@ -573,6 +577,16 @@ class MainWin(QMainWindow):
         self.setWaterflowError(flags[2])
         self.setOverHeatError(flags[3])
         self.setPhysicalDamage(flags[4])
+
+    def setReceivingSensorsData(self, receiving):
+        self.receivingSensorsData = receiving
+        self.monitorReceivingSensors.stop()
+        self.monitorReceivingSensors.start(2000)
+        if not self.receivingSensorsData:
+            self.setLock(True)
+            self.setWaterLevelError(True)
+            self.setWaterflowError(True)
+            self.setTemp(0)
 
     def changeTheme(self, theme):
         inc = QIcon()
@@ -747,10 +761,9 @@ class MainWin(QMainWindow):
         self.currentCounter += 1
         self.user.incShot(self.bodyPart)
         self.lblCounterValue.setText(f'{self.currentCounter}')
-        self.sparkTimer.start(1000/self.frequency + 100)
+        self.sparkTimer.start(1000//self.frequency + 100)
         self.lblSpark.setVisible(True)
         self.lblLasing.setVisible(True)
-        mixer.music.play()
 
     def hideSpark(self):
         self.sparkTimer.stop()
@@ -1269,9 +1282,7 @@ class MainWin(QMainWindow):
         self.lblMusicName.setText(name)
         self.tableMusic.clearSelection()
         self.tableMusic.selectRow(self.playlist.currentIndex())
-        
-
-    
+           
     def play(self, i):
         if i == 'video':
             if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
@@ -1286,8 +1297,7 @@ class MainWin(QMainWindow):
                 self.musicSound.play()
                 if self.btnPlayMusic.icon() == self.pauseIco:
                     self.musicMovie.start()
-
-                    
+             
     def setPosition(self, position):
         self.mediaPlayer.setPosition(position)
     
@@ -2355,10 +2365,12 @@ class MainWin(QMainWindow):
         self.mainPage.setVisible(False)
         enterPage(BODY_PART_PAGE)
         self.monitorSensorsTimer.start(1000)
+        self.monitorReceivingSensors.start(2000)
 
     def endSession(self):
         try:
             self.monitorSensorsTimer.stop()
+            self.monitorReceivingSensors.stop()
             self.user.setCurrentSession('finished')
             self.user.addSession()
             self.removeUser(self.user.phoneNumber)
@@ -2471,6 +2483,9 @@ class MainWin(QMainWindow):
 
         self.hwStackedWidget.setCurrentWidget(self.systemLogPage)
         enterPage(OTHER_PAGE)
+        self.txtLogs.verticalScrollBar().setValue(
+            self.txtLogs.verticalScrollBar().maximum()
+        )
 
     def deleteLogs(self):
         if isfile(LOGS_PATH):

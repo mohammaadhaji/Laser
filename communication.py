@@ -64,7 +64,6 @@ RECEIVED_DATA  = bytearray()
 NOB_BYTES      = bytearray(2)
 
 
-
 def printPacket(packet):
     print( " ".join(packet.hex()[i:i+2].upper() for i in range(0, len(packet.hex()), 2)))
 
@@ -161,20 +160,25 @@ def lockPage(cmdType):
 
 
 class SerialTimer(QObject):
-    sensorFlags = pyqtSignal(list)
-    tempValue = pyqtSignal(int)
-    shot = pyqtSignal()
-    serialNumber = pyqtSignal(str)
-    productionDate = pyqtSignal(str)
-    laserEnergy = pyqtSignal(str)
-    firmwareVesion = pyqtSignal(str)
-    readCooling = pyqtSignal()
-    readEnergy = pyqtSignal()
-    readPulseWidht = pyqtSignal()
-    readFrequency = pyqtSignal()
-    sysClock = pyqtSignal(tuple)
-    sysDate = pyqtSignal(tuple)
-    updateProgress = pyqtSignal(str)
+    sysClock         = pyqtSignal(tuple)
+    sysDate          = pyqtSignal(tuple)
+    sensorFlags      = pyqtSignal(list)
+    receivingSensors = pyqtSignal(bool)
+    tempValue        = pyqtSignal(int)
+    serialNumber     = pyqtSignal(str)
+    productionDate   = pyqtSignal(str)
+    laserEnergy      = pyqtSignal(str)
+    laserWavelenght  = pyqtSignal(str)
+    laserBarType     = pyqtSignal(str)
+    driverVersion    = pyqtSignal(str)
+    mainControl      = pyqtSignal(str)
+    firmwareVesion   = pyqtSignal(str)
+    updateProgress   = pyqtSignal(str)
+    readCooling      = pyqtSignal()
+    readEnergy       = pyqtSignal()
+    readPulseWidht   = pyqtSignal()
+    readFrequency    = pyqtSignal()
+    shot             = pyqtSignal()
 
     def __init__(self):
         super(QObject, self).__init__()
@@ -298,6 +302,7 @@ class SerialTimer(QObject):
                                         if RECEIVED_DATA[FIELD_INDEX] == 0:     
                                             flags = sensors(RECEIVED_DATA)
                                             self.sensorFlags.emit(flags)
+                                            self.receivingSensors.emit(True)
 
                                         if RECEIVED_DATA[FIELD_INDEX] == 1:
                                             t = RECEIVED_DATA[DATA_INDEX:-2].decode()
@@ -347,24 +352,25 @@ class SerialTimer(QObject):
 
 
 class SerialThread(QThread):
-    sensorFlags = pyqtSignal(list)
-    tempValue = pyqtSignal(int)
-    shot = pyqtSignal()
-    serialNumber = pyqtSignal(str)
-    productionDate = pyqtSignal(str)
-    laserEnergy = pyqtSignal(str)
-    laserWavelenght = pyqtSignal(str)
-    laserBarType = pyqtSignal(str)
-    driverVersion = pyqtSignal(str)
-    mainControl = pyqtSignal(str)
-    firmwareVesion = pyqtSignal(str)
-    readCooling = pyqtSignal()
-    readEnergy = pyqtSignal()
-    readPulseWidht = pyqtSignal()
-    readFrequency = pyqtSignal()
-    sysClock = pyqtSignal(tuple)
-    sysDate = pyqtSignal(tuple)
-    updateProgress = pyqtSignal(str)
+    sysClock         = pyqtSignal(tuple)
+    sysDate          = pyqtSignal(tuple)
+    receivingSensors = pyqtSignal(bool)
+    sensorFlags      = pyqtSignal(list)
+    tempValue        = pyqtSignal(int)
+    serialNumber     = pyqtSignal(str)
+    productionDate   = pyqtSignal(str)
+    laserEnergy      = pyqtSignal(str)
+    laserWavelenght  = pyqtSignal(str)
+    laserBarType     = pyqtSignal(str)
+    driverVersion    = pyqtSignal(str)
+    mainControl      = pyqtSignal(str)
+    firmwareVesion   = pyqtSignal(str)
+    updateProgress   = pyqtSignal(str)
+    readCooling      = pyqtSignal()
+    readEnergy       = pyqtSignal()
+    readPulseWidht   = pyqtSignal()
+    readFrequency    = pyqtSignal()
+    shot             = pyqtSignal()
 
     def __init__(self):
         super(QThread, self).__init__()
@@ -487,6 +493,7 @@ class SerialThread(QThread):
                                             if RECEIVED_DATA[FIELD_INDEX] == 0:     
                                                 flags = sensors(RECEIVED_DATA)
                                                 self.sensorFlags.emit(flags)
+                                                self.receivingSensors.emit(True)
 
                                             if RECEIVED_DATA[FIELD_INDEX] == 1:
                                                 t = RECEIVED_DATA[DATA_INDEX:-2].decode()
