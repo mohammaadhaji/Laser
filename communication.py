@@ -163,7 +163,6 @@ class SerialTimer(QObject):
     sysClock         = pyqtSignal(tuple)
     sysDate          = pyqtSignal(tuple)
     sensorFlags      = pyqtSignal(list)
-    receivingSensors = pyqtSignal(bool)
     tempValue        = pyqtSignal(int)
     serialNumber     = pyqtSignal(str)
     productionDate   = pyqtSignal(str)
@@ -179,6 +178,7 @@ class SerialTimer(QObject):
     readPulseWidht   = pyqtSignal()
     readFrequency    = pyqtSignal()
     shot             = pyqtSignal()
+    receivingSensors = pyqtSignal()
 
     def __init__(self):
         super(QObject, self).__init__()
@@ -302,7 +302,7 @@ class SerialTimer(QObject):
                                         if RECEIVED_DATA[FIELD_INDEX] == 0:     
                                             flags = sensors(RECEIVED_DATA)
                                             self.sensorFlags.emit(flags)
-                                            self.receivingSensors.emit(True)
+                                            self.receivingSensors.emit()
 
                                         if RECEIVED_DATA[FIELD_INDEX] == 1:
                                             t = RECEIVED_DATA[DATA_INDEX:-2].decode()
@@ -354,7 +354,6 @@ class SerialTimer(QObject):
 class SerialThread(QThread):
     sysClock         = pyqtSignal(tuple)
     sysDate          = pyqtSignal(tuple)
-    receivingSensors = pyqtSignal(bool)
     sensorFlags      = pyqtSignal(list)
     tempValue        = pyqtSignal(int)
     serialNumber     = pyqtSignal(str)
@@ -371,6 +370,7 @@ class SerialThread(QThread):
     readPulseWidht   = pyqtSignal()
     readFrequency    = pyqtSignal()
     shot             = pyqtSignal()
+    receivingSensors = pyqtSignal()
 
     def __init__(self):
         super(QThread, self).__init__()
@@ -493,7 +493,7 @@ class SerialThread(QThread):
                                             if RECEIVED_DATA[FIELD_INDEX] == 0:     
                                                 flags = sensors(RECEIVED_DATA)
                                                 self.sensorFlags.emit(flags)
-                                                self.receivingSensors.emit(True)
+                                                self.receivingSensors.emit()
 
                                             if RECEIVED_DATA[FIELD_INDEX] == 1:
                                                 t = RECEIVED_DATA[DATA_INDEX:-2].decode()
