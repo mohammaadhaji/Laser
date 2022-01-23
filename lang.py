@@ -163,5 +163,8 @@ TEXT = {
     'btnDeleteLogs': ['Delete Logs', 'حذف لاگ ها'],
     'txtSearchMusic': ['Search...', 'جستوجو...'],
     'lblMusicHeader': ['Musics', 'آهنگ ها'],
-    'btnLoadMusic': ['Load', 'بارگذاری']   
+    'btnLoadMusic': ['Load', 'بارگذاری'],
+    'txtResetCounterPass': ['Password', 'رمز'],
+    'btnResetCounterPass': ['Check', 'بررسی'],
+    'btnHwTest': ['Hardware Test', 'تست سیستم']
 }

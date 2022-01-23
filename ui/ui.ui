@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1629</width>
-    <height>754</height>
+    <height>769</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -60,7 +60,7 @@ QScrollBar:vertical {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>7</number>
+       <number>8</number>
       </property>
       <widget class="QWidget" name="adssPage">
        <property name="styleSheet">
@@ -975,8 +975,8 @@ QPushButton:pressed {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1629</width>
-             <height>754</height>
+             <width>100</width>
+             <height>30</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -3788,7 +3788,7 @@ QPushButton:pressed{
               <item>
                <widget class="StackedWidget" name="hwStackedWidget">
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>1</number>
                 </property>
                 <widget class="QWidget" name="infoPage">
                  <property name="styleSheet">
@@ -3809,6 +3809,9 @@ QPushButton:pressed{
                   </property>
                   <item>
                    <widget class="QScrollArea" name="scrollArea">
+                    <property name="styleSheet">
+                     <string notr="true"/>
+                    </property>
                     <property name="frameShape">
                      <enum>QFrame::NoFrame</enum>
                     </property>
@@ -3841,7 +3844,7 @@ QPushButton:pressed{
                        <number>0</number>
                       </property>
                       <item>
-                       <layout class="QHBoxLayout" name="horizontalLayout_68" stretch="0,0,1">
+                       <layout class="QHBoxLayout" name="horizontalLayout_68" stretch="0,0,1,0,0">
                         <property name="leftMargin">
                          <number>0</number>
                         </property>
@@ -3917,6 +3920,123 @@ border: 1px solid white;
                            </size>
                           </property>
                          </spacer>
+                        </item>
+                        <item>
+                         <widget class="QFrame" name="resetCounterFrame">
+                          <property name="maximumSize">
+                           <size>
+                            <width>0</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="frameShape">
+                           <enum>QFrame::StyledPanel</enum>
+                          </property>
+                          <property name="frameShadow">
+                           <enum>QFrame::Raised</enum>
+                          </property>
+                          <layout class="QHBoxLayout" name="horizontalLayout_84">
+                           <item>
+                            <widget class="QPushButton" name="btnResetCounterPass">
+                             <property name="minimumSize">
+                              <size>
+                               <width>132</width>
+                               <height>67</height>
+                              </size>
+                             </property>
+                             <property name="font">
+                              <font>
+                               <family>Arial</family>
+                               <pointsize>18</pointsize>
+                              </font>
+                             </property>
+                             <property name="styleSheet">
+                              <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+color:white;
+min-width: 120px;
+min-height: 65px;
+border-radius: 5px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                             </property>
+                             <property name="text">
+                              <string>Check</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="LineEdit" name="txtResetCounterPass">
+                             <property name="maximumSize">
+                              <size>
+                               <width>190</width>
+                               <height>16777215</height>
+                              </size>
+                             </property>
+                             <property name="font">
+                              <font>
+                               <family>Arial</family>
+                               <pointsize>18</pointsize>
+                              </font>
+                             </property>
+                             <property name="styleSheet">
+                              <string notr="true">QLineEdit{
+color: white;
+background-color: rgb(58, 58, 58);
+border-radius:5px;
+border:2px solid gray;
+padding:10px 10px 10px 10px;
+}
+QLineEdit:focus{
+border:2px solid white;
+background-color: rgb(89, 88, 88);
+}</string>
+                             </property>
+                             <property name="echoMode">
+                              <enum>QLineEdit::Password</enum>
+                             </property>
+                             <property name="placeholderText">
+                              <string>Password</string>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="btnResetCounter">
+                          <property name="font">
+                           <font>
+                            <family>Arial</family>
+                            <pointsize>20</pointsize>
+                           </font>
+                          </property>
+                          <property name="styleSheet">
+                           <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+color:white;
+min-width: 250px;
+min-height: 100px;
+border-radius: 5px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                          </property>
+                          <property name="text">
+                           <string>Reset Counter</string>
+                          </property>
+                         </widget>
                         </item>
                        </layout>
                       </item>
@@ -4860,6 +4980,7 @@ color:white;
                   </item>
                  </layout>
                 </widget>
+                <widget class="QWidget" name="hwTestPage"/>
                 <widget class="QWidget" name="lockSettingsPage">
                  <layout class="QHBoxLayout" name="horizontalLayout_58" stretch="3,0,2">
                   <property name="leftMargin">
@@ -5836,7 +5957,7 @@ border: 1px solid white;
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="btnResetCounter">
+                  <widget class="QPushButton" name="btnHwinfo">
                    <property name="font">
                     <font>
                      <family>Arial</family>
@@ -5860,12 +5981,12 @@ border: 1px solid white;
 }</string>
                    </property>
                    <property name="text">
-                    <string>Reset Counter</string>
+                    <string>Hardware Info</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="btnHwinfo">
+                  <widget class="QPushButton" name="btnHwTest">
                    <property name="font">
                     <font>
                      <family>Arial</family>
@@ -5876,7 +5997,7 @@ border: 1px solid white;
                     <string notr="true">QPushButton {
 background-color: rgb(68, 68, 68);
 color:white;
-min-width: 200px;
+min-width: 250px;
 min-height: 100px;
 border-radius: 5px;
 border: 1px solid gray;
@@ -5889,7 +6010,7 @@ border: 1px solid white;
 }</string>
                    </property>
                    <property name="text">
-                    <string>Hardware Info</string>
+                    <string>Hardware Test</string>
                    </property>
                   </widget>
                  </item>
@@ -6089,8 +6210,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>1605</width>
-               <height>600</height>
+               <width>312</width>
+               <height>413</height>
               </rect>
              </property>
              <property name="styleSheet">
@@ -9711,7 +9832,7 @@ background-color: rgb(0, 170, 255);
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1543</width>
+                   <width>1341</width>
                    <height>803</height>
                   </rect>
                  </property>

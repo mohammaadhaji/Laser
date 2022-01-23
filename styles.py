@@ -91,7 +91,34 @@ QLineEdit{
     padding:10px 10px 10px 10px;
 }
 QLineEdit:focus{
+    border:2px solid red;
+}
+"""
+TXT_RESET_COUNTER_PASS = """
+QLineEdit{
+    color: white;
+    background-color: rgb(58, 58, 58);
+    border-radius:5px;
+    border:2px solid gray;
+    padding:10px 10px 10px 10px;
+}
+QLineEdit:focus{
     border:2px solid white;
+    background-color: rgb(89, 88, 88);
+}
+"""
+
+TXT_RESET_COUNTER_WRONG_PASS = """
+QLineEdit{
+    color: white;
+    background-color: rgb(58, 58, 58);
+    border-radius:5px;
+    border:2px solid red;
+    padding:10px 10px 10px 10px;
+}
+QLineEdit:focus{
+    border:2px solid red;
+    background-color: rgb(89, 88, 88);
 }
 """
 

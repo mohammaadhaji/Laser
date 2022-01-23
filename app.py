@@ -114,6 +114,7 @@ class MainWin(QMainWindow):
         self.receivedTime = ()
         self.startupEditTime = False
         self.ready = False
+        self.logingSettingAdmin = False
         self.findIndex = -1
         self.musicFiles = []
         self.time(edit=True)
@@ -216,6 +217,7 @@ class MainWin(QMainWindow):
         self.backspaceTimer = QTimer()
         self.passwordLabelTimer = QTimer()
         self.hwWrongPassTimer = QTimer()
+        self.resetCounterPassTimer = QTimer()
         self.uuidPassLabelTimer = QTimer()
         self.sysTimeStatusLabelTimer = QTimer()
         self.lockErrorLabel = QTimer()
@@ -283,6 +285,7 @@ class MainWin(QMainWindow):
         self.decDaysTimer.timeout.connect(lambda: self.incDecDay('dec'))
         self.backspaceTimer.timeout.connect(self.type(lambda: 'backspace'))
         self.hwWrongPassTimer.timeout.connect(self.hwWrongPass)
+        self.resetCounterPassTimer.timeout.connect(self.resetCounterWrongPass)
         self.sparkTimer.timeout.connect(self.hideSpark)
         self.monitorSensorsTimer.timeout.connect(self.monitorSensors)
         self.monitorReceivingSensors.timeout.connect(self.setReceivingSensorsDataTimer)
@@ -318,6 +321,7 @@ class MainWin(QMainWindow):
         self.btnSubmit.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnSubmit.clicked.connect(self.submit)
         self.btnSystemLogs.clicked.connect(self.enterLogsPage)
+        self.btnHwTest.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.hwTestPage))
         self.btnMusic.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnMusic.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.musicPage))
         self.btnBackMusic.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
@@ -386,7 +390,9 @@ class MainWin(QMainWindow):
         self.btnSaveCase.pressed.connect(lambda: self.chgSliderColor(SLIDER_SAVED_GB, SLIDER_SAVED_GW))
         self.btnSaveCase.released.connect(lambda: self.chgSliderColor(SLIDER_GB, SLIDER_GW))
         self.btnSaveHw.clicked.connect(self.saveHwSettings)
-        self.btnResetCounter.clicked.connect(self.resetTotalShot)
+        # self.btnResetCounter.clicked.connect(self.resetTotalShot)
+        self.btnResetCounter.clicked.connect(self.btnResetCounterClicked)
+        self.btnResetCounterPass.clicked.connect(self.checkResetCounterPass)
         self.btnReady.clicked.connect(lambda: self.setReady(True))
         self.btnStandby.clicked.connect(lambda: self.setReady(False))
         self.btnUnqEnter.clicked.connect(self.unlockUUID)
@@ -934,6 +940,8 @@ class MainWin(QMainWindow):
             self.saveConfigs()
             self.keyboard('hide')
         else:
+            self.txtPassUUID.setFocus()
+            self.txtPassUUID.selectAll()
             self.setLabel(
                 'Password is not correct.', 
                 self.lblPassUUID, 
@@ -1017,6 +1025,7 @@ class MainWin(QMainWindow):
             self.txtOsSpecification.setDisabled(True)
             self.txtTotalShotCounter.setDisabled(True)
             self.keyboard('hide')
+            self.hwPass('hide')
             self.readHwInfo()
             self.loadLocksTable()
             self.hwbtnsFrame.show()
@@ -1024,6 +1033,7 @@ class MainWin(QMainWindow):
             self.lblRpiVersion.setVisible(True)            
             self.txtHwPass.clear()
             self.stackedWidgetSettings.setCurrentWidget(self.hWPage)
+            self.logingSettingAdmin = True
             self.enterSettingPage(REPORT)
 
         elif password == '0':
@@ -1033,20 +1043,28 @@ class MainWin(QMainWindow):
                 txt.setDisabled(True)
 
             self.keyboard('hide')
+            self.hwPass('hide')
             self.readHwInfo()
             self.hwbtnsFrame.hide()
             self.txtRpiVersion.setVisible(False)
             self.lblRpiVersion.setVisible(False)
             self.txtHwPass.clear()
             self.stackedWidgetSettings.setCurrentWidget(self.hWPage)
+            self.logingSettingAdmin = False
             
         else:
             self.txtHwPass.setStyleSheet(TXT_HW_WRONG_PASS)
+            self.txtHwPass.selectAll()
+            self.txtHwPass.setFocus()
             self.hwWrongPassTimer.start(4000)
 
     def hwWrongPass(self):
         self.hwWrongPassTimer.stop()
         self.txtHwPass.setStyleSheet(TXT_HW_PASS)
+
+    def resetCounterWrongPass(self):
+        self.resetCounterPassTimer.stop()
+        self.txtResetCounterPass.setStyleSheet(TXT_RESET_COUNTER_PASS)
 
     def readHwInfo(self):
         self.txtOsSpecification.setText(OS_SPEC)
@@ -1688,7 +1706,8 @@ class MainWin(QMainWindow):
         self.lblFrequencyValue.setText(str(freq))
 
     def backSettings(self):
-        self.hwPass('hide') 
+        self.hwPass('hide')
+        self.resetCounterPass('hide') 
         index = self.stackedWidgetSettings.indexOf(self.settingsMenuPage)
         if self.stackedWidgetSettings.currentIndex() == index:
             self.stackedWidget.setCurrentWidget(self.mainPage)
@@ -1905,6 +1924,8 @@ class MainWin(QMainWindow):
 
         self.powerOption('hide')
         if not (x and y):
+            self.hwPass('hide')
+            self.resetCounterPass('hide')
             self.keyboard('hide')
 
     def keyboardSignals(self):
@@ -1999,6 +2020,28 @@ class MainWin(QMainWindow):
         self.animation2.setEasingCurve(QEasingCurve.InOutQuart)
         self.animation2.start()
 
+    def resetCounterPass(self, i):
+        width = self.resetCounterFrame.width()
+        if i == 'hide' and width == 0:
+            return
+
+        if i == 'show' and width > 0:
+            return
+
+        if i == 'hide':
+            width = 330
+            newWidth = 0
+        else:
+            width = 0
+            newWidth = 330
+
+        self.animation4 = QPropertyAnimation(self.resetCounterFrame, b"maximumWidth")
+        self.animation4.setDuration(500)
+        self.animation4.setStartValue(width)
+        self.animation4.setEndValue(newWidth)
+        self.animation4.setEasingCurve(QEasingCurve.InOutQuart)
+        self.animation4.start()
+
     def powerOption(self, i):
         height = self.powerFrame.height()
         if i == 'hide' and height == 0:
@@ -2025,6 +2068,26 @@ class MainWin(QMainWindow):
         self.hwPass('show')
         self.keyboard('show')
         self.txtHwPass.setFocus()
+
+    def btnResetCounterClicked(self):
+        if self.logingSettingAdmin:
+            self.resetTotalShot()
+        else:
+            self.resetCounterPass('show')
+            self.keyboard('show')
+            self.txtResetCounterPass.setFocus()
+
+    def checkResetCounterPass(self):
+        password = self.txtResetCounterPass.text()
+        if password == 'zzxxcc':
+            self.resetTotalShot()
+            self.resetCounterPass('hide')
+            self.txtResetCounterPass.clear()
+        else:
+            self.txtResetCounterPass.setStyleSheet(TXT_RESET_COUNTER_WRONG_PASS)
+            self.txtResetCounterPass.setFocus()
+            self.txtResetCounterPass.selectAll()
+            self.resetCounterPassTimer.start(4000)
 
     def sort(self):
         self.sortBySession = not self.sortBySession
