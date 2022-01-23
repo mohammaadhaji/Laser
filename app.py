@@ -1,4 +1,3 @@
-import numbers
 import jdatetime, math, sys, time, os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 from pygame import mixer
@@ -40,6 +39,10 @@ class MainWin(QMainWindow):
         self.serialC.serialNumber.connect(self.txtSerialNumber.setText)
         self.serialC.productionDate.connect(self.txtProductionDate.setText)
         self.serialC.laserEnergy.connect(self.txtLaserDiodeEnergy.setText)
+        self.serialC.laserWavelenght.connect(self.txtLaserWavelength.setText)
+        self.serialC.laserBarType.connect(self.txtLaserBarType.setText)
+        self.serialC.driverVersion.connect(self.txtDriverVersion.setText)
+        self.serialC.mainControl.connect(self.txtMainControlVersion.setText)
         self.serialC.firmwareVesion.connect(self.txtFirmwareVersion.setText)
         self.serialC.updateProgress.connect(self.updateProgress)
         self.serialC.readCooling.connect(lambda: laserPage({'cooling': self.cooling}))
