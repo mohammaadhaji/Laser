@@ -1039,7 +1039,6 @@ class MainWin(QMainWindow):
             self.enterSettingPage(REPORT)
 
         elif password == '0':
-            self.enterSettingPage(REPORT)
             for txt in txts:
                 txt.setReadOnly(True)
                 txt.setDisabled(True)
@@ -1053,6 +1052,7 @@ class MainWin(QMainWindow):
             self.txtHwPass.clear()
             self.stackedWidgetSettings.setCurrentWidget(self.hWPage)
             self.logingSettingAdmin = False
+            self.enterSettingPage(REPORT)
             
         else:
             self.txtHwPass.setStyleSheet(TXT_HW_WRONG_PASS)
