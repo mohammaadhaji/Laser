@@ -543,8 +543,7 @@ class UpdateFirmware(QThread):
             if platform.system() == 'Windows':
                 self.result.emit("We don't do that here.")
                 return
-
-            self.msleep(20)                            
+                          
             r1  = subprocess.check_output('lsblk -J', shell=True)
             blocks = json.loads(r1)['blockdevices']
 

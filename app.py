@@ -755,7 +755,7 @@ class MainWin(QMainWindow):
         if status == 'Rebooting Control System ...':
             self.btnUpdateFirmware.setDisabled(False)
             self.setLabel(
-                'Successfully updated. Rebooting Control System ...', 
+                'Rebooting Control System ...', 
                 self.lblUpdateFirmware,
                 self.updateFirmwareLabelTimer, 6
             )
