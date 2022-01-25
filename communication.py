@@ -26,7 +26,7 @@ def gpioCleanup():
 if platform.system() == 'Windows':
     serial = Serial('COM2', 115200)
 else:
-    serial = Serial('/dev/ttyS0', 115200)
+    serial = Serial('/dev/ttyS0', 460800)
 
 HEADER_1       = 1
 HEADER_2       = 2
