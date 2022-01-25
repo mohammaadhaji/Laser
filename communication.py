@@ -9,8 +9,8 @@ try:
     import RPi.GPIO as GPIO
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(16, GPIO.OUT)
-    GPIO.output(16, GPIO.HIGH)
+    GPIO.setup(12, GPIO.OUT)
+    GPIO.output(12, GPIO.HIGH)
 except Exception as e:
     pass
     # log('GPIO', str(e) + '\n')
@@ -333,7 +333,6 @@ class SerialTimer(QObject):
                                                 MICRO_DATA[segmentIndex]
                                             )
                                         elif RECEIVED_DATA[FIELD_INDEX] == 250:
-                                            GPIO.output(16, GPIO.HIGH)
                                             serial.write(
                                                 MICRO_DATA[250]
                                             )
@@ -524,7 +523,6 @@ class SerialThread(QThread):
                                                     MICRO_DATA[segmentIndex]
                                                 )
                                             elif RECEIVED_DATA[FIELD_INDEX] == 250:
-                                                GPIO.output(16, GPIO.HIGH)
                                                 serial.write(
                                                     MICRO_DATA[250]
                                                 )
@@ -679,9 +677,12 @@ class UpdateFirmware(QThread):
                 )
                 enterPage(UPDATE_PAGE)
                 self.result.emit('Updating...')
-                GPIO.output(16, GPIO.LOW)
+                GPIO.output(12, GPIO.LOW)
+                self.msleep(50)
+                GPIO.output(12, GPIO.HIGH)
                 updateCleanup(partitionsDir, laserD=laserDir)
 
         except Exception as e:
             self.result.emit('Operation failed. Please restart and try again.')
+            updateCleanup(partitionsDir, laserD=laserDir)
             log('Update Firmware, Unhandled Exception', str(e) + '\n')

@@ -983,7 +983,7 @@ class MainWin(QMainWindow):
                 self.keyboard('hide')
                 self.lockMovie.start()
                 self.txtPassword.clear()
-                mixer.Channel(0).play(mixer.Sound(SHUTDOWN_SOUND))
+                mixer.Channel(0).play(mixer.Sound(WELLCOME_SOUND))
                 return
 
             else:
@@ -993,6 +993,8 @@ class MainWin(QMainWindow):
                             self.lblPassword, 
                             self.passwordLabelTimer, 4
                             )
+                    self.txtPassword.setFocus()
+                    self.txtPassword.selectAll()
 
     def unlock(self, frameNumber):
         if frameNumber == self.lockMovie.frameCount() - 1: 
@@ -1924,7 +1926,6 @@ class MainWin(QMainWindow):
 
         self.powerOption('hide')
         if not (x and y):
-            self.hwPass('hide')
             self.resetCounterPass('hide')
             self.keyboard('hide')
 
