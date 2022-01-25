@@ -752,12 +752,12 @@ class MainWin(QMainWindow):
 
     def updateProgress(self, status):
         self.lblUpdateFirmware.setText(status)
-        if status == 'successfully updated':
+        if status == 'Rebooting Control System ...':
             self.btnUpdateFirmware.setDisabled(False)
             self.setLabel(
-                'Successfully updated.', 
+                'Successfully updated. Rebooting Control System ...', 
                 self.lblUpdateFirmware,
-                self.updateFirmwareLabelTimer
+                self.updateFirmwareLabelTimer, 6
             )
 
     def updateSystem(self):
