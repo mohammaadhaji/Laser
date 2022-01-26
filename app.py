@@ -699,6 +699,7 @@ class MainWin(QMainWindow):
             log('Startup Setting Time', str(e) + '\n')
             
     def playShutdown(self, i):
+        mixer.Channel(0).set_volume(0.5)
         mixer.Channel(0).play(mixer.Sound(SHUTDOWN_SOUND))
         self.musicSound.stop()
         self.keyboard('hide')
@@ -1201,6 +1202,8 @@ class MainWin(QMainWindow):
         )
         self.musicFiles.clear()
         self.tableMusic.setRowCount(0)
+        self.lblMusicName.clear()
+        self.lblLengthMusic.setText('00:00:00')
     
     def readMusic(self):
         self.musicFiles.clear()
