@@ -57,7 +57,6 @@ class MainWin(QMainWindow):
         self.readMusicT.result.connect(self.readMusicResult)
         self.readMusicT.paths.connect(self.addMusics)
         self.updateT.result.connect(self.updateResult)
-        self.license = self.configs['LICENSE']
         self.lockMovie = QMovie(LOCK_GIF)
         self.shutdownMovie = QMovie(SHUTDONW_GIF)
         self.musicMovie = QMovie(MUSIC_GIF)
@@ -325,6 +324,7 @@ class MainWin(QMainWindow):
         self.btnMusic.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnMusic.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.musicPage))
         self.btnBackMusic.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
+        self.btnBackMusic.clicked.connect(lambda: self.musicPage.setVisible(False))
         self.btnBackNewSession.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackManagement.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnBackManagement.clicked.connect(lambda: self.txtSearch.clear())
@@ -876,7 +876,7 @@ class MainWin(QMainWindow):
                 )
                 return
         
-        license = self.license[f'LICENSE{numOfLocks + 1}']
+        license = self.configs['LICENSE'][f'{numOfLocks + 1}']
         lock = Lock(date.togregorian(), license)
         self.configs['LOCK'].append(lock)
         if not self.saveConfigs():
