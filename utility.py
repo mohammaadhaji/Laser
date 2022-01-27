@@ -2,7 +2,7 @@ from uuid import getnode as get_mac
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QThread, pyqtSignal
 from paths import *
-from os.path import isfile, isdir, expanduser
+from os.path import isfile, isdir
 import datetime, jdatetime
 import subprocess, platform, pickle, hashlib
 import random, uuid, os, json, shutil
@@ -50,17 +50,7 @@ def monitorInfo():
     screen =  QtWidgets.QApplication.primaryScreen() 
     resolution = f'{screen.size().width()}x{screen.size().height()}'
     if platform.system() == 'Windows':
-        # proc = subprocess.Popen(
-        #     ['powershell', 'Get-WmiObject win32_desktopmonitor;'], 
-        #     stdout=subprocess.PIPE
-        # )
-        # res = proc.communicate()
-        # monitors = re.findall(
-        #     '(?s)\r\nName\s+:\s(.*?)\r\n', 
-        #     res[0].decode("utf-8")
-        # )
         info = 'Unknown'
-
     else:
         subprocess.call(f'chmod 755 {MONITOR_COMMAND}', shell=True)
         subprocess.call(f'{MONITOR_COMMAND}')
@@ -159,9 +149,9 @@ def genLicense():
     LICENSE3 = (LicID - LicID % 10) + 3
 
     lic = {
-        'LICENSE1': LICENSE1,
-        'LICENSE2': LICENSE2,
-        'LICENSE3': LICENSE3,
+        '1': LICENSE1,
+        '2': LICENSE2,
+        '3': LICENSE3,
     }
     return lic
 

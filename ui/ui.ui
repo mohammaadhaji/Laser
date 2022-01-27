@@ -3826,7 +3826,7 @@ QPushButton:pressed{
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1210</width>
+                       <width>896</width>
                        <height>824</height>
                       </rect>
                      </property>
@@ -12223,6 +12223,8 @@ border: 1px solid white;
 background-color: rgb(12, 12, 12);
 border-top-left-radius: 10px;
 border-top-right-radius: 10px;
+border: 2px solid rgb(0, 170, 255);
+border-bottom-color: rgb(12, 12, 12);
 }
 
 QPushButton {
