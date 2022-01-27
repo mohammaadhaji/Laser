@@ -47,6 +47,7 @@ SINGLE_MUSIC_ICON  = join(IMAGES_DIR, 'singleMusic.png')
 SELECTED_LANG_ICON = join(IMAGES_DIR, 'downArrow.png')
 LOCK_GIF           = join(IMAGES_DIR, 'lock.gif')
 MUSIC_GIF          = join(IMAGES_DIR, 'music.gif')
+COOLING_GIF        = join(IMAGES_DIR, 'cooling.gif')
 SPARK_ICON         = join(IMAGES_DIR, 'spark.png')
 BODY_PART_ICONS = {
         'f face':    join(IMAGES_DIR, 'fFace'),

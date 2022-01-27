@@ -60,6 +60,7 @@ class MainWin(QMainWindow):
         self.lockMovie = QMovie(LOCK_GIF)
         self.shutdownMovie = QMovie(SHUTDONW_GIF)
         self.musicMovie = QMovie(MUSIC_GIF)
+        self.coolingMovie = {}
         self.musicMovie.setCacheMode(QMovie.CacheAll)
         self.musicMovie.jumpToFrame(95)
         self.lblMusicGif.setMovie(self.musicMovie)
@@ -1541,14 +1542,20 @@ class MainWin(QMainWindow):
                 for btn in buttons:
                     coolingNum = int(btn.objectName().split('Cooling')[1])
                     if coolingNum == self.cooling:
-                        icon.addPixmap(QPixmap(COOLING_ON))
-                        btn.setIcon(icon)
-                        btn.setIconSize(QSize(50, 50))
+                        self.coolingMovie[coolingNum] = QMovie(COOLING_GIF)
+                        b = btn 
+                        num = coolingNum
+                        self.coolingMovie[coolingNum].frameChanged.connect(
+                            lambda: b.setIcon(QIcon(self.coolingMovie[num].currentPixmap()))
+                        )
+                        self.coolingMovie[coolingNum].start()
+                        btn.setIconSize(QSize(55, 55))
         else:
             if self.cooling >= 1:
                 for btn in buttons:
                     coolingNum = int(btn.objectName().split('Cooling')[1])
                     if coolingNum == self.cooling:
+                        self.coolingMovie[coolingNum].stop()
                         icon.addPixmap(QPixmap(COOLING_OFF)) 
                         btn.setIcon(icon)
                         btn.setIconSize(QSize(50, 50))
