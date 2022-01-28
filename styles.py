@@ -1,3 +1,6 @@
+from pygame import HIDDEN
+
+
 SELECTED_SEX = """
 QPushButton {
     background-color: rgb(213, 213, 213);
@@ -557,5 +560,41 @@ QPushButton {
 QPushButton:hover:!pressed{
     background-color:rgb(77, 77, 77);
     border: 1px solid white;
+}
+"""
+
+HIDDEN_SENSOR_OK = """
+QPushButton{
+    outline : 0;
+    background-color: rgb(255, 255, 255);
+    border-radius:5px;
+    margin:0 10px 0 20px;
+}
+"""
+
+HIDDEN_SENSOR_NOT_OK = """
+QPushButton{
+    outline : 0;
+    background-color: rgb(255, 0, 0);
+    border-radius:5px;  
+    margin:0 10px 0 20px;
+}
+"""
+
+SENSOR_OK = """
+QPushButton{
+    outline : 0;
+    background-color: rgb(255, 255, 255);
+    border-radius:5px;
+    margin:0 10px 0 10px;
+}
+"""
+
+SENSOR_NOT_OK = """
+QPushButton{
+    outline : 0;
+    background-color: rgb(255, 0, 0);
+    border-radius:5px;
+    margin:0 10px 0 10px;
 }
 """

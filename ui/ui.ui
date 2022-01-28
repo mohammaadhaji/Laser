@@ -60,7 +60,7 @@ QScrollBar:vertical {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>8</number>
+       <number>13</number>
       </property>
       <widget class="QWidget" name="adssPage">
        <property name="styleSheet">
@@ -8472,7 +8472,7 @@ border:3px solid red;
 outline : 0;
 background-color: rgb(255, 255, 255);
 border-radius:5px;
-margin:0 10px 0 0;
+margin:0 10px 0 20px;
 }</string>
                 </property>
                 <property name="text">
@@ -8497,7 +8497,7 @@ margin:0 10px 0 0;
 outline : 0;
 background-color: rgb(255, 255, 255);
 border-radius:5px;
-margin:0 0 0 15px;
+margin:0 10px 0 20px;
 }</string>
                 </property>
                 <property name="text">
@@ -8520,12 +8520,7 @@ margin:0 0 0 15px;
             <item>
              <widget class="QFrame" name="frame">
               <property name="styleSheet">
-               <string notr="true">QPushButton{
-outline : 0;
-background-color: rgb(255, 255, 255);
-border-radius:5px;
-margin:0 10px 0 10px;
-}</string>
+               <string notr="true"/>
               </property>
               <property name="frameShape">
                <enum>QFrame::NoFrame</enum>
@@ -8554,29 +8549,101 @@ margin:0 10px 0 10px;
                  </item>
                  <item>
                   <widget class="QPushButton" name="btnLock">
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton{
+outline : 0;
+background-color: rgb(255, 255, 255);
+border-radius:5px;
+margin:0 10px 0 10px;
+}</string>
+                   </property>
                    <property name="text">
                     <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normaloff>images/unlock.png</normaloff>images/unlock.png</iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>80</width>
+                     <height>80</height>
+                    </size>
                    </property>
                   </widget>
                  </item>
                  <item>
                   <widget class="QPushButton" name="btnWaterLevel">
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton{
+outline : 0;
+background-color: rgb(255, 255, 255);
+border-radius:5px;
+margin:0 10px 0 10px;
+}</string>
+                   </property>
                    <property name="text">
                     <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normaloff>images/waterLevel.png</normaloff>images/waterLevel.png</iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>80</width>
+                     <height>80</height>
+                    </size>
                    </property>
                   </widget>
                  </item>
                  <item>
                   <widget class="QPushButton" name="btnWaterflow">
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton{
+outline : 0;
+background-color: rgb(255, 255, 255);
+border-radius:5px;
+margin:0 10px 0 10px;
+}</string>
+                   </property>
                    <property name="text">
                     <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normaloff>images/waterflow.png</normaloff>images/waterflow.png</iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>80</width>
+                     <height>80</height>
+                    </size>
                    </property>
                   </widget>
                  </item>
                  <item>
                   <widget class="QPushButton" name="btnTemp">
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton{
+outline : 0;
+background-color: rgb(255, 255, 255);
+border-radius:5px;
+margin:0 10px 0 10px;
+}</string>
+                   </property>
                    <property name="text">
                     <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normaloff>images/temp.png</normaloff>images/temp.png</iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>80</width>
+                     <height>80</height>
+                    </size>
                    </property>
                   </widget>
                  </item>
@@ -9832,7 +9899,7 @@ background-color: rgb(0, 170, 255);
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1341</width>
+                   <width>1543</width>
                    <height>803</height>
                   </rect>
                  </property>

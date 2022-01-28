@@ -495,24 +495,10 @@ class MainWin(QMainWindow):
         self.txtSearchMusic.textChanged.connect(self.searchMusic)
 
     def initSensors(self):
-        self.waterflowIco = QIcon()
-        self.waterflowWarIco = QIcon()
-        self.waterLvlIco = QIcon()
-        self.waterLvlWarIco = QIcon()
-        self.tempIco = QIcon()
-        self.tempWarIco = QIcon()
         self.lockIco = QIcon()
         self.unlockIco = QIcon()
-        self.lockWarIco = QIcon()
-        self.waterflowIco.addPixmap(QPixmap(WATERFLOW))
-        self.waterflowWarIco.addPixmap(QPixmap(WATERFLOW_WARNING))
-        self.waterLvlIco.addPixmap(QPixmap(WATERLEVEL))
-        self.waterLvlWarIco.addPixmap(QPixmap(WATERLEVEL_WARNING))
-        self.tempIco.addPixmap(QPixmap(TEMP))
-        self.tempWarIco.addPixmap(QPixmap(TEMP_WARNING))
         self.lockIco.addPixmap(QPixmap(LOCK))
         self.unlockIco.addPixmap(QPixmap(UNLOCK))
-        self.lockWarIco.addPixmap(QPixmap(LOCK_WARNING))
         self.waterflowTimer = QTimer()
         self.waterLevelTimer = QTimer()
         self.physicalDamageTimer = QTimer()
@@ -525,14 +511,6 @@ class MainWin(QMainWindow):
         self.physicalDamageTimer.timeout.connect(lambda: self.blinkSensorsIcon('physicalDamage'))
         self.overHeatTimer.timeout.connect(lambda: self.blinkSensorsIcon('overHeat'))
         self.interLockTimer.timeout.connect(lambda: self.blinkSensorsIcon('interLock'))
-        self.btnWaterflow.setIcon(self.waterflowIco)
-        self.btnTemp.setIcon(self.tempIco)
-        self.btnWaterLevel.setIcon(self.waterLvlIco)
-        self.btnLock.setIcon(self.lockIco)
-        self.btnWaterflow.setIconSize(QSize(80, 80))
-        self.btnTemp.setIconSize(QSize(80, 80))
-        self.btnWaterLevel.setIconSize(QSize(80, 80))
-        self.btnLock.setIconSize(QSize(80, 80))
         self.btnPhysicalDamage.setVisible(False)
         self.btnOverHeat.setVisible(False)
         self.waterflowFlag = False
@@ -1732,65 +1710,66 @@ class MainWin(QMainWindow):
         if sensor == 'waterflow':
             self.waterflowFlag = not self.waterflowFlag
             if self.waterflowFlag:
-                self.btnWaterflow.setIcon(self.waterflowWarIco)
+                self.btnWaterflow.setStyleSheet(SENSOR_NOT_OK)
             else:
-                self.btnWaterflow.setIcon(self.waterflowIco)
+                self.btnWaterflow.setStyleSheet(SENSOR_OK)
 
         elif sensor == 'waterLevel':
             self.waterLevelFlag = not self.waterLevelFlag
             if self.waterLevelFlag:
-                self.btnWaterLevel.setIcon(self.waterLvlWarIco)
+                self.btnWaterLevel.setStyleSheet(SENSOR_NOT_OK)
             else:
-                self.btnWaterLevel.setIcon(self.waterLvlIco)
+                self.btnWaterLevel.setStyleSheet(SENSOR_OK)
 
         elif sensor == 'temp':
             self.tempFlag = not self.tempFlag
             if self.tempFlag:
-                self.btnTemp.setIcon(self.tempWarIco)
+                self.btnTemp.setStyleSheet(SENSOR_NOT_OK)
             else:
-                self.btnTemp.setIcon(self.tempIco)
+                self.btnTemp.setStyleSheet(SENSOR_OK)
 
         elif sensor == 'interLock':
             self.lockFlag = not self.lockFlag
             if self.lockFlag:
-                self.btnLock.setIcon(self.lockWarIco)
+                self.btnLock.setStyleSheet(SENSOR_NOT_OK)
             else:
-                self.btnLock.setIcon(self.lockIco)
+                self.btnLock.setStyleSheet(SENSOR_OK)
 
         elif sensor == 'overHeat':
             self.overHeatFlag = not self.overHeatFlag
             if self.overHeatFlag:
-                self.btnOverHeat.setVisible(True)
+                self.btnOverHeat.setStyleSheet(HIDDEN_SENSOR_NOT_OK)
             else:
-                self.btnOverHeat.setVisible(False)
+                self.btnOverHeat.setStyleSheet(HIDDEN_SENSOR_OK)
 
         elif sensor == 'physicalDamage':
             self.physicalDamageFlag = not self.physicalDamageFlag
             if self.physicalDamageFlag:
-                self.btnPhysicalDamage.setVisible(True)
+                self.btnPhysicalDamage.setStyleSheet(HIDDEN_SENSOR_NOT_OK)
             else:
-                self.btnPhysicalDamage.setVisible(False)
+                self.btnPhysicalDamage.setStyleSheet(HIDDEN_SENSOR_OK)
 
     def stopSensorWarning(self, sensor):
         if sensor == 'waterflow':
             self.waterflowTimer.stop()
             self.waterflowWar = False
-            self.btnWaterflow.setIcon(self.waterflowIco)
+            self.btnWaterflow.setStyleSheet(SENSOR_OK)
             
         elif sensor == 'waterLevel':
             self.waterLevelTimer.stop()
             self.waterLevelWar = False
-            self.btnWaterLevel.setIcon(self.waterLvlIco)
+            self.btnWaterLevel.setStyleSheet(SENSOR_OK)
 
         elif sensor == 'temp':
             self.tempTimer.stop()
             self.tempWar = False
-            self.btnTemp.setIcon(self.tempIco)
+            self.btnTemp.setStyleSheet(SENSOR_OK)
 
         elif sensor == 'interLock':
             self.interLockTimer.stop()
             self.lockWar = False
             self.btnLock.setIcon(self.unlockIco)
+            self.btnLock.setStyleSheet(SENSOR_OK)
 
         elif sensor == 'overHeat':
             self.overHeatTimer.stop()
@@ -1821,17 +1800,20 @@ class MainWin(QMainWindow):
         elif sensor == 'interLock':
             if not self.lockWar:
                 self.interLockTimer.start(500)
+                self.btnLock.setIcon(self.lockIco)
                 self.lockWar = True
         
         elif sensor == 'overHeat':
             if not self.overHeatWar:
                 self.overHeatTimer.start(500)
                 self.overHeatWar = True
+                self.btnOverHeat.setVisible(True)
 
         elif sensor == 'physicalDamage':
             if not self.physicalDamageWar:
                 self.physicalDamageTimer.start(500)
                 self.physicalDamageWar = True
+                self.btnPhysicalDamage.setVisible(True)
 
     def setLock(self, lock):
         self.interLockError = lock
