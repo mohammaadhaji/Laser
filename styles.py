@@ -1,6 +1,3 @@
-from pygame import HIDDEN
-
-
 SELECTED_SEX = """
 QPushButton {
     background-color: rgb(213, 213, 213);

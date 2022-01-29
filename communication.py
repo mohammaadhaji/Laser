@@ -423,99 +423,99 @@ class SerialThread(QThread):
         nob1 = 0 
         nob2 = 0
         while self.loop:
-            # try:
-            temp = serial.read_all()
-            counter = 0
+            try:
+                temp = serial.read_all()
+                counter = 0
 
-            if temp:
-                len_temp = len(temp)
-                while counter < len_temp:
-                    if STATE == HEADER_1:
+                if temp:
+                    len_temp = len(temp)
+                    while counter < len_temp:
+                        if STATE == HEADER_1:
 
-                        if temp[counter] == 0xAA:
-                            STATE = HEADER_2
+                            if temp[counter] == 0xAA:
+                                STATE = HEADER_2
 
-                    elif STATE == HEADER_2:
+                        elif STATE == HEADER_2:
 
-                        if temp[counter] == 0xBB:
-                            STATE = CHECK_NOB_1
-                            RECEIVED_DATA[:] = []
+                            if temp[counter] == 0xBB:
+                                STATE = CHECK_NOB_1
+                                RECEIVED_DATA[:] = []
 
-                    elif STATE == CHECK_NOB_1:
-                        nob1 = temp[counter]
-                        STATE = CHECK_NOB_2
-                    
-                    elif STATE == CHECK_NOB_2:
-                        nob2 = temp[counter]
-                        NOB_BYTES[0] = nob1
-                        NOB_BYTES[1] = nob2
-                        nob = int.from_bytes(NOB_BYTES, "big")
-                        STATE = IN_MESSAGE
+                        elif STATE == CHECK_NOB_1:
+                            nob1 = temp[counter]
+                            STATE = CHECK_NOB_2
+                        
+                        elif STATE == CHECK_NOB_2:
+                            nob2 = temp[counter]
+                            NOB_BYTES[0] = nob1
+                            NOB_BYTES[1] = nob2
+                            nob = int.from_bytes(NOB_BYTES, "big")
+                            STATE = IN_MESSAGE
 
-                    elif STATE == IN_MESSAGE:
-                    
-                        if len(RECEIVED_DATA) == nob:
-                            STATE = HEADER_1
-                            RECEIVED_DATA[0:0] = nob.to_bytes(2, 'big')
+                        elif STATE == IN_MESSAGE:
+                        
+                            if len(RECEIVED_DATA) == nob:
+                                STATE = HEADER_1
+                                RECEIVED_DATA[0:0] = nob.to_bytes(2, 'big')
 
-                            crc_s = int.from_bytes(
-                                RECEIVED_DATA[-2:], 
-                                byteorder='big', 
-                                signed=False
-                            )
+                                crc_s = int.from_bytes(
+                                    RECEIVED_DATA[-2:], 
+                                    byteorder='big', 
+                                    signed=False
+                                )
 
-                            crc_r = Crc16Xmodem.calc(
-                                RECEIVED_DATA[:-2]
-                            )
+                                crc_r = Crc16Xmodem.calc(
+                                    RECEIVED_DATA[:-2]
+                                )
 
-                            if crc_r == crc_s:
+                                if crc_r == crc_s:
 
-                                key, value = decodePacket(RECEIVED_DATA)
-                                if key == 'sensorFlags':
-                                    self.sensorFlags.emit(value)
-                                    self.receivingSensors.emit()
-                                elif key == 'sysDate':
-                                    self.sysDate.emit(value)
-                                elif key == 'sysClock':
-                                    self.sysClock.emit(value)
-                                elif key == 'tempValue':
-                                    self.tempValue.emit(value)
-                                elif key == 'serialNumber':
-                                    self.serialNumber.emit(value)
-                                elif key == 'productionDate':
-                                    self.productionDate.emit(value)
-                                elif key == 'laserEnergy':
-                                    self.laserEnergy.emit(value)
-                                elif key == 'laserWavelenght':
-                                    self.laserWavelenght.emit(value)
-                                elif key == 'laserBarType':
-                                    self.laserBarType.emit(value)
-                                elif key == 'driverVersion':
-                                    self.driverVersion.emit(value)
-                                elif key == 'mainControl':
-                                    self.mainControl.emit(value)
-                                elif key == 'firmwareVesion':
-                                    self.firmwareVesion.emit(value)
-                                elif key == 'updateProgress':
-                                    self.updateProgress.emit(value)
-                                elif key == 'readCooling':
-                                    self.readCooling.emit()
-                                elif key == 'readEnergy':
-                                    self.readEnergy.emit()
-                                elif key == 'readPulseWidht':
-                                    self.readPulseWidht.emit()
-                                elif key == 'readFrequency':
-                                    self.readFrequency.emit()
-                                elif key == 'shot':
-                                    self.shot.emit()
+                                    key, value = decodePacket(RECEIVED_DATA)
+                                    if key == 'sensorFlags':
+                                        self.sensorFlags.emit(value)
+                                        self.receivingSensors.emit()
+                                    elif key == 'sysDate':
+                                        self.sysDate.emit(value)
+                                    elif key == 'sysClock':
+                                        self.sysClock.emit(value)
+                                    elif key == 'tempValue':
+                                        self.tempValue.emit(value)
+                                    elif key == 'serialNumber':
+                                        self.serialNumber.emit(value)
+                                    elif key == 'productionDate':
+                                        self.productionDate.emit(value)
+                                    elif key == 'laserEnergy':
+                                        self.laserEnergy.emit(value)
+                                    elif key == 'laserWavelenght':
+                                        self.laserWavelenght.emit(value)
+                                    elif key == 'laserBarType':
+                                        self.laserBarType.emit(value)
+                                    elif key == 'driverVersion':
+                                        self.driverVersion.emit(value)
+                                    elif key == 'mainControl':
+                                        self.mainControl.emit(value)
+                                    elif key == 'firmwareVesion':
+                                        self.firmwareVesion.emit(value)
+                                    elif key == 'updateProgress':
+                                        self.updateProgress.emit(value)
+                                    elif key == 'readCooling':
+                                        self.readCooling.emit()
+                                    elif key == 'readEnergy':
+                                        self.readEnergy.emit()
+                                    elif key == 'readPulseWidht':
+                                        self.readPulseWidht.emit()
+                                    elif key == 'readFrequency':
+                                        self.readFrequency.emit()
+                                    elif key == 'shot':
+                                        self.shot.emit()
 
-                        else:
-                            RECEIVED_DATA.append(temp[counter])
+                            else:
+                                RECEIVED_DATA.append(temp[counter])
 
-                    counter = counter + 1
-            # except Exception as e:
-            #     print(e)
-            #     log('Serial Unhandled Exception', str(e) + '\n')
+                        counter = counter + 1
+            except Exception as e:
+                print(e)
+                log('Serial Unhandled Exception', str(e) + '\n')
 
 
 def updateCleanup(mountPoint, laserD=''):
