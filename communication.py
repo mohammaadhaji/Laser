@@ -69,31 +69,11 @@ def printPacket(packet):
 
 def sensors(packet):
     flags = [False] * 5
-
-    if packet[5]:
-        flags[0] = False
-    else:
-        flags[0] = True
-
-    if packet[6]:
-        flags[1] = False
-    else:
-        flags[1] = True
-
-    if packet[7]:
-        flags[2] = False
-    else:
-        flags[2] = True
-
-    if packet[8]:
-        flags[3] = False
-    else:
-        flags[3] = True
-
-    if packet[9]:
-        flags[4] = False
-    else:
-        flags[4] = True
+    for i in range(5):
+        if packet[5 + i]:
+            flags[i] = False
+        else:
+            flags[i] = True
 
     return flags
 
@@ -653,7 +633,6 @@ class UpdateFirmware(QThread):
                     UPDATE_PAGE, 251, REPORT
                 )
                 enterPage(UPDATE_PAGE)
-                self.result.emit('Updating...')
                 GPIO.output(12, GPIO.LOW)
                 self.msleep(50)
                 GPIO.output(12, GPIO.HIGH)

@@ -60,7 +60,7 @@ QScrollBar:vertical {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>13</number>
+       <number>8</number>
       </property>
       <widget class="QWidget" name="adssPage">
        <property name="styleSheet">
@@ -975,8 +975,8 @@ QPushButton:pressed {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>100</width>
-             <height>30</height>
+             <width>1629</width>
+             <height>769</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -3788,7 +3788,7 @@ QPushButton:pressed{
               <item>
                <widget class="StackedWidget" name="hwStackedWidget">
                 <property name="currentIndex">
-                 <number>1</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="infoPage">
                  <property name="styleSheet">
@@ -3826,7 +3826,7 @@ QPushButton:pressed{
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>896</width>
+                       <width>1210</width>
                        <height>824</height>
                       </rect>
                      </property>
@@ -3967,7 +3967,7 @@ border: 1px solid white;
 }</string>
                              </property>
                              <property name="text">
-                              <string>Check</string>
+                              <string>Reset</string>
                              </property>
                             </widget>
                            </item>
@@ -6210,8 +6210,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>312</width>
-               <height>413</height>
+               <width>1605</width>
+               <height>615</height>
               </rect>
              </property>
              <property name="styleSheet">

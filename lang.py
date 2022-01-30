@@ -165,6 +165,6 @@ TEXT = {
     'lblMusicHeader': ['Musics', 'آهنگ ها'],
     'btnLoadMusic': ['Load', 'بارگذاری'],
     'txtResetCounterPass': ['Password', 'رمز'],
-    'btnResetCounterPass': ['Check', 'بررسی'],
+    'btnResetCounterPass': ['Reset', 'ریست'],
     'btnHwTest': ['Hardware Test', 'تست سیستم']
 }
