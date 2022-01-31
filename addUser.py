@@ -41,7 +41,6 @@ else:
                     datetime.timedelta(days=randint(1, 10))
                 )
             usersData[num] = x
-            print('Adding User:', i + 1, f'/ ' + arg[1], end='\r')
 
         usersData = pickle.dump(usersData, fileHandler)
         fileHandler.close()
