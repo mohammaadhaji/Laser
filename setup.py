@@ -1,16 +1,15 @@
 from setuptools import setup
 from Cython.Build import cythonize
 from distutils.dir_util import copy_tree
-from os.path import join, isdir
 from pathlib import Path
 import shutil, os
 
 laser     = Path(__file__).parent.absolute()
 parentDir = Path(laser).parent
-cLaser    = join(parentDir, 'cLaser')
+cLaser    = os.path.join(parentDir, 'cLaser')
 
 
-if isdir(cLaser):
+if os.path.isdir(cLaser):
     shutil.rmtree(cLaser)
 
 os.mkdir(cLaser)
@@ -20,11 +19,10 @@ os.chdir(cLaser)
 files = []
 for f in os.listdir(cLaser):
     if f.endswith('.py') and f != 'setup.py':
-        files.append(join(cLaser, f))
+        files.append(os.path.join(cLaser, f))
 
 
 setup(ext_modules = cythonize(files))
 
-os.system('rm -rf *.py')
-os.system('rm -rf *.c')
+os.system('rm -rf *.py *.c')
 os.system('echo import app > main.py')

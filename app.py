@@ -57,7 +57,6 @@ class MainWin(QMainWindow):
         self.readMusicT.result.connect(self.readMusicResult)
         self.readMusicT.paths.connect(self.addMusics)
         self.updateT.result.connect(self.updateResult)
-        self.lockMovie = QMovie(LOCK_GIF)
         self.shutdownMovie = QMovie(SHUTDONW_GIF)
         self.musicMovie = QMovie(MUSIC_GIF)
         self.coolingMovie = {}
@@ -67,10 +66,6 @@ class MainWin(QMainWindow):
         self.musicMovie.start()
         self.musicMovie.stop()
         self.lblShutdownGif.setMovie(self.shutdownMovie)
-        self.lockMovie.frameChanged.connect(self.unlock)
-        self.lblLock.setMovie(self.lockMovie)
-        self.lockMovie.start()
-        self.lockMovie.stop()
         self.musicSound = QMediaPlayer()
         self.touchSound = mixer.Sound(TOUCH_SOUND)
         self.keyboardSound = mixer.Sound(KEYBOARD_SOUND)
@@ -176,6 +171,7 @@ class MainWin(QMainWindow):
         self.stackedWidgetLaser.setCurrentIndex(0)
         self.stackedWidgetSex.setCurrentIndex(0)
         self.stackedWidgetSettings.setCurrentIndex(0)
+        self.stackedWidgetLock.setCurrentIndex(0)
         for sw in self.findChildren(QStackedWidget):
             sw.setTransitionDirection(Qt.Horizontal)
             sw.setTransitionSpeed(500)
@@ -314,8 +310,6 @@ class MainWin(QMainWindow):
         self.btnEndSession.clicked.connect(lambda: enterPage(MAIN_PAGE))
         self.btnPowerOption.clicked.connect(lambda: self.powerOption('show'))
         self.btnPower.clicked.connect(lambda: self.playShutdown('powerOff'))
-        self.btnPower_2.clicked.connect(lambda: self.playShutdown('powerOff'))
-        self.btnPower_3.clicked.connect(lambda: self.playShutdown('powerOff'))
         self.btnRestart.clicked.connect(lambda: self.playShutdown('restart'))
         self.btnStartSession.clicked.connect(self.startSession)
         self.btnSubmit.clicked.connect(lambda: self.changeAnimation('horizontal'))
@@ -396,7 +390,7 @@ class MainWin(QMainWindow):
         self.btnResetCounterPass.clicked.connect(self.checkResetCounterPass)
         self.btnReady.clicked.connect(lambda: self.setReady(True))
         self.btnStandby.clicked.connect(lambda: self.setReady(False))
-        self.btnUnqEnter.clicked.connect(self.unlockUUID)
+        self.btnUUIDEnter.clicked.connect(self.unlockUUID)
         self.btnHwinfo.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.infoPage))
         self.btnHwinfo.clicked.connect(lambda: self.enterSettingPage(REPORT))
         self.btnSystemLock.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.lockSettingsPage))
@@ -914,8 +908,8 @@ class MainWin(QMainWindow):
         hwid += '@mohammaad_haji'
         
         if hashlib.sha256(hwid.encode()).hexdigest()[:10].upper() == user_pass:
-            index = self.stackedWidget.indexOf(self.splashPage)
-            self.stackedWidget.setCurrentIndex(index)
+            index = self.stackedWidgetLock.indexOf(self.enterLaserPage)
+            self.stackedWidgetLock.setCurrentIndex(index)
             self.configs['PASSWORD'] = user_pass
             self.saveConfigs()
             self.keyboard('hide')
@@ -923,7 +917,7 @@ class MainWin(QMainWindow):
             self.txtPassUUID.setFocus()
             self.txtPassUUID.selectAll()
             self.setLabel(
-                'Password is not correct.', 
+                TEXT['wrongPass'][self.langIndex], 
                 self.lblPassUUID, 
                 self.uuidPassLabelTimer, 4
             )
@@ -932,12 +926,9 @@ class MainWin(QMainWindow):
         hwid = getID()
         self.txtUUID.setText(hwid)
         hwid += '@mohammaad_haji'
-        if hashlib.sha256(hwid.encode()).hexdigest()[:10].upper() == self.configs['PASSWORD']:
-            index = self.stackedWidget.indexOf(self.splashPage)
-            self.stackedWidget.setCurrentIndex(index)
-        else:
-            index = self.stackedWidget.indexOf(self.UUIDPage)
-            self.stackedWidget.setCurrentIndex(index)
+        if not hashlib.sha256(hwid.encode()).hexdigest()[:10].upper() == self.configs['PASSWORD']:
+            index = self.stackedWidgetLock.indexOf(self.copyRightPage)
+            self.stackedWidgetLock.setCurrentIndex(index)
 
     def unlockLIC(self, auto=False):
         userPass = self.txtPassword.text().strip()
@@ -950,10 +941,9 @@ class MainWin(QMainWindow):
         locks.sort(key=lambda x: x.date)
 
         if len(locks) > 0:
-            index = self.stackedWidget.indexOf(self.loginPage)
-            self.stackedWidget.setCurrentIndex(index)
+            index = self.stackedWidgetLock.indexOf(self.licLockPage)
+            self.stackedWidgetLock.setCurrentIndex(index)
             self.txtID.setText(str(locks[0].license))
-            self.centralWidget().setStyleSheet(APP_LOCK_BG)
         else:
             self.checkUUID()
         
@@ -961,27 +951,19 @@ class MainWin(QMainWindow):
             if lock.checkPassword(userPass):
                 self.saveConfigs()
                 self.keyboard('hide')
-                self.lockMovie.start()
-                self.txtPassword.clear()
-                mixer.Channel(0).play(mixer.Sound(WELLCOME_SOUND))
+                index = self.stackedWidgetLock.indexOf(self.enterLaserPage)
+                self.stackedWidgetLock.setCurrentIndex(index)
                 return
 
             else:
                 if not auto:
                     self.setLabel(
-                            'Password is not correct.', 
+                            TEXT['wrongPass'][self.langIndex], 
                             self.lblPassword, 
                             self.passwordLabelTimer, 4
                             )
                     self.txtPassword.setFocus()
                     self.txtPassword.selectAll()
-
-    def unlock(self, frameNumber):
-        if frameNumber == self.lockMovie.frameCount() - 1: 
-            self.lockMovie.stop()
-            index = self.stackedWidget.indexOf(self.splashPage)
-            self.stackedWidget.setCurrentIndex(index)
-            self.changeTheme(self.configs['theme']) 
 
     def loginHw(self):
         password = self.txtHwPass.text()

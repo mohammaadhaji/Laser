@@ -166,5 +166,16 @@ TEXT = {
     'btnLoadMusic': ['Load', 'بارگذاری'],
     'txtResetCounterPass': ['Password', 'رمز'],
     'btnResetCounterPass': ['Reset', 'ریست'],
-    'btnHwTest': ['Hardware Test', 'تست سیستم']
+    'btnHwTest': ['Hardware Test', 'تست سیستم'],
+    'lblcpRightPass': ['Passwoed', 'رمز عبور'],
+    'lblYourId': ['ID', 'شناسه'],
+    'lblLicPass': ['Passwoed', 'رمز عبور'],
+    'btnUUIDEnter': ['Enter', 'ورود'],
+    'lblLicID': ['License ID', 'شماره مجوز'],
+    'btnEnter': ['Enter', 'ورود'],
+    'wrongPass': ['Password is not correct.', 'رمز عبور صحیح نمی باشد.'],
+    'lblLicMsg': [
+            'Your laser machine has been locked for maintenance purpose.\nFor more information contact to Behdad Beauty company.\nTelephone +98 922 491 6671',
+            'دستگاه لیزر شما به منظور انجام سرویس های دوره ای غیرفعال شده است.\nبرای اطلاعات بیشتر با شرکت بهداد بیوتی تماس بگیرید.\nتلفن  6671 491 922 98+'
+            ]
 }

@@ -455,10 +455,6 @@ QPushButton:pressed{
 }
 """
 
-APP_LOCK_BG = """
-    background-color: rgb(77, 74, 78);
-"""
-
 COLOR1 = """
     background-color: rgb(32, 74, 135); 
 """
