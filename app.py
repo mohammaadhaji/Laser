@@ -408,6 +408,8 @@ class MainWin(QMainWindow):
         self.btnShowSplash.clicked.connect(self.showSplash)
         self.btnDelSelectedUsers.clicked.connect(self.removeSelectedUsers)
         self.btnSelectAll.clicked.connect(self.selectAll)
+        self.btnResetMsgNo.clicked.connect(lambda : self.resetCounterMsg('hide'))
+        self.btnResetMsgYes.clicked.connect(self.resetCounterYes)
         self.selectAllFlag = False
         self.btnLoop.clicked.connect(self.setLoopMusic)
         self.LoopMusicFlag = self.configs['LoopMusic']
@@ -709,6 +711,7 @@ class MainWin(QMainWindow):
 
     def updateResult(self, result):
         if result == 'Done GUI':
+            log('Update Firmware', 'GUI successfully updated.')
             for i in range(5, -1, -1):
                 self.lblUpdateFirmware.setText(
                     f'Your system will restart in {i} seconds...'
@@ -728,6 +731,7 @@ class MainWin(QMainWindow):
         self.lblUpdateFirmware.setText(status)
         if status == 'Rebooting Control System ...':
             self.btnUpdateFirmware.setDisabled(False)
+            log('Update Firmware', 'Firmware successfully updated.')
             self.setLabel(
                 'Rebooting Control System ...', 
                 self.lblUpdateFirmware,
@@ -980,6 +984,7 @@ class MainWin(QMainWindow):
                 txt.setReadOnly(False)
                 txt.setDisabled(False)
 
+            self.logingSettingAdmin = True
             self.txtRpiVersion.setReadOnly(True)
             self.txtMonitor.setReadOnly(True)
             self.txtOsSpecification.setReadOnly(True)
@@ -997,7 +1002,6 @@ class MainWin(QMainWindow):
             self.lblRpiVersion.setVisible(True)            
             self.txtHwPass.clear()
             self.stackedWidgetSettings.setCurrentWidget(self.hWPage)
-            self.logingSettingAdmin = True
             self.enterSettingPage(REPORT)
 
         elif password == '0':
@@ -1005,6 +1009,7 @@ class MainWin(QMainWindow):
                 txt.setReadOnly(True)
                 txt.setDisabled(True)
 
+            self.logingSettingAdmin = False
             self.keyboard('hide')
             self.hwPass('hide')
             self.readHwInfo()
@@ -1013,7 +1018,6 @@ class MainWin(QMainWindow):
             self.lblRpiVersion.setVisible(False)
             self.txtHwPass.clear()
             self.stackedWidgetSettings.setCurrentWidget(self.hWPage)
-            self.logingSettingAdmin = False
             self.enterSettingPage(REPORT)
             
         else:
@@ -1035,7 +1039,6 @@ class MainWin(QMainWindow):
         self.txtRpiVersion.setText(RPI_MODEL)
         self.txtMonitor.setText(monitorInfo())
         self.txtSerialNumber.setText(self.configs['SerialNumber'])                
-        self.txtTotalShotCounter.setText(str(self.configs['TotalShotCounter']))              
         self.txtLaserDiodeEnergy.setText(self.configs['LaserDiodeEnergy'])                
         self.txtLaserBarType.setText(self.configs['LaserBarType'])                
         self.txtLaserWavelength.setText(self.configs['LaserWavelength'])                
@@ -1044,6 +1047,11 @@ class MainWin(QMainWindow):
         self.txtFirmwareVersion.setText(self.configs['FirmwareVersion'])
         self.txtProductionDate.setText(self.configs['ProductionDate']) 
         self.txtGuiVersion.setText(self.configs['GuiVersion'])
+        if self.logingSettingAdmin:
+            text = str(self.configs['TotalShotCounter']) + ' : ' + str(self.configs['TotalShotCounterAdmin'])
+        else:
+            text = str(self.configs['TotalShotCounter'])
+        self.txtTotalShotCounter.setText(text)              
 
     def saveHwSettings(self):
         index = self.hwStackedWidget.indexOf(self.systemLogPage)
@@ -1135,7 +1143,12 @@ class MainWin(QMainWindow):
         settingsPage(fieldValues, cmdType)
 
     def resetTotalShot(self):
-        self.txtTotalShotCounter.setText('0')
+        if self.logingSettingAdmin:
+            text = '0 : ' + str(self.configs['TotalShotCounterAdmin'])
+        else:
+            text = '0'
+        self.txtTotalShotCounter.setText(text)
+
         self.configs['TotalShotCounter'] = 0
         if not self.saveConfigs():
             self.setLabel(
@@ -1898,9 +1911,10 @@ class MainWin(QMainWindow):
         x = left < event.x() < right
         y = bottom < self.height() - event.y() < top
 
-        self.powerOption('hide')
         if not (x and y):
+            self.powerOption('hide')
             self.resetCounterPass('hide')
+            self.resetCounterMsg('hide')
             self.keyboard('hide')
 
     def keyboardSignals(self):
@@ -2017,6 +2031,28 @@ class MainWin(QMainWindow):
         self.animation4.setEasingCurve(QEasingCurve.InOutQuart)
         self.animation4.start()
 
+    def resetCounterMsg(self, i):
+        width = self.resetCounterMsgFrame.width()
+        if i == 'hide' and width == 0:
+            return
+
+        if i == 'show' and width > 0:
+            return
+
+        if i == 'hide':
+            width = 430
+            newWidth = 0
+        else:
+            width = 0
+            newWidth = 430
+
+        self.animation4 = QPropertyAnimation(self.resetCounterMsgFrame, b"maximumWidth")
+        self.animation4.setDuration(500)
+        self.animation4.setStartValue(width)
+        self.animation4.setEndValue(newWidth)
+        self.animation4.setEasingCurve(QEasingCurve.InOutQuart)
+        self.animation4.start()
+    
     def powerOption(self, i):
         height = self.powerFrame.height()
         if i == 'hide' and height == 0:
@@ -2046,7 +2082,7 @@ class MainWin(QMainWindow):
 
     def btnResetCounterClicked(self):
         if self.logingSettingAdmin:
-            self.resetTotalShot()
+            self.resetCounterMsg('show')
         else:
             self.resetCounterPass('show')
             self.keyboard('show')
@@ -2063,6 +2099,10 @@ class MainWin(QMainWindow):
             self.txtResetCounterPass.setFocus()
             self.txtResetCounterPass.selectAll()
             self.resetCounterPassTimer.start(4000)
+
+    def resetCounterYes(self):
+        self.resetTotalShot()
+        self.resetCounterMsg('hide')
 
     def sort(self):
         self.sortBySession = not self.sortBySession
@@ -2417,6 +2457,7 @@ class MainWin(QMainWindow):
             self.insertToTabel(self.user)
             self.user = None
             self.configs['TotalShotCounter'] += self.currentCounter
+            self.configs['TotalShotCounterAdmin'] += self.currentCounter
             self.currentCounter = 0
             self.lblCounterValue.setText('0')
             self.saveConfigs()
@@ -2447,6 +2488,7 @@ class MainWin(QMainWindow):
             self.hwFrame.setLayoutDirection(Qt.RightToLeft)
             self.nsDateFrame.setLayoutDirection(Qt.LeftToRight)
             self.currentUserFrame.setLayoutDirection(Qt.RightToLeft)
+            self.resetCounterMsgFrame.setLayoutDirection(Qt.RightToLeft)
             icon = QPixmap(SELECTED_LANG_ICON)
             self.lblFaSelected.setPixmap(icon.scaled(70, 70))
             self.lblEnSelected.clear()
@@ -2460,6 +2502,7 @@ class MainWin(QMainWindow):
             self.hwFrame.setLayoutDirection(Qt.LeftToRight)
             self.nsDateFrame.setLayoutDirection(Qt.LeftToRight)
             self.currentUserFrame.setLayoutDirection(Qt.LeftToRight)
+            self.resetCounterMsgFrame.setLayoutDirection(Qt.LeftToRight)
             icon = QPixmap(SELECTED_LANG_ICON)
             self.lblEnSelected.setPixmap(icon.scaled(70, 70))
             self.lblFaSelected.clear()

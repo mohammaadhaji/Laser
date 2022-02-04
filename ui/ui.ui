@@ -60,7 +60,7 @@ QScrollBar:vertical {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>6</number>
       </property>
       <widget class="QWidget" name="adssPage">
        <property name="styleSheet">
@@ -189,8 +189,8 @@ QScrollBar:vertical {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1652</width>
-             <height>877</height>
+             <width>100</width>
+             <height>30</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -3664,7 +3664,7 @@ QPushButton:pressed{
                        <number>0</number>
                       </property>
                       <item>
-                       <layout class="QHBoxLayout" name="horizontalLayout_68" stretch="0,0,1,0,0">
+                       <layout class="QHBoxLayout" name="horizontalLayout_68" stretch="0,0,1,0,0,0">
                         <property name="leftMargin">
                          <number>0</number>
                         </property>
@@ -3740,6 +3740,105 @@ border: 1px solid white;
                            </size>
                           </property>
                          </spacer>
+                        </item>
+                        <item>
+                         <widget class="QFrame" name="resetCounterMsgFrame">
+                          <property name="minimumSize">
+                           <size>
+                            <width>0</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>0</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="frameShape">
+                           <enum>QFrame::StyledPanel</enum>
+                          </property>
+                          <property name="frameShadow">
+                           <enum>QFrame::Raised</enum>
+                          </property>
+                          <layout class="QHBoxLayout" name="horizontalLayout_49">
+                           <item>
+                            <layout class="QHBoxLayout" name="horizontalLayout_26">
+                             <item>
+                              <widget class="QLabel" name="lblResetMsg">
+                               <property name="font">
+                                <font>
+                                 <family>Arial</family>
+                                 <pointsize>18</pointsize>
+                                </font>
+                               </property>
+                               <property name="text">
+                                <string>Are you sure?</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QPushButton" name="btnResetMsgNo">
+                               <property name="font">
+                                <font>
+                                 <family>Arial</family>
+                                 <pointsize>18</pointsize>
+                                </font>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+color:white;
+min-width: 80px;
+min-height: 65px;
+border-radius: 5px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                               </property>
+                               <property name="text">
+                                <string>No</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QPushButton" name="btnResetMsgYes">
+                               <property name="font">
+                                <font>
+                                 <family>Arial</family>
+                                 <pointsize>18</pointsize>
+                                </font>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+color:white;
+min-width: 80px;
+min-height: 65px;
+border-radius: 5px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                               </property>
+                               <property name="text">
+                                <string>Yes</string>
+                               </property>
+                              </widget>
+                             </item>
+                            </layout>
+                           </item>
+                          </layout>
+                         </widget>
                         </item>
                         <item>
                          <widget class="QFrame" name="resetCounterFrame">
@@ -9719,7 +9818,7 @@ background-color: rgb(0, 170, 255);
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1566</width>
+                   <width>1341</width>
                    <height>803</height>
                   </rect>
                  </property>

@@ -195,6 +195,7 @@ def loadConfigs():
             configs['OwnerInfo'] = ''
             configs['SerialNumber'] = ''
             configs['TotalShotCounter'] = 0
+            configs['TotalShotCounterAdmin'] = 0
             configs['LaserDiodeEnergy'] = ''
             configs['LaserBarType'] = ''
             configs['LaserWavelength'] = ''

@@ -177,5 +177,8 @@ TEXT = {
     'lblLicMsg': [
             'Your laser machine has been locked for maintenance purpose.\nFor more information contact to Behdad Beauty company.\nTelephone +98 922 491 6671',
             'دستگاه لیزر شما به منظور انجام سرویس های دوره ای غیرفعال شده است.\nبرای اطلاعات بیشتر با شرکت بهداد بیوتی تماس بگیرید.\nتلفن  6671 491 922 98+'
-            ]
+            ],
+    'btnResetMsgYes': ['Yes', 'بله'],
+    'btnResetMsgNo': ['No', 'خیر'],
+    'lblResetMsg': ['Are you sure?', 'مطمئن هستید؟']
 }
