@@ -60,7 +60,7 @@ QScrollBar:vertical {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>6</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="adssPage">
        <property name="styleSheet">
@@ -6129,8 +6129,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>1628</width>
-               <height>723</height>
+               <width>312</width>
+               <height>413</height>
               </rect>
              </property>
              <property name="styleSheet">

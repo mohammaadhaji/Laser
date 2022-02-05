@@ -186,7 +186,7 @@ def loadConfigs():
             configs['LICENSE'] = genLicense()
             configs['PASSWORD'] = ''
             configs['LANGUAGE'] = 'en'
-            configs['slideTransition'] = True
+            configs['slideTransition'] = False
             configs['touchSound'] = True
             configs['MusicVolume'] = 50
             configs['VideoVolume'] = 50

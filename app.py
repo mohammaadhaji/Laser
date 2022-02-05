@@ -96,6 +96,7 @@ class MainWin(QMainWindow):
         self.userNextSession = None
         self.sortBySession = False
         self.selectedUsers = []
+        self.laserNoUser = False
         self.shift = False
         self.farsi = False
         self.sex = 'female'
@@ -745,11 +746,12 @@ class MainWin(QMainWindow):
 
     def shot(self):
         self.currentCounter += 1
-        self.user.incShot(self.bodyPart)
         self.lblCounterValue.setText(f'{self.currentCounter}')
         self.sparkTimer.start(1000//self.frequency + 100)
         self.lblSpark.setVisible(True)
         self.lblLasing.setVisible(True)
+        if not self.laserNoUser:
+            self.user.incShot(self.bodyPart)
 
     def hideSpark(self):
         self.sparkTimer.stop()
@@ -1428,16 +1430,20 @@ class MainWin(QMainWindow):
 
     def setNextSession(self, page):
         self.laserMainPage.setVisible(False)
-        if page == 'lazer':
-            self.userNextSession = self.user
+        if self.laserNoUser and page == 'lazer':
+            self.endSession()
             self.setReady(False)
-            self.btnCancelNS.setText(TEXT['btnLaterNS'][self.langIndex])
-        elif page == 'edit':
-            self.userNextSession = self.userInfo
-            self.btnCancelNS.setText(TEXT['btnCancelNS'][self.langIndex])
-            
-        self.changeAnimation('vertical')
-        self.stackedWidget.setCurrentWidget(self.nextSessionPage)
+        else:
+            if page == 'lazer':
+                self.userNextSession = self.user
+                self.setReady(False)
+                self.btnCancelNS.setText(TEXT['btnLaterNS'][self.langIndex])
+            elif page == 'edit':
+                self.userNextSession = self.userInfo
+                self.btnCancelNS.setText(TEXT['btnCancelNS'][self.langIndex])
+                
+            self.changeAnimation('vertical')
+            self.stackedWidget.setCurrentWidget(self.nextSessionPage)
 
     def setReady(self, ready):
         if ready:
@@ -2418,27 +2424,28 @@ class MainWin(QMainWindow):
         numberEntered = self.txtNumber.text()
 
         if not numberEntered or numberEntered.isspace():
-            self.setLabel(
-                    TEXT['emptyNumber'][self.langIndex], 
-                    self.lblLogin, 
-                    self.loginLabelTimer
-                )
-            self.txtNumber.setFocus()
-            self.txtNumber.selectAll()
-            return
+            # self.setLabel(
+            #         TEXT['emptyNumber'][self.langIndex], 
+            #         self.lblLogin, 
+            #         self.loginLabelTimer
+            #     )
+            # self.txtNumber.setFocus()
+            # self.txtNumber.selectAll()
+            self.laserNoUser = True
+        else:
+            self.laserNoUser = False
+            if not numberEntered in  self.usersData:
+                self.txtNumberSubmit.setText(numberEntered)
+                self.txtNameSubmit.setFocus()
+                self.changeAnimation('vertical')
+                self.stackedWidget.setCurrentWidget(self.newUserPage)
+                return
 
+            self.user = self.usersData[numberEntered]
+            self.user.setCurrentSession('started')
+            self.txtCurrentUser.setText(self.user.name)
+            self.txtCurrentSnumber.setText(str(self.user.sessionNumber))
 
-        if not numberEntered in  self.usersData:
-            self.txtNumberSubmit.setText(numberEntered)
-            self.txtNameSubmit.setFocus()
-            self.changeAnimation('vertical')
-            self.stackedWidget.setCurrentWidget(self.newUserPage)
-            return
-
-        self.user = self.usersData[numberEntered]
-        self.user.setCurrentSession('started')
-        self.txtCurrentUser.setText(self.user.name)
-        self.txtCurrentSnumber.setText(str(self.user.sessionNumber))
         self.keyboard('hide')
         self.changeAnimation('horizontal')
         self.stackedWidget.setCurrentWidget(self.laserMainPage)
@@ -2449,19 +2456,23 @@ class MainWin(QMainWindow):
 
     def endSession(self):
         try:
-            self.monitorSensorsTimer.stop()
-            self.monitorReceivingSensors.stop()
-            self.user.setCurrentSession('finished')
-            self.user.addSession()
-            self.removeUser(self.user.phoneNumber)
-            self.insertToTabel(self.user)
+            if not self.laserNoUser:
+                self.user.setCurrentSession('finished')
+                self.user.addSession()
+                self.removeUser(self.user.phoneNumber)
+                self.insertToTabel(self.user)
+                self.saveUsers()
+                self.monitorSensorsTimer.stop()
+                self.monitorReceivingSensors.stop()
+                self.txtCurrentUser.clear()
+                self.txtCurrentSnumber.clear()
+
             self.user = None
             self.configs['TotalShotCounter'] += self.currentCounter
             self.configs['TotalShotCounterAdmin'] += self.currentCounter
             self.currentCounter = 0
             self.lblCounterValue.setText('0')
             self.saveConfigs()
-            self.saveUsers()
         except Exception as e:
             log('Function: endSession()', str(e) + '\n')
 
