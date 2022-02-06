@@ -4,10 +4,98 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtWidgets, QtCore
-from styles import ACTION_BTN, CHECKBOX_DEL
+from styles import *
 from paths import *
 import math
 
+
+class Sensor(QPushButton):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.blink)
+        self.styleOk = SENSOR_OK
+        self.styleNotOk = SENSOR_NOT_OK
+        self.error = False
+        self.flag = False
+        self.warning = False
+
+    def blink(self):
+        self.flag = not self.flag
+        if self.flag:
+            self.setStyleSheet(self.styleNotOk)
+        else:
+            self.setStyleSheet(self.styleOk)
+
+    def stopWarning(self):
+        self.timer.stop()
+        self.warning = False
+        self.setStyleSheet(SENSOR_OK)
+
+    def startWarning(self):
+        if not self.warning:
+            self.timer.start(500)
+            self.warning = True
+
+    def setError(self, status):
+        self.error = status
+        if self.error:
+            self.startWarning()
+        else:
+            self.stopWarning()
+
+class TempSensor(Sensor):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.temperature = 0
+
+    def setError(self, value):
+        self.temperature = value
+        if 5 <= value <= 40:
+            self.stopWarning()
+            self.error = False
+        else:
+            self.startWarning()
+            self.error = True
+
+
+class InterLockSensor(Sensor):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.lockIco = QIcon()
+        self.unlockIco = QIcon()
+        self.lockIco.addPixmap(QPixmap(LOCK))
+        self.unlockIco.addPixmap(QPixmap(UNLOCK))
+
+    def stopWarning(self):
+        self.timer.stop()
+        self.warning = False
+        self.setIcon(self.unlockIco)
+        self.setStyleSheet(SENSOR_OK)
+
+    def startWarning(self):
+        if not self.warning:
+            self.timer.start(500)
+            self.warning = True
+            self.setIcon(self.lockIco)
+
+class HiddenSensor(Sensor):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.styleOk = HIDDEN_SENSOR_OK
+        self.styleNotOk = HIDDEN_SENSOR_NOT_OK
+
+    def stopWarning(self):
+        self.timer.stop()
+        self.warning = False
+        self.setVisible(False)
+
+    def startWarning(self):
+        if not self.warning:
+            self.timer.start(500)
+            self.warning = True
+            self.setVisible(True)
+        
 
 class Action(QWidget):
     info = pyqtSignal(str)
@@ -1352,7 +1440,6 @@ class AnalogGaugeWidget(QWidget):
     def paintEvent(self, event):
 
         self.draw_outer_circle()
-        self.draw_icon_image()
         if self.enable_filled_Polygon:
             self.draw_filled_polygon()
 
