@@ -112,6 +112,7 @@ class MainWin(QMainWindow):
         self.ready = False
         self.logingSettingAdmin = False
         self.findIndex = -1
+        self.receivingSensorsData = True
         self.musicFiles = []
         self.time(edit=True)
         self.tutorials()   
