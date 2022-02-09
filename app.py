@@ -1065,7 +1065,6 @@ class MainWin(QMainWindow):
         index = self.hwStackedWidget.indexOf(self.infoPage)
         if self.hwStackedWidget.currentIndex() == index:
             self.configs['SerialNumber'] = self.txtSerialNumber.text()            
-            self.configs['TotalShotCounter'] = int(self.txtTotalShotCounter.text())
             self.configs['LaserDiodeEnergy'] = self.txtLaserDiodeEnergy.text()            
             self.configs['LaserBarType'] = self.txtLaserBarType.text()            
             self.configs['LaserWavelength'] = self.txtLaserWavelength.text()            
