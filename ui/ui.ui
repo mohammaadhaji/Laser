@@ -4923,14 +4923,14 @@ color:white;
                     <property name="font">
                      <font>
                       <family>Arial</family>
-                      <pointsize>25</pointsize>
+                      <pointsize>30</pointsize>
                      </font>
                     </property>
                     <property name="styleSheet">
                      <string notr="true">
 QToolBox::tab {
     background: rgb(65, 65, 65);
-    border-radius: 5px;
+    border-radius: 10px;
     color: rgb(200, 200, 200);
 }
 
@@ -4954,7 +4954,7 @@ QToolBox::tab:selected { /* italicize selected tabs */
                        <x>0</x>
                        <y>0</y>
                        <width>1248</width>
-                       <height>514</height>
+                       <height>484</height>
                       </rect>
                      </property>
                      <property name="styleSheet">
@@ -5389,7 +5389,7 @@ border: 10px solid rgb(255, 255, 255);
                        <x>0</x>
                        <y>0</y>
                        <width>1248</width>
-                       <height>514</height>
+                       <height>484</height>
                       </rect>
                      </property>
                      <property name="styleSheet">
