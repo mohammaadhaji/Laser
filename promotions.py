@@ -1,13 +1,147 @@
 from PyQt5.QtMultimediaWidgets import QVideoWidget
+from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtMultimedia import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from PyQt5 import QtWidgets, QtCore
+from werkzeug.utils import cached_property
+from communication import HARDWARE_TEST_PAGE, READ, sendPacket
 from styles import *
 from paths import *
 import math
 
+
+class Relay:
+    def __init__(self, btnRelay, btnPass, btnFail, field):
+        self.relay = btnRelay
+        self.btnPass = btnPass
+        self.btnFail = btnFail
+        self.field = field
+        self.relay.setStyleSheet(RELAY_STYLE)
+        self.btnPass.setStyleSheet(PASS_FAIL_STYLE)
+        self.btnFail.setStyleSheet(PASS_FAIL_STYLE)
+        self.relay.clicked.connect(self.listen)
+        self.icon = QIcon()
+        self.icon.addPixmap(QPixmap(RELAY_ICON))
+        self.relay.setIcon(self.icon)
+        self.relay.setIconSize(QSize(100, 100))
+        self.movie = QMovie(RELAY_GIF)
+        self.movie.frameChanged.connect(lambda: self.relay.setIcon(QIcon(self.movie.currentPixmap())))
+        self.relayTimer = QTimer()
+        self.resultTimer = QTimer()
+        self.isListening = False
+        self.resultTimer.timeout.connect(self.result)
+        self.relayTimer.timeout.connect(self.relayFinish)
+        self.tests = [False, False, False]
+
+    def setTests(self, step_status):
+        step   = step_status[0]
+        status = step_status[1]
+        if self.isListening:
+            if step == 1:
+                if status == 0:
+                    self.tests[0] = True
+                else:
+                    self.tests[0] = False
+
+            elif step == 2:
+                if status == 1:
+                    self.tests[1] = True
+                else:
+                    self.tests[1] = False
+
+            elif step == 3:
+                if status == 0:
+                    self.tests[2] = True
+                else:
+                    self.tests[2] = False
+        
+    def listen(self):
+        self.isListening = True
+        self.relay.setEnabled(False)
+        self.movie.start()
+        self.relayTimer.start(3500)
+        sendPacket({'relay':self.field}, {'relay': ''}, HARDWARE_TEST_PAGE, READ)
+        
+    def relayFinish(self):
+        self.relayTimer.stop()
+        self.movie.stop()
+        self.isListening = False
+        self.relay.setEnabled(True)
+        self.relay.setIcon(self.icon)
+
+        if self.tests[0] and self.tests[1] and self.tests[2]:
+            self.btnPass.setStyleSheet(PASS_STYLE)
+        else:
+             self.btnFail.setStyleSheet(FAIL_STYLE) 
+
+        self.tests = [False, False, False]
+        self.resultTimer.start(3000)
+
+    def result(self):
+        self.resultTimer.stop()
+        self.btnPass.setStyleSheet(PASS_FAIL_STYLE)
+        self.btnFail.setStyleSheet(PASS_FAIL_STYLE)
+
+
+class SensorTest:
+    def __init__(self, **kwarg):
+        self.widgets = kwarg
+
+    def setOk(self, ok):
+        if ok:
+            self.widgets['btnOk'].setStyleSheet(SENSOR_OK_TEST_STYLE)
+            self.widgets['btnNotOk'].setStyleSheet(SENSOR_TEST_STYLE)
+        else:
+            self.widgets['btnOk'].setStyleSheet(SENSOR_TEST_STYLE)
+            self.widgets['btnNotOk'].setStyleSheet(SENSOR_NOT_OK_TEST_STYLE)
+
+    def setValue(self, value):
+        self.widgets['txt'].setText(f"{value}  {self.widgets['unit']}")
+
+
+class DriverCurrent:
+    def __init__(self, btnStart, gauge, field):
+        self.btnStart = btnStart
+        self.gauge = gauge
+        self.field = field
+        self.btnStart.clicked.connect(self.start)
+        self.isListening = False
+        self.timer = QTimer()
+        self.resetTimer = QTimer()
+        self.timer.timeout.connect(self.finish)
+        self.resetTimer.timeout.connect(self.reset)
+        self.icon = QIcon()
+        self.icon.addPixmap(QPixmap(DRIVER_CURRENT))
+        self.btnStart.setIcon(self.icon)
+        self.movie = QMovie(RELAY_GIF)
+        self.movie.frameChanged.connect(
+            lambda: self.btnStart.setIcon(QIcon(self.movie.currentPixmap()))
+        )
+        
+    def reset(self):
+        self.resetTimer.stop()
+        self.gauge.updateValue(0)
+    
+    def start(self):
+        self.isListening = True
+        self.timer.start(4000)
+        self.movie.start()
+        self.btnStart.setEnabled(False)
+        sendPacket({'driver': self.field}, {'driver': ''}, HARDWARE_TEST_PAGE, READ)
+
+    def setValue(self, value):
+        if self.isListening:
+            self.gauge.updateValue(value)
+        
+    def finish(self):
+        self.movie.stop()
+        self.timer.stop()
+        self.isListening = False
+        self.btnStart.setEnabled(True)
+        self.btnStart.setIcon(self.icon)
+        self.resetTimer.start(2000)
+        
 
 class Sensor(QPushButton):
     def __init__(self, parent):
@@ -256,6 +390,40 @@ class Label(QLabel):
         self.clicked.emit()
 
 
+class DoubleSlider(QSlider):
+
+    # create our our signal that we can connect to if necessary
+    doubleValueChanged = pyqtSignal(float)
+
+    def __init__(self, decimals=3, *args, **kargs):
+        super(DoubleSlider, self).__init__( *args, **kargs)
+        self._multi = 10 ** 2
+
+        self.valueChanged.connect(self.emitDoubleValueChanged)
+
+    def emitDoubleValueChanged(self):
+        value = float(super(DoubleSlider, self).value())/self._multi
+        self.doubleValueChanged.emit(value)
+
+    def value(self):
+        return float(super(DoubleSlider, self).value()) / self._multi
+
+    def setMinimum(self, value):
+        return super(DoubleSlider, self).setMinimum(value * self._multi)
+
+    def setMaximum(self, value):
+        return super(DoubleSlider, self).setMaximum(value * self._multi)
+
+    def setSingleStep(self, value):
+        return super(DoubleSlider, self).setSingleStep(value * self._multi)
+
+    def singleStep(self):
+        return float(super(DoubleSlider, self).singleStep()) / self._multi
+
+    def setValue(self, value):
+        super(DoubleSlider, self).setValue(int(value * self._multi))
+
+
 class StackedWidget(QtWidgets.QStackedWidget):
     def __init__(self, parent=None):
         super(QStackedWidget, self).__init__(parent)
@@ -442,11 +610,6 @@ class FadeWidgetTransition(QWidget):
 
 
 class AnalogGaugeWidget(QWidget):
-    """Fetches rows from a Bigtable.
-    Args: 
-        none
-    
-    """
     valueChanged = pyqtSignal(int)
 
     def __init__(self, parent=None):
@@ -454,7 +617,7 @@ class AnalogGaugeWidget(QWidget):
 
         self.use_timer_event = False
 
-        self.setNeedleColor(0, 0, 0, 255)
+        self.setNeedleColor(255, 0, 0, 255)
 
         self.NeedleColorReleased = self.NeedleColor
 
@@ -471,7 +634,7 @@ class AnalogGaugeWidget(QWidget):
         self.value_needle = QObject
 
         self.minValue = 0
-        self.maxValue = 1000
+        self.maxValue = 100
         self.value = self.minValue
 
         self.value_offset = 0
@@ -479,14 +642,13 @@ class AnalogGaugeWidget(QWidget):
         self.valueNeedleSnapzone = 0.25
         self.last_value = 0
 
-
         self.gauge_color_outer_radius_factor = 1
         self.gauge_color_inner_radius_factor = 0.9
 
         self.center_horizontal_value = 0
         self.center_vertical_value = 0
 
-        self.scale_angle_start_value = 135
+        self.scale_angle_start_value = 90
         self.scale_angle_size = 270
 
         self.angle_offset = 0
@@ -515,7 +677,7 @@ class AnalogGaugeWidget(QWidget):
         self.value_fontsize = self.initial_value_fontsize
         self.text_radius_factor = 0.5
 
-        self.setEnableBarGraph(True)
+        self.setEnableBarGraph(False)
         self.setEnableScalePolygon(True)
         self.enable_CenterPoint = True
         self.enable_fine_scaled_marker = True
@@ -524,7 +686,8 @@ class AnalogGaugeWidget(QWidget):
         self.needle_scale_factor = 0.8
         self.enable_Needle_Polygon = True
 
-        self.setMouseTracking(True)
+        self.setMouseTracking(False)
+        self.setScaleStartAngle(90)
 
         self.units = "A"
 
@@ -535,471 +698,32 @@ class AnalogGaugeWidget(QWidget):
         else:
             self.update()
 
-        self.setGaugeTheme(0)
-
+        self.setGaugeTheme()
+        
         self.rescale_method()
 
-    def setScaleFontFamily(self, font):
-        self.scale_fontname = str(font)
-
-    def setValueFontFamily(self, font):
-        self.value_fontname = str(font)
-
-    def setBigScaleColor(self, color):
-        self.bigScaleMarker = QColor(color)      
-
-    def setFineScaleColor(self, color):
-        self.fineScaleColor = QColor(color)    
-
     def setGaugeTheme(self, Theme = 1):
-        if Theme == 0 or Theme == None:
-            self.set_scale_polygon_colors([[.00, Qt.red],
-                                    [.1, Qt.yellow],
-                                    [.15, Qt.green],
-                                    [1, Qt.transparent]])
 
-            self.needle_center_bg = [
-                                    [0, QColor(35, 40, 3, 255)], 
-                                    [0.16, QColor(30, 36, 45, 255)], 
-                                    [0.225, QColor(36, 42, 54, 255)], 
-                                    [0.423963, QColor(19, 23, 29, 255)], 
-                                    [0.580645, QColor(45, 53, 68, 255)], 
-                                    [0.792627, QColor(59, 70, 88, 255)], 
-                                    [0.935, QColor(30, 35, 45, 255)], 
-                                    [1, QColor(35, 40, 3, 255)]
-                                    ]
-
-            self.outer_circle_bg =  [
-                                    [0.0645161, QColor(30, 35, 45, 255)], 
-                                    [0.37788, QColor(57, 67, 86, 255)], 
-                                    [1, QColor(30, 36, 45, 255)]
-                                    ]
-
-        if Theme == 1:
-            self.set_scale_polygon_colors([[.75, Qt.red],
-                                     [.5, Qt.yellow],
-                                     [.25, Qt.green]])
-
-            self.needle_center_bg = [
-                                    [0, QColor(35, 40, 3, 255)], 
-                                    [0.16, QColor(30, 36, 45, 255)], 
-                                    [0.225, QColor(36, 42, 54, 255)], 
-                                    [0.423963, QColor(19, 23, 29, 255)], 
-                                    [0.580645, QColor(45, 53, 68, 255)], 
-                                    [0.792627, QColor(59, 70, 88, 255)], 
-                                    [0.935, QColor(30, 35, 45, 255)], 
-                                    [1, QColor(35, 40, 3, 255)]
-                                    ]
-
-            self.outer_circle_bg =  [
-                                    [0.0645161, QColor(30, 35, 45, 255)], 
-                                    [0.37788, QColor(57, 67, 86, 255)], 
-                                    [1, QColor(30, 36, 45, 255)]
-                                    ]
-
-        if Theme == 2:
-            self.set_scale_polygon_colors([[.25, Qt.red],
-                                     [.5, Qt.yellow],
-                                     [.75, Qt.green]])
-
-            self.needle_center_bg = [
-                                    [0, QColor(35, 40, 3, 255)], 
-                                    [0.16, QColor(30, 36, 45, 255)], 
-                                    [0.225, QColor(36, 42, 54, 255)], 
-                                    [0.423963, QColor(19, 23, 29, 255)], 
-                                    [0.580645, QColor(45, 53, 68, 255)], 
-                                    [0.792627, QColor(59, 70, 88, 255)], 
-                                    [0.935, QColor(30, 35, 45, 255)], 
-                                    [1, QColor(35, 40, 3, 255)]
-                                    ]
-
-            self.outer_circle_bg =  [
-                                    [0.0645161, QColor(30, 35, 45, 255)], 
-                                    [0.37788, QColor(57, 67, 86, 255)], 
-                                    [1, QColor(30, 36, 45, 255)]
-                                    ]
-
-        elif Theme == 3:
-            self.set_scale_polygon_colors([[.00, Qt.white]])
-
-            self.needle_center_bg = [
-                                    [0, Qt.white], 
-                                    ]
-
-            self.outer_circle_bg =  [
-                                    [0, Qt.white], 
-                                    ]
-
-            self.bigScaleMarker = Qt.black
-            self.fineScaleColor = Qt.black
-
-        elif Theme == 4:
-            self.set_scale_polygon_colors([[1, Qt.black]])
-
-            self.needle_center_bg = [
-                                    [0, Qt.black], 
-                                    ]
-
-            self.outer_circle_bg =  [
-                                    [0, Qt.black], 
-                                    ]
-
-            self.bigScaleMarker = Qt.white
-            self.fineScaleColor = Qt.white
-
-        elif Theme == 5:
-            self.set_scale_polygon_colors([[1, QColor("#029CDE")]])  
-
-            self.needle_center_bg = [
-                                    [0, QColor("#029CDE")], 
-                                    ]
-
-            self.outer_circle_bg =  [
-                                    [0, QColor("#029CDE")], 
-                                    ]
-
-        elif Theme == 6:
-            self.set_scale_polygon_colors([[.75, QColor("#01ADEF")],
-                                     [.5, QColor("#0086BF")],
-                                     [.25, QColor("#005275")]])
-
-            self.needle_center_bg = [
-                                    [0, QColor(0, 46, 61, 255)], 
-                                    [0.322581, QColor(1, 173, 239, 255)], 
-                                    [0.571429, QColor(0, 73, 99, 255)],
-                                    [1, QColor(0, 46, 61, 255)]
-                                    ]
-
-            self.outer_circle_bg =  [
-                                    [0.0645161, QColor(0, 85, 116, 255)], 
-                                    [0.37788, QColor(1, 173, 239, 255)], 
-                                    [1, QColor(0, 69, 94, 255)]
-                                    ]
-
-            self.bigScaleMarker = Qt.black
-            self.fineScaleColor = Qt.black
-
-        elif Theme == 7:
-            self.set_scale_polygon_colors([[.25, QColor("#01ADEF")],
-                                     [.5, QColor("#0086BF")],
-                                     [.75, QColor("#005275")]])
-
-            self.needle_center_bg = [
-                                    [0, QColor(0, 46, 61, 255)], 
-                                    [0.322581, QColor(1, 173, 239, 255)], 
-                                    [0.571429, QColor(0, 73, 99, 255)],
-                                    [1, QColor(0, 46, 61, 255)]
-                                    ]
-
-            self.outer_circle_bg =  [
-                                    [0.0645161, QColor(0, 85, 116, 255)], 
-                                    [0.37788, QColor(1, 173, 239, 255)], 
-                                    [1, QColor(0, 69, 94, 255)]
-                                    ]
-
-            self.bigScaleMarker = Qt.black
-            self.fineScaleColor = Qt.black
-
-        elif Theme == 8:
-            self.setCustomGaugeTheme(
-                color1 = "#ffaa00",
-                color2= "#7d5300",
-                color3 = "#3e2900"
-            )
-
-            self.bigScaleMarker = Qt.black
-            self.fineScaleColor = Qt.black
-
-        elif Theme == 9:
-            self.setCustomGaugeTheme(
-                color1 = "#3e2900",
-                color2= "#7d5300",
-                color3 = "#ffaa00"
-            )
-
-            self.bigScaleMarker = Qt.white
-            self.fineScaleColor = Qt.white
-
-        elif Theme == 10:
-            self.setCustomGaugeTheme(
-                color1 = "#ff007f",
-                color2= "#aa0055",
-                color3 = "#830042"
-            )
-
-
-            self.bigScaleMarker = Qt.black
-            self.fineScaleColor = Qt.black
-
-        elif Theme == 11:
-            self.setCustomGaugeTheme(
-                color1 = "#830042",
-                color2= "#aa0055",
-                color3 = "#ff007f"
-            )
-            
-            self.bigScaleMarker = Qt.white
-            self.fineScaleColor = Qt.white
-
-        elif Theme == 12:
-            self.setCustomGaugeTheme(
-                color1 = "#ffe75d",
-                color2= "#896c1a",
-                color3 = "#232803"
-            )
-
-            self.bigScaleMarker = Qt.black
-            self.fineScaleColor = Qt.black
-
-        elif Theme == 13:
-            self.setCustomGaugeTheme(
-                color1 = "#ffe75d",
-                color2= "#896c1a",
-                color3 = "#232803"
-            )
-
-            self.bigScaleMarker = Qt.black
-            self.fineScaleColor = Qt.black
-
-        elif Theme == 14:
-            self.setCustomGaugeTheme(
-                color1 = "#232803",
-                color2= "#821600",
-                color3 = "#ffe75d"
-            )
-
-            self.bigScaleMarker = Qt.white
-            self.fineScaleColor = Qt.white
-
-        elif Theme == 15:
-            self.setCustomGaugeTheme(
-                color1 = "#00FF11",
-                color2= "#00990A",
-                color3 = "#002603"
-            )
-
-            self.bigScaleMarker = Qt.black
-            self.fineScaleColor = Qt.black
-
-        elif Theme == 16:
-            self.setCustomGaugeTheme(
-                color1 = "#002603",
-                color2= "#00990A",
-                color3 = "#00FF11"
-            )
-
-            self.bigScaleMarker = Qt.white
-            self.fineScaleColor = Qt.white
-
-        elif Theme == 17:
-            self.setCustomGaugeTheme(
-                color1 = "#00FFCC",
-                color2= "#00876C",
-                color3 = "#00211B"
-            )
-
-            self.bigScaleMarker = Qt.black
-            self.fineScaleColor = Qt.black
-
-        elif Theme == 18:
-            self.setCustomGaugeTheme(
-                color1 = "#00211B",
-                color2= "#00876C",
-                color3 = "#00FFCC"
-            )
-
-            self.bigScaleMarker = Qt.white
-            self.fineScaleColor = Qt.white
-
-        elif Theme == 19:
-            self.setCustomGaugeTheme(
-                color1 = "#001EFF",
-                color2= "#001299",
-                color3 = "#000426"
-            )
-
-            self.bigScaleMarker = Qt.black
-            self.fineScaleColor = Qt.black
-
-        elif Theme == 20:
-            self.setCustomGaugeTheme(
-                color1 = "#000426",
-                color2= "#001299",
-                color3 = "#001EFF"
-            )
-
-            self.bigScaleMarker = Qt.white
-            self.fineScaleColor = Qt.white
-
-        elif Theme == 21:
-            self.setCustomGaugeTheme(
-                color1 = "#F200FF",
-                color2= "#85008C",
-                color3 = "#240026"
-            )
-
-            self.bigScaleMarker = Qt.black
-            self.fineScaleColor = Qt.black
-
-        elif Theme == 22:
-            self.setCustomGaugeTheme(
-                color1 = "#240026",
-                color2= "#85008C",
-                color3 = "#F200FF"
-            )
-
-            self.bigScaleMarker = Qt.white
-            self.fineScaleColor = Qt.white
-
-        elif Theme == 23:
-            self.setCustomGaugeTheme(
-                color1 = "#FF0022",
-                color2= "#080001",
-                color3 = "#009991"
-            )
-
-            self.bigScaleMarker = Qt.white
-            self.fineScaleColor = Qt.white
-
-        elif Theme == 24:
-            self.setCustomGaugeTheme(
-                color1 = "#009991",
-                color2= "#080001",
-                color3 = "#FF0022"
-            )
-
-            self.bigScaleMarker = Qt.white
-            self.fineScaleColor = Qt.white
-
-    def setCustomGaugeTheme(self, **colors):
-        if "color1" in colors and len(str(colors['color1'])) > 0:
-            if "color2" in colors and len(str(colors['color2'])) > 0:
-                if "color3" in colors and len(str(colors['color3'])) > 0:
-
-                    self.set_scale_polygon_colors([[.25, QColor(str(colors['color1']))],
-                                            [.5, QColor(str(colors['color2']))],
-                                            [.75, QColor(str(colors['color3']))]])
-
-                    self.needle_center_bg = [
-                                            [0, QColor(str(colors['color3']))], 
-                                            [0.322581, QColor(str(colors['color1']))], 
-                                            [0.571429, QColor(str(colors['color2']))],
-                                            [1, QColor(str(colors['color3']))]
-                                            ]
-
-                    self.outer_circle_bg =  [
-                                            [0.0645161, QColor(str(colors['color3']))], 
-                                            [0.36, QColor(str(colors['color1']))], 
-                                            [1, QColor(str(colors['color2']))]
-                                            ]
-
-                else:
-
-                    self.set_scale_polygon_colors([[.5, QColor(str(colors['color1']))],
-                                             [1, QColor(str(colors['color2']))]])
-
-                    self.needle_center_bg = [
-                                            [0, QColor(str(colors['color2']))], 
-                                            [1, QColor(str(colors['color1']))]
-                                            ]
-
-                    self.outer_circle_bg =  [
-                                            [0, QColor(str(colors['color2']))], 
-                                            [1, QColor(str(colors['color2']))]
-                                            ]
-
-            else:
-
-                self.set_scale_polygon_colors([[1, QColor(str(colors['color1']))]])
-
-                self.needle_center_bg = [
-                                        [1, QColor(str(colors['color1']))]
-                                        ]
-
-                self.outer_circle_bg =  [
-                                        [1, QColor(str(colors['color1']))]
-                                        ]
-
-        else:
-
-            self.setGaugeTheme(0)
-            print("color1 is not defined")
-
-    def setScalePolygonColor(self, **colors):
-        if "color1" in colors and len(str(colors['color1'])) > 0:
-            if "color2" in colors and len(str(colors['color2'])) > 0:
-                if "color3" in colors and len(str(colors['color3'])) > 0:
-
-                    self.set_scale_polygon_colors([[.25, QColor(str(colors['color1']))],
-                                            [.5, QColor(str(colors['color2']))],
-                                            [.75, QColor(str(colors['color3']))]])
-
-                else:
-
-                    self.set_scale_polygon_colors([[.5, QColor(str(colors['color1']))],
-                                             [1, QColor(str(colors['color2']))]])
-
-            else:
-
-                self.set_scale_polygon_colors([[1, QColor(str(colors['color1']))]])
-
-        else:
-            print("color1 is not defined")
-
-    def setNeedleCenterColor(self, **colors):
-        if "color1" in colors and len(str(colors['color1'])) > 0:
-            if "color2" in colors and len(str(colors['color2'])) > 0:
-                if "color3" in colors and len(str(colors['color3'])) > 0:
-
-                    self.needle_center_bg = [
-                                            [0, QColor(str(colors['color3']))], 
-                                            [0.322581, QColor(str(colors['color1']))], 
-                                            [0.571429, QColor(str(colors['color2']))],
-                                            [1, QColor(str(colors['color3']))]
-                                            ]
-
-                else:
-
-                    self.needle_center_bg = [
-                                            [0, QColor(str(colors['color2']))], 
-                                            [1, QColor(str(colors['color1']))]
-                                            ]
-
-            else:
-
-                self.needle_center_bg = [
-                                        [1, QColor(str(colors['color1']))]
-                                        ]
-        else:
-            print("color1 is not defined")
-
-    def setOuterCircleColor(self, **colors):
-        if "color1" in colors and len(str(colors['color1'])) > 0:
-            if "color2" in colors and len(str(colors['color2'])) > 0:
-                if "color3" in colors and len(str(colors['color3'])) > 0:
-
-                    self.outer_circle_bg =  [
-                                            [0.0645161, QColor(str(colors['color3']))], 
-                                            [0.37788, QColor(str(colors['color1']))], 
-                                            [1, QColor(str(colors['color2']))]
-                                            ]
-
-                else:
-
-                    self.outer_circle_bg =  [
-                                            [0, QColor(str(colors['color2']))], 
-                                            [1, QColor(str(colors['color2']))]
-                                            ]
-
-            else:
-
-                self.outer_circle_bg =  [
-                                        [1, QColor(str(colors['color1']))]
-                                        ]
-
-        else:
-            print("color1 is not defined")
-
+        self.set_scale_polygon_colors([[.25, Qt.red],
+                                    [.5, Qt.yellow],
+                                    [.75, Qt.green]])
+
+        self.needle_center_bg = [
+                                [0, QColor(35, 40, 3, 255)], 
+                                [0.16, QColor(30, 36, 45, 255)], 
+                                [0.225, QColor(36, 42, 54, 255)], 
+                                [0.423963, QColor(19, 23, 29, 255)], 
+                                [0.580645, QColor(45, 53, 68, 255)], 
+                                [0.792627, QColor(59, 70, 88, 255)], 
+                                [0.935, QColor(30, 35, 45, 255)], 
+                                [1, QColor(35, 40, 3, 255)]
+                                ]
+
+        self.outer_circle_bg =  [
+                                [0.0645161, QColor(30, 35, 45, 255)], 
+                                [0.37788, QColor(57, 67, 86, 255)], 
+                                [1, QColor(30, 36, 45, 255)]
+                                ]
 
 
     def rescale_method(self):
@@ -1019,7 +743,6 @@ class AnalogGaugeWidget(QWidget):
 
         self.scale_fontsize = self.initial_scale_fontsize * self.widget_diameter / 400
         self.value_fontsize = self.initial_value_fontsize * self.widget_diameter / 400
-
 
     def change_value_needle_style(self, design):
         self.value_needle = []
@@ -1041,11 +764,6 @@ class AnalogGaugeWidget(QWidget):
         if not self.use_timer_event:
             self.update()
 
-    def updateAngleOffset(self, offset):
-        self.angle_offset = offset
-        if not self.use_timer_event:
-            self.update()
-
     def center_horizontal(self, value):
         self.center_horizontal_value = value
 
@@ -1058,6 +776,7 @@ class AnalogGaugeWidget(QWidget):
 
         if not self.use_timer_event:
             self.update()
+
     def setNeedleColorOnDrag(self, R=50, G=50, B=50, Transparency=255):
         self.NeedleColorDrag = QColor(R, G, B, Transparency)
 
@@ -1082,12 +801,6 @@ class AnalogGaugeWidget(QWidget):
         if not self.use_timer_event:
             self.update()
 
-    def setEnableNeedlePolygon(self, enable = True):
-        self.enable_Needle_Polygon = enable
-
-        if not self.use_timer_event:
-            self.update()
-
     def setEnableScaleText(self, enable = True):
         self.enable_scale_text = enable
 
@@ -1100,33 +813,8 @@ class AnalogGaugeWidget(QWidget):
         if not self.use_timer_event:
             self.update()
 
-    def setEnableValueText(self, enable = True):
-        self.enable_value_text = enable
-
-        if not self.use_timer_event:
-            self.update()
-
-    def setEnableCenterPoint(self, enable = True):
-        self.enable_CenterPoint = enable
-
-        if not self.use_timer_event:
-            self.update()
-
     def setEnableScalePolygon(self, enable = True):
         self.enable_filled_Polygon = enable
-
-        if not self.use_timer_event:
-            self.update()
-
-    def setEnableBigScaleGrid(self, enable = True):
-        self.enable_big_scaled_marker = enable
-
-        if not self.use_timer_event:
-            self.update()
-
-
-    def setEnableFineScaleGrid(self, enable = True):
-        self.enable_fine_scaled_marker = enable
 
         if not self.use_timer_event:
             self.update()
@@ -1167,23 +855,6 @@ class AnalogGaugeWidget(QWidget):
         if not self.use_timer_event:
             self.update()
 
-    def setTotalScaleAngleSize(self, value):
-        self.scale_angle_size = value
-
-        if not self.use_timer_event:
-            self.update()
-
-    def setGaugeColorOuterRadiusFactor(self, value):
-        self.gauge_color_outer_radius_factor = float(value) / 1000
-
-        if not self.use_timer_event:
-            self.update()
-
-    def setGaugeColorInnerRadiusFactor(self, value):
-        self.gauge_color_inner_radius_factor = float(value) / 1000
-
-        if not self.use_timer_event:
-            self.update()
 
     def set_scale_polygon_colors(self, color_array):
         if 'list' in str(type(color_array)):
@@ -1198,7 +869,6 @@ class AnalogGaugeWidget(QWidget):
 
     def get_value_max(self):
         return self.maxValue
-
 
     def create_polygon_pie(self, outer_radius, inner_raduis, start, lenght, bar_graph = True):
         polygon_pie = QPolygonF()
@@ -1253,7 +923,6 @@ class AnalogGaugeWidget(QWidget):
            
 
             painter_filled_polygon.drawPolygon(colored_scale_polygon)
-
 
     def draw_big_scaled_marker(self):
         my_painter = QPainter(self)
@@ -1331,6 +1000,7 @@ class AnalogGaugeWidget(QWidget):
         pen_shadow.setBrush(self.DisplayValueColor)
         painter.setPen(pen_shadow)
 
+        self.text_radius_factor = 0.65
         text_radius = self.widget_diameter / 2 * self.text_radius_factor
 
         text = str(round(self.value, 1))
@@ -1346,7 +1016,6 @@ class AnalogGaugeWidget(QWidget):
         text = [x - int(w/2), y - int(h/2), int(w), int(h), Qt.AlignCenter, text]
         painter.drawText(text[0], text[1], text[2], text[3], text[4], text[5])
 
-
     def create_units_text(self):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.HighQualityAntialiasing)
@@ -1360,17 +1029,18 @@ class AnalogGaugeWidget(QWidget):
         pen_shadow.setBrush(self.DisplayValueColor)
         painter.setPen(pen_shadow)
 
+        self.text_radius_factor = 0.78
         text_radius = self.widget_diameter / 2 * self.text_radius_factor
 
         text = str(self.units)
         w = fm.width(text) + 1
         h = fm.height()
-        painter.setFont(QFont(self.value_fontname, int(self.value_fontsize / 1.5), QFont.Bold))
+        painter.setFont(QFont(self.value_fontname, int(self.value_fontsize / 2), QFont.Bold))
 
       
-        angle_end = float(self.scale_angle_start_value + self.scale_angle_size + 180)
-        angle = (angle_end - self.scale_angle_start_value) / 2 + self.scale_angle_start_value
 
+        angle_end = float(self.scale_angle_start_value + self.scale_angle_size + 310)
+        angle = (angle_end - self.scale_angle_start_value) / 2 + self.scale_angle_start_value
         x = text_radius * math.cos(math.radians(angle))
         y = text_radius * math.sin(math.radians(angle))
         text = [x - int(w/2), y - int(h/2), int(w), int(h), Qt.AlignCenter, text]
@@ -1474,48 +1144,148 @@ class AnalogGaugeWidget(QWidget):
 
         QWidget.setMouseTracking(self, flag)
         recursive_set(self)
+ 
 
-    def mouseReleaseEvent(self, QMouseEvent):
-        self.NeedleColor = self.NeedleColorReleased
+class ToolBoxPage(QtCore.QObject):
+    destroyed = QtCore.pyqtSignal()
+    def __init__(self, button, scrollArea):
+        super().__init__()
+        self.button = button
+        self.scrollArea = scrollArea
+        self.widget = scrollArea.widget()
+        self.widget.destroyed.connect(self.destroyed)
 
-        if not self.use_timer_event:
-            self.update()
-        pass
+    def beginHide(self, spacing):
+        self.scrollArea.setMinimumHeight(1)
+        self.scrollArea.setMaximumHeight(self.scrollArea.height() - spacing)
+        if not self.scrollArea.verticalScrollBar().isVisible():
+            self.scrollArea.setVerticalScrollBarPolicy(
+                QtCore.Qt.ScrollBarAlwaysOff)
 
-    def leaveEvent(self, event):
-        self.NeedleColor = self.NeedleColorReleased
-        self.update() 
+    def beginShow(self, targetHeight):
+        if self.scrollArea.widget().minimumSizeHint().height() <= targetHeight:
+            self.scrollArea.setVerticalScrollBarPolicy(
+                QtCore.Qt.ScrollBarAlwaysOff)
+        else:
+            self.scrollArea.setVerticalScrollBarPolicy(
+                QtCore.Qt.ScrollBarAsNeeded)
+        self.scrollArea.setMaximumHeight(0)
+        self.scrollArea.show()
 
-    def mouseMoveEvent(self, event):
-        x, y = event.x() - (self.width() / 2), event.y() - (self.height() / 2)
-        if not x == 0: 
-            angle = math.atan2(y, x) / math.pi * 180
-            value = (float(math.fmod(angle - self.scale_angle_start_value + 720, 360)) / \
-                     (float(self.scale_angle_size) / float(self.maxValue - self.minValue))) + self.minValue
-            temp = value
-            fmod = float(math.fmod(angle - self.scale_angle_start_value + 720, 360))
-            state = 0
-            if (self.value - (self.maxValue - self.minValue) * self.valueNeedleSnapzone) <= \
-                    value <= \
-                    (self.value + (self.maxValue - self.minValue) * self.valueNeedleSnapzone):
-                self.NeedleColor = self.NeedleColorDrag
-                state = 9
-                if value >= self.maxValue and self.last_value < (self.maxValue - self.minValue) / 2:
-                    state = 1
-                    value = self.maxValue
-                    self.last_value = self.minValue
-                    self.valueChanged.emit(int(value))
+    def setHeight(self, height):
+        if height and not self.scrollArea.minimumHeight():
+            self.scrollArea.setMinimumHeight(1)
+        self.scrollArea.setMaximumHeight(height)
 
-                elif value >= self.maxValue >= self.last_value:
-                    state = 2
-                    value = self.maxValue
-                    self.last_value = self.maxValue
-                    self.valueChanged.emit(int(value))
+    def finalize(self):
+        self.scrollArea.setMinimumHeight(0)
+        self.scrollArea.setMaximumHeight(16777215)
+        self.scrollArea.setVerticalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAsNeeded)
 
 
-                else:
-                    state = 3
-                    self.last_value = value
-                    self.valueChanged.emit(int(value))
+class AnimatedToolBox(QtWidgets.QToolBox):
+    _oldPage = _newPage = None
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._pages = []
 
-                self.updateValue(value)  
+    @cached_property
+    def animation(self):
+        animation = QtCore.QVariantAnimation(self)
+        animation.setDuration(250)
+        animation.setStartValue(0.)
+        animation.setEndValue(1.)
+        animation.valueChanged.connect(self._updateSizes)
+        return animation
+
+    @QtCore.pyqtProperty(int)
+    def animationDuration(self):
+        return self.animation.duration()
+
+    @animationDuration.setter
+    def animationDuration(self, duration):
+        self.animation.setDuration(max(50, min(duration, 500)))
+
+    @QtCore.pyqtSlot(int)
+    @QtCore.pyqtSlot(int, bool)
+    def setCurrentIndex(self, index, now=False):
+        if self.currentIndex() == index:
+            return
+        if now:
+            if self.animation.state():
+                self.animation.stop()
+                self._pages[index].finalize()
+            super().setCurrentIndex(index)
+            return
+        elif self.animation.state():
+            return
+        self._oldPage = self._pages[self.currentIndex()]
+        self._oldPage.beginHide(self.layout().spacing())
+        self._newPage = self._pages[index]
+        self._newPage.beginShow(self._targetSize)
+        self.animation.start()
+
+    @QtCore.pyqtSlot(QtWidgets.QWidget)
+    @QtCore.pyqtSlot(QtWidgets.QWidget, bool)
+    def setCurrentWidget(self, widget):
+        for i, page in enumerate(self._pages):
+            if page.widget == widget:
+                self.setCurrentIndex(i)
+                return
+
+    def _index(self, page):
+        return self._pages.index(page)
+
+    def _updateSizes(self, ratio):
+        if self.animation.currentTime() < self.animation.duration():
+            newSize = round(self._targetSize * ratio)
+            oldSize = self._targetSize - newSize
+            if newSize < self.layout().spacing():
+                oldSize -= self.layout().spacing()
+            self._oldPage.setHeight(max(0, oldSize))
+            self._newPage.setHeight(newSize)
+        else:
+            super().setCurrentIndex(self._index(self._newPage))
+            self._oldPage.finalize()
+            self._newPage.finalize()
+
+    def _computeTargetSize(self):
+        if not self.count():
+            self._targetSize = 0
+            return
+        l, t, r, b = self.getContentsMargins()
+        baseHeight = (self._pages[0].button.sizeHint().height()
+            + self.layout().spacing())
+        self._targetSize = self.height() - t - b - baseHeight * self.count()
+
+    def _buttonClicked(self):
+        button = self.sender()
+        for i, page in enumerate(self._pages):
+            if page.button == button:
+                self.setCurrentIndex(i)
+                return
+
+    def _widgetDestroyed(self):
+        self._pages.remove(self.sender())
+
+    def itemInserted(self, index):
+        button = self.layout().itemAt(index * 2).widget()
+        button.clicked.disconnect()
+        button.clicked.connect(self._buttonClicked)
+        scrollArea = self.layout().itemAt(index * 2 + 1).widget()
+        page = ToolBoxPage(button, scrollArea)
+        self._pages.insert(index, page)
+        page.destroyed.connect(self._widgetDestroyed)
+        self._computeTargetSize()
+
+    def itemRemoved(self, index):
+        if self.animation.state() and self._index(self._newPage) == index:
+            self.animation.stop()
+        page = self._pages.pop(index)
+        page.destroyed.disconnect(self._widgetDestroyed)
+        self._computeTargetSize()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._computeTargetSize()

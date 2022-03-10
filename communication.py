@@ -40,14 +40,16 @@ FIELD_INDEX    = 3
 CMD_TYPE_INDEX = 4
 DATA_INDEX     = 5
 
-LASER_PAGE     = 0
-SETTING_PAGE   = 1
-LOCK_TIME_PAGE = 2
-BODY_PART_PAGE = 3
-MAIN_PAGE      = 4
-SHUTDONW_PAGE  = 5
-UPDATE_PAGE    = 6
-OTHER_PAGE     = 7
+LASER_PAGE         = 0
+SETTING_PAGE       = 1
+LOCK_TIME_PAGE     = 2
+BODY_PART_PAGE     = 3
+MAIN_PAGE          = 4
+SHUTDONW_PAGE      = 5
+UPDATE_PAGE        = 6
+HARDWARE_TEST_PAGE = 7
+OTHER_PAGE         = 8
+
 
 REPORT         = 0x0A
 WRITE          = 0x0B 
@@ -91,6 +93,8 @@ def buildPacket(data, page, field, cmdType):
     crc_bytes = crc.to_bytes(2, byteorder='big')
     packet += crc_bytes
     packet.append(0xCC)
+    print('SENT: ', end='')
+    printPacket(packet)
     return packet
 
 
@@ -175,13 +179,49 @@ def decodePacket(RECEIVED_DATA):
             elif RECEIVED_DATA[FIELD_INDEX] == 8:
                 firmware = RECEIVED_DATA[DATA_INDEX:-2].decode()
                 key, value = 'firmwareVesion', firmware
-        
+
+        elif RECEIVED_DATA[PAGE_INDEX] == HARDWARE_TEST_PAGE:
+            if RECEIVED_DATA[FIELD_INDEX] in [0, 1, 2, 3, 4]:
+                date = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                step, status = date[0], date[1]
+                relays = ['handPiece', 'radiator', 'laserPower', 'airCooling', 'reservedRelay']
+                key, value = relays[RECEIVED_DATA[FIELD_INDEX]], [int(step), int(status)]
+
+            elif RECEIVED_DATA[FIELD_INDEX] == 6:
+                driverCurrent = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                key, value = 'driverCurrent', float(driverCurrent)
+
+            elif RECEIVED_DATA[FIELD_INDEX] == 7:
+                dacVoltage = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                key, value = 'dacVoltage', float(dacVoltage)
+
+            elif RECEIVED_DATA[FIELD_INDEX] == 8:
+                flowMeter = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                key, value = 'flowMeter', flowMeter
+
+            elif RECEIVED_DATA[FIELD_INDEX] == 9:
+                waterTempSensor = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                key, value = 'waterTempSensor', waterTempSensor
+
+            elif RECEIVED_DATA[FIELD_INDEX] == 10:
+                handpieceTemp = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                key, value = 'handpieceTemp', handpieceTemp
+
+            elif RECEIVED_DATA[FIELD_INDEX] == 11:
+                airTempSensor = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                key, value = 'airTempSensor', airTempSensor
+
+            elif RECEIVED_DATA[FIELD_INDEX] == 12:
+                flags = sensors(RECEIVED_DATA)
+                key, value = 'sensorFlagsTest', flags[:2]
+
         elif RECEIVED_DATA[PAGE_INDEX] == LOCK_TIME_PAGE:
             if RECEIVED_DATA[FIELD_INDEX] == 0:
                 clock = RECEIVED_DATA[DATA_INDEX:-2].decode()
                 clock = clock.split(':')
                 clock = tuple( int(x) for x in clock )
                 key, value = 'sysClock', clock
+
             elif RECEIVED_DATA[FIELD_INDEX] == 1:
                 date = RECEIVED_DATA[DATA_INDEX:-2].decode()
                 date = date.split('-')
@@ -236,8 +276,22 @@ def decodePacket(RECEIVED_DATA):
 class SerialTimer(QObject):
     sysClock         = pyqtSignal(tuple)
     sysDate          = pyqtSignal(tuple)
+    driverCurrent    = pyqtSignal(float)
+    dacVoltage       = pyqtSignal(float)
     sensorFlags      = pyqtSignal(list)
+    handPiece        = pyqtSignal(list)
+    radiator         = pyqtSignal(list)
+    laserPower       = pyqtSignal(list)
+    airCooling       = pyqtSignal(list)
+    reservedRelay    = pyqtSignal(list)
+    interLockTest    = pyqtSignal(bool)
+    waterLevelTest   = pyqtSignal(bool)
+    airTempSensor    = pyqtSignal(int)
     tempValue        = pyqtSignal(int)
+    flowMeter        = pyqtSignal(str)
+    waterTempSensor  = pyqtSignal(str)
+    handpieceTemp    = pyqtSignal(str)
+    airTempSensor    = pyqtSignal(str)
     serialNumber     = pyqtSignal(str)
     productionDate   = pyqtSignal(str)
     laserEnergy      = pyqtSignal(str)
@@ -356,7 +410,31 @@ class SerialTimer(QObject):
                                     self.readFrequency.emit()
                                 elif key == 'shot':
                                     self.shot.emit()
-
+                                elif key == 'handPiece':
+                                    self.handPiece.emit(value)
+                                elif key == 'radiator':
+                                    self.radiator.emit(value)
+                                elif key == 'laserPower':
+                                    self.laserPower.emit(value)
+                                elif key == 'airCooling':
+                                    self.airCooling.emit(value)
+                                elif key == 'reservedRelay':
+                                    self.reservedRelay.emit(value)
+                                elif key == 'driverCurrent':
+                                    self.driverCurrent.emit(value)
+                                elif key == 'dacVoltage':
+                                    self.dacVoltage.emit(value)
+                                elif key == 'flowMeter':
+                                    self.flowMeter.emit(value)
+                                elif key == 'waterTempSensor':
+                                    self.waterTempSensor.emit(value)
+                                elif key == 'handpieceTemp':
+                                    self.handpieceTemp.emit(value)
+                                elif key == 'airTempSensor':
+                                    self.airTempSensor.emit(value)
+                                elif key == 'sensorFlagsTest':
+                                    self.interLockTest.emit(value[0])
+                                    self.waterLevelTest.emit(value[1])
                         else:
                             RECEIVED_DATA.append(temp[counter])
 
@@ -369,8 +447,22 @@ class SerialTimer(QObject):
 class SerialThread(QThread):
     sysClock         = pyqtSignal(tuple)
     sysDate          = pyqtSignal(tuple)
+    driverCurrent    = pyqtSignal(float)
+    dacVoltage       = pyqtSignal(float)
     sensorFlags      = pyqtSignal(list)
+    handPiece        = pyqtSignal(list)
+    radiator         = pyqtSignal(list)
+    laserPower       = pyqtSignal(list)
+    airCooling       = pyqtSignal(list)
+    reservedRelay    = pyqtSignal(list)
+    interLockTest    = pyqtSignal(bool)
+    waterLevelTest   = pyqtSignal(bool)
+    airTempSensor    = pyqtSignal(int)
     tempValue        = pyqtSignal(int)
+    flowMeter        = pyqtSignal(str)
+    waterTempSensor  = pyqtSignal(str)
+    handpieceTemp    = pyqtSignal(str)
+    airTempSensor    = pyqtSignal(str)
     serialNumber     = pyqtSignal(str)
     productionDate   = pyqtSignal(str)
     laserEnergy      = pyqtSignal(str)
@@ -449,7 +541,8 @@ class SerialThread(QThread):
                                 )
 
                                 if crc_r == crc_s:
-
+                                    print('RECE: ', end='')
+                                    printPacket(RECEIVED_DATA)
                                     key, value = decodePacket(RECEIVED_DATA)
                                     if key == 'sensorFlags':
                                         self.sensorFlags.emit(value)
@@ -488,7 +581,31 @@ class SerialThread(QThread):
                                         self.readFrequency.emit()
                                     elif key == 'shot':
                                         self.shot.emit()
-
+                                    elif key == 'handPiece':
+                                        self.handPiece.emit(value)
+                                    elif key == 'radiator':
+                                        self.radiator.emit(value)
+                                    elif key == 'laserPower':
+                                        self.laserPower.emit(value)
+                                    elif key == 'airCooling':
+                                        self.airCooling.emit(value)
+                                    elif key == 'reservedRelay':
+                                        self.reservedRelay.emit(value)
+                                    elif key == 'driverCurrent':
+                                        self.driverCurrent.emit(value)
+                                    elif key == 'dacVoltage':
+                                        self.dacVoltage.emit(value)
+                                    elif key == 'flowMeter':
+                                        self.flowMeter.emit(value)
+                                    elif key == 'waterTempSensor':
+                                        self.waterTempSensor.emit(value)
+                                    elif key == 'handpieceTemp':
+                                        self.handpieceTemp.emit(value)
+                                    elif key == 'airTempSensor':
+                                        self.handpieceTemp.emit(value)
+                                    elif key == 'sensorFlagsTest':
+                                        self.interLockTest.emit(value[0])
+                                        self.waterLevelTest.emit(value[1])
                             else:
                                 RECEIVED_DATA.append(temp[counter])
 

@@ -591,3 +591,108 @@ QPushButton{
     margin:0 10px 0 10px;
 }
 """
+
+RELAY_STYLE = """
+QPushButton {
+    background-color: rgb(240, 240, 240);
+    color: rgb(0, 0, 0);
+    min-width: 445px;
+    min-height: 110px;
+    border-radius: 15px;
+    border: 10px solid rgb(240, 240, 240);
+    outline:0;
+}
+QPushButton:pressed{
+    background-color: rgb(0, 170, 255);
+    border: 10px solid rgb(0, 170, 255);
+}
+"""
+
+PASS_FAIL_STYLE = """
+QPushButton {
+    background-color: rgb(240, 240, 240);
+    color: rgb(0, 0, 0);
+    min-width: 60px;
+    min-height: 60px;
+    max-width: 60px;
+    max-height: 60px;
+    border-radius: 15px;
+    border: 2px solid black;
+    padding:10px;
+    outline:0;
+}
+"""
+
+PASS_STYLE = """
+QPushButton {
+    background-color: rgb(0, 255, 0);
+    color: rgb(0, 0, 0);
+    min-width: 60px;
+    min-height: 60px;
+    max-width: 60px;
+    max-height: 60px;
+    border-radius: 15px;
+    border: 2px solid black;
+    padding:10px;
+    outline:0;
+}
+"""
+
+FAIL_STYLE = """
+QPushButton {
+    background-color: rgb(255, 0, 0);
+    color: rgb(0, 0, 0);
+    min-width: 60px;
+    min-height: 60px;
+    max-width: 60px;
+    max-height: 60px;
+    border-radius: 15px;
+    border: 2px solid black;
+    padding:10px;
+    outline:0;
+}
+"""
+
+SENSOR_TEST_STYLE = """
+QPushButton {
+    background-color: rgb(240, 240, 240);
+    color: rgb(0, 0, 0);
+    min-width: 100px;
+    min-height: 70px;
+    max-width: 100px;
+    max-height: 60px;
+    border-radius: 15px;
+    border: 2px solid black;
+    padding:10px;
+    outline:0;
+}
+"""
+SENSOR_OK_TEST_STYLE = """
+QPushButton {
+    background-color: rgb(0, 255, 0);
+    color: rgb(0, 0, 0);
+    min-width: 100px;
+    min-height: 70px;
+    max-width: 100px;
+    max-height: 60px;
+    border-radius: 15px;
+    border: 2px solid black;
+    padding:10px;
+    outline:0;
+}
+"""
+
+SENSOR_NOT_OK_TEST_STYLE = """
+QPushButton {
+    background-color: rgb(255, 0, 0);
+    color: rgb(0, 0, 0);
+    min-width: 100px;
+    min-height: 70px;
+    max-width: 100px;
+    max-height: 60px;
+    border-radius: 15px;
+    border: 2px solid black;
+    padding:10px;
+    outline:0;
+}
+"""

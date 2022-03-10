@@ -115,6 +115,7 @@ class MainWin(QMainWindow):
         self.receivingSensorsData = True
         self.musicFiles = []
         self.time(edit=True)
+        self.initHwTest()
         self.tutorials()   
         self.initPages()
         self.initTimers()
@@ -241,49 +242,20 @@ class MainWin(QMainWindow):
         self.loadUsersTimer.timeout.connect(self.addUsersTable)
         self.loadUsersTimer.start(20)
         self.systemTimeTimer.timeout.connect(self.time)
-        self.loginLabelTimer.timeout.connect(
-            lambda: self.clearLabel(self.lblLogin, self.loginLabelTimer)
-        )
-        self.submitLabelTimer.timeout.connect(
-            lambda: self.clearLabel(self.lblSubmit, self.submitLabelTimer)
-        )
-        self.editLabelTimer.timeout.connect(
-            lambda: self.clearLabel(self.lblEditUser, self.editLabelTimer)
-        )
-        self.nextSessionLabelTimer.timeout.connect(
-            lambda: self.clearLabel(self.lblErrNextSession, self.nextSessionLabelTimer)
-        )
-        self.hwUpdatedLabelTimer.timeout.connect(
-            lambda: self.clearLabel(self.lblSaveHw, self.hwUpdatedLabelTimer)
-        )
-        self.passwordLabelTimer.timeout.connect(
-            lambda: self.clearLabel(self.lblPassword, self.passwordLabelTimer)
-        )
-        self.uuidPassLabelTimer.timeout.connect(
-            lambda: self.clearLabel(self.lblPassUUID, self.uuidPassLabelTimer)
-        )
-        self.sysTimeStatusLabelTimer.timeout.connect(
-            lambda: self.clearLabel(self.lblSystemTimeStatus, self.sysTimeStatusLabelTimer)
-        )
-        self.lockErrorLabel.timeout.connect(
-            lambda: self.clearLabel(self.lblLockError, self.lockErrorLabel)
-        )
-        self.readyErrorTimer.timeout.connect(
-            lambda: self.clearLabel(self.lblReadyError, self.readyErrorTimer)
-        )
-        self.updateFirmwareLabelTimer.timeout.connect(
-            lambda: self.clearLabel(self.lblUpdateFirmware, self.updateFirmwareLabelTimer)
-        )
-        self.uiLabelTimer.timeout.connect(
-            lambda: self.clearLabel(self.lblUiError, self.uiLabelTimer)
-        )
-        self.sensorsReportLabelTimer.timeout.connect(
-            lambda: self.clearLabel(self.lblSensorDateError, self.sensorsReportLabelTimer)
-        )
-        self.musicRefreshLableTimer.timeout.connect(
-            lambda: self.clearLabel(self.lblMusicRefresh, self.musicRefreshLableTimer)
-        )
-
+        self.loginLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblLogin, self.loginLabelTimer))
+        self.submitLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblSubmit, self.submitLabelTimer))
+        self.editLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblEditUser, self.editLabelTimer))
+        self.nextSessionLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblErrNextSession, self.nextSessionLabelTimer))
+        self.hwUpdatedLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblSaveHw, self.hwUpdatedLabelTimer))
+        self.passwordLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblPassword, self.passwordLabelTimer))
+        self.uuidPassLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblPassUUID, self.uuidPassLabelTimer))
+        self.sysTimeStatusLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblSystemTimeStatus, self.sysTimeStatusLabelTimer))
+        self.lockErrorLabel.timeout.connect(lambda: self.clearLabel(self.lblLockError, self.lockErrorLabel))
+        self.readyErrorTimer.timeout.connect(lambda: self.clearLabel(self.lblReadyError, self.readyErrorTimer))
+        self.updateFirmwareLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblUpdateFirmware, self.updateFirmwareLabelTimer))
+        self.uiLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblUiError, self.uiLabelTimer))
+        self.sensorsReportLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblSensorDateError, self.sensorsReportLabelTimer))
+        self.musicRefreshLableTimer.timeout.connect(lambda: self.clearLabel(self.lblMusicRefresh, self.musicRefreshLableTimer))
         self.incDaysTimer.timeout.connect(lambda: self.incDecDay('inc'))
         self.decDaysTimer.timeout.connect(lambda: self.incDecDay('dec'))
         self.backspaceTimer.timeout.connect(self.type(lambda: 'backspace'))
@@ -322,7 +294,8 @@ class MainWin(QMainWindow):
         self.btnSubmit.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnSubmit.clicked.connect(self.submit)
         self.btnSystemLogs.clicked.connect(self.enterLogsPage)
-        self.btnHwTest.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.hwTestPage))
+        self.btnHwTesst.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.hwTestPage))
+        self.btnHwTesst.clicked.connect(lambda: enterPage(HARDWARE_TEST_PAGE))
         self.btnMusic.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnMusic.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.musicPage))
         self.btnBackMusic.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
@@ -340,6 +313,7 @@ class MainWin(QMainWindow):
         self.btnUiSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.uiPage))
         self.btnEnterHw.clicked.connect(self.loginHw)
         self.btnHwSettings.clicked.connect(self.btnHwsettingClicked)
+        # self.btnHwSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.hWPage))
         self.btnSaveInfo.clicked.connect(self.saveUserInfo)
         self.btnDeleteUser.clicked.connect(self.deleteUser)
         self.btnUserManagement.clicked.connect(lambda: self.changeAnimation('horizontal'))
@@ -371,6 +345,8 @@ class MainWin(QMainWindow):
         self.btnDecDay.released.connect(lambda: self.decDaysTimer.stop())
         self.btnIncE.clicked.connect(lambda: self.setEnergy('inc'))
         self.btnDecE.clicked.connect(lambda: self.setEnergy('dec'))
+        self.btnDecDac.clicked.connect(lambda: self.setDac('dec'))
+        self.btnIncDac.clicked.connect(lambda: self.setDac('inc'))
         self.sliderEnergy.sliderMoved.connect(self.sldrSetEnergy)
         self.btnIncP.clicked.connect(lambda: self.setPulseWidth('inc'))
         self.btnDecP.clicked.connect(lambda: self.setPulseWidth('dec'))
@@ -392,7 +368,6 @@ class MainWin(QMainWindow):
         self.btnSaveCase.pressed.connect(lambda: self.chgSliderColor(SLIDER_SAVED_GB, SLIDER_SAVED_GW))
         self.btnSaveCase.released.connect(lambda: self.chgSliderColor(SLIDER_GB, SLIDER_GW))
         self.btnSaveHw.clicked.connect(self.saveHwSettings)
-        # self.btnResetCounter.clicked.connect(self.resetTotalShot)
         self.btnResetCounter.clicked.connect(self.btnResetCounterClicked)
         self.btnResetCounterPass.clicked.connect(self.checkResetCounterPass)
         self.btnReady.clicked.connect(lambda: self.setReady(True))
@@ -417,6 +392,7 @@ class MainWin(QMainWindow):
         self.btnSelectAll.clicked.connect(self.selectAll)
         self.btnResetMsgNo.clicked.connect(lambda : self.resetCounterMsg('hide'))
         self.btnResetMsgYes.clicked.connect(self.resetCounterYes)
+        self.btnSetDac.clicked.connect(self.sendDacVoltage)
         self.selectAllFlag = False
         self.btnLoop.clicked.connect(self.setLoopMusic)
         self.LoopMusicFlag = self.configs['LoopMusic']
@@ -458,7 +434,10 @@ class MainWin(QMainWindow):
         for btn in allButtons:
             if btn.objectName() == 'btnSelectedBodyPart':
                 continue
-
+            elif 'btnCooling' in btn.objectName() or 'Test' in btn.objectName():
+                continue
+            elif 'Pass' in btn.objectName() or 'Fail' in btn.objectName():
+                continue
             elif btn in keyboardButtons:
                 btn.pressed.connect(lambda: self.playTouchSound('k'))
             elif btn.objectName() not in sensors:
@@ -496,6 +475,61 @@ class MainWin(QMainWindow):
         self.txtDays.setText('30')
         self.txtSearch.textChanged.connect(self.search)
         self.txtSearchMusic.textChanged.connect(self.searchMusic)
+
+    def initHwTest(self):
+        self.handPiece = Relay(self.btnHandpiece, self.btnPassHP, self.btnFailHP, 0)
+        self.radiator = Relay(self.btnRadiator, self.btnPassRad, self.btnFailRad, 1)
+        self.laserPower = Relay(self.btnLaserPower, self.btnPassLP, self.btnFailLP, 2)
+        self.airCooling = Relay(self.btnAirCooling, self.btnPassAC, self.btnFailAC, 3)
+        self.reservedRelay = Relay(self.btnReserved, self.btnPassRes, self.btnFailRes, 4)
+        self.driverCurrent = DriverCurrent(self.btnDriverCurrentStart, self.widget, 6)
+        self.flowMeter = SensorTest(txt=self.txtFlowMeter, unit='Lit/min')
+        self.waterTempSensor = SensorTest(txt=self.txtWaterTempSensor, unit='°C')
+        self.handpieceTemp = SensorTest(txt=self.txtHandpieceTemp, unit='°C')
+        self.airTempSensor = SensorTest(txt=self.txtAirTempSensor, unit='°C')
+        self.interLockTest = SensorTest(btnOk=self.btnInterLockPass, btnNotOk=self.btnInterLockFail)
+        self.waterLevelTest = SensorTest(btnOk=self.btnWaterLevelPass, btnNotOk=self.btnWaterLevelFail)
+
+        self.serialC.handPiece.connect(self.handPiece.setTests)
+        self.serialC.radiator.connect(self.radiator.setTests)
+        self.serialC.laserPower.connect(self.laserPower.setTests)
+        self.serialC.airCooling.connect(self.airCooling.setTests)
+        self.serialC.reservedRelay.connect(self.reservedRelay.setTests)
+        self.serialC.driverCurrent.connect(self.driverCurrent.setValue)
+        self.serialC.dacVoltage.connect(self.setDac2)
+        self.serialC.flowMeter.connect(self.flowMeter.setValue)
+        self.serialC.waterTempSensor.connect(self.waterTempSensor.setValue)
+        self.serialC.handpieceTemp.connect(self.handpieceTemp.setValue)
+        self.serialC.airTempSensor.connect(self.airTempSensor.setValue)
+        self.serialC.interLockTest.connect(self.interLockTest.setOk)
+        self.serialC.waterLevelTest.connect(self.waterLevelTest.setOk)
+
+        self.dacSlider.setSingleStep(0.01)
+        self.dacSlider.setMinimum(0.2)
+        self.dacSlider.setMaximum(1.4)
+        self.dacSlider.setValue(1.2)
+        self.dacSlider.doubleValueChanged.connect(lambda: self.lblDacValue.setText(f"{self.dacSlider.value()}"))
+    
+    def setDac2(self, value):
+        self.setDac('set', value)
+
+    def setDac(self, operation, value=0):
+        if operation == 'inc':
+            self.dacSlider.setValue(self.dacSlider.value() + 0.01)
+        elif operation == 'dec':
+            self.dacSlider.setValue(self.dacSlider.value() - 0.01)
+        else:
+            self.dacSlider.setValue(value)
+
+        self.lblDacValue.setText(f"{self.dacSlider.value()}")
+
+    def sendDacVoltage(self):
+        sendPacket(
+            {'dacVolt': 7},
+            {'dacVolt': str(self.dacSlider.value())},
+            HARDWARE_TEST_PAGE, 
+            WRITE
+        )
 
     def adss(self):
         self.changeAnimation('vertical')
@@ -542,12 +576,14 @@ class MainWin(QMainWindow):
             self.sliderEnergy.setStyleSheet(SLIDER_GB)
             self.sliderFrequency.setStyleSheet(SLIDER_GB)
             self.sliderPulseWidth.setStyleSheet(SLIDER_GB)
+            self.dacSlider.setStyleSheet(SLIDER_GB)
             inc.addPixmap(QPixmap(INC_BLACK))
             dec.addPixmap(QPixmap(DEC_BLACK))
         else:
             self.sliderEnergy.setStyleSheet(SLIDER_GW)                
             self.sliderFrequency.setStyleSheet(SLIDER_GW)                
             self.sliderPulseWidth.setStyleSheet(SLIDER_GW)
+            self.dacSlider.setStyleSheet(SLIDER_GW)
             inc.addPixmap(QPixmap(INC_BLUE))
             dec.addPixmap(QPixmap(DEC_BLUE))
 
@@ -557,6 +593,8 @@ class MainWin(QMainWindow):
         self.btnIncE.setIcon(inc)
         self.btnIncP.setIcon(inc)
         self.btnIncF.setIcon(inc)
+        self.btnDecDac.setIcon(dec)
+        self.btnIncDac.setIcon(inc)
         self.btnDecE.setIconSize(QSize(120, 120))                
         self.btnDecP.setIconSize(QSize(120, 120))                
         self.btnDecF.setIconSize(QSize(120, 120))                
@@ -1509,10 +1547,12 @@ class MainWin(QMainWindow):
             self.sliderEnergy.setStyleSheet(c1)
             self.sliderFrequency.setStyleSheet(c1)
             self.sliderPulseWidth.setStyleSheet(c1)
+            self.dacSlider.setStyleSheet(c1)
         else:
             self.sliderEnergy.setStyleSheet(c2)                
             self.sliderFrequency.setStyleSheet(c2)                
             self.sliderPulseWidth.setStyleSheet(c2)
+            self.dacSlider.setStyleSheet(c2)
 
     def setEnergy(self, operation):
         e = self.energy
@@ -1667,6 +1707,7 @@ class MainWin(QMainWindow):
         else:
             self.stackedWidgetSettings.setCurrentWidget(self.settingsMenuPage)
             self.hWPage.setVisible(False)
+            self.uiPage.setVisible(False)
             enterPage(MAIN_PAGE) 
 
     def setTemp(self, value):
