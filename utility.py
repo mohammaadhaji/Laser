@@ -335,14 +335,14 @@ class ReadMusics(QThread):
                 log('Read Music', err + '\n')
                 return
             
+            partitionsDir = {}
+            for part in sdaBlock['children']:
+                partitionsDir[part['name']] = part['mountpoint']
 
             MOUNT_DIR = '/media/musics'
             if not isdir(MOUNT_DIR):
                 os.mkdir(MOUNT_DIR)
 
-            partitionsDir = {}
-            for part in sdaBlock['children']:
-                partitionsDir[part['name']] = part['mountpoint']
 
             for part in partitionsDir:
                 if partitionsDir[part] == None:

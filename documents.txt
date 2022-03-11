@@ -96,7 +96,7 @@ Edit /etc/rc.local :
 
 Add following commands after if statement:
 cd /path/to/app.py; e.g. cd /home/pi/Laser;
-python app.py -platform linuxfb 2> Errors.txt
+sudo python app.py -platform linuxfb 2> Errors.txt
 
 #################################################################################
 Step 8 -- 
