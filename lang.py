@@ -180,5 +180,6 @@ TEXT = {
             ],
     'btnResetMsgYes': ['Yes', 'بله'],
     'btnResetMsgNo': ['No', 'خیر'],
-    'lblResetMsg': ['Are you sure?', 'مطمئن هستید؟']
+    'lblResetMsg': ['Are you sure?', 'مطمئن هستید؟'],
+    'btnCalibration': ['Calibration', 'کالیبراسیون']
 }

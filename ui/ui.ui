@@ -3646,7 +3646,7 @@ QPushButton:pressed{
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>896</width>
+                       <width>1210</width>
                        <height>824</height>
                       </rect>
                      </property>
@@ -4943,7 +4943,7 @@ QToolBox::tab:selected { /* italicize selected tabs */
 </string>
                     </property>
                     <property name="frameShape">
-                     <enum>QFrame::StyledPanel</enum>
+                     <enum>QFrame::NoFrame</enum>
                     </property>
                     <property name="currentIndex">
                      <number>0</number>
@@ -4953,8 +4953,8 @@ QToolBox::tab:selected { /* italicize selected tabs */
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1248</width>
-                       <height>484</height>
+                       <width>1250</width>
+                       <height>486</height>
                       </rect>
                      </property>
                      <property name="styleSheet">
@@ -6275,6 +6275,7 @@ background-color: rgb(89, 88, 88);
                   </item>
                  </layout>
                 </widget>
+                <widget class="QWidget" name="calibrationPage"/>
                 <widget class="QWidget" name="lockSettingsPage">
                  <layout class="QHBoxLayout" name="horizontalLayout_58" stretch="3,0,2">
                   <property name="leftMargin">
@@ -7198,6 +7199,22 @@ padding-left:20;
               </item>
               <item alignment="Qt::AlignVCenter">
                <widget class="QFrame" name="hwbtnsFrame">
+                <property name="styleSheet">
+                 <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+color:white;
+min-width: 260px;
+min-height: 94px;
+border-radius: 46px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                </property>
                 <layout class="QVBoxLayout" name="verticalLayout_68">
                  <property name="leftMargin">
                   <number>0</number>
@@ -7229,22 +7246,6 @@ padding-left:20;
                      <pointsize>20</pointsize>
                     </font>
                    </property>
-                   <property name="styleSheet">
-                    <string notr="true">QPushButton {
-background-color: rgb(68, 68, 68);
-color:white;
-min-width: 200px;
-min-height: 100px;
-border-radius: 50px;
-border: 1px solid gray;
-margin: 0 5px 0 5px;
-outline:0;
-}
-QPushButton:hover:!pressed{
-background-color:rgb(77, 77, 77);
-border: 1px solid white;
-}</string>
-                   </property>
                    <property name="text">
                     <string>Save</string>
                    </property>
@@ -7257,22 +7258,6 @@ border: 1px solid white;
                      <family>Arial</family>
                      <pointsize>20</pointsize>
                     </font>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">QPushButton {
-background-color: rgb(68, 68, 68);
-color:white;
-min-width: 260px;
-min-height: 100px;
-border-radius: 50px;
-border: 1px solid gray;
-margin: 0 5px 0 5px;
-outline:0;
-}
-QPushButton:hover:!pressed{
-background-color:rgb(77, 77, 77);
-border: 1px solid white;
-}</string>
                    </property>
                    <property name="text">
                     <string>Hardware Info</string>
@@ -7287,24 +7272,21 @@ border: 1px solid white;
                      <pointsize>20</pointsize>
                     </font>
                    </property>
-                   <property name="styleSheet">
-                    <string notr="true">QPushButton {
-background-color: rgb(68, 68, 68);
-color:white;
-min-width: 250px;
-min-height: 100px;
-border-radius: 50px;
-border: 1px solid gray;
-margin: 0 5px 0 5px;
-outline:0;
-}
-QPushButton:hover:!pressed{
-background-color:rgb(77, 77, 77);
-border: 1px solid white;
-}</string>
-                   </property>
                    <property name="text">
                     <string>Hardware Test</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btnCalibration">
+                   <property name="font">
+                    <font>
+                     <family>Arial</family>
+                     <pointsize>20</pointsize>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Calibration</string>
                    </property>
                   </widget>
                  </item>
@@ -7315,22 +7297,6 @@ border: 1px solid white;
                      <family>Arial</family>
                      <pointsize>20</pointsize>
                     </font>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">QPushButton {
-background-color: rgb(68, 68, 68);
-color:white;
-min-width: 200px;
-min-height: 100px;
-border-radius: 50px;
-border: 1px solid gray;
-margin: 0 5px 0 5px;
-outline:0;
-}
-QPushButton:hover:!pressed{
-background-color:rgb(77, 77, 77);
-border: 1px solid white;
-}</string>
                    </property>
                    <property name="text">
                     <string>Lock &amp;&amp; Time</string>
@@ -7344,22 +7310,6 @@ border: 1px solid white;
                      <family>Arial</family>
                      <pointsize>20</pointsize>
                     </font>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">QPushButton {
-background-color: rgb(68, 68, 68);
-color:white;
-min-width: 200px;
-min-height: 100px;
-border-radius: 50px;
-border: 1px solid gray;
-margin: 0 5px 0 5px;
-outline:0;
-}
-QPushButton:hover:!pressed{
-background-color:rgb(77, 77, 77);
-border: 1px solid white;
-}</string>
                    </property>
                    <property name="text">
                     <string>System Logs</string>

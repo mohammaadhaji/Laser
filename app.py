@@ -313,7 +313,6 @@ class MainWin(QMainWindow):
         self.btnUiSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.uiPage))
         self.btnEnterHw.clicked.connect(self.loginHw)
         self.btnHwSettings.clicked.connect(self.btnHwsettingClicked)
-        # self.btnHwSettings.clicked.connect(lambda: self.stackedWidgetSettings.setCurrentWidget(self.hWPage))
         self.btnSaveInfo.clicked.connect(self.saveUserInfo)
         self.btnDeleteUser.clicked.connect(self.deleteUser)
         self.btnUserManagement.clicked.connect(lambda: self.changeAnimation('horizontal'))
@@ -378,6 +377,7 @@ class MainWin(QMainWindow):
         self.btnSystemLock.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.lockSettingsPage))
         self.btnSystemLock.clicked.connect(lambda: lockPage(REPORT))
         self.btnSystemLock.clicked.connect(lambda: self.systemTimeTimer.start(1000))
+        self.btnCalibration.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.calibrationPage))
         self.btnAddLock.clicked.connect(self.addLock)
         self.btnResetLock.clicked.connect(self.resetLock)
         self.btnBackLaser.clicked.connect(lambda: self.changeAnimation('horizontal'))
@@ -865,6 +865,9 @@ class MainWin(QMainWindow):
                     self.lblLockError, 
                     self.lockErrorLabel, 4
                 )
+
+        info = f"Lock license: {license}\nLock date: {toJalali(lock.date).strftime('%Y-%m-%d')}\n"
+        log('Lock added', info)
         nextDate = date + jdatetime.timedelta(120) 
         self.txtLockYear.setText(str(nextDate.year))
         self.txtLockMonth.setText(str(nextDate.month))
@@ -906,6 +909,7 @@ class MainWin(QMainWindow):
                     self.lblLockError, 
                     self.lockErrorLabel, 4
                 )
+        log('Lock reset', 'Lock table cleared.\n')
         self.time(edit=True)
         self.loadLocksTable()
 
