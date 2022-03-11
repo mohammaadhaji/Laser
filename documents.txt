@@ -1,0 +1,127 @@
+####################### Laser Device User Interface Setup #######################
+
+#################################################################################
+Step 1 --
+Installing proper OS.
+
+Install 2022-01-28-raspios-bullseye-armhf-lite.zip using Raspberry Pi Imager.
+Download link: https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2022-01-28/2022-01-28-raspios-bullseye-armhf-lite.zip
+
+#################################################################################
+Step 2 --
+Connect to internet to install required packages.
+
+Enter following command:
+$ sudo raspi-config
+System Options >>> Wireless LAN >>> Enter your SSID and PASSWORD.
+
+Reboot your system.
+
+#################################################################################
+Step 3 --
+Install required packages And clone source code.
+
+$ sudo apt-get update
+$ sudo apt-get install python3-pip python3-pyqt5 python3-pyqt5.qtmultimedia libqt5multimedia5-plugins git libsdl2-mixer-2.0-0
+$ sudo apt install gstreamer1.0-libav gstreamer1.0-plugins-bad gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly pulseaudio gstreamer1.0-alsa libgl1-mesa-dev libglu1-mesa-dev edid-decode
+$ sudo pip3 install jdatetime pyserial crccheck pygame nuitka Werkzeug
+
+$ git clone https://github.com/mohammaadhaji/Laser.git
+
+#################################################################################
+Step 4 --
+Setup pulseaudio. 
+
+Enter following commands:
+
+$ pulseaudio --start
+$ pacmd list-sinks
+$ pacmd set-default-sink [sink index]
+
+Edit /boot/configs.txt :
+
+uncomment : hdmi_drive=2
+uncomment : dtparam=audio=on
+comment : #dtoverlay=vc4-kms-v3dn
+
+#################################################################################
+Step 5 --
+Enable serial port And auto login.
+
+Enter following command:
+$ sudo raspi-config
+A- Interface Options >>> Serial Port >>> 1- serial login shell: No
+                                      2- serial port hardware: Yes
+
+B- System Options >>> Boot >>> select Console Autologin.
+
+#################################################################################
+Step 6 --
+Increase cpu frequency.
+
+Check cpu frequency:
+cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
+
+Edit /boot/configs.txt :
+
+[pi4]
+arm_freq=2200
+gpu_freq=750
+over_voltage=12
+force_turbo=1
+
+Reboot your system.
+
+Check if cpu is overclock:
+cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
+
+#################################################################################
+Step 7 --
+Disabele unnecessary services.
+
+Enter following commands:
+
+$ sudo systemctl disable dhcpcd.service
+$ sudo systemctl disable networking.service
+$ sudo systemctl disable ssh.service
+$ sudo systemctl disable ntp.service
+$ sudo systemctl disable wifi-country.service
+$ sudo systemctl disable apt-daily.service
+
+#################################################################################
+Step 8 --
+Put program into startup.
+
+Edit /etc/rc.local :
+
+Add following commands after if statement:
+cd /path/to/app.py; e.g. cd /home/pi/Laser;
+python app.py -platform linuxfb 2> Errors.txt
+
+#################################################################################
+Step 8 -- 
+
+A- Hide splash screen.
+Add following command to /boot/configs.txt :
+
+disable_splash=1
+
+B- Hiding OS log massages.
+Edit /boot/cmdline.txt . This file should contain the following content:
+
+console=tty3 root=PARTUUID=2b467eb7-02 rootfstype=ext4 fsck.repair=yes rootwait quiet logo.nologo vt.global_cursor_default=0
+
+Description:
+console=tty3 & quiet        ---> Remove log massages
+logo.nologo                 ---> Remove Raspberry logo
+vt.global_cursor_default=0  ---> Hide cursor
+
+C- Remove bootloader startup screen.
+Enter following command:
+
+$ sudo -E rpi-eeprom-config --edit
+
+Adding:
+DISABLE_HDMI=1
+
+#################################################################################
