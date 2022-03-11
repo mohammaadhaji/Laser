@@ -596,8 +596,9 @@ RELAY_STYLE = """
 QPushButton {
     background-color: rgb(240, 240, 240);
     color: rgb(0, 0, 0);
-    min-width: 445px;
+    min-width: 420px;
     min-height: 110px;
+    min-width: 420px;
     border-radius: 15px;
     border: 10px solid rgb(240, 240, 240);
     outline:0;

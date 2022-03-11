@@ -189,8 +189,8 @@ QScrollBar:vertical {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1639</width>
-             <height>886</height>
+             <width>100</width>
+             <height>30</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -5756,7 +5756,7 @@ border: 10px solid rgb(0, 170, 255);
                     <widget class="QWidget" name="page_3">
                      <property name="geometry">
                       <rect>
-                       <x>-128</x>
+                       <x>0</x>
                        <y>0</y>
                        <width>1336</width>
                        <height>502</height>
@@ -5847,16 +5847,7 @@ QPushButton {
                             </font>
                            </property>
                            <property name="styleSheet">
-                            <string notr="true">QPushButton {
-    background-color: rgb(240, 240, 240);
-    color: rgb(0, 0, 0);
-    min-width: 420px;
-	max-width: 420px;
-    min-height: 110px;
-    border-radius: 15px;
-    border: 10px solid rgb(240, 240, 240);
-    outline:0;
-}</string>
+                            <string notr="true"/>
                            </property>
                            <property name="text">
                             <string>Inter Lock</string>
@@ -7513,8 +7504,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>1615</width>
-               <height>732</height>
+               <width>312</width>
+               <height>413</height>
               </rect>
              </property>
              <property name="styleSheet">
@@ -11202,7 +11193,7 @@ background-color: rgb(0, 170, 255);
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1553</width>
+                   <width>1341</width>
                    <height>803</height>
                   </rect>
                  </property>
