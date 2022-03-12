@@ -509,7 +509,14 @@ class MainWin(QMainWindow):
         self.dacSlider.setMaximum(1.4)
         self.dacSlider.setValue(1.2)
         self.dacSlider.doubleValueChanged.connect(lambda: self.lblDacValue.setText(f"{self.dacSlider.value()}"))
+        self.dacSlider.doubleValueChanged.connect(self.setDacSlidrColor)
     
+    def setDacSlidrColor(self):
+        if self.configs['theme'] in ['C1', 'C2', 'C4']:
+            self.dacSlider.setStyleSheet(DAC_SLIDER_B_CHANGED)
+        else:
+            self.dacSlider.setStyleSheet(DAC_SLIDER_W_CHANGED)
+
     def setDac2(self, value):
         self.setDac('set', value)
 
@@ -530,6 +537,7 @@ class MainWin(QMainWindow):
             HARDWARE_TEST_PAGE, 
             WRITE
         )
+        self.chgSliderColor(SLIDER_GB, SLIDER_GW)  
 
     def adss(self):
         self.changeAnimation('vertical')

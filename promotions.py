@@ -125,7 +125,7 @@ class DriverCurrent:
     
     def start(self):
         self.isListening = True
-        self.timer.start(4000)
+        self.timer.start(2000)
         self.movie.start()
         self.btnStart.setEnabled(False)
         sendPacket({'driver': self.field}, {'driver': ''}, HARDWARE_TEST_PAGE, READ)
@@ -133,6 +133,9 @@ class DriverCurrent:
     def setValue(self, value):
         if self.isListening:
             self.gauge.updateValue(value)
+            self.resetTimer.start(3000)
+            self.finish()
+            
         
     def finish(self):
         self.movie.stop()
@@ -140,7 +143,7 @@ class DriverCurrent:
         self.isListening = False
         self.btnStart.setEnabled(True)
         self.btnStart.setIcon(self.icon)
-        self.resetTimer.start(2000)
+        
         
 
 class Sensor(QPushButton):

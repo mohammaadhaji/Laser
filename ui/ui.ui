@@ -5388,8 +5388,8 @@ border: 10px solid rgb(255, 255, 255);
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1248</width>
-                       <height>484</height>
+                       <width>1250</width>
+                       <height>486</height>
                       </rect>
                      </property>
                      <property name="styleSheet">
@@ -5474,22 +5474,12 @@ QPushButton:pressed{
                        </layout>
                       </item>
                       <item>
-                       <layout class="QVBoxLayout" name="verticalLayout_61" stretch="1,7,1,0,0,1">
-                        <item>
-                         <spacer name="verticalSpacer_41">
-                          <property name="orientation">
-                           <enum>Qt::Vertical</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>20</width>
-                            <height>40</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
+                       <layout class="QVBoxLayout" name="verticalLayout_61" stretch="7,1,0,0,1">
                         <item>
                          <layout class="QHBoxLayout" name="horizontalLayout_73">
+                          <property name="topMargin">
+                           <number>20</number>
+                          </property>
                           <item>
                            <widget class="QPushButton" name="btnDacVoltageTest">
                             <property name="font">
@@ -5613,6 +5603,9 @@ QPushButton:pressed{
                           <property name="topMargin">
                            <number>33</number>
                           </property>
+                          <property name="bottomMargin">
+                           <number>20</number>
+                          </property>
                           <item row="0" column="1">
                            <widget class="DoubleSlider" name="dacSlider">
                             <property name="minimumSize">
@@ -5630,7 +5623,7 @@ QPushButton:pressed{
 }
 
 QSlider::handle:horizontal {
-    background-color: rgb(85, 170, 255);
+    background-color: rgb(255, 26, 29);
     border: none;
     height: 80px;
     width: 80px;

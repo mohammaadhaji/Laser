@@ -697,3 +697,47 @@ QPushButton {
     outline:0;
 }
 """
+
+DAC_SLIDER_W_CHANGED = """
+QSlider::groove:horizontal {
+    border-radius: 1px;
+    height: 3px;
+    margin: 0px;
+    background-color: white;
+}
+
+QSlider::handle:horizontal {
+    background-color: rgb(255, 26, 29);
+    border: none;
+    height: 80px;
+    width: 80px;
+    border-radius: 40px;
+    margin: -40px 0;
+    padding: -40px 0px;
+}
+QSlider::handle:horizontal:pressed {
+    background-color: rgb(65, 255, 195);
+}
+"""
+
+DAC_SLIDER_B_CHANGED = """
+QSlider::groove:horizontal {
+    border-radius: 1px;
+    height: 3px;
+    margin: 0px;
+    background-color: black;
+}
+
+QSlider::handle:horizontal {
+    background-color: rgb(255, 26, 29);
+    border: none;
+    height: 80px;
+    width: 80px;
+    border-radius: 40px;
+    margin: -40px 0;
+    padding: -40px 0px;
+}
+QSlider::handle:horizontal:pressed {
+    background-color: rgb(65, 255, 195);
+}
+"""
