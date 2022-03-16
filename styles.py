@@ -596,9 +596,9 @@ RELAY_STYLE = """
 QPushButton {
     background-color: rgb(240, 240, 240);
     color: rgb(0, 0, 0);
-    min-width: 420px;
+    min-width: 430px;
     min-height: 110px;
-    min-width: 420px;
+    max-width: 430px;
     border-radius: 15px;
     border: 10px solid rgb(240, 240, 240);
     outline:0;
@@ -613,9 +613,9 @@ PASS_FAIL_STYLE = """
 QPushButton {
     background-color: rgb(240, 240, 240);
     color: rgb(0, 0, 0);
-    min-width: 60px;
+    min-width: 75px;
     min-height: 60px;
-    max-width: 60px;
+    max-width: 75px;
     max-height: 60px;
     border-radius: 15px;
     border: 2px solid black;
@@ -628,9 +628,9 @@ PASS_STYLE = """
 QPushButton {
     background-color: rgb(0, 255, 0);
     color: rgb(0, 0, 0);
-    min-width: 60px;
+    min-width: 75px;
     min-height: 60px;
-    max-width: 60px;
+    max-width: 75px;
     max-height: 60px;
     border-radius: 15px;
     border: 2px solid black;
@@ -643,9 +643,9 @@ FAIL_STYLE = """
 QPushButton {
     background-color: rgb(255, 0, 0);
     color: rgb(0, 0, 0);
-    min-width: 60px;
+    min-width: 75px;
     min-height: 60px;
-    max-width: 60px;
+    max-width: 75px;
     max-height: 60px;
     border-radius: 15px;
     border: 2px solid black;

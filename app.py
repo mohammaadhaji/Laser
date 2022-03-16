@@ -2401,6 +2401,10 @@ class MainWin(QMainWindow):
         else:
             self.ownerInfoSplash.setStyleSheet(OWNER_INFO_STYLE_EN)
 
+        self.toolBox.setItemText(0, TEXT['relaysBox'][self.langIndex])
+        self.toolBox.setItemText(1, TEXT['driverFunctionalityBox'][self.langIndex])
+        self.toolBox.setItemText(2, TEXT['sensorsBox'][self.langIndex])
+
         for lbl in self.findChildren(QLabel):
             if lbl.objectName() in TEXT.keys():
                 lbl.setText(TEXT[lbl.objectName()][self.langIndex])

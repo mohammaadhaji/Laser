@@ -3646,7 +3646,7 @@ QPushButton:pressed{
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1210</width>
+                       <width>896</width>
                        <height>824</height>
                       </rect>
                      </property>
@@ -4948,7 +4948,7 @@ QToolBox::tab:selected { /* italicize selected tabs */
                     <property name="currentIndex">
                      <number>0</number>
                     </property>
-                    <widget class="QWidget" name="Relays">
+                    <widget class="QWidget" name="relaysBox">
                      <property name="geometry">
                       <rect>
                        <x>0</x>
@@ -4961,7 +4961,7 @@ QToolBox::tab:selected { /* italicize selected tabs */
                       <string notr="true"/>
                      </property>
                      <attribute name="label">
-                      <string>Relays</string>
+                      <string> Relays</string>
                      </attribute>
                      <layout class="QVBoxLayout" name="verticalLayout_59">
                       <property name="leftMargin">
@@ -5226,7 +5226,7 @@ QToolBox::tab:selected { /* italicize selected tabs */
                          <item row="6" column="2">
                           <layout class="QHBoxLayout" name="horizontalLayout_91">
                            <item>
-                            <widget class="QPushButton" name="btnPasspower">
+                            <widget class="QPushButton" name="btnPassPower">
                              <property name="enabled">
                               <bool>false</bool>
                              </property>
@@ -5240,9 +5240,9 @@ QToolBox::tab:selected { /* italicize selected tabs */
                               <string notr="true">QPushButton {
 background-color: rgb(240, 240, 240);
 color: rgb(106, 106, 106);
-min-width: 60px;
+min-width: 75px;
 min-height: 60px;
-max-width: 60px;
+max-width: 75px;
 max-height: 60px;
 border-radius: 15px;
 border: 2px solid rgb(106, 106, 106);
@@ -5270,9 +5270,9 @@ outline:0;
                               <string notr="true">QPushButton {
 background-color: rgb(240, 240, 240);
 color: rgb(106, 106, 106);
-min-width: 60px;
+min-width: 75px;
 min-height: 60px;
-max-width: 60px;
+max-width: 75px;
 max-height: 60px;
 border-radius: 15px;
 border: 2px solid rgb(106, 106, 106);
@@ -5383,7 +5383,7 @@ border: 10px solid rgb(255, 255, 255);
                       </item>
                      </layout>
                     </widget>
-                    <widget class="QWidget" name="page_2">
+                    <widget class="QWidget" name="driverFunctionalityBox">
                      <property name="geometry">
                       <rect>
                        <x>0</x>
@@ -5396,7 +5396,7 @@ border: 10px solid rgb(255, 255, 255);
                       <string notr="true"/>
                      </property>
                      <attribute name="label">
-                      <string>Driver Functionality</string>
+                      <string> Driver Functionality</string>
                      </attribute>
                      <layout class="QHBoxLayout" name="horizontalLayout_50" stretch="1,1">
                       <property name="leftMargin">
@@ -5536,7 +5536,7 @@ QPushButton:pressed{
                            </spacer>
                           </item>
                           <item>
-                           <widget class="QLabel" name="label_2">
+                           <widget class="QLabel" name="lblDriverVoltage">
                             <property name="font">
                              <font>
                               <family>Arial</family>
@@ -5746,17 +5746,17 @@ border: 10px solid rgb(0, 170, 255);
                       </item>
                      </layout>
                     </widget>
-                    <widget class="QWidget" name="page_3">
+                    <widget class="QWidget" name="sensorsBox">
                      <property name="geometry">
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1336</width>
+                       <width>1356</width>
                        <height>502</height>
                       </rect>
                      </property>
                      <attribute name="label">
-                      <string>Sensors</string>
+                      <string> Sensors</string>
                      </attribute>
                      <layout class="QGridLayout" name="gridLayout_11">
                       <property name="leftMargin">
@@ -5790,8 +5790,8 @@ background-color: rgb(89, 88, 88);
 QPushButton {
     background-color: rgb(240, 240, 240);
     color: rgb(0, 0, 0);
-    min-width: 420px;
-	max-width: 420px;
+    min-width: 430px;
+	max-width: 430px;
     min-height: 110px;
     border-radius: 15px;
     border: 10px solid rgb(240, 240, 240);
@@ -6023,9 +6023,9 @@ border: 10px solid rgb(255, 255, 255);
                               <string notr="true">QPushButton {
     background-color: rgb(240, 240, 240);
     color: rgb(0, 0, 0);
-    min-width: 100px;
+    min-width: 115px;
     min-height: 70px;
-    max-width: 100px;
+    max-width: 115px;
     max-height: 60px;
     border-radius: 15px;
     border: 2px solid black;
@@ -6050,9 +6050,9 @@ border: 10px solid rgb(255, 255, 255);
                               <string notr="true">QPushButton {
     background-color: rgb(240, 240, 240);
     color: rgb(0, 0, 0);
-    min-width: 100px;
+    min-width: 115px;
     min-height: 70px;
-    max-width: 100px;
+    max-width: 115px;
     max-height: 60px;
     border-radius: 15px;
     border: 2px solid black;
@@ -6135,9 +6135,9 @@ border: 10px solid rgb(255, 255, 255);
                               <string notr="true">QPushButton {
     background-color: rgb(240, 240, 240);
     color: rgb(0, 0, 0);
-    min-width: 100px;
+    min-width: 115px;
     min-height: 70px;
-    max-width: 100px;
+    max-width: 115px;
     max-height: 60px;
     border-radius: 15px;
     border: 2px solid black;
@@ -6146,7 +6146,7 @@ border: 10px solid rgb(255, 255, 255);
 }</string>
                              </property>
                              <property name="text">
-                              <string>OK</string>
+                              <string>Unlocked</string>
                              </property>
                             </widget>
                            </item>
@@ -6162,9 +6162,9 @@ border: 10px solid rgb(255, 255, 255);
                               <string notr="true">QPushButton {
     background-color: rgb(240, 240, 240);
     color: rgb(0, 0, 0);
-    min-width: 100px;
+    min-width: 115px;
     min-height: 70px;
-    max-width: 100px;
+    max-width: 115px;
     max-height: 60px;
     border-radius: 15px;
     border: 2px solid black;
@@ -6173,7 +6173,7 @@ border: 10px solid rgb(255, 255, 255);
 }</string>
                              </property>
                              <property name="text">
-                              <string>Not OK</string>
+                              <string>Locked</string>
                              </property>
                             </widget>
                            </item>

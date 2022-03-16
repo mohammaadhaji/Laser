@@ -4,7 +4,7 @@
 Step 1 --
 Installing proper OS.
 
-Install 2022-01-28-raspios-bullseye-armhf-lite.zip using Raspberry Pi Imager.
+Install raspios-bullseye using Raspberry Pi Imager.
 Download link: https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2022-01-28/2022-01-28-raspios-bullseye-armhf-lite.zip
 
 #################################################################################
@@ -77,7 +77,7 @@ cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
 
 #################################################################################
 Step 7 --
-Disabele unnecessary services.
+Disable unnecessary services.
 
 Enter following commands:
 
@@ -99,7 +99,7 @@ cd /path/to/app.py; e.g. cd /home/pi/Laser;
 sudo python app.py -platform linuxfb 2> Errors.txt
 
 #################################################################################
-Step 8 -- 
+Step 9 -- 
 
 A- Hide splash screen.
 Add following command to /boot/configs.txt :
