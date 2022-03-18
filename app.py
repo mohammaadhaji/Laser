@@ -306,6 +306,7 @@ class MainWin(QMainWindow):
         self.btnBackManagement.clicked.connect(self.saveUsers)
         self.btnBackSettings.clicked.connect(self.backSettings)
         self.btnBackSettings.clicked.connect(self.systemTimeTimer.stop)
+        self.btnBackSettings.clicked.connect(self.settingsMenuSelected('back'))
         self.btnBackEditUser.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnBackEditUser.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.userManagementPage))
         self.btnSettings.clicked.connect(lambda: self.changeAnimation('horizontal'))
@@ -1146,10 +1147,12 @@ class MainWin(QMainWindow):
     
     def settingsMenuSelected(self, selectedBtn):
         def wrapper():
+            print(selectedBtn)
             buttons = get_grpbox_widget(self.hwbtnsFrame, QPushButton)
             for btn in buttons:
                 btn.setStyleSheet('')
-            selectedBtn.setStyleSheet(SETTINGS_MENU_SELECTED)
+            if not selectedBtn == 'back':
+                selectedBtn.setStyleSheet(SETTINGS_MENU_SELECTED)
 
         return wrapper
 
