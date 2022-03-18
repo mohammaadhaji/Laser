@@ -741,3 +741,36 @@ QSlider::handle:horizontal:pressed {
     background-color: rgb(65, 255, 195);
 }
 """
+
+SETTINGS_MENU_SELECTED = """
+QPushButton {
+    background-color: rgb(68, 68, 68);
+    color:white;
+    min-width: 245px;
+    min-height: 75px;
+    border-radius: 46px;
+    border: 10px solid rgb(200, 200, 200);
+    margin: 0 5px 0 5px;
+    outline:0;
+}
+QPushButton:pressed{
+    background-color:rgb(77, 77, 77);
+    border: 10px solid white;
+}
+"""
+SETTINGS_MENU_NOT_SELECTED = """
+QPushButton {
+    background-color: rgb(68, 68, 68);
+    color:white;
+    min-width: 245px;
+    min-height: 75px;
+    border-radius: 46px;
+    border: 10px solid rgb(68, 68, 68);
+    margin: 0 5px 0 5px;
+    outline:0;
+}
+QPushButton:pressed{
+    background-color:rgb(77, 77, 77);
+    border: 10px solid rgb(77, 77, 77);
+}
+"""

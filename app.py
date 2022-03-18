@@ -429,7 +429,7 @@ class MainWin(QMainWindow):
         keyboardButtons.append(self.btnShift)
         keyboardButtons.append(self.btnFa)
         keyboardButtons.append(self.btnSpace)
-        allButtons = self.findChildren(QPushButton)
+        allButtons = self.findChildren(QPushButton) 
 
         for btn in allButtons:
             if btn.objectName() == 'btnSelectedBodyPart':
@@ -442,6 +442,12 @@ class MainWin(QMainWindow):
                 btn.pressed.connect(lambda: self.playTouchSound('k'))
             elif btn.objectName() not in sensors:
                 btn.pressed.connect(lambda: self.playTouchSound('t'))       
+
+        buttons = get_grpbox_widget(self.hwbtnsFrame, QPushButton)
+        for btn in buttons:
+            if btn.objectName() == 'btnSaveHw':
+                continue
+            btn.clicked.connect(self.settingsMenuSelected(btn))
 
     def initTextboxes(self):
         self.txtNumber.returnPressed.connect(self.startSession)
@@ -993,7 +999,7 @@ class MainWin(QMainWindow):
             get_layout_widget(self.driverGridLayout, QLineEdit),
             get_layout_widget(self.embeddGridLayout, QLineEdit)
         )
-
+        self.btnHwinfo.setStyleSheet(SETTINGS_MENU_SELECTED)
         if password == '1':
             for txt in txts:
                 txt.setReadOnly(False)
@@ -1137,6 +1143,16 @@ class MainWin(QMainWindow):
                         self.lblSaveHw, 
                         self.hwUpdatedLabelTimer, 2
                     )
+    
+    def settingsMenuSelected(self, selectedBtn):
+        def wrapper():
+            buttons = get_grpbox_widget(self.hwbtnsFrame, QPushButton)
+            for btn in buttons:
+                btn.setStyleSheet('')
+            selectedBtn.setStyleSheet(SETTINGS_MENU_SELECTED)
+
+        return wrapper
+
 
     def enterSettingPage(self, cmdType):
         fieldValues = {

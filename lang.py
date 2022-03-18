@@ -196,7 +196,7 @@ TEXT = {
     'btnWTSTest': ['Water Temp Sensor', 'سنسور دمای آب'],
     'btnHandpieceTempTest': ['Handpiece Temp', 'سنسور دمای هندپیس'],
     'btnWaterLevelTest': [' Water Level', 'سطح آب'],
-    'btnFlowMeterTest': [' Flow Meter', 'گردش آب'],
+    'btnFlowMeterTest': [' Flow Meter', ' گردش آب'],
     'btnAirTempSensorTest': [' Air Temp Sensor', 'سنسور دمای هوا'],
     'relaysBox': [' Relays', ' رله ها'],
     'driverFunctionalityBox': [' Driver Functionality', ' عملکر درایور'],
