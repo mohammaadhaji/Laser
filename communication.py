@@ -70,8 +70,8 @@ def printPacket(packet):
     print( " ".join(packet.hex()[i:i+2].upper() for i in range(0, len(packet.hex()), 2)))
 
 def sensors(packet):
-    flags = [False] * 5
-    for i in range(5):
+    flags = [False] * 6
+    for i in range(6):
         if packet[5 + i]:
             flags[i] = False
         else:
@@ -93,8 +93,8 @@ def buildPacket(data, page, field, cmdType):
     crc_bytes = crc.to_bytes(2, byteorder='big')
     packet += crc_bytes
     packet.append(0xCC)
-    print('SENT: ', end='')
-    printPacket(packet)
+    # print('SENT: ', end='')
+    # printPacket(packet)
     return packet
 
 
@@ -541,8 +541,8 @@ class SerialThread(QThread):
                                 )
 
                                 if crc_r == crc_s:
-                                    print('RECE: ', end='')
-                                    printPacket(RECEIVED_DATA)
+                                    # print('RECE: ', end='')
+                                    # printPacket(RECEIVED_DATA)
                                     key, value = decodePacket(RECEIVED_DATA)
                                     if key == 'sensorFlags':
                                         self.sensorFlags.emit(value)

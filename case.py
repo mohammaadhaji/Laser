@@ -2,12 +2,12 @@ from paths import CASES_DIR
 from os.path import join, isfile
 import pickle
 
-MAX_ENERGY = 200
-MIN_ENRGEY = 3
+MAX_ENERGY = 100
+MIN_ENRGEY = 20
 MAX_FREQUENCY = 10
 MIN_FREQUENCY = 1
-MAX_PULSE_WIDTH = 200
-MIN_PULSE_WIDTH = 3
+MAX_PULSE_WIDTH = 100
+MIN_PULSE_WIDTH = 20
 
 class Case:
     def __init__(self, name):

@@ -33,7 +33,16 @@ class MainWin(QMainWindow):
         icon = QPixmap(SELECTED_LANG_ICON)
         self.lblEnSelected.setPixmap(icon.scaled(70, 70))
         self.serialC = SerialTimer() if RPI_VERSION == '3' else SerialThread()
-        self.serialC.sensorFlags.connect(self.setSensors)
+        self.sensorFlags = [True, True, True, False, False, True]
+        self.sensors = Sensors(
+            self.btnLock,
+            self.btnWaterLevel,
+            self.btnWaterflow,
+            self.btnOverHeat,
+            self.btnPhysicalDamage,
+            self.btnTemp
+        )
+        self.serialC.sensorFlags.connect(self.setSensorFlags)
         self.serialC.tempValue.connect(self.setTemp)
         self.serialC.shot.connect(self.shot)
         self.serialC.serialNumber.connect(self.txtSerialNumber.setText)
@@ -123,6 +132,7 @@ class MainWin(QMainWindow):
         self.initTables()
         self.initTextboxes()
         self.changeTheme(self.configs['theme'])
+        self.chgSliderColor(SLIDER_GB, SLIDER_GW)
         self.loadLocksTable()
         self.bodyPartsSignals()
         self.keyboardSignals()
@@ -144,11 +154,11 @@ class MainWin(QMainWindow):
         self.chbTouchSound.setChecked(self.configs['touchSound'])
         self.chbTouchSound.toggled.connect(self.setTouchSound)
         self.setTemp(0)
-        self.btnWaterflow.setError(False)
-        self.btnWaterLevel.setError(False)
-        self.btnLock.setError(False)
-        self.btnPhysicalDamage.setError(False)
-        self.btnOverHeat.setError(False)
+        # self.btnWaterflow.setError(True)
+        # self.btnWaterLevel.setError(True)
+        # self.btnLock.setError(True)
+        # self.btnPhysicalDamage.setError(False)
+        # self.btnOverHeat.setError(False)
         op=QGraphicsOpacityEffect(self)
         op.setOpacity(0.8) 
         self.musicFrame.setGraphicsEffect(op)
@@ -348,12 +358,13 @@ class MainWin(QMainWindow):
         self.btnDecDac.clicked.connect(lambda: self.setDac('dec'))
         self.btnIncDac.clicked.connect(lambda: self.setDac('inc'))
         self.sliderEnergy.sliderMoved.connect(self.sldrSetEnergy)
-        self.btnIncP.clicked.connect(lambda: self.setPulseWidth('inc'))
-        self.btnDecP.clicked.connect(lambda: self.setPulseWidth('dec'))
-        self.sliderPulseWidth.sliderMoved.connect(self.sldrSetPulseWidth)
+        # self.btnIncP.clicked.connect(lambda: self.setPulseWidth('inc'))
+        # self.btnDecP.clicked.connect(lambda: self.setPulseWidth('dec'))
+        # self.sliderPulseWidth.sliderMoved.connect(self.sldrSetPulseWidth)
         self.btnIncF.clicked.connect(lambda: self.setFrequency('inc'))
         self.btnDecF.clicked.connect(lambda: self.setFrequency('dec'))
         self.sliderFrequency.sliderMoved.connect(self.sldrSetFrequency)
+        self.sliderFrequency.sliderReleased.connect(self.sldrFreqReleased)
         self.btnMale.clicked.connect(lambda: self.stackedWidgetSex.setCurrentWidget(self.malePage))
         self.btnFemale.clicked.connect(lambda: self.stackedWidgetSex.setCurrentWidget(self.femalePage))
         self.btnDecCooling.clicked.connect(lambda: self.setCooling('dec'))
@@ -565,12 +576,11 @@ class MainWin(QMainWindow):
                 self.adssLayout.removeWidget(self.videoWidget)
                 self.videoLayout.addWidget(self.videoWidget)
             
-    def setSensors(self, flags):
-        self.btnLock.setError(flags[0])
-        self.btnWaterLevel.setError(flags[1])
-        self.btnWaterflow.setError(flags[2])
-        self.btnOverHeat.setError(flags[3])
-        self.btnPhysicalDamage.setError(flags[4])
+    def setSensorFlags(self, flags):
+        self.sensorFlags = flags
+
+    def setTemp(self, value):
+        self.txtTemp.setText(str(value) + ' °C')
 
     def setReceivingSensorsData(self):
         self.receivingSensorsData = True
@@ -579,10 +589,15 @@ class MainWin(QMainWindow):
         if self.receivingSensorsData:
             self.receivingSensorsData = False
         else:
-            self.btnWaterflow.setError(True)
-            self.btnWaterLevel.setError(True)
-            self.btnLock.setError(True)
+            self.sensorFlags = [True, True, True, False, False, True]
             self.setTemp(0)
+
+    def monitorSensors(self):
+        self.sensors.toggle(self.sensorFlags)
+
+        if any(self.sensorFlags):
+            if self.ready:
+                self.setReady(False)    
 
     def changeTheme(self, theme):
         inc = QIcon()
@@ -590,14 +605,14 @@ class MainWin(QMainWindow):
         if theme in ['C1', 'C2', 'C4']:
             self.sliderEnergy.setStyleSheet(SLIDER_GB)
             self.sliderFrequency.setStyleSheet(SLIDER_GB)
-            self.sliderPulseWidth.setStyleSheet(SLIDER_GB)
+            self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED_GB)
             self.dacSlider.setStyleSheet(SLIDER_GB)
             inc.addPixmap(QPixmap(INC_BLACK))
             dec.addPixmap(QPixmap(DEC_BLACK))
         else:
             self.sliderEnergy.setStyleSheet(SLIDER_GW)                
             self.sliderFrequency.setStyleSheet(SLIDER_GW)                
-            self.sliderPulseWidth.setStyleSheet(SLIDER_GW)
+            self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED_GW)
             self.dacSlider.setStyleSheet(SLIDER_GW)
             inc.addPixmap(QPixmap(INC_BLUE))
             dec.addPixmap(QPixmap(DEC_BLUE))
@@ -773,31 +788,6 @@ class MainWin(QMainWindow):
         self.sparkTimer.stop()
         self.lblLasing.setVisible(False)
         self.lblSpark.setVisible(False)
-
-    def monitorSensors(self):
-        if self.btnTemp.error:
-            if self.ready:
-                self.setReady(False)
-
-        if self.btnWaterflow.error:
-            if self.ready:
-                self.setReady(False)
-        
-        if self.btnWaterLevel.error:
-            if self.ready:
-                self.setReady(False)
-        
-        if self.btnLock.error:
-            if self.ready:
-                self.setReady(False)
-
-        if self.btnOverHeat.error:
-            if self.ready:
-                self.setReady(False)
-
-        if self.btnPhysicalDamage.error:
-            if self.ready:
-                self.setReady(False)
 
     def time(self, edit=False):
         now = jdatetime.datetime.now()
@@ -1147,7 +1137,6 @@ class MainWin(QMainWindow):
     
     def settingsMenuSelected(self, selectedBtn):
         def wrapper():
-            print(selectedBtn)
             buttons = get_grpbox_widget(self.hwbtnsFrame, QPushButton)
             for btn in buttons:
                 btn.setStyleSheet('')
@@ -1155,7 +1144,6 @@ class MainWin(QMainWindow):
                 selectedBtn.setStyleSheet(SETTINGS_MENU_SELECTED)
 
         return wrapper
-
 
     def enterSettingPage(self, cmdType):
         fieldValues = {
@@ -1480,32 +1468,32 @@ class MainWin(QMainWindow):
         if ready:
             logErrors, errors = '', ''
             error_duration = 5
-            if self.btnTemp.error:
+            if self.sensorFlags[5]:
                 errors += TEXT['tempError'][self.langIndex] + '\n'
                 logErrors += TEXT['tempError'][0] + '\n'
                 error_duration += 1
                 
-            if self.btnWaterflow.error:
+            if self.sensorFlags[2]:
                 errors += TEXT['waterflowError'][self.langIndex] + '\n'
                 logErrors += TEXT['waterflowError'][0] + '\n'
                 error_duration += 1
                 
-            if self.btnWaterLevel.error:
+            if self.sensorFlags[1]:
                 errors += TEXT['waterLevelError'][self.langIndex] + '\n'
                 logErrors += TEXT['waterLevelError'][0] + '\n'
                 error_duration += 1
             
-            if self.btnLock.error:
+            if self.sensorFlags[0]:
                 errors += TEXT['interLockError'][self.langIndex] + '\n'
                 logErrors += TEXT['interLockError'][0] + '\n'
                 error_duration += 1
 
-            if self.btnOverHeat.error:
+            if self.sensorFlags[3]:
                 errors += TEXT['overHeatError'][self.langIndex] + '\n'
                 logErrors += TEXT['overHeatError'][0] + '\n'
                 error_duration += 1
 
-            if self.btnPhysicalDamage.error:
+            if self.sensorFlags[4]:
                 errors += TEXT['physicalDamage'][self.langIndex] + '\n'
                 logErrors += TEXT['physicalDamage'][0] + '\n'
                 error_duration += 1
@@ -1577,12 +1565,12 @@ class MainWin(QMainWindow):
         if self.configs['theme'] in ['C1', 'C2', 'C4']:
             self.sliderEnergy.setStyleSheet(c1)
             self.sliderFrequency.setStyleSheet(c1)
-            self.sliderPulseWidth.setStyleSheet(c1)
+            self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED_GB)
             self.dacSlider.setStyleSheet(c1)
         else:
             self.sliderEnergy.setStyleSheet(c2)                
             self.sliderFrequency.setStyleSheet(c2)                
-            self.sliderPulseWidth.setStyleSheet(c2)
+            self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED_GW)
             self.dacSlider.setStyleSheet(c2)
 
     def setEnergy(self, operation):
@@ -1592,27 +1580,26 @@ class MainWin(QMainWindow):
             self.energy = e
             self.sliderEnergy.setValue(e)
             self.lblEnergyValue.setText(str(e))
+            self.pulseWidth = e
+            self.sliderPulseWidth.setValue(e)
+            self.lblPulseWidthValue.setText(str(e))
+            pl = self.pulseWidth
+            if MIN_PULSE_WIDTH <= pl <= MAX_PULSE_WIDTH:
+                self.pulseWidth = pl
+                self.sliderPulseWidth.setValue(pl)
+                self.lblPulseWidthValue.setText(str(pl))
+                maxF_pl = 1000 / (2 * self.pulseWidth)
+                maxF_pl_con = MAX_FREQUENCY >= maxF_pl
+                if maxF_pl_con and self.frequency >= maxF_pl:
+                    self.frequency = math.floor(maxF_pl)
+                    self.sliderFrequency.setValue(self.frequency)
+                    self.lblFrequencyValue.setText(str(self.frequency))
 
     def sldrSetEnergy(self, value):
         self.energy = value
         self.lblEnergyValue.setText(str(value))
-
-    def setPulseWidth(self, operation):
-        pl = self.pulseWidth
-        pl = pl + 1 if operation == 'inc' else pl - 1
-        if MIN_PULSE_WIDTH <= pl <= MAX_PULSE_WIDTH:
-            self.pulseWidth = pl
-            self.sliderPulseWidth.setValue(pl)
-            self.lblPulseWidthValue.setText(str(pl))
-            maxF_pl = 1000 / (2 * self.pulseWidth)
-            maxF_pl_con = MAX_FREQUENCY >= maxF_pl
-            if maxF_pl_con and self.frequency >= maxF_pl:
-                self.frequency = math.floor(maxF_pl)
-                self.sliderFrequency.setValue(self.frequency)
-                self.lblFrequencyValue.setText(str(self.frequency))
-
-    def sldrSetPulseWidth(self, value):
         self.pulseWidth = value
+        self.sliderPulseWidth.setValue(value)
         self.lblPulseWidthValue.setText(str(value))
         maxF_pl = 1000 / (2 * self.pulseWidth)
         maxF_pl_con = MAX_FREQUENCY >= maxF_pl
@@ -1628,22 +1615,24 @@ class MainWin(QMainWindow):
             self.frequency = freq
             self.sliderFrequency.setValue(freq)
             self.lblFrequencyValue.setText(str(freq))
-            maxPl_f = 1000 / (2 * self.frequency)
-            maxPl_f_con = MAX_PULSE_WIDTH >= maxPl_f
-            if maxPl_f_con and self.pulseWidth >= maxPl_f:
-                self.pulseWidth = math.floor(maxPl_f)
-                self.sliderPulseWidth.setValue(self.pulseWidth)
-                self.lblPulseWidthValue.setText(str(self.pulseWidth))
+            maxF_pl = math.floor(1000 / (2 * self.pulseWidth))
+            maxF_pl_con = MAX_FREQUENCY >= maxF_pl
+            if maxF_pl_con and self.frequency >= maxF_pl:
+                self.frequency = maxF_pl
+                self.sliderFrequency.setValue(maxF_pl)
+                self.lblFrequencyValue.setText(str(maxF_pl))
  
     def sldrSetFrequency(self, value):
         self.frequency = value
         self.lblFrequencyValue.setText(str(value))
-        maxPl_f = 1000 / (2 * self.frequency)
-        maxPl_f_con = MAX_PULSE_WIDTH >= maxPl_f
-        if maxPl_f_con and self.pulseWidth >= maxPl_f:
-            self.pulseWidth = math.floor(maxPl_f)
-            self.sliderPulseWidth.setValue(self.pulseWidth)
-            self.lblPulseWidthValue.setText(str(self.pulseWidth))
+
+    def sldrFreqReleased(self):
+        maxF_pl = math.floor(1000 / (2 * self.pulseWidth))
+        maxF_pl_con = MAX_FREQUENCY >= maxF_pl
+        if maxF_pl_con and self.frequency >= maxF_pl:
+            self.frequency = maxF_pl
+            self.sliderFrequency.setValue(maxF_pl)
+            self.lblFrequencyValue.setText(str(maxF_pl))
         
     def saveCase(self):
         case = openCase(self.case)
@@ -1740,10 +1729,6 @@ class MainWin(QMainWindow):
             self.hWPage.setVisible(False)
             self.uiPage.setVisible(False)
             enterPage(MAIN_PAGE) 
-
-    def setTemp(self, value):
-        self.txtTemp.setText(str(value) + ' °C')
-        self.btnTemp.setError(value)
 
     def search(self):
         name = self.txtSearch.text().lower()
@@ -2310,13 +2295,6 @@ class MainWin(QMainWindow):
         numberEntered = self.txtNumber.text()
 
         if not numberEntered or numberEntered.isspace():
-            # self.setLabel(
-            #         TEXT['emptyNumber'][self.langIndex], 
-            #         self.lblLogin, 
-            #         self.loginLabelTimer
-            #     )
-            # self.txtNumber.setFocus()
-            # self.txtNumber.selectAll()
             self.laserNoUser = True
         else:
             self.laserNoUser = False
@@ -2337,7 +2315,7 @@ class MainWin(QMainWindow):
         self.stackedWidget.setCurrentWidget(self.laserMainPage)
         self.mainPage.setVisible(False)
         enterPage(BODY_PART_PAGE)
-        self.monitorSensorsTimer.start(1000)
+        self.monitorSensorsTimer.start(500)
         self.monitorReceivingSensors.start(3000)
 
     def endSession(self):
@@ -2380,6 +2358,8 @@ class MainWin(QMainWindow):
         if lang == 'fa':
             app.setStyleSheet('*{font-family:"A Iranian Sans"}')
             self.lblEn.setStyleSheet("font-family:'Arial'")
+            self.lblJoule.setAlignment(Qt.AlignLeading|Qt.AlignRight|Qt.AlignVCenter)
+            self.lblHz.setAlignment(Qt.AlignLeading|Qt.AlignRight|Qt.AlignVCenter)
             self.userInfoFrame.setLayoutDirection(Qt.RightToLeft)
             self.nextSessionFrame.setLayoutDirection(Qt.RightToLeft)
             self.hwFrame.setLayoutDirection(Qt.RightToLeft)
@@ -2394,6 +2374,8 @@ class MainWin(QMainWindow):
         else:
             app.setStyleSheet('*{font-family:"Arial"}')
             self.lblFa.setStyleSheet("font-family:'A Iranian Sans'")
+            self.lblJoule.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+            self.lblHz.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
             self.userInfoFrame.setLayoutDirection(Qt.LeftToRight)
             self.nextSessionFrame.setLayoutDirection(Qt.LeftToRight)
             self.hwFrame.setLayoutDirection(Qt.LeftToRight)

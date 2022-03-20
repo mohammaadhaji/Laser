@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1639</width>
+    <width>1642</width>
     <height>886</height>
    </rect>
   </property>
@@ -60,7 +60,7 @@ QScrollBar:vertical {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>6</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="adssPage">
        <property name="styleSheet">
@@ -189,8 +189,8 @@ QScrollBar:vertical {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1639</width>
-             <height>886</height>
+             <width>100</width>
+             <height>30</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -666,7 +666,7 @@ border: 1px solid white;
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,3,1">
           <property name="spacing">
-           <number>0</number>
+           <number>8</number>
           </property>
           <property name="topMargin">
            <number>0</number>
@@ -685,6 +685,9 @@ border: 1px solid white;
              </property>
              <property name="rightMargin">
               <number>20</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
              </property>
              <item>
               <widget class="QPushButton" name="btnAdss">
@@ -912,7 +915,7 @@ margin: 20px 0 0 0;
              <number>0</number>
             </property>
             <property name="topMargin">
-             <number>0</number>
+             <number>20</number>
             </property>
             <property name="rightMargin">
              <number>0</number>
@@ -960,7 +963,7 @@ margin: 20px 0 0 0;
                  <number>0</number>
                 </property>
                 <item>
-                 <layout class="QVBoxLayout" name="verticalLayout_27" stretch="1,1,2,2,1,1,1">
+                 <layout class="QVBoxLayout" name="verticalLayout_27" stretch="0,1,1,1,0,1,1">
                   <property name="leftMargin">
                    <number>0</number>
                   </property>
@@ -992,7 +995,7 @@ margin: 20px 0 0 0;
                      </font>
                     </property>
                     <property name="text">
-                     <string>Enter the user phone number</string>
+                     <string>Enter user phone number</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4953,8 +4956,8 @@ QToolBox::tab:selected { /* italicize selected tabs */
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1250</width>
-                       <height>486</height>
+                       <width>1089</width>
+                       <height>461</height>
                       </rect>
                      </property>
                      <property name="styleSheet">
@@ -7450,7 +7453,7 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>1615</width>
+               <width>1618</width>
                <height>732</height>
               </rect>
              </property>
@@ -9706,7 +9709,7 @@ border:3px solid red;
                </spacer>
               </item>
               <item>
-               <widget class="HiddenSensor" name="btnPhysicalDamage">
+               <widget class="QPushButton" name="btnPhysicalDamage">
                 <property name="styleSheet">
                  <string notr="true">QPushButton{
 outline : 0;
@@ -9731,7 +9734,7 @@ margin:0 10px 0 20px;
                </widget>
               </item>
               <item>
-               <widget class="HiddenSensor" name="btnOverHeat">
+               <widget class="QPushButton" name="btnOverHeat">
                 <property name="styleSheet">
                  <string notr="true">QPushButton{
 outline : 0;
@@ -9788,7 +9791,7 @@ margin:0 10px 0 20px;
                   </spacer>
                  </item>
                  <item>
-                  <widget class="InterLockSensor" name="btnLock">
+                  <widget class="QPushButton" name="btnLock">
                    <property name="styleSheet">
                     <string notr="true">QPushButton{
 outline : 0;
@@ -9813,7 +9816,7 @@ margin:0 10px 0 10px;
                   </widget>
                  </item>
                  <item>
-                  <widget class="Sensor" name="btnWaterLevel">
+                  <widget class="QPushButton" name="btnWaterLevel">
                    <property name="styleSheet">
                     <string notr="true">QPushButton{
 outline : 0;
@@ -9838,7 +9841,7 @@ margin:0 10px 0 10px;
                   </widget>
                  </item>
                  <item>
-                  <widget class="Sensor" name="btnWaterflow">
+                  <widget class="QPushButton" name="btnWaterflow">
                    <property name="styleSheet">
                     <string notr="true">QPushButton{
 outline : 0;
@@ -9863,7 +9866,7 @@ margin:0 10px 0 10px;
                   </widget>
                  </item>
                  <item>
-                  <widget class="TempSensor" name="btnTemp">
+                  <widget class="QPushButton" name="btnTemp">
                    <property name="styleSheet">
                     <string notr="true">QPushButton{
 outline : 0;
@@ -9978,7 +9981,7 @@ border: 1px solid white;
              <string notr="true">background: transparent;</string>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="bodyPartPage">
              <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -11139,7 +11142,7 @@ background-color: rgb(0, 170, 255);
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1553</width>
+                   <width>1556</width>
                    <height>803</height>
                   </rect>
                  </property>
@@ -11692,7 +11695,7 @@ color:rgb(188, 188, 188);
                                </widget>
                               </item>
                               <item>
-                               <widget class="QLabel" name="label_12">
+                               <widget class="QLabel" name="lblJoule">
                                 <property name="font">
                                  <font>
                                   <family>Arial</family>
@@ -11700,7 +11703,7 @@ color:rgb(188, 188, 188);
                                  </font>
                                 </property>
                                 <property name="text">
-                                 <string>J/cm²</string>
+                                 <string>Joule</string>
                                 </property>
                                 <property name="alignment">
                                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -11784,10 +11787,10 @@ QSlider::handle:horizontal:pressed {
 }</string>
                                 </property>
                                 <property name="minimum">
-                                 <number>3</number>
+                                 <number>20</number>
                                 </property>
                                 <property name="maximum">
-                                 <number>200</number>
+                                 <number>100</number>
                                 </property>
                                 <property name="orientation">
                                  <enum>Qt::Horizontal</enum>
@@ -11856,6 +11859,9 @@ margin-left:20px;
                               </item>
                               <item>
                                <widget class="QLabel" name="lblPulseWidth">
+                                <property name="enabled">
+                                 <bool>true</bool>
+                                </property>
                                 <property name="font">
                                  <font>
                                   <family>Arial</family>
@@ -11872,6 +11878,9 @@ margin-left:20px;
                               </item>
                               <item>
                                <widget class="QLabel" name="lblPulseWidthValue">
+                                <property name="enabled">
+                                 <bool>true</bool>
+                                </property>
                                 <property name="font">
                                  <font>
                                   <family>Arial</family>
@@ -11887,7 +11896,10 @@ margin-left:20px;
                                </widget>
                               </item>
                               <item>
-                               <widget class="QLabel" name="label_13">
+                               <widget class="QLabel" name="lblmSec">
+                                <property name="enabled">
+                                 <bool>true</bool>
+                                </property>
                                 <property name="font">
                                  <font>
                                   <family>Arial</family>
@@ -11895,7 +11907,7 @@ margin-left:20px;
                                  </font>
                                 </property>
                                 <property name="text">
-                                 <string>mS</string>
+                                 <string>mSec</string>
                                 </property>
                                 <property name="alignment">
                                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -11924,6 +11936,9 @@ margin-left:20px;
                               </property>
                               <item>
                                <widget class="QPushButton" name="btnDecP">
+                                <property name="enabled">
+                                 <bool>false</bool>
+                                </property>
                                 <property name="styleSheet">
                                  <string notr="true">QPushButton{
 outline : 0;
@@ -11949,7 +11964,7 @@ margin-right:20px;
                               <item>
                                <widget class="QSlider" name="sliderPulseWidth">
                                 <property name="enabled">
-                                 <bool>true</bool>
+                                 <bool>false</bool>
                                 </property>
                                 <property name="minimumSize">
                                  <size>
@@ -11979,10 +11994,10 @@ QSlider::handle:horizontal:pressed {
 }</string>
                                 </property>
                                 <property name="minimum">
-                                 <number>3</number>
+                                 <number>20</number>
                                 </property>
                                 <property name="maximum">
-                                 <number>200</number>
+                                 <number>100</number>
                                 </property>
                                 <property name="orientation">
                                  <enum>Qt::Horizontal</enum>
@@ -11991,6 +12006,9 @@ QSlider::handle:horizontal:pressed {
                               </item>
                               <item>
                                <widget class="QPushButton" name="btnIncP">
+                                <property name="enabled">
+                                 <bool>false</bool>
+                                </property>
                                 <property name="styleSheet">
                                  <string notr="true">QPushButton{
 outline : 0;
@@ -12073,7 +12091,7 @@ margin-left:20px;
                                </widget>
                               </item>
                               <item>
-                               <widget class="QLabel" name="label_14">
+                               <widget class="QLabel" name="lblHz">
                                 <property name="font">
                                  <font>
                                   <family>Arial</family>
@@ -14374,26 +14392,6 @@ min-width:220px;
    <class>ToggleButton</class>
    <extends>QCheckBox</extends>
    <header>promotions.h</header>
-  </customwidget>
-  <customwidget>
-   <class>Sensor</class>
-   <extends>QPushButton</extends>
-   <header location="global">promotions.h</header>
-  </customwidget>
-  <customwidget>
-   <class>InterLockSensor</class>
-   <extends>QPushButton</extends>
-   <header location="global">promotions.h</header>
-  </customwidget>
-  <customwidget>
-   <class>TempSensor</class>
-   <extends>QPushButton</extends>
-   <header location="global">promotions.h</header>
-  </customwidget>
-  <customwidget>
-   <class>HiddenSensor</class>
-   <extends>QPushButton</extends>
-   <header location="global">promotions.h</header>
   </customwidget>
   <customwidget>
    <class>DoubleSlider</class>

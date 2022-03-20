@@ -1,3 +1,4 @@
+from multiprocessing import Lock
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtMultimedia import *
@@ -146,92 +147,77 @@ class DriverCurrent:
         
         
 
-class Sensor(QPushButton):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.blink)
-        self.styleOk = SENSOR_OK
-        self.styleNotOk = SENSOR_NOT_OK
-        self.error = False
+class Sensors:
+    def __init__(self, lock, wl, wf, oh, pd, temp):
         self.flag = False
-        self.warning = False
-
-    def blink(self):
-        self.flag = not self.flag
-        if self.flag:
-            self.setStyleSheet(self.styleNotOk)
-        else:
-            self.setStyleSheet(self.styleOk)
-
-    def stopWarning(self):
-        self.timer.stop()
-        self.warning = False
-        self.setStyleSheet(SENSOR_OK)
-
-    def startWarning(self):
-        if not self.warning:
-            self.timer.start(500)
-            self.warning = True
-
-    def setError(self, status):
-        self.error = status
-        if self.error:
-            self.startWarning()
-        else:
-            self.stopWarning()
-
-class TempSensor(Sensor):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.temperature = 0
-
-    def setError(self, value):
-        self.temperature = value
-        if 5 <= value <= 40:
-            self.stopWarning()
-            self.error = False
-        else:
-            self.startWarning()
-            self.error = True
-
-
-class InterLockSensor(Sensor):
-    def __init__(self, parent):
-        super().__init__(parent)
+        self.lock = lock
+        self.wl = wl
+        self.wf = wf
+        self.oh = oh
+        self.pd = pd
+        self.temp = temp
         self.lockIco = QIcon()
         self.unlockIco = QIcon()
         self.lockIco.addPixmap(QPixmap(LOCK))
         self.unlockIco.addPixmap(QPixmap(UNLOCK))
+        self.oh.setVisible(False)
+        self.pd.setVisible(False)
 
-    def stopWarning(self):
-        self.timer.stop()
-        self.warning = False
-        self.setIcon(self.unlockIco)
-        self.setStyleSheet(SENSOR_OK)
+    def toggle(self, status):
+        self.flag = not self.flag
+        if status[0]:
+            self.lock.setIcon(self.lockIco)
+            if self.flag:
+                self.lock.setStyleSheet(SENSOR_NOT_OK)
+            else:
+                self.lock.setStyleSheet(SENSOR_OK)
+        else:
+            self.lock.setStyleSheet(SENSOR_OK)
+            self.lock.setIcon(self.unlockIco)
 
-    def startWarning(self):
-        if not self.warning:
-            self.timer.start(500)
-            self.warning = True
-            self.setIcon(self.lockIco)
+        if status[1]:
+            if self.flag:
+                self.wl.setStyleSheet(SENSOR_NOT_OK)
+            else:
+                self.wl.setStyleSheet(SENSOR_OK)
+        else:
+            self.wl.setStyleSheet(SENSOR_OK)
 
-class HiddenSensor(Sensor):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.styleOk = HIDDEN_SENSOR_OK
-        self.styleNotOk = HIDDEN_SENSOR_NOT_OK
+        if status[2]:
+            if self.flag:
+                self.wf.setStyleSheet(SENSOR_NOT_OK)
+            else:
+                self.wf.setStyleSheet(SENSOR_OK)
+        else:
+            self.wf.setStyleSheet(SENSOR_OK)
 
-    def stopWarning(self):
-        self.timer.stop()
-        self.warning = False
-        self.setVisible(False)
+        if status[3]:
+            self.oh.setVisible(True)
+            if self.flag:
+                self.oh.setStyleSheet(HIDDEN_SENSOR_NOT_OK)
+            else:
+                self.oh.setStyleSheet(HIDDEN_SENSOR_OK)
+        else:
+            self.oh.setVisible(False)
+            self.oh.setStyleSheet(HIDDEN_SENSOR_OK)
 
-    def startWarning(self):
-        if not self.warning:
-            self.timer.start(500)
-            self.warning = True
-            self.setVisible(True)
+        if status[4]:
+            self.pd.setVisible(True)
+            if self.flag:
+                self.pd.setStyleSheet(HIDDEN_SENSOR_NOT_OK)
+            else:
+                self.pd.setStyleSheet(HIDDEN_SENSOR_OK)
+        else:
+            self.pd.setVisible(False)
+            self.pd.setStyleSheet(HIDDEN_SENSOR_OK)
+
+        if status[5]:
+            if self.flag:
+                self.temp.setStyleSheet(SENSOR_NOT_OK)
+            else:
+                self.temp.setStyleSheet(SENSOR_OK)
+        else:
+            self.temp.setStyleSheet(SENSOR_OK)
         
 
 class Action(QWidget):

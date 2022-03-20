@@ -45,6 +45,7 @@ MUSIC_GIF          = join(IMAGES_DIR, 'music.gif')
 COOLING_GIF        = join(IMAGES_DIR, 'cooling.gif')
 RELAY_GIF          = join(IMAGES_DIR, 'relayLoading.gif')
 SPARK_ICON         = join(IMAGES_DIR, 'spark.png')
+LASER_DEMO         = join(IMAGES_DIR, 'laserDemo.png')
 BODY_PART_ICONS = {
         'f face':    join(IMAGES_DIR, 'fFace'),
         'f armpit':  join(IMAGES_DIR, 'fArmpit'),

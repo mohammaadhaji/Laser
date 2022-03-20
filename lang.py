@@ -4,7 +4,7 @@ TEXT = {
     'btnUiSettings': [' User Interface',' رابط کاربری'],
     'btnUmSettings': [' User Management',' مدیریت کاربران'],
     'btnHwSettings': [' Hardware   ', ' سخت افزار'],
-    'lblUserNumber': ['Enter the user number', 'شماره تلفن کاربر را وارد کنید'],
+    'lblUserNumber': ['Enter user number', 'شماره تلفن کاربر را وارد کنید'],
     'txtNumber': ['Number', 'شماره'],
     'btnStartSession': ['Start Session', 'شروع جلسه'],
     'lblHeaderTutorials': ['Tutorials', 'آموزش ها'],
@@ -217,4 +217,7 @@ TEXT = {
     'btnFailRes': ['Fail', 'مردود'], 
     'btnPassPower': ['Pass', 'قبول'], 
     'btnFailPower': ['Fail', 'مردود'],
+    'lblJoule': ['Joule', 'ژول'],
+    'lblmSec': ['mSec', 'میلی ثانیه'],
+    'lblHz': ['Hz', 'هرتز'],
 }
