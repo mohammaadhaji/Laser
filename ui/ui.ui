@@ -915,7 +915,7 @@ margin: 20px 0 0 0;
              <number>0</number>
             </property>
             <property name="topMargin">
-             <number>20</number>
+             <number>0</number>
             </property>
             <property name="rightMargin">
              <number>0</number>
@@ -7453,8 +7453,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>1618</width>
-               <height>732</height>
+               <width>312</width>
+               <height>413</height>
               </rect>
              </property>
              <property name="styleSheet">
@@ -11142,7 +11142,7 @@ background-color: rgb(0, 170, 255);
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1556</width>
+                   <width>1341</width>
                    <height>803</height>
                   </rect>
                  </property>
