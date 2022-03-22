@@ -1,4 +1,6 @@
+from logging import shutdown
 from multiprocessing import Lock
+from re import L
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtMultimedia import *
@@ -10,6 +12,103 @@ from communication import HARDWARE_TEST_PAGE, READ, sendPacket
 from styles import *
 from paths import *
 import math
+
+
+class PowerOption(QFrame):
+    shutdown = pyqtSignal()
+    restart  = pyqtSignal()
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.setMinimumSize(QSize(385, 0))
+        self.setMaximumSize(QSize(16777215, 0))
+        self.setStyleSheet(POWER_OPTION_L)
+        self.verticalLayout_1 = QVBoxLayout(self)
+        self.verticalLayout_1.setContentsMargins(-1, 10, 47, -1)
+        self.verticalLayout_1.setSpacing(0)
+        self.verticalLayout_1.setObjectName("verticalLayout_81")
+        self.horizontalLayout_1 = QHBoxLayout()
+        self.horizontalLayout_1.setSpacing(0)
+        self.horizontalLayout_1.setObjectName("horizontalLayout_81")
+        self.label_1 = QLabel(self)
+        self.label_1.setStyleSheet("QLabel {\n"
+"    border-top-left-radius: 15px;\n"
+"    padding: 5px 0px;\n"
+"    color: rgb(255, 255, 255);\n"
+"    margin-top:20px;\n"
+"\n"
+"}")
+        self.label_1.setText("")
+        self.label_1.setObjectName("label_15")
+        self.horizontalLayout_1.addWidget(self.label_1)
+        self.label_2 = QLabel(self)
+        self.label_2.setStyleSheet("QLabel {\n"
+"    border-top-right-radius: 20px;\n"
+"    border-top-left-radius: 20px;\n"
+"    padding: 5px 0px;\n"
+"    max-width:40px;\n"
+"    min-width:40px;\n"
+"    color: rgb(12, 12, 12);\n"
+"}")
+        self.label_2.setText("")
+        self.label_2.setObjectName("label_16")
+        self.horizontalLayout_1.addWidget(self.label_2)
+        self.label_3 = QLabel(self)
+        self.label_3.setStyleSheet("QLabel {\n"
+"    border-top-right-radius: 15px;\n"
+"    padding: 5px 0px;\n"
+"    color: rgb(255, 255, 255);\n"
+"    margin-top:20px;\n"
+"}")
+        self.label_3.setText("")
+        self.label_3.setObjectName("label_17")
+        self.horizontalLayout_1.addWidget(self.label_3)
+        self.horizontalLayout_1.setStretch(0, 9)
+        self.horizontalLayout_1.setStretch(1, 1)
+        self.horizontalLayout_1.setStretch(2, 1)
+        self.verticalLayout_1.addLayout(self.horizontalLayout_1)
+        self.frame_1 = QFrame(self)
+        self.frame_1.setStyleSheet("QFrame {\n"
+"    border-bottom-left-radius: 15px;\n"
+"    border-bottom-right-radius: 15px;\n"
+"\n"
+"}\n"
+"")
+        self.frame_1.setFrameShape(QFrame.StyledPanel)
+        self.frame_1.setFrameShadow(QFrame.Raised)
+        self.frame_1.setObjectName("frame_8")
+        self.verticalLayout_2 = QVBoxLayout(self.frame_1)
+        self.verticalLayout_2.setContentsMargins(50, -1, 50, 40)
+        self.verticalLayout_2.setSpacing(10)
+        self.verticalLayout_2.setObjectName("verticalLayout_84")
+        self.btnPower = QPushButton(' Power Off', self.frame_1)
+        self.btnPower.clicked.connect(self.shutdown.emit)
+        font = QFont()
+        font.setFamily("Arial")
+        font.setPointSize(18)
+        self.btnPower.setFont(font)
+        self.btnPower.setStyleSheet("")
+        icon1 = QIcon()
+        icon1.addPixmap(QPixmap("ui/images/poweroff.png"), QIcon.Normal, QIcon.Off)
+        self.btnPower.setIcon(icon1)
+        self.btnPower.setIconSize(QSize(55, 55))
+        self.btnPower.setObjectName("btnPower")
+        self.verticalLayout_2.addWidget(self.btnPower)
+        self.btnRestart = QPushButton(' Restart     ', self.frame_1)
+        self.btnRestart.clicked.connect(self.restart.emit)
+        font = QFont()
+        font.setFamily("Arial")
+        font.setPointSize(18)
+        self.btnRestart.setFont(font)
+        self.btnRestart.setStyleSheet("")
+        icon2 = QIcon()
+        icon2.addPixmap(QPixmap("ui/images/restart.png"), QIcon.Normal, QIcon.Off)
+        self.btnRestart.setIcon(icon2)
+        self.btnRestart.setIconSize(QSize(50, 50))
+        self.btnRestart.setObjectName("btnRestart")
+        self.verticalLayout_2.addWidget(self.btnRestart)
+        self.verticalLayout_1.addWidget(self.frame_1)
+        self.verticalLayout_1.setStretch(0, 1)
+        self.verticalLayout_1.setStretch(1, 5)
 
 
 class Relay:

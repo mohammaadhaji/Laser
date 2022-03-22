@@ -123,6 +123,12 @@ class MainWin(QMainWindow):
         self.findIndex = -1
         self.receivingSensorsData = True
         self.musicFiles = []
+        self.po = PowerOption(self.mainPage)
+        self.po.shutdown.connect(lambda: self.playShutdown('powerOff'))
+        self.po.restart.connect(lambda: self.playShutdown('restart'))
+        xpos = 1920 - self.po.size().width()
+        ypos = self.btnPowerOption.iconSize().height() + 20
+        self.po.move(xpos , ypos)
         self.time(edit=True)
         self.initHwTest()
         self.tutorials()   
@@ -154,11 +160,6 @@ class MainWin(QMainWindow):
         self.chbTouchSound.setChecked(self.configs['touchSound'])
         self.chbTouchSound.toggled.connect(self.setTouchSound)
         self.setTemp(0)
-        # self.btnWaterflow.setError(True)
-        # self.btnWaterLevel.setError(True)
-        # self.btnLock.setError(True)
-        # self.btnPhysicalDamage.setError(False)
-        # self.btnOverHeat.setError(False)
         op=QGraphicsOpacityEffect(self)
         op.setOpacity(0.8) 
         self.musicFrame.setGraphicsEffect(op)
@@ -298,8 +299,8 @@ class MainWin(QMainWindow):
         self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
         self.btnEndSession.clicked.connect(lambda: enterPage(MAIN_PAGE))
         self.btnPowerOption.clicked.connect(lambda: self.powerOption('show'))
-        self.btnPower.clicked.connect(lambda: self.playShutdown('powerOff'))
-        self.btnRestart.clicked.connect(lambda: self.playShutdown('restart'))
+        # self.btnPower.clicked.connect(lambda: self.playShutdown('powerOff'))
+        # self.btnRestart.clicked.connect(lambda: self.playShutdown('restart'))
         self.btnStartSession.clicked.connect(self.startSession)
         self.btnSubmit.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnSubmit.clicked.connect(self.submit)
@@ -650,9 +651,9 @@ class MainWin(QMainWindow):
             self.centralWidget().setStyleSheet(COLOR4)
 
         if theme.startswith('T') or theme == 'C3':
-            self.powerFrame.setStyleSheet(POWER_OPTION_L)
+            self.po.setStyleSheet(POWER_OPTION_L)
         else:
-            self.powerFrame.setStyleSheet(POWER_OPTION_D)
+            self.po.setStyleSheet(POWER_OPTION_D)
 
         self.configs['theme'] = theme
         if not self.saveConfigs():
@@ -1931,11 +1932,11 @@ class MainWin(QMainWindow):
         self.animation4.start()
     
     def powerOption(self, i):
-        height = self.powerFrame.height()
-        if i == 'hide' and height == 0:
+        height = self.po.height()
+        if i == 'hide' and height <= 10:
             return
 
-        if i == 'show' and height > 0:
+        if i == 'show' and height > 10:
             return
 
         if i == 'hide':
@@ -1945,11 +1946,12 @@ class MainWin(QMainWindow):
             height = 0
             newHeight = 300
 
-        self.animation3 = QPropertyAnimation(self.powerFrame, b"maximumHeight")
+        self.animation3 = QPropertyAnimation(self.po, b'maximumHeight')
         self.animation3.setDuration(500)
         self.animation3.setStartValue(height)
         self.animation3.setEndValue(newHeight)
         self.animation3.setEasingCurve(QEasingCurve.InOutQuart)
+        self.animation3.valueChanged.connect(lambda value: self.po.setFixedHeight(value))
         self.animation3.start()
 
     def btnHwsettingClicked(self):
