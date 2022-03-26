@@ -248,6 +248,8 @@ class MainWin(QMainWindow):
         self.loadUsersTimer = QTimer()
         self.shutdownTimer = QTimer()
         self.restartTimer = QTimer()
+        self.keyboardTimer = QTimer()
+        self.keyboardTimer.timeout.connect(lambda: self.keyboard('hide'))
         self.shutdownTimer.timeout.connect(self.powerOff)
         self.restartTimer.timeout.connect(self.restart)
         self.loadUsersTimer.timeout.connect(self.addUsersTable)
@@ -1748,6 +1750,7 @@ class MainWin(QMainWindow):
 
     def type(self, letter):
         def wrapper():
+            self.keyboardTimer.start(15000)
             widget = QApplication.focusWidget()
             lang = 0
             if self.farsi:
@@ -1854,9 +1857,11 @@ class MainWin(QMainWindow):
         if i == 'hide':
             height = 350
             newHeight = 0
+            self.keyboardTimer.stop()
         else:
             height = 0
             newHeight = 350
+            self.keyboardTimer.start(15000)
 
         self.animation = QPropertyAnimation(self.keyboardFrame, b"maximumHeight")
         self.animation.setDuration(250)
