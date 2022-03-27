@@ -247,7 +247,10 @@ class DriverCurrent:
         
 
 class Sensors:
-    def __init__(self, lock, wl, wf, oh, pd, temp):
+    def __init__(
+            self, lock, wl, wf, oh, pd, temp,
+            lockCalib, wlCalib, wfCalib, ohCalib, pdCalib, tempCalib,
+        ):
         self.flag = False
         self.lock = lock
         self.wl = wl
@@ -255,68 +258,81 @@ class Sensors:
         self.oh = oh
         self.pd = pd
         self.temp = temp
+        self.lockCalib = lockCalib
+        self.wlCalib = wlCalib
+        self.wfCalib = wfCalib
+        self.ohCalib = ohCalib
+        self.pdCalib = pdCalib
+        self.tempCalib = tempCalib        
         self.lockIco = QIcon()
         self.unlockIco = QIcon()
         self.lockIco.addPixmap(QPixmap(LOCK))
         self.unlockIco.addPixmap(QPixmap(UNLOCK))
         self.oh.setVisible(False)
         self.pd.setVisible(False)
+        self.ohCalib.setVisible(False)
+        self.pdCalib.setVisible(False)
 
-    def toggle(self, status):
+    def toggle(self, status, page):
+        if page == 'Laser':
+            lock, wl, wf, oh, pd, temp = self.lock, self.wl, self.wf, self.oh, self.pd, self.temp
+        else:
+            lock, wl, wf, oh, pd, temp = self.lockCalib, self.wlCalib, self.wfCalib, self.ohCalib, self.pdCalib, self.tempCalib
+
         self.flag = not self.flag
         if status[0]:
-            self.lock.setIcon(self.lockIco)
+            lock.setIcon(self.lockIco)
             if self.flag:
-                self.lock.setStyleSheet(SENSOR_NOT_OK)
+                lock.setStyleSheet(SENSOR_NOT_OK)
             else:
-                self.lock.setStyleSheet(SENSOR_OK)
+                lock.setStyleSheet(SENSOR_OK)
         else:
-            self.lock.setStyleSheet(SENSOR_OK)
-            self.lock.setIcon(self.unlockIco)
+            lock.setStyleSheet(SENSOR_OK)
+            lock.setIcon(self.unlockIco)
 
         if status[1]:
             if self.flag:
-                self.wl.setStyleSheet(SENSOR_NOT_OK)
+                wl.setStyleSheet(SENSOR_NOT_OK)
             else:
-                self.wl.setStyleSheet(SENSOR_OK)
+                wl.setStyleSheet(SENSOR_OK)
         else:
-            self.wl.setStyleSheet(SENSOR_OK)
+            wl.setStyleSheet(SENSOR_OK)
 
         if status[2]:
             if self.flag:
-                self.wf.setStyleSheet(SENSOR_NOT_OK)
+                wf.setStyleSheet(SENSOR_NOT_OK)
             else:
-                self.wf.setStyleSheet(SENSOR_OK)
+                wf.setStyleSheet(SENSOR_OK)
         else:
-            self.wf.setStyleSheet(SENSOR_OK)
+            wf.setStyleSheet(SENSOR_OK)
 
         if status[3]:
-            self.oh.setVisible(True)
+            oh.setVisible(True)
             if self.flag:
-                self.oh.setStyleSheet(HIDDEN_SENSOR_NOT_OK)
+                oh.setStyleSheet(HIDDEN_SENSOR_NOT_OK)
             else:
-                self.oh.setStyleSheet(HIDDEN_SENSOR_OK)
+                oh.setStyleSheet(HIDDEN_SENSOR_OK)
         else:
-            self.oh.setVisible(False)
-            self.oh.setStyleSheet(HIDDEN_SENSOR_OK)
+            oh.setVisible(False)
+            oh.setStyleSheet(HIDDEN_SENSOR_OK)
 
         if status[4]:
-            self.pd.setVisible(True)
+            pd.setVisible(True)
             if self.flag:
-                self.pd.setStyleSheet(HIDDEN_SENSOR_NOT_OK)
+                pd.setStyleSheet(HIDDEN_SENSOR_NOT_OK)
             else:
-                self.pd.setStyleSheet(HIDDEN_SENSOR_OK)
+                pd.setStyleSheet(HIDDEN_SENSOR_OK)
         else:
-            self.pd.setVisible(False)
-            self.pd.setStyleSheet(HIDDEN_SENSOR_OK)
+            pd.setVisible(False)
+            pd.setStyleSheet(HIDDEN_SENSOR_OK)
 
         if status[5]:
             if self.flag:
-                self.temp.setStyleSheet(SENSOR_NOT_OK)
+                temp.setStyleSheet(SENSOR_NOT_OK)
             else:
-                self.temp.setStyleSheet(SENSOR_OK)
+                temp.setStyleSheet(SENSOR_OK)
         else:
-            self.temp.setStyleSheet(SENSOR_OK)
+            temp.setStyleSheet(SENSOR_OK)
         
 
 class Action(QWidget):

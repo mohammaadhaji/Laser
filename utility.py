@@ -1,3 +1,4 @@
+from distutils.command.config import config
 from uuid import getnode as get_mac
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QThread, pyqtSignal
@@ -183,28 +184,32 @@ def loadConfigs():
         if len(configs) == 0:
             file.close()
             file = open(CONFIG_FILE, 'wb')
-            configs['LICENSE'] = genLicense()
-            configs['PASSWORD'] = ''
-            configs['LANGUAGE'] = 'en'
-            configs['slideTransition'] = False
-            configs['touchSound'] = True
-            configs['MusicVolume'] = 50
-            configs['VideoVolume'] = 50
-            configs['LoopMusic'] = True
-            configs['theme'] = 'C1'
-            configs['OwnerInfo'] = ''
-            configs['SerialNumber'] = ''
-            configs['TotalShotCounter'] = 0
-            configs['TotalShotCounterAdmin'] = 0
-            configs['LaserDiodeEnergy'] = ''
-            configs['LaserBarType'] = ''
-            configs['LaserWavelength'] = ''
-            configs['DriverVersion'] = ''
-            configs['MainControlVersion'] = ''
-            configs['FirmwareVersion'] = ''
-            configs['ProductionDate'] = ''
-            configs['GuiVersion'] = 'v1.0'
-            configs['LOCK'] = []
+            configs = {
+                'LICENSE': genLicense(),
+                'PASSWORD': '',
+                'LANGUAGE': 'en',
+                'slideTransition': False,
+                'touchSound': True,
+                'MusicVolume': 50,
+                'VideoVolume': 50,
+                'LoopMusic': True,
+                'theme': 'C1',
+                'OwnerInfo': '',
+                'SerialNumber': '',
+                'TotalShotCounter': 0,
+                'TotalShotCounterAdmin': 0,
+                'LaserDiodeEnergy': '',
+                'LaserBarType': '',
+                'SpotSizeArea': '',
+                'LaserWavelength': '',
+                'DriverVersion': '',
+                'MainControlVersion': '',
+                'FirmwareVersion': '',
+                'ProductionDate': '',
+                'GuiVersion': 'v1.0',
+                'LOCK': [],
+                'EnergyCoeffs': [1] * 8
+            }
             pickle.dump(configs, file)
             file.close()
         

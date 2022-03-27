@@ -32,6 +32,8 @@ class MainWin(QMainWindow):
         self.langIndex = 0
         icon = QPixmap(SELECTED_LANG_ICON)
         self.lblEnSelected.setPixmap(icon.scaled(70, 70))
+        icon = QPixmap('ui/images/laserLogo.png')
+        self.label.setPixmap(icon)
         self.serialC = SerialTimer() if RPI_VERSION == '3' else SerialThread()
         self.sensorFlags = [True, True, True, False, False, True]
         self.sensors = Sensors(
@@ -40,7 +42,13 @@ class MainWin(QMainWindow):
             self.btnWaterflow,
             self.btnOverHeat,
             self.btnPhysicalDamage,
-            self.btnTemp
+            self.btnTemp,
+            self.btnLockCalib,
+            self.btnWaterLevelCalib,
+            self.btnWaterflowCalib,
+            self.btnOverHeatCalib,
+            self.btnPhysicalDamageCalib,
+            self.btnTempCalib
         )
         self.serialC.sensorFlags.connect(self.setSensorFlags)
         self.serialC.tempValue.connect(self.setTemp)
@@ -122,6 +130,7 @@ class MainWin(QMainWindow):
         self.logingSettingAdmin = False
         self.findIndex = -1
         self.receivingSensorsData = True
+        self.calibrationPageActive = False
         self.musicFiles = []
         self.po = PowerOption(self.mainPage)
         self.po.shutdown.connect(lambda: self.playShutdown('powerOff'))
@@ -240,6 +249,7 @@ class MainWin(QMainWindow):
         self.uiLabelTimer = QTimer()
         self.sensorsReportLabelTimer = QTimer()
         self.musicRefreshLableTimer = QTimer()
+        self.coeffLabelTimer = QTimer()
         self.systemTimeTimer = QTimer()
         self.readyErrorTimer =  QTimer()
         self.monitorSensorsTimer = QTimer()
@@ -265,10 +275,12 @@ class MainWin(QMainWindow):
         self.sysTimeStatusLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblSystemTimeStatus, self.sysTimeStatusLabelTimer))
         self.lockErrorLabel.timeout.connect(lambda: self.clearLabel(self.lblLockError, self.lockErrorLabel))
         self.readyErrorTimer.timeout.connect(lambda: self.clearLabel(self.lblReadyError, self.readyErrorTimer))
+        self.readyErrorTimer.timeout.connect(lambda: self.clearLabel(self.lblReadyCalibError, self.readyErrorTimer))
         self.updateFirmwareLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblUpdateFirmware, self.updateFirmwareLabelTimer))
         self.uiLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblUiError, self.uiLabelTimer))
         self.sensorsReportLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblSensorDateError, self.sensorsReportLabelTimer))
         self.musicRefreshLableTimer.timeout.connect(lambda: self.clearLabel(self.lblMusicRefresh, self.musicRefreshLableTimer))
+        self.coeffLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblCalcCoeff, self.coeffLabelTimer))
         self.incDaysTimer.timeout.connect(lambda: self.incDecDay('inc'))
         self.decDaysTimer.timeout.connect(lambda: self.incDecDay('dec'))
         self.backspaceTimer.timeout.connect(self.type(lambda: 'backspace'))
@@ -301,13 +313,13 @@ class MainWin(QMainWindow):
         self.btnEndSession.clicked.connect(lambda: self.setNextSession('lazer'))
         self.btnEndSession.clicked.connect(lambda: enterPage(MAIN_PAGE))
         self.btnPowerOption.clicked.connect(lambda: self.powerOption('show'))
-        # self.btnPower.clicked.connect(lambda: self.playShutdown('powerOff'))
-        # self.btnRestart.clicked.connect(lambda: self.playShutdown('restart'))
         self.btnStartSession.clicked.connect(self.startSession)
         self.btnSubmit.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnSubmit.clicked.connect(self.submit)
+        self.btnSystemLogs.clicked.connect(self.hwPageChanged)
         self.btnSystemLogs.clicked.connect(self.enterLogsPage)
         self.btnHwTesst.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.hwTestPage))
+        self.btnHwTesst.clicked.connect(self.hwPageChanged)
         self.btnHwTesst.clicked.connect(lambda: enterPage(HARDWARE_TEST_PAGE))
         self.btnMusic.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnMusic.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.musicPage))
@@ -361,13 +373,13 @@ class MainWin(QMainWindow):
         self.btnDecDac.clicked.connect(lambda: self.setDac('dec'))
         self.btnIncDac.clicked.connect(lambda: self.setDac('inc'))
         self.sliderEnergy.sliderMoved.connect(self.sldrSetEnergy)
-        # self.btnIncP.clicked.connect(lambda: self.setPulseWidth('inc'))
-        # self.btnDecP.clicked.connect(lambda: self.setPulseWidth('dec'))
-        # self.sliderPulseWidth.sliderMoved.connect(self.sldrSetPulseWidth)
+        self.sliderEnergyCalib.sliderMoved.connect(lambda v: self.sldrSetEnergy(v*10))
         self.btnIncF.clicked.connect(lambda: self.setFrequency('inc'))
         self.btnDecF.clicked.connect(lambda: self.setFrequency('dec'))
         self.sliderFrequency.sliderMoved.connect(self.sldrSetFrequency)
         self.sliderFrequency.sliderReleased.connect(self.sldrFreqReleased)
+        self.sliderFrequencyCalib.sliderMoved.connect(self.sldrSetFrequency)
+        self.sliderFrequencyCalib.sliderReleased.connect(self.sldrFreqReleased)
         self.btnMale.clicked.connect(lambda: self.stackedWidgetSex.setCurrentWidget(self.malePage))
         self.btnFemale.clicked.connect(lambda: self.stackedWidgetSex.setCurrentWidget(self.femalePage))
         self.btnDecCooling.clicked.connect(lambda: self.setCooling('dec'))
@@ -385,14 +397,17 @@ class MainWin(QMainWindow):
         self.btnResetCounter.clicked.connect(self.btnResetCounterClicked)
         self.btnResetCounterPass.clicked.connect(self.checkResetCounterPass)
         self.btnReady.clicked.connect(lambda: self.setReady(True))
+        self.btnReadyCalib.clicked.connect(lambda: self.setReady(True))
         self.btnStandby.clicked.connect(lambda: self.setReady(False))
+        self.btnStandByCalib.clicked.connect(lambda: self.setReady(False))
         self.btnUUIDEnter.clicked.connect(self.unlockUUID)
         self.btnHwinfo.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.infoPage))
         self.btnHwinfo.clicked.connect(lambda: self.enterSettingPage(REPORT))
         self.btnSystemLock.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.lockSettingsPage))
+        self.btnSystemLock.clicked.connect(self.hwPageChanged)
         self.btnSystemLock.clicked.connect(lambda: lockPage(REPORT))
         self.btnSystemLock.clicked.connect(lambda: self.systemTimeTimer.start(1000))
-        self.btnCalibration.clicked.connect(lambda: self.hwStackedWidget.setCurrentWidget(self.calibrationPage))
+        self.btnCalibration.clicked.connect(self.enterCalibration)
         self.btnAddLock.clicked.connect(self.addLock)
         self.btnResetLock.clicked.connect(self.resetLock)
         self.btnBackLaser.clicked.connect(lambda: self.changeAnimation('horizontal'))
@@ -408,6 +423,7 @@ class MainWin(QMainWindow):
         self.btnResetMsgNo.clicked.connect(lambda : self.resetCounterMsg('hide'))
         self.btnResetMsgYes.clicked.connect(self.resetCounterYes)
         self.btnSetDac.clicked.connect(self.sendDacVoltage)
+        self.btnApplyCoeff.clicked.connect(self.applyCoeffs)
         self.selectAllFlag = False
         self.btnLoop.clicked.connect(self.setLoopMusic)
         self.LoopMusicFlag = self.configs['LoopMusic']
@@ -430,6 +446,9 @@ class MainWin(QMainWindow):
         sensors = [
             'btnPhysicalDamage', 'btnOverHeat', 'btnTemp',
             'btnLock', 'btnWaterLevel', 'btnWaterflow',
+            'btnOverHeatCalib', 'btnPhysicalDamageCalib', 
+            'btnLockCalib', 'btnTempCalib', 'btnWaterLevelCalib',
+            'btnWaterflowCalib', 'txtTempCalib'
         ]
         keyboardButtons = list(chain(
             layout_widgets(self.keyboardRow1),
@@ -492,7 +511,10 @@ class MainWin(QMainWindow):
         self.txtEditYear.setValidator(input_validator)        
         self.txtNsYear.setValidator(input_validator)    
         self.txtNsMonth.setValidator(input_validator)
-        self.txtNsDay.setValidator(input_validator)     
+        self.txtNsDay.setValidator(input_validator)
+        reg_ex = QRegExp("^-?[0-9]\d*(\.\d+)?$")
+        input_validator = QRegExpValidator(reg_ex, self.txtReadValue)
+        self.txtReadValue.setValidator(input_validator)     
         self.txtDays.setText('30')
         self.txtSearch.textChanged.connect(self.search)
         self.txtSearchMusic.textChanged.connect(self.searchMusic)
@@ -584,6 +606,7 @@ class MainWin(QMainWindow):
 
     def setTemp(self, value):
         self.txtTemp.setText(str(value) + ' °C')
+        self.txtTempCalib.setText(str(value) + ' °C')
 
     def setReceivingSensorsData(self):
         self.receivingSensorsData = True
@@ -596,26 +619,97 @@ class MainWin(QMainWindow):
             self.setTemp(0)
 
     def monitorSensors(self):
-        self.sensors.toggle(self.sensorFlags)
+        index = self.stackedWidget.indexOf(self.laserMainPage)
+        if self.stackedWidget.currentIndex() == index:
+            page = 'Laser'
+        else:
+            page = 'Calib'
+
+        self.sensors.toggle(self.sensorFlags, page)
 
         if any(self.sensorFlags):
             if self.ready:
                 self.setReady(False)    
+
+    def enterCalibration(self):
+        self.hwStackedWidget.setCurrentWidget(self.calibrationPage)
+        self.calibrationPageActive = True
+        fields = {
+                'energy': self.energy, 
+                'pulseWidth': self.pulseWidth,
+                'frequency': self.frequency, 
+                'ready-standby': 'Ready' if self.ready else 'StandBy'
+            } 
+        laserCalibPage(fields)
+        self.txtSpotSizeCalib.setText(self.configs['SpotSizeArea'])
+        self.monitorSensorsTimer.start(500)
+        self.monitorReceivingSensors.start(3000)
+
+    def applyCoeffs(self):
+        readValue = self.txtReadValue.text()
+        readValue = float(readValue) if readValue else self.sliderEnergyCalib.value() * 10
+        energy = self.sliderEnergyCalib.value() * 10
+
+        if energy <= 30:
+            self.configs['EnergyCoeffs'][0] = energy / readValue
+        elif 30 < energy <= 40:
+            self.configs['EnergyCoeffs'][1] = energy / readValue
+        elif 40 < energy <= 50:
+            self.configs['EnergyCoeffs'][2] = energy / readValue
+        elif 50 < energy <= 60:
+            self.configs['EnergyCoeffs'][3] = energy / readValue
+        elif 60 < energy <= 70:
+            self.configs['EnergyCoeffs'][4] = energy / readValue
+        elif 70 < energy <= 80:
+            self.configs['EnergyCoeffs'][5] = energy / readValue
+        elif 80 < energy <= 90:
+            self.configs['EnergyCoeffs'][6] = energy / readValue
+        elif 90 < energy <= 100:
+            self.configs['EnergyCoeffs'][7] = energy / readValue
+
+        if not self.saveConfigs():
+            self.setLabel(
+                TEXT['saveCoeffError'][self.langIndex], 
+                self.lblCalcCoeff, 
+                self.coeffLabelTimer, 4
+            )
+        else:
+            self.setLabel(
+                'Coeff  →  ' + str(round(energy / readValue, 2)), 
+                self.lblCalcCoeff, 
+                self.coeffLabelTimer, 5
+            )
+    
+    def hwPageChanged(self):
+        if self.calibrationPageActive:
+            if self.ready:
+                self.setReady(False)
+
+            self.monitorSensorsTimer.stop()
+            self.monitorReceivingSensors.stop()
+        
+        self.calibrationPageActive = False
 
     def changeTheme(self, theme):
         inc = QIcon()
         dec = QIcon()
         if theme in ['C1', 'C2', 'C4']:
             self.sliderEnergy.setStyleSheet(SLIDER_GB)
+            self.sliderEnergyCalib.setStyleSheet(SLIDER_GB)
             self.sliderFrequency.setStyleSheet(SLIDER_GB)
+            self.sliderFrequencyCalib.setStyleSheet(SLIDER_GB)
             self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED_GB)
+            self.sliderPulseWidthCalib.setStyleSheet(SLIDER_DISABLED_GB)
             self.dacSlider.setStyleSheet(SLIDER_GB)
             inc.addPixmap(QPixmap(INC_BLACK))
             dec.addPixmap(QPixmap(DEC_BLACK))
         else:
             self.sliderEnergy.setStyleSheet(SLIDER_GW)                
+            self.sliderEnergyCalib.setStyleSheet(SLIDER_GW)
             self.sliderFrequency.setStyleSheet(SLIDER_GW)                
+            self.sliderFrequencyCalib.setStyleSheet(SLIDER_GW)
             self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED_GW)
+            self.sliderPulseWidthCalib.setStyleSheet(SLIDER_DISABLED_GW)
             self.dacSlider.setStyleSheet(SLIDER_GW)
             inc.addPixmap(QPixmap(INC_BLUE))
             dec.addPixmap(QPixmap(DEC_BLUE))
@@ -1055,7 +1149,8 @@ class MainWin(QMainWindow):
         self.txtMonitor.setText(monitorInfo())
         self.txtSerialNumber.setText(self.configs['SerialNumber'])                
         self.txtLaserDiodeEnergy.setText(self.configs['LaserDiodeEnergy'])                
-        self.txtLaserBarType.setText(self.configs['LaserBarType'])                
+        self.txtLaserBarType.setText(self.configs['LaserBarType'])
+        self.txtSpotSize.setText(self.configs['SpotSizeArea'])
         self.txtLaserWavelength.setText(self.configs['LaserWavelength'])                
         self.txtDriverVersion.setText(self.configs['DriverVersion'])                
         self.txtMainControlVersion.setText(self.configs['MainControlVersion'])                
@@ -1072,6 +1167,23 @@ class MainWin(QMainWindow):
         index = self.hwStackedWidget.indexOf(self.systemLogPage)
         if self.hwStackedWidget.currentIndex() == index:
             return
+
+        index = self.hwStackedWidget.indexOf(self.calibrationPage)
+        if self.hwStackedWidget.currentIndex() == index:
+            self.configs['SpotSizeArea'] = self.txtSpotSizeCalib.text()
+            self.txtSpotSize.setText(self.configs['SpotSizeArea'])
+            if not self.saveConfigs():
+                self.setLabel(
+                    TEXT['saveConfigError'][self.langIndex], 
+                    self.lblSaveHw, 
+                    self.hwUpdatedLabelTimer, 4
+                )
+            else:
+                self.setLabel(
+                        TEXT['saveHw'][self.langIndex], 
+                        self.lblSaveHw, 
+                        self.hwUpdatedLabelTimer, 2
+                    )
  
         index = self.hwStackedWidget.indexOf(self.lockSettingsPage)
         if self.hwStackedWidget.currentIndex() == index:
@@ -1122,7 +1234,8 @@ class MainWin(QMainWindow):
             self.configs['MainControlVersion'] = self.txtMainControlVersion.text()            
             self.configs['FirmwareVersion'] = self.txtFirmwareVersion.text()
             self.configs['ProductionDate'] = self.txtProductionDate.text()
-            self.configs['GuiVersion'] = self.txtGuiVersion.text() 
+            self.configs['GuiVersion'] = self.txtGuiVersion.text()
+            self.configs['SpotSizeArea'] = self.txtSpotSize.text() 
             self.enterSettingPage(WRITE)
 
             if not self.saveConfigs():
@@ -1149,6 +1262,7 @@ class MainWin(QMainWindow):
         return wrapper
 
     def enterSettingPage(self, cmdType):
+        self.hwPageChanged()
         fieldValues = {
             'serial': self.txtSerialNumber.text(),
             'totalCounter': self.txtTotalShotCounter.text(), 
@@ -1162,7 +1276,8 @@ class MainWin(QMainWindow):
             'monitor': self.txtMonitor.text(),
             'os': self.txtOsSpecification.text(),
             'gui': self.txtGuiVersion.text(),
-            'rpi': self.txtRpiVersion.text()
+            'rpi': self.txtRpiVersion.text(),
+            'SpotSize': self.txtSpotSize.text()
         }
         settingsPage(fieldValues, cmdType)
 
@@ -1502,9 +1617,16 @@ class MainWin(QMainWindow):
                 error_duration += 1
             
             if errors:
+                index = self.stackedWidget.indexOf(self.laserMainPage)
+                if self.stackedWidget.currentIndex() == index:
+                    lbl = self.lblReadyError
+                else:
+                    lbl = self.lblReadyCalibError
+                    error_duration = 3
+                    errors = TEXT['SensorCalibError'][self.langIndex]
+
                 self.setLabel(
-                    errors,
-                    self.lblReadyError,
+                    errors, lbl,
                     self.readyErrorTimer, error_duration
                 )
                 log('Sensors', logErrors)
@@ -1512,26 +1634,64 @@ class MainWin(QMainWindow):
             
             else:
                 self.ready = True
-                laserPage({'ready-standby': 'Ready'})
-                fields = {
-                    'cooling': self.cooling , 'energy': self.energy,
-                    'pulseWidth': self.pulseWidth,'frequency': self.frequency, 
-                    'couter': self.currentCounter
-                } 
+                index = self.stackedWidget.indexOf(self.laserMainPage)
+                if self.stackedWidget.currentIndex() == index:
+                    fields = {
+                        'cooling': self.cooling , 'energy': self.correctEngyPulsWidth(),
+                        'pulseWidth': self.correctEngyPulsWidth(),'frequency': self.frequency, 
+                        'couter': self.currentCounter, 'ready-standby': 'Ready'
+                    } 
+                    laserPage(fields)
+                else:
+                    fields = {
+                        'energy': self.energy, 'pulseWidth': self.pulseWidth,
+                        'frequency': self.frequency, 'ready-standby': 'Ready'
+                    } 
+                    laserCalibPage(fields)
                 
-                laserPage(fields)
                 self.btnStandby.setStyleSheet(READY_NOT_SELECTED)
+                self.btnStandByCalib.setStyleSheet(READY_NOT_SELECTED)
                 self.btnReady.setStyleSheet(READY_SELECTED)
+                self.btnReadyCalib.setStyleSheet(READY_SELECTED)
                 self.epfSkinGradeLayout.setEnabled(False)
+                self.epfLayout.setEnabled(False)
                 self.chgSliderColor(SLIDER_DISABLED_GB, SLIDER_DISABLED_GW)
 
         else:
             self.ready = False
-            laserPage({'ready-standby': 'StandBy'})
+            index = self.stackedWidget.indexOf(self.laserMainPage)
+            if self.stackedWidget.currentIndex() == index:
+                laserPage({'ready-standby': 'StandBy'})
+            else:
+                laserCalibPage({'ready-standby': 'StandBy'})
             self.btnStandby.setStyleSheet(READY_SELECTED)
+            self.btnStandByCalib.setStyleSheet(READY_SELECTED)
             self.btnReady.setStyleSheet(READY_NOT_SELECTED)
+            self.btnReadyCalib.setStyleSheet(READY_NOT_SELECTED)
             self.epfSkinGradeLayout.setEnabled(True)
-            self.chgSliderColor(SLIDER_GB, SLIDER_GW)                    
+            self.epfLayout.setEnabled(True)
+            self.chgSliderColor(SLIDER_GB, SLIDER_GW)
+
+    def correctEngyPulsWidth(self):
+        e = self.energy
+        if self.energy <= 30:
+            e = self.energy * self.configs['EnergyCoeffs'][0]
+        elif 30 < self.energy <= 40:
+            e = self.energy * self.configs['EnergyCoeffs'][1]
+        elif 40 < self.energy <= 50:
+            e = self.energy * self.configs['EnergyCoeffs'][2]
+        elif 50 < self.energy <= 60:
+            e = self.energy * self.configs['EnergyCoeffs'][3]
+        elif 60 < self.energy <= 70:
+            e = self.energy * self.configs['EnergyCoeffs'][4]
+        elif 70 < self.energy <= 80:
+            e = self.energy * self.configs['EnergyCoeffs'][5]
+        elif 80 < self.energy <= 90:
+            e = self.energy * self.configs['EnergyCoeffs'][6]
+        elif 90 < self.energy <= 100:
+            e = self.energy * self.configs['EnergyCoeffs'][7]
+
+        return int(e)
 
     def setCooling(self, operation):
         buttons = layout_widgets(self.coolingLayout)
@@ -1567,13 +1727,19 @@ class MainWin(QMainWindow):
     def chgSliderColor(self, c1, c2):
         if self.configs['theme'] in ['C1', 'C2', 'C4']:
             self.sliderEnergy.setStyleSheet(c1)
+            self.sliderEnergyCalib.setStyleSheet(c1)
             self.sliderFrequency.setStyleSheet(c1)
+            self.sliderFrequencyCalib.setStyleSheet(c1)
             self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED_GB)
+            self.sliderPulseWidthCalib.setStyleSheet(SLIDER_DISABLED_GB)
             self.dacSlider.setStyleSheet(c1)
         else:
-            self.sliderEnergy.setStyleSheet(c2)                
-            self.sliderFrequency.setStyleSheet(c2)                
+            self.sliderEnergy.setStyleSheet(c2)
+            self.sliderEnergyCalib.setStyleSheet(c2)
+            self.sliderFrequency.setStyleSheet(c2)
+            self.sliderFrequencyCalib.setStyleSheet(c2)             
             self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED_GW)
+            self.sliderPulseWidthCalib.setStyleSheet(SLIDER_DISABLED_GW)
             self.dacSlider.setStyleSheet(c2)
 
     def setEnergy(self, operation):
@@ -1601,15 +1767,20 @@ class MainWin(QMainWindow):
     def sldrSetEnergy(self, value):
         self.energy = value
         self.lblEnergyValue.setText(str(value))
+        self.lblEnergyValueCalib.setText(str(value))
         self.pulseWidth = value
         self.sliderPulseWidth.setValue(value)
+        self.sliderPulseWidthCalib.setValue(value)
         self.lblPulseWidthValue.setText(str(value))
+        self.lblPulseWidthValueCalib.setText(str(value))
         maxF_pl = 1000 / (2 * self.pulseWidth)
         maxF_pl_con = MAX_FREQUENCY >= maxF_pl
         if maxF_pl_con and self.frequency >= maxF_pl:
             self.frequency = math.floor(maxF_pl)
             self.sliderFrequency.setValue(self.frequency)
             self.lblFrequencyValue.setText(str(self.frequency))
+            self.sliderFrequencyCalib.setValue(self.frequency)
+            self.lblFrequencyValueCalib.setText(str(self.frequency))
 
     def setFrequency(self, operation):
         freq = self.frequency
@@ -1628,6 +1799,7 @@ class MainWin(QMainWindow):
     def sldrSetFrequency(self, value):
         self.frequency = value
         self.lblFrequencyValue.setText(str(value))
+        self.lblFrequencyValueCalib.setText(str(value))
 
     def sldrFreqReleased(self):
         maxF_pl = math.floor(1000 / (2 * self.pulseWidth))
@@ -1636,6 +1808,8 @@ class MainWin(QMainWindow):
             self.frequency = maxF_pl
             self.sliderFrequency.setValue(maxF_pl)
             self.lblFrequencyValue.setText(str(maxF_pl))
+            self.sliderFrequencyCalib.setValue(maxF_pl)
+            self.lblFrequencyValueCalib.setText(str(maxF_pl))
         
     def saveCase(self):
         case = openCase(self.case)
@@ -1660,8 +1834,8 @@ class MainWin(QMainWindow):
         
     def sendLaserFields(self):
         fields = {
-            'cooling': self.cooling , 'energy': self.energy,
-            'pulseWidth': self.pulseWidth,'frequency': self.frequency, 
+            'cooling': self.cooling , 'energy': self.correctEngyPulsWidth(),
+            'pulseWidth': self.correctEngyPulsWidth(),'frequency': self.frequency, 
             'couter': self.currentCounter, 
         }
         laserPage(fields)
@@ -1731,6 +1905,8 @@ class MainWin(QMainWindow):
             self.stackedWidgetSettings.setCurrentWidget(self.settingsMenuPage)
             self.hWPage.setVisible(False)
             self.uiPage.setVisible(False)
+            if self.ready:
+                self.setReady(False)
             enterPage(MAIN_PAGE) 
 
     def search(self):
@@ -2367,12 +2543,16 @@ class MainWin(QMainWindow):
             self.lblEn.setStyleSheet("font-family:'Arial'")
             self.lblJoule.setAlignment(Qt.AlignLeading|Qt.AlignRight|Qt.AlignVCenter)
             self.lblHz.setAlignment(Qt.AlignLeading|Qt.AlignRight|Qt.AlignVCenter)
+            self.lblJouleCalib.setAlignment(Qt.AlignLeading|Qt.AlignRight|Qt.AlignVCenter)
+            self.lblHzCalib.setAlignment(Qt.AlignLeading|Qt.AlignRight|Qt.AlignVCenter)
             self.userInfoFrame.setLayoutDirection(Qt.RightToLeft)
             self.nextSessionFrame.setLayoutDirection(Qt.RightToLeft)
             self.hwFrame.setLayoutDirection(Qt.RightToLeft)
             self.nsDateFrame.setLayoutDirection(Qt.LeftToRight)
             self.currentUserFrame.setLayoutDirection(Qt.RightToLeft)
             self.resetCounterMsgFrame.setLayoutDirection(Qt.RightToLeft)
+            self.calibFrame0.setLayoutDirection(Qt.RightToLeft)
+            self.lblReadyCalibError.setAlignment(QtCore.Qt.AlignCenter)
             icon = QPixmap(SELECTED_LANG_ICON)
             self.lblFaSelected.setPixmap(icon.scaled(70, 70))
             self.lblEnSelected.clear()
@@ -2383,12 +2563,16 @@ class MainWin(QMainWindow):
             self.lblFa.setStyleSheet("font-family:'A Iranian Sans'")
             self.lblJoule.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
             self.lblHz.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+            self.lblJouleCalib.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+            self.lblHzCalib.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
             self.userInfoFrame.setLayoutDirection(Qt.LeftToRight)
             self.nextSessionFrame.setLayoutDirection(Qt.LeftToRight)
             self.hwFrame.setLayoutDirection(Qt.LeftToRight)
             self.nsDateFrame.setLayoutDirection(Qt.LeftToRight)
             self.currentUserFrame.setLayoutDirection(Qt.LeftToRight)
             self.resetCounterMsgFrame.setLayoutDirection(Qt.LeftToRight)
+            self.calibFrame0.setLayoutDirection(Qt.LeftToRight)
+            self.lblReadyCalibError.setAlignment(QtCore.Qt.AlignCenter)
             icon = QPixmap(SELECTED_LANG_ICON)
             self.lblEnSelected.setPixmap(icon.scaled(70, 70))
             self.lblFaSelected.clear()

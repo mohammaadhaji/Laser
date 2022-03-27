@@ -48,7 +48,8 @@ MAIN_PAGE          = 4
 SHUTDONW_PAGE      = 5
 UPDATE_PAGE        = 6
 HARDWARE_TEST_PAGE = 7
-OTHER_PAGE         = 8
+LASER_CALIB_PAGE   = 8
+OTHER_PAGE         = 9
 
 
 REPORT         = 0x0A
@@ -93,8 +94,8 @@ def buildPacket(data, page, field, cmdType):
     crc_bytes = crc.to_bytes(2, byteorder='big')
     packet += crc_bytes
     packet.append(0xCC)
-    # print('SENT: ', end='')
-    # printPacket(packet)
+    print('SENT: ', end='')
+    printPacket(packet)
     return packet
 
 
@@ -125,12 +126,20 @@ def laserPage(fieldValues):
     sendPacket(fieldsIndex, fieldValues, LASER_PAGE)
 
 
+def laserCalibPage(fieldValues):
+    fieldsIndex = {
+        'energy': 2, 'pulseWidth': 3,
+        'frequency': 3, 'ready-standby': 5
+    }
+    sendPacket(fieldsIndex, fieldValues, LASER_CALIB_PAGE)
+
+
 def settingsPage(fieldValues, cmdType):
     fieldsIndex = {
         'serial': 0, 'totalCounter': 1, 'pDate': 2,
         'LaserEnergy': 3, 'waveLength': 4, 'LaserBarType': 5,
         'DriverVersion': 6, 'controlVersion': 7, 'firmware': 8,
-        'monitor': 9, 'os': 10, 'gui': 11, 'rpi': 12
+        'monitor': 9, 'os': 10, 'gui': 11, 'rpi': 12, 'SpotSize': 13
     }
     sendPacket(fieldsIndex, fieldValues, SETTING_PAGE, cmdType)
 
@@ -179,6 +188,10 @@ def decodePacket(RECEIVED_DATA):
             elif RECEIVED_DATA[FIELD_INDEX] == 8:
                 firmware = RECEIVED_DATA[DATA_INDEX:-2].decode()
                 key, value = 'firmwareVesion', firmware
+
+            elif RECEIVED_DATA[FIELD_INDEX] == 13:
+                spotSize = RECEIVED_DATA[DATA_INDEX:-2].decode()
+                key, value = 'spotSize', spotSize
 
         elif RECEIVED_DATA[PAGE_INDEX] == HARDWARE_TEST_PAGE:
             if RECEIVED_DATA[FIELD_INDEX] in [0, 1, 2, 3, 4]:
@@ -235,7 +248,7 @@ def decodePacket(RECEIVED_DATA):
 
     elif RECEIVED_DATA[CMD_TYPE_INDEX] == WRITE:
 
-        if RECEIVED_DATA[PAGE_INDEX] in (LASER_PAGE, BODY_PART_PAGE):
+        if RECEIVED_DATA[PAGE_INDEX] in (LASER_PAGE, LASER_CALIB_PAGE, BODY_PART_PAGE):
             if RECEIVED_DATA[FIELD_INDEX] == 0:     
                 flags = sensors(RECEIVED_DATA)
                 key, value = 'sensorFlags', flags
@@ -301,6 +314,7 @@ class SerialTimer(QObject):
     mainControl      = pyqtSignal(str)
     firmwareVesion   = pyqtSignal(str)
     updateProgress   = pyqtSignal(str)
+    spotSize         = pyqtSignal(str)
     readCooling      = pyqtSignal()
     readEnergy       = pyqtSignal()
     readPulseWidht   = pyqtSignal()
@@ -371,7 +385,8 @@ class SerialTimer(QObject):
                             )
                             
                             if crc_r == crc_s:
-
+                                print('RECE: ', end='')
+                                printPacket(RECEIVED_DATA)
                                 key, value = decodePacket(RECEIVED_DATA)
                                 if key == 'sensorFlags':
                                     self.sensorFlags.emit(value)
@@ -392,6 +407,8 @@ class SerialTimer(QObject):
                                     self.laserWavelenght.emit(value)
                                 elif key == 'laserBarType':
                                     self.laserBarType.emit(value)
+                                elif key == 'spotSize':
+                                    self.spotSize.emit(value)
                                 elif key == 'driverVersion':
                                     self.driverVersion.emit(value)
                                 elif key == 'mainControl':
@@ -472,6 +489,7 @@ class SerialThread(QThread):
     mainControl      = pyqtSignal(str)
     firmwareVesion   = pyqtSignal(str)
     updateProgress   = pyqtSignal(str)
+    spotSize         = pyqtSignal(str)
     readCooling      = pyqtSignal()
     readEnergy       = pyqtSignal()
     readPulseWidht   = pyqtSignal()
@@ -541,8 +559,8 @@ class SerialThread(QThread):
                                 )
 
                                 if crc_r == crc_s:
-                                    # print('RECE: ', end='')
-                                    # printPacket(RECEIVED_DATA)
+                                    print('RECE: ', end='')
+                                    printPacket(RECEIVED_DATA)
                                     key, value = decodePacket(RECEIVED_DATA)
                                     if key == 'sensorFlags':
                                         self.sensorFlags.emit(value)
@@ -563,6 +581,8 @@ class SerialThread(QThread):
                                         self.laserWavelenght.emit(value)
                                     elif key == 'laserBarType':
                                         self.laserBarType.emit(value)
+                                    elif key == 'spotSize':
+                                        self.spotSize.emit(value)
                                     elif key == 'driverVersion':
                                         self.driverVersion.emit(value)
                                     elif key == 'mainControl':
