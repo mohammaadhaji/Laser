@@ -640,7 +640,7 @@ class MainWin(QMainWindow):
                 'frequency': self.frequency, 
                 'ready-standby': 'Ready' if self.ready else 'StandBy'
             } 
-        laserCalibPage(fields)
+        laserPage(fields)
         self.txtSpotSizeCalib.setText(self.configs['SpotSizeArea'])
         self.monitorSensorsTimer.start(500)
         self.monitorReceivingSensors.start(3000)
@@ -1647,7 +1647,7 @@ class MainWin(QMainWindow):
                         'energy': self.energy, 'pulseWidth': self.pulseWidth,
                         'frequency': self.frequency, 'ready-standby': 'Ready'
                     } 
-                    laserCalibPage(fields)
+                    laserPage(fields)
                 
                 self.btnStandby.setStyleSheet(READY_NOT_SELECTED)
                 self.btnStandByCalib.setStyleSheet(READY_NOT_SELECTED)
@@ -1663,7 +1663,7 @@ class MainWin(QMainWindow):
             if self.stackedWidget.currentIndex() == index:
                 laserPage({'ready-standby': 'StandBy'})
             else:
-                laserCalibPage({'ready-standby': 'StandBy'})
+                laserPage({'ready-standby': 'StandBy'})
             self.btnStandby.setStyleSheet(READY_SELECTED)
             self.btnStandByCalib.setStyleSheet(READY_SELECTED)
             self.btnReady.setStyleSheet(READY_NOT_SELECTED)
@@ -2520,6 +2520,7 @@ class MainWin(QMainWindow):
             self.currentCounter = 0
             self.lblCounterValue.setText('0')
             self.saveConfigs()
+            self.resetCalibrationParameters()
         except Exception as e:
             log('Function: endSession()', str(e) + '\n')
 
@@ -2527,6 +2528,17 @@ class MainWin(QMainWindow):
             self.stackedWidget.setCurrentWidget(self.mainPage)
             self.stackedWidgetLaser.setCurrentIndex(0)
             self.btnBackLaser.setVisible(False)
+
+    def resetCalibrationParameters(self):
+        self.sliderEnergyCalib.setValue(2)
+        self.lblEnergyValueCalib.setText('20')
+        self.sliderPulseWidthCalib.setValue(20)
+        self.lblPulseWidthValueCalib.setText('20')
+        self.sliderFrequencyCalib.setValue(1)
+        self.lblFrequencyValueCalib.setText('1')
+        self.energy = 20
+        self.pulseWidth = 20
+        self.frequency = 1
 
     def setLabel(self, text, label, timer, sec=5):
         label.setText(text)
