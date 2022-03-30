@@ -1167,23 +1167,6 @@ class MainWin(QMainWindow):
         index = self.hwStackedWidget.indexOf(self.systemLogPage)
         if self.hwStackedWidget.currentIndex() == index:
             return
-
-        index = self.hwStackedWidget.indexOf(self.calibrationPage)
-        if self.hwStackedWidget.currentIndex() == index:
-            self.configs['SpotSizeArea'] = self.txtSpotSizeCalib.text()
-            self.txtSpotSize.setText(self.configs['SpotSizeArea'])
-            if not self.saveConfigs():
-                self.setLabel(
-                    TEXT['saveConfigError'][self.langIndex], 
-                    self.lblSaveHw, 
-                    self.hwUpdatedLabelTimer, 4
-                )
-            else:
-                self.setLabel(
-                        TEXT['saveHw'][self.langIndex], 
-                        self.lblSaveHw, 
-                        self.hwUpdatedLabelTimer, 2
-                    )
  
         index = self.hwStackedWidget.indexOf(self.lockSettingsPage)
         if self.hwStackedWidget.currentIndex() == index:

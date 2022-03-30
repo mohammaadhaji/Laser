@@ -189,8 +189,8 @@ QScrollBar:vertical {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1642</width>
-             <height>910</height>
+             <width>100</width>
+             <height>30</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -6880,7 +6880,7 @@ QSlider::handle:horizontal:pressed {
                              </widget>
                             </item>
                             <item row="0" column="1">
-                             <widget class="LineEdit" name="txtSpotSizeCalib">
+                             <widget class="QLineEdit" name="txtSpotSizeCalib">
                               <property name="font">
                                <font>
                                 <family>Arial</family>
@@ -6889,6 +6889,9 @@ QSlider::handle:horizontal:pressed {
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignCenter</set>
+                              </property>
+                              <property name="readOnly">
+                               <bool>true</bool>
                               </property>
                              </widget>
                             </item>
@@ -7024,49 +7027,6 @@ border: 1px solid white;
                              <number>0</number>
                             </property>
                             <item>
-                             <widget class="QPushButton" name="btnReadyCalib">
-                              <property name="font">
-                               <font>
-                                <family>Arial</family>
-                                <pointsize>20</pointsize>
-                               </font>
-                              </property>
-                              <property name="styleSheet">
-                               <string notr="true">QPushButton {
-background-color: rgb(213, 213, 213);
-color: rgb(0, 0, 0);
-min-width: 170px;
-min-height: 80px;
-border-radius: 15px;
-border: 10px solid rgb(213, 213, 213);
-outline:0;
-}
-
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-border: 10px solid rgb(0, 170, 255);
-}
-</string>
-                              </property>
-                              <property name="text">
-                               <string>Ready</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item>
-                             <spacer name="horizontalSpacer_78">
-                              <property name="orientation">
-                               <enum>Qt::Horizontal</enum>
-                              </property>
-                              <property name="sizeHint" stdset="0">
-                               <size>
-                                <width>40</width>
-                                <height>20</height>
-                               </size>
-                              </property>
-                             </spacer>
-                            </item>
-                            <item>
                              <widget class="QPushButton" name="btnStandByCalib">
                               <property name="font">
                                <font>
@@ -7093,6 +7053,49 @@ border: 10px solid red;
                               </property>
                               <property name="text">
                                <string>Standby</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <spacer name="horizontalSpacer_78">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item>
+                             <widget class="QPushButton" name="btnReadyCalib">
+                              <property name="font">
+                               <font>
+                                <family>Arial</family>
+                                <pointsize>20</pointsize>
+                               </font>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">QPushButton {
+background-color: rgb(213, 213, 213);
+color: rgb(0, 0, 0);
+min-width: 170px;
+min-height: 80px;
+border-radius: 15px;
+border: 10px solid rgb(213, 213, 213);
+outline:0;
+}
+
+QPushButton:pressed{
+background-color: rgb(0, 170, 255);
+border: 10px solid rgb(0, 170, 255);
+}
+</string>
+                              </property>
+                              <property name="text">
+                               <string>Ready</string>
                               </property>
                              </widget>
                             </item>
@@ -8302,8 +8305,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>1618</width>
-               <height>756</height>
+               <width>312</width>
+               <height>413</height>
               </rect>
              </property>
              <property name="styleSheet">
@@ -11991,7 +11994,7 @@ background-color: rgb(0, 170, 255);
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1556</width>
+                   <width>1341</width>
                    <height>803</height>
                   </rect>
                  </property>
