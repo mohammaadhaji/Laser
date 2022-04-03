@@ -51,7 +51,7 @@ Enable serial port And auto login.
 Enter following command:
 $ sudo raspi-config
 A- Interface Options >>> Serial Port >>> 1- serial login shell: No
-                                      2- serial port hardware: Yes
+                                         2- serial port hardware: Yes
 
 B- System Options >>> Boot >>> select Console Autologin.
 

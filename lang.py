@@ -233,5 +233,6 @@ TEXT = {
     'btnPassPower': ['Pass', 'قبول'], 
     'btnFailPower': ['Fail', 'مردود'],
     'SensorCalibError': ['Sensor Error', 'خطای سنسور'],
-    'saveCoeffError': ['Error saving coefficient.', 'خطای ذخیره ضریب']
+    'saveCoeffError': ['Error saving coefficient.', 'خطای ذخیره ضریب'],
+    'CoeffError': ['Invalid input', 'ورودی نامعتبر']
 }
