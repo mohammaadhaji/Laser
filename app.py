@@ -17,11 +17,37 @@ mixer.music.load(SHOT_SOUND)
 mixer.music.set_volume(0.5)
 
 
+class QtSchemeHandler(QWebEngineUrlSchemeHandler):
+    def requestStarted(self, job):
+        request_url = job.requestUrl()
+        request_path = request_url.path()
+        file = QFile('.' + request_path)
+        file.setParent(job)
+        job.destroyed.connect(file.deleteLater)
+        file_info = QFileInfo(file)
+        mime_database = QMimeDatabase()
+        mime_type = mime_database.mimeTypeForFile(file_info)
+        job.reply(mime_type.name().encode(), file)
+
+
 class MainWin(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWin, self).__init__(*args, **kwargs)
         uic.loadUi(APP_UI, self)
         self.setupUi()
+        self.browser = WebEngineView(self.mainPage)
+        self.scheme_handler = QtSchemeHandler()
+        self.browser.page().setBackgroundColor(Qt.GlobalColor.transparent)
+        self.browser.page().profile().installUrlSchemeHandler(
+            b"qt", self.scheme_handler
+        )
+        url = QUrl("qt://main")
+        url.setPath("/index.html")
+        self.objIsLoaded = False
+        self.browser.load(url)
+        self.browser.setGeometry(100, 200, 700, 700)
+        
+        # self.threejsLayout.addWidget(self.browser)
         
     def setupUi(self):
         # self.setCursor(Qt.BlankCursor)
@@ -32,8 +58,8 @@ class MainWin(QMainWindow):
         self.langIndex = 0
         icon = QPixmap(SELECTED_LANG_ICON)
         self.lblEnSelected.setPixmap(icon.scaled(70, 70))
-        icon = QPixmap('ui/images/laserLogo.png')
-        self.label.setPixmap(icon)
+        # icon = QPixmap('ui/images/laserLogo.png')
+        # self.label.setPixmap(icon)
         self.serialC = SerialTimer() if RPI_VERSION == '3' else SerialThread()
         self.sensorFlags = [True, True, True, False, False, True]
         self.sensors = Sensors(
@@ -92,7 +118,7 @@ class MainWin(QMainWindow):
         self.keyboardSound.set_volume(0.5)
         self.lblSplash.setPixmap(QPixmap(SPLASH).scaled(1920,1080))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
-        self.lblSplash.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
+        self.lblSplash.clicked.connect(self.splashClicked)
         font_db = QFontDatabase()
         font_id = font_db.addApplicationFont(IRAN_NASTALIQ)
         font_id = font_db.addApplicationFont(IRANIAN_SANS)
@@ -177,6 +203,11 @@ class MainWin(QMainWindow):
         self.listWidgetVideos.setGraphicsEffect(op)
         mixer.Channel(0).set_volume(0.5)
         mixer.Channel(0).play(mixer.Sound(STARTUP_SOUND))
+
+    def splashClicked(self):
+        if self.browser.isLoaded:
+            self.stackedWidget.setCurrentWidget(self.mainPage) 
+    
 
     def setTouchSound(self, active):
         self.configs['touchSound'] = active
@@ -646,9 +677,17 @@ class MainWin(QMainWindow):
         self.monitorReceivingSensors.start(3000)
 
     def applyCoeffs(self):
-        readValue = self.txtReadValue.text()
-        readValue = float(readValue) if readValue else self.sliderEnergyCalib.value() * 10
-        energy = self.sliderEnergyCalib.value() * 10
+        try:
+            readValue = self.txtReadValue.text()
+            readValue = float(readValue) if readValue else self.sliderEnergyCalib.value() * 10
+            energy = self.sliderEnergyCalib.value() * 10
+        except Exception:
+            self.setLabel(
+                TEXT['CoeffError'][self.langIndex], 
+                self.lblCalcCoeff, 
+                self.coeffLabelTimer, 4
+            )
+            return
 
         if energy <= 30:
             self.configs['EnergyCoeffs'][0] = energy / readValue
@@ -2691,6 +2730,7 @@ class MainWin(QMainWindow):
         textCursor.setPosition(self.findIndex + len(findText), QTextCursor.KeepAnchor)
         self.txtLogs.setTextCursor(textCursor)
 
+
 class LoadingWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
@@ -2706,6 +2746,10 @@ class LoadingWindow(QMainWindow):
         self.main.showFullScreen()
         self.close()
 
+
+scheme = QWebEngineUrlScheme(b"qt")
+scheme.setFlags(QWebEngineUrlScheme.CorsEnabled)
+QWebEngineUrlScheme.registerScheme(scheme)
 app = QApplication(sys.argv)
 loadingWin = LoadingWindow()
 sys.exit(app.exec_())

@@ -1,7 +1,6 @@
-from logging import shutdown
-from multiprocessing import Lock
-from re import L
 from PyQt5.QtMultimediaWidgets import QVideoWidget
+from PyQt5.QtWebEngineCore import *
+from PyQt5.QtWebEngineWidgets import *
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtMultimedia import *
 from PyQt5.QtWidgets import *
@@ -12,6 +11,16 @@ from communication import HARDWARE_TEST_PAGE, READ, sendPacket
 from styles import *
 from paths import *
 import math
+
+class WebEngineView(QWebEngineView):
+    def __init__(self, parent):
+        QWebEngineView.__init__(self, parent)
+        self.isLoaded = False
+        self.loadFinished.connect(self.setIsLoaded)
+
+    def setIsLoaded(self):
+        self.isLoaded = True
+
 
 
 class PowerOption(QFrame):
@@ -243,8 +252,7 @@ class DriverCurrent:
         self.isListening = False
         self.btnStart.setEnabled(True)
         self.btnStart.setIcon(self.icon)
-        
-        
+                
 
 class Sensors:
     def __init__(

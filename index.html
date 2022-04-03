@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three js earth</title>
+    <style>
+        body{
+            margin: 0;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0);
+        }
+    </style>
+</head>
+
+<body>
+    
+    <canvas class="webgl"></canvas>
+    
+    <script type="module" src="./three.js"></script>
+    <script type="module" src="./OBJLoader.js"></script>
+    <script type="module">
+
+        const canvas = document.querySelector('.webgl');
+
+        // scene setup
+        const scene = new THREE.Scene();
+
+        // camera setup
+        const fov = 60;
+        const aspect = window.innerWidth / window.innerHeight;
+        const near = 0.1;
+        const far = 100;
+        const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        camera.position.set(0, 0, 15)
+        scene.add(camera);
+ 
+        // renderer setup
+        const renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true, alpha: true});
+
+        // 3D Object
+        const geometry = new THREE.BoxGeometry(5, 5, 5);
+        const material = new THREE.MeshPhongMaterial({color: 0x00ff00});
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        
+        const loader = new THREE.OBJLoader();
+        // var sat;
+        // loader.load('./Satellite.obj',function(object) {
+        //     sat = object;
+        //     scene.add( object );
+        //     render();
+        // });
+
+        // point light
+        const pointLight = new THREE.PointLight(0xffffff, 1)
+        pointLight.position.set(0, 0, 5);
+        scene.add(pointLight);
+
+        const pointLight1 = new THREE.PointLight(0xffffff, 1)
+        pointLight1.position.set(0, 5, 0);
+        scene.add(pointLight1);
+
+        // handling resizing
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            render();
+        }, false);
+
+        // main loop
+        function render(time) {
+            cube.rotation.x -= 0.005;
+            cube.rotation.y -= 0.005;
+            renderer.render(scene, camera);
+            requestAnimationFrame(render);
+        }
+
+    </script>
+</body>
+
+</html>
