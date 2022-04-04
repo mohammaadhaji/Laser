@@ -60,7 +60,7 @@ QScrollBar:vertical {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>6</number>
+       <number>11</number>
       </property>
       <widget class="QWidget" name="adssPage">
        <property name="styleSheet">
@@ -189,8 +189,8 @@ QScrollBar:vertical {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>100</width>
-             <height>30</height>
+             <width>1642</width>
+             <height>910</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -6541,27 +6541,6 @@ color:rgb(188, 188, 188);
                              <height>90</height>
                             </size>
                            </property>
-                           <property name="styleSheet">
-                            <string notr="true">QSlider::groove:horizontal {
-    border-radius: 1px;
-    height: 3px;
-    margin: 0px;
-    background-color: white;
-}
-
-QSlider::handle:horizontal {
-    background-color: rgb(85, 170, 255);
-    border: none;
-    height: 80px;
-    width: 80px;
-    border-radius: 40px;
-    margin: -40px 0;
-    padding: -40px 0px;
-}
-QSlider::handle:horizontal:pressed {
-    background-color: rgb(65, 255, 195);
-}</string>
-                           </property>
                            <property name="minimum">
                             <number>2</number>
                            </property>
@@ -6689,27 +6668,6 @@ QSlider::handle:horizontal:pressed {
                              <height>90</height>
                             </size>
                            </property>
-                           <property name="styleSheet">
-                            <string notr="true">QSlider::groove:horizontal {
-    border-radius: 1px;
-    height: 3px;
-    margin: 0px;
-    background-color: white;
-}
-
-QSlider::handle:horizontal {
-    background-color: rgb(85, 170, 255);
-    border: none;
-    height: 80px;
-    width: 80px;
-    border-radius: 40px;
-    margin: -40px 0;
-    padding: -40px 0px;
-}
-QSlider::handle:horizontal:pressed {
-    background-color: rgb(65, 255, 195);
-}</string>
-                           </property>
                            <property name="minimum">
                             <number>20</number>
                            </property>
@@ -6809,27 +6767,6 @@ QSlider::handle:horizontal:pressed {
                              <width>0</width>
                              <height>90</height>
                             </size>
-                           </property>
-                           <property name="styleSheet">
-                            <string notr="true">QSlider::groove:horizontal {
-    border-radius: 1px;
-    height: 3px;
-    margin: 0px;
-    background-color: white;
-}
-
-QSlider::handle:horizontal {
-    background-color: rgb(85, 170, 255);
-    border: none;
-    height: 80px;
-    width: 80px;
-    border-radius: 40px;
-    margin: -40px 0;
-    padding: -40px 0px;
-}
-QSlider::handle:horizontal:pressed {
-    background-color: rgb(65, 255, 195);
-}</string>
                            </property>
                            <property name="minimum">
                             <number>1</number>
@@ -8305,8 +8242,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>312</width>
-               <height>413</height>
+               <width>1618</width>
+               <height>756</height>
               </rect>
              </property>
              <property name="styleSheet">
@@ -10833,7 +10770,7 @@ border: 1px solid white;
              <string notr="true">background: transparent;</string>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="bodyPartPage">
              <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -11190,7 +11127,18 @@ border: 10px solid rgb(255, 255, 255);
                   <item>
                    <widget class="StackedWidget" name="stackedWidgetSex">
                     <property name="styleSheet">
-                     <string notr="true"/>
+                     <string notr="true">QPushButton {
+background-color: rgb(213, 213, 213);
+color: rgb(0, 0, 0);
+
+border-radius: 15px;
+
+outline:0;
+}
+QPushButton:pressed{
+background-color: rgb(0, 170, 255);
+
+}</string>
                     </property>
                     <property name="currentIndex">
                      <number>0</number>
@@ -11237,20 +11185,6 @@ border: 10px solid rgb(255, 255, 255);
                           </item>
                           <item row="1" column="2">
                            <widget class="QPushButton" name="btnFArmpit">
-                            <property name="styleSheet">
-                             <string notr="true">QPushButton {
-background-color: rgb(213, 213, 213);
-color: rgb(0, 0, 0);
-
-border-radius: 15px;
-
-outline:0;
-}
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-
-}</string>
-                            </property>
                             <property name="text">
                              <string/>
                             </property>
@@ -11284,20 +11218,6 @@ background-color: rgb(0, 170, 255);
                           </item>
                           <item row="4" column="0">
                            <widget class="QPushButton" name="btnFBody">
-                            <property name="styleSheet">
-                             <string notr="true">QPushButton {
-background-color: rgb(213, 213, 213);
-color: rgb(0, 0, 0);
-
-border-radius: 15px;
-
-outline:0;
-}
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-
-}</string>
-                            </property>
                             <property name="text">
                              <string/>
                             </property>
@@ -11316,18 +11236,7 @@ background-color: rgb(0, 170, 255);
                           <item row="1" column="0">
                            <widget class="QPushButton" name="btnFFace">
                             <property name="styleSheet">
-                             <string notr="true">QPushButton {
-background-color: rgb(213, 213, 213);
-color: rgb(0, 0, 0);
-
-border-radius: 15px;
-
-outline:0;
-}
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-
-}</string>
+                             <string notr="true"/>
                             </property>
                             <property name="text">
                              <string/>
@@ -11394,20 +11303,6 @@ background-color: rgb(0, 170, 255);
                           </item>
                           <item row="1" column="4">
                            <widget class="QPushButton" name="btnFArm">
-                            <property name="styleSheet">
-                             <string notr="true">QPushButton {
-background-color: rgb(213, 213, 213);
-color: rgb(0, 0, 0);
-
-border-radius: 15px;
-
-outline:0;
-}
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-
-}</string>
-                            </property>
                             <property name="text">
                              <string/>
                             </property>
@@ -11425,20 +11320,6 @@ background-color: rgb(0, 170, 255);
                           </item>
                           <item row="4" column="2">
                            <widget class="QPushButton" name="btnFBikini">
-                            <property name="styleSheet">
-                             <string notr="true">QPushButton {
-background-color: rgb(213, 213, 213);
-color: rgb(0, 0, 0);
-
-border-radius: 15px;
-
-outline:0;
-}
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-
-}</string>
-                            </property>
                             <property name="text">
                              <string/>
                             </property>
@@ -11456,20 +11337,6 @@ background-color: rgb(0, 170, 255);
                           </item>
                           <item row="4" column="4">
                            <widget class="QPushButton" name="btnFLeg">
-                            <property name="styleSheet">
-                             <string notr="true">QPushButton {
-background-color: rgb(213, 213, 213);
-color: rgb(0, 0, 0);
-
-border-radius: 15px;
-
-outline:0;
-}
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-
-}</string>
-                            </property>
                             <property name="text">
                              <string/>
                             </property>
@@ -11627,20 +11494,6 @@ background-color: rgb(0, 170, 255);
                           </item>
                           <item row="4" column="4">
                            <widget class="QPushButton" name="btnMLeg">
-                            <property name="styleSheet">
-                             <string notr="true">QPushButton {
-background-color: rgb(213, 213, 213);
-color: rgb(0, 0, 0);
-
-border-radius: 15px;
-
-outline:0;
-}
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-
-}</string>
-                            </property>
                             <property name="text">
                              <string/>
                             </property>
@@ -11658,20 +11511,6 @@ background-color: rgb(0, 170, 255);
                           </item>
                           <item row="1" column="4">
                            <widget class="QPushButton" name="btnMArm">
-                            <property name="styleSheet">
-                             <string notr="true">QPushButton {
-background-color: rgb(213, 213, 213);
-color: rgb(0, 0, 0);
-
-border-radius: 15px;
-
-outline:0;
-}
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-
-}</string>
-                            </property>
                             <property name="text">
                              <string/>
                             </property>
@@ -11731,20 +11570,6 @@ background-color: rgb(0, 170, 255);
                           </item>
                           <item row="1" column="2">
                            <widget class="QPushButton" name="btnMArmpit">
-                            <property name="styleSheet">
-                             <string notr="true">QPushButton {
-background-color: rgb(213, 213, 213);
-color: rgb(0, 0, 0);
-
-border-radius: 15px;
-
-outline:0;
-}
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-
-}</string>
-                            </property>
                             <property name="text">
                              <string/>
                             </property>
@@ -11762,20 +11587,6 @@ background-color: rgb(0, 170, 255);
                           </item>
                           <item row="1" column="0">
                            <widget class="QPushButton" name="btnMFace">
-                            <property name="styleSheet">
-                             <string notr="true">QPushButton {
-background-color: rgb(213, 213, 213);
-color: rgb(0, 0, 0);
-
-border-radius: 15px;
-
-outline:0;
-}
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-
-}</string>
-                            </property>
                             <property name="text">
                              <string/>
                             </property>
@@ -11793,20 +11604,6 @@ background-color: rgb(0, 170, 255);
                           </item>
                           <item row="4" column="2">
                            <widget class="QPushButton" name="btnMBikini">
-                            <property name="styleSheet">
-                             <string notr="true">QPushButton {
-background-color: rgb(213, 213, 213);
-color: rgb(0, 0, 0);
-
-border-radius: 15px;
-
-outline:0;
-}
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-
-}</string>
-                            </property>
                             <property name="text">
                              <string/>
                             </property>
@@ -11856,20 +11653,6 @@ background-color: rgb(0, 170, 255);
                           </item>
                           <item row="4" column="0">
                            <widget class="QPushButton" name="btnMBody">
-                            <property name="styleSheet">
-                             <string notr="true">QPushButton {
-background-color: rgb(213, 213, 213);
-color: rgb(0, 0, 0);
-
-border-radius: 15px;
-
-outline:0;
-}
-QPushButton:pressed{
-background-color: rgb(0, 170, 255);
-
-}</string>
-                            </property>
                             <property name="text">
                              <string/>
                             </property>
@@ -11993,8 +11776,8 @@ background-color: rgb(0, 170, 255);
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
-                   <width>1341</width>
+                   <y>-71</y>
+                   <width>1556</width>
                    <height>803</height>
                   </rect>
                  </property>
@@ -12617,27 +12400,6 @@ margin-right:20px;
                                   <height>100</height>
                                  </size>
                                 </property>
-                                <property name="styleSheet">
-                                 <string notr="true">QSlider::groove:horizontal {
-    border-radius: 1px;
-    height: 3px;
-    margin: 0px;
-    background-color: white;
-}
-
-QSlider::handle:horizontal {
-    background-color: rgb(85, 170, 255);
-    border: none;
-    height: 80px;
-    width: 80px;
-    border-radius: 40px;
-    margin: -40px 0;
-    padding: -40px 0px;
-}
-QSlider::handle:horizontal:pressed {
-    background-color: rgb(65, 255, 195);
-}</string>
-                                </property>
                                 <property name="minimum">
                                  <number>20</number>
                                 </property>
@@ -12824,27 +12586,6 @@ margin-right:20px;
                                   <height>100</height>
                                  </size>
                                 </property>
-                                <property name="styleSheet">
-                                 <string notr="true">QSlider::groove:horizontal {
-    border-radius: 1px;
-    height: 3px;
-    margin: 0px;
-    background-color: white;
-}
-
-QSlider::handle:horizontal {
-    background-color: rgb(85, 170, 255);
-    border: none;
-    height: 80px;
-    width: 80px;
-    border-radius: 40px;
-    margin: -40px 0;
-    padding: -40px 0px;
-}
-QSlider::handle:horizontal:pressed {
-    background-color: rgb(65, 255, 195);
-}</string>
-                                </property>
                                 <property name="minimum">
                                  <number>20</number>
                                 </property>
@@ -13010,27 +12751,6 @@ margin-right:20px;
                                   <height>100</height>
                                  </size>
                                 </property>
-                                <property name="styleSheet">
-                                 <string notr="true">QSlider::groove:horizontal {
-    border-radius: 1px;
-    height: 3px;
-    margin: 0px;
-    background-color: white;
-}
-
-QSlider::handle:horizontal {
-    background-color: rgb(85, 170, 255);
-    border: none;
-    height: 80px;
-    width: 80px;
-    border-radius: 40px;
-    margin: -40px 0;
-    padding: -40px 0px;
-}
-QSlider::handle:horizontal:pressed {
-    background-color: rgb(65, 255, 195);
-}</string>
-                                </property>
                                 <property name="minimum">
                                  <number>1</number>
                                 </property>
@@ -13084,7 +12804,7 @@ margin-left:20px;
                            </spacer>
                           </item>
                           <item>
-                           <layout class="QHBoxLayout" name="skinGradeLayout" stretch="0,3,0,0,0,0">
+                           <layout class="QHBoxLayout" name="skinGradeLayout" stretch="0,0,0,0,0,0">
                             <property name="topMargin">
                              <number>0</number>
                             </property>

@@ -1,7 +1,27 @@
 import jdatetime, math, sys, time, os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 from pygame import mixer
-from PyQt5 import uic
+from PyQt5.QtMultimedia import (
+    QMediaPlayer,
+    QMediaPlaylist,
+    QMediaContent,
+)
+from PyQt5.QtWidgets import (QMainWindow,
+    QApplication,
+    QTableWidget,
+    QShortcut,
+    QGraphicsOpacityEffect,
+    QHeaderView
+)
+from PyQt5.QtWebEngineCore import (
+    QWebEngineUrlSchemeHandler,
+    QWebEngineUrlScheme
+)
+from PyQt5.QtGui import (
+    QKeySequence,
+    QRegExpValidator,
+    QTextCursor
+)
 from communication import *
 from promotions import *
 from utility import *
@@ -12,6 +32,7 @@ from user import *
 from lock import *
 from itertools import chain
 from pathlib import Path
+from interface import Ui_MainWindow
 mixer.init(buffer=2048)
 mixer.music.load(SHOT_SOUND)
 mixer.music.set_volume(0.5)
@@ -30,11 +51,11 @@ class QtSchemeHandler(QWebEngineUrlSchemeHandler):
         job.reply(mime_type.name().encode(), file)
 
 
-class MainWin(QMainWindow):
+class MainWin(QMainWindow, Ui_MainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWin, self).__init__(*args, **kwargs)
-        uic.loadUi(APP_UI, self)
-        self.setupUi()
+        self.setupUi(self)
+        self.setupUi2()
         self.browser = WebEngineView(self.mainPage)
         self.scheme_handler = QtSchemeHandler()
         self.browser.page().setBackgroundColor(Qt.GlobalColor.transparent)
@@ -47,9 +68,7 @@ class MainWin(QMainWindow):
         self.browser.load(url)
         self.browser.setGeometry(100, 200, 700, 700)
         
-        # self.threejsLayout.addWidget(self.browser)
-        
-    def setupUi(self):
+    def setupUi2(self):
         # self.setCursor(Qt.BlankCursor)
         self.configs = loadConfigs()
         self.usersData = loadUsers()
@@ -2588,7 +2607,7 @@ class MainWin(QMainWindow):
             self.currentUserFrame.setLayoutDirection(Qt.RightToLeft)
             self.resetCounterMsgFrame.setLayoutDirection(Qt.RightToLeft)
             self.calibFrame0.setLayoutDirection(Qt.RightToLeft)
-            self.lblReadyCalibError.setAlignment(QtCore.Qt.AlignCenter)
+            self.lblReadyCalibError.setAlignment(Qt.AlignCenter)
             icon = QPixmap(SELECTED_LANG_ICON)
             self.lblFaSelected.setPixmap(icon.scaled(70, 70))
             self.lblEnSelected.clear()
@@ -2610,7 +2629,7 @@ class MainWin(QMainWindow):
             self.currentUserFrame.setLayoutDirection(Qt.LeftToRight)
             self.resetCounterMsgFrame.setLayoutDirection(Qt.LeftToRight)
             self.calibFrame0.setLayoutDirection(Qt.LeftToRight)
-            self.lblReadyCalibError.setAlignment(QtCore.Qt.AlignCenter)
+            self.lblReadyCalibError.setAlignment(Qt.AlignCenter)
             icon = QPixmap(SELECTED_LANG_ICON)
             self.lblEnSelected.setPixmap(icon.scaled(70, 70))
             self.lblFaSelected.clear()

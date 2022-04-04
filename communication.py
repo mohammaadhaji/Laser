@@ -1,9 +1,13 @@
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from crccheck.crc import Crc16Xmodem
 from serial import Serial
+from paths import CURRENT_FILE_DIR
+from pathlib import Path
+from utility import (
+    log, calcMD5, int_to_bytes
+)
 import jdatetime, platform
-from os.path import isfile, isdir 
-from utility import *
+import os, subprocess
 import shutil, json
 try:
     import RPi.GPIO as GPIO
@@ -637,13 +641,13 @@ class SerialThread(QThread):
 
 def updateCleanup(mountPoint, laserD=''):
     try:
-        if isdir(laserD):
+        if os.path.isdir(laserD):
             shutil.rmtree(laserD)
 
         for mp in mountPoint.values():
             os.system(f'umount {mp}')
 
-        if isdir(MOUNT_DIR):
+        if os.path.isdir(MOUNT_DIR):
             shutil.rmtree(MOUNT_DIR)
         
     except Exception as e:
@@ -683,7 +687,7 @@ class UpdateFirmware(QThread):
                 log('Update Firmware', err + '\n')
                 return
 
-            if not isdir(MOUNT_DIR):    
+            if not os.path.isdir(MOUNT_DIR):    
                 os.mkdir(MOUNT_DIR)
 
             partitionsDir = {}
@@ -692,7 +696,7 @@ class UpdateFirmware(QThread):
 
             for part in partitionsDir:
                 if partitionsDir[part] == None:
-                    if not isdir(f'{MOUNT_DIR}/{part}'):
+                    if not os.path.isdir(f'{MOUNT_DIR}/{part}'):
                         os.mkdir(f'{MOUNT_DIR}/{part}')
                     r = subprocess.call(
                         f'mount /dev/{part} {MOUNT_DIR}/{part}',
@@ -705,7 +709,7 @@ class UpdateFirmware(QThread):
             laserDir = ''
             laserUnpackDir = ''
             for dir in partitionsDir.values():
-                if isfile(f'{dir}/{SOURCE_ZIP}'):
+                if os.path.isfile(f'{dir}/{SOURCE_ZIP}'):
                     laserFound = True
                     laserTarDir = f'{dir}/{SOURCE_ZIP}'
                     laserDir = str(Path(laserTarDir).with_suffix(''))
@@ -719,13 +723,13 @@ class UpdateFirmware(QThread):
                 return
 
             
-            if isdir(laserDir):
+            if os.path.isdir(laserDir):
                 shutil.rmtree(laserDir)
 
             shutil.unpack_archive(laserTarDir, laserUnpackDir)
 
             microUpdate = False
-            if isfile(f'{laserDir}/{MICRO_SOURCE}'):
+            if os.path.isfile(f'{laserDir}/{MICRO_SOURCE}'):
                 microUpdate = True
 
             if not microUpdate:

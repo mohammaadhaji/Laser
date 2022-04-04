@@ -1,12 +1,10 @@
-from distutils.command.config import config
-from uuid import getnode as get_mac
-from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QThread, pyqtSignal
 from paths import *
-from os.path import isfile, isdir
 import datetime, jdatetime
 import subprocess, platform, pickle, hashlib
 import random, uuid, os, json, shutil
+from uuid import getnode as get_mac
 
 
 
@@ -14,7 +12,7 @@ def log(title, info):
     time = str(jdatetime.datetime.now().strftime('[%Y-%m-%d %H:%M:%S]'))
     time += ' <' + title + '>\n'
     try:
-        if not isfile(LOGS_PATH):
+        if not os.path.isfile(LOGS_PATH):
             open(LOGS_PATH, 'w').close()
             EncryptDecrypt(LOGS_PATH, 15)
             
@@ -29,7 +27,7 @@ def log(title, info):
 
 RPI_MODEL = ''
 RPI_VERSION = ''
-if isfile('/proc/device-tree/model'):
+if os.path.isfile('/proc/device-tree/model'):
     file = open('/proc/device-tree/model', 'r')
     RPI_MODEL = file.read()
     RPI_VERSION = RPI_MODEL.split('Pi')[1][:2].strip()
@@ -48,7 +46,7 @@ else:
 
 def monitorInfo():
     info = ''
-    screen =  QtWidgets.QApplication.primaryScreen() 
+    screen =  QApplication.primaryScreen() 
     resolution = f'{screen.size().width()}x{screen.size().height()}'
     if platform.system() == 'Windows':
         info = 'Unknown'
@@ -112,7 +110,7 @@ def getDiff(date):
 
 def addExtenstion(file):
     files = os.listdir(TUTORIALS_DIR)
-    if isfile(join(TUTORIALS_DIR, '.gitignore')):
+    if os.path.isfile(join(TUTORIALS_DIR, '.gitignore')):
         files.remove('.gitignore')
     for f in files:
         path = os.path.join(TUTORIALS_DIR, f)
@@ -173,7 +171,7 @@ def EncryptDecrypt(filename, key):
     
 
 def loadConfigs():
-    if not isfile(CONFIG_FILE):
+    if not os.path.isfile(CONFIG_FILE):
         print("Config file not found.")
         exit(1)
     
@@ -302,7 +300,7 @@ def musicCleanup(mountPoint):
     try:
         for mp in mountPoint.values():
             os.system(f'umount {mp}')
-        if isdir(MOUNT_DIR):
+        if os.path.isdir(MOUNT_DIR):
             shutil.rmtree(MOUNT_DIR)
     except Exception as e:
         log('Read Music', str(e) + '\n')
@@ -345,13 +343,13 @@ class ReadMusics(QThread):
                 partitionsDir[part['name']] = part['mountpoint']
 
             MOUNT_DIR = '/media/musics'
-            if not isdir(MOUNT_DIR):
+            if not os.path.isdir(MOUNT_DIR):
                 os.mkdir(MOUNT_DIR)
 
 
             for part in partitionsDir:
                 if partitionsDir[part] == None:
-                    if not isdir(f'{MOUNT_DIR}/{part}'):
+                    if not os.path.isdir(f'{MOUNT_DIR}/{part}'):
                         os.mkdir(f'{MOUNT_DIR}/{part}')
                     r = subprocess.call(
                         f'mount /dev/{part} {MOUNT_DIR}/{part}',

@@ -1,10 +1,18 @@
 from PyQt5.QtMultimediaWidgets import QVideoWidget
-from PyQt5.QtWebEngineCore import *
-from PyQt5.QtWebEngineWidgets import *
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtMultimedia import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtWidgets import (
+    QFrame, QVBoxLayout, QHBoxLayout,
+    QLabel, QPushButton, QTextEdit,
+    QCheckBox, QSizePolicy, QSpacerItem,
+    QTableWidgetItem, QLineEdit, QWidget,
+    QSlider, QStackedWidget, QToolBox
+)
+from PyQt5.QtGui import (
+    QIcon, QPainter, QFont, QPolygon,
+    QPixmap, QMovie, QFontDatabase,
+    QPen, QColor, QRadialGradient,
+    QConicalGradient, QFontMetrics, QPolygonF
+)
 from PyQt5.QtCore import *
 from werkzeug.utils import cached_property
 from communication import HARDWARE_TEST_PAGE, READ, sendPacket
@@ -360,7 +368,7 @@ class Action(QWidget):
         self.btnInfo.clicked.connect(lambda: self.info.emit(self.number))
 
         self.chbDel = QCheckBox(self)
-        self.chbDel.setMinimumSize(QtCore.QSize(60, 60))
+        self.chbDel.setMinimumSize(QSize(60, 60))
         self.chbDel.setStyleSheet(CHECKBOX_DEL)
         self.chbDel.toggled.connect(lambda: self.delete.emit(self.number))
 
@@ -449,7 +457,7 @@ class ToggleButton(QCheckBox):
         self.animation.setDuration(200)
         self.stateChanged.connect(self.start_transition)
 
-    @QtCore.pyqtProperty(int)
+    @pyqtProperty(int)
     def circle_position(self):
         return self._circle_position
 
@@ -536,20 +544,20 @@ class DoubleSlider(QSlider):
         super(DoubleSlider, self).setValue(int(value * self._multi))
 
 
-class StackedWidget(QtWidgets.QStackedWidget):
+class StackedWidget(QStackedWidget):
     def __init__(self, parent=None):
         super(QStackedWidget, self).__init__(parent)
 
         self.fadeTransition = False
         self.slideTransition = False
-        self.transitionDirection = QtCore.Qt.Vertical
+        self.transitionDirection = Qt.Vertical
         self.transitionTime = 500
         self.fadeTime = 500
-        self.transitionEasingCurve = QtCore.QEasingCurve.OutBack
-        self.fadeEasingCurve = QtCore.QEasingCurve.Linear
+        self.transitionEasingCurve = QEasingCurve.OutBack
+        self.fadeEasingCurve = QEasingCurve.Linear
         self.currentWidget = 0
         self.nextWidget = 0
-        self._currentWidgetPosition = QtCore.QPoint(0, 0)
+        self._currentWidgetPosition = QPoint(0, 0)
         self.widgetActive = False
                             
     def setTransitionDirection(self, direction):
@@ -579,13 +587,13 @@ class StackedWidget(QtWidgets.QStackedWidget):
         else:
             raise Exception("setSlideTransition() only accepts boolean variables")
 
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def slideToPreviousWidget(self):
         currentWidgetIndex = self.currentIndex()
         if currentWidgetIndex > 0:
             self.slideToWidgetIndex(currentWidgetIndex - 1)
 
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def slideToNextWidget(self):
         currentWidgetIndex = self.currentIndex()
         if currentWidgetIndex < (self.count() - 1):
@@ -617,7 +625,7 @@ class StackedWidget(QtWidgets.QStackedWidget):
         offsetX, offsetY = self.frameRect().width(), self.frameRect().height()
         self.widget(_nextWidgetIndex).setGeometry(self.frameRect())
 
-        if not self.transitionDirection == QtCore.Qt.Horizontal:
+        if not self.transitionDirection == Qt.Horizontal:
             if _currentWidgetIndex < _nextWidgetIndex:
                 offsetX, offsetY = 0, -offsetY
             else:
@@ -632,12 +640,12 @@ class StackedWidget(QtWidgets.QStackedWidget):
         currentWidgetPosition = self.widget(_currentWidgetIndex).pos()
         self._currentWidgetPosition = currentWidgetPosition
 
-        offset = QtCore.QPoint(offsetX, offsetY)
+        offset = QPoint(offsetX, offsetY)
         self.widget(_nextWidgetIndex).move(nextWidgetPosition - offset)
         self.widget(_nextWidgetIndex).show()
         self.widget(_nextWidgetIndex).raise_()
 
-        anim_group = QtCore.QParallelAnimationGroup(
+        anim_group = QParallelAnimationGroup(
             self, finished=self.animationDoneSlot
         )
 
@@ -646,7 +654,7 @@ class StackedWidget(QtWidgets.QStackedWidget):
             (currentWidgetPosition, nextWidgetPosition - offset), 
             (currentWidgetPosition + offset, nextWidgetPosition)
         ):
-            animation = QtCore.QPropertyAnimation(
+            animation = QPropertyAnimation(
                 self.widget(index),
                 b"pos",
                 duration=self.transitionTime,
@@ -660,19 +668,19 @@ class StackedWidget(QtWidgets.QStackedWidget):
         self.currentWidget = _currentWidgetIndex
 
         self.widgetActive = True
-        anim_group.start(QtCore.QAbstractAnimation.DeleteWhenStopped)
+        anim_group.start(QAbstractAnimation.DeleteWhenStopped)
 
         if self.fadeTransition:
             FadeWidgetTransition(self, self.widget(_currentWidgetIndex), self.widget(_nextWidgetIndex))
 
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def animationDoneSlot(self):
         self.setCurrentIndex(self.nextWidget)
         self.widget(self.currentWidget).hide()
         self.widget(self.currentWidget).move(self._currentWidgetPosition)
         self.widgetActive = False
 
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def setCurrentWidget(self, widget):
         currentIndex = self.currentIndex()
         nextIndex = self.indexOf(widget)
@@ -1258,8 +1266,8 @@ class AnalogGaugeWidget(QWidget):
         recursive_set(self)
  
 
-class ToolBoxPage(QtCore.QObject):
-    destroyed = QtCore.pyqtSignal()
+class ToolBoxPage(QObject):
+    destroyed = pyqtSignal()
     def __init__(self, button, scrollArea):
         super().__init__()
         self.button = button
@@ -1272,15 +1280,15 @@ class ToolBoxPage(QtCore.QObject):
         self.scrollArea.setMaximumHeight(self.scrollArea.height() - spacing)
         if not self.scrollArea.verticalScrollBar().isVisible():
             self.scrollArea.setVerticalScrollBarPolicy(
-                QtCore.Qt.ScrollBarAlwaysOff)
+                Qt.ScrollBarAlwaysOff)
 
     def beginShow(self, targetHeight):
         if self.scrollArea.widget().minimumSizeHint().height() <= targetHeight:
             self.scrollArea.setVerticalScrollBarPolicy(
-                QtCore.Qt.ScrollBarAlwaysOff)
+                Qt.ScrollBarAlwaysOff)
         else:
             self.scrollArea.setVerticalScrollBarPolicy(
-                QtCore.Qt.ScrollBarAsNeeded)
+                Qt.ScrollBarAsNeeded)
         self.scrollArea.setMaximumHeight(0)
         self.scrollArea.show()
 
@@ -1293,10 +1301,10 @@ class ToolBoxPage(QtCore.QObject):
         self.scrollArea.setMinimumHeight(0)
         self.scrollArea.setMaximumHeight(16777215)
         self.scrollArea.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAsNeeded)
+            Qt.ScrollBarAsNeeded)
 
 
-class AnimatedToolBox(QtWidgets.QToolBox):
+class AnimatedToolBox(QToolBox):
     _oldPage = _newPage = None
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1304,14 +1312,14 @@ class AnimatedToolBox(QtWidgets.QToolBox):
 
     @cached_property
     def animation(self):
-        animation = QtCore.QVariantAnimation(self)
+        animation = QVariantAnimation(self)
         animation.setDuration(250)
         animation.setStartValue(0.)
         animation.setEndValue(1.)
         animation.valueChanged.connect(self._updateSizes)
         return animation
 
-    @QtCore.pyqtProperty(int)
+    @pyqtProperty(int)
     def animationDuration(self):
         return self.animation.duration()
 
@@ -1319,8 +1327,8 @@ class AnimatedToolBox(QtWidgets.QToolBox):
     def animationDuration(self, duration):
         self.animation.setDuration(max(50, min(duration, 500)))
 
-    @QtCore.pyqtSlot(int)
-    @QtCore.pyqtSlot(int, bool)
+    @pyqtSlot(int)
+    @pyqtSlot(int, bool)
     def setCurrentIndex(self, index, now=False):
         if self.currentIndex() == index:
             return
@@ -1338,8 +1346,8 @@ class AnimatedToolBox(QtWidgets.QToolBox):
         self._newPage.beginShow(self._targetSize)
         self.animation.start()
 
-    @QtCore.pyqtSlot(QtWidgets.QWidget)
-    @QtCore.pyqtSlot(QtWidgets.QWidget, bool)
+    @pyqtSlot(QWidget)
+    @pyqtSlot(QWidget, bool)
     def setCurrentWidget(self, widget):
         for i, page in enumerate(self._pages):
             if page.widget == widget:
