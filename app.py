@@ -1,28 +1,11 @@
-import jdatetime, math, sys, time, os
+import jdatetime, math, time, sys, os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 from pygame import mixer
 from PyQt5.uic import loadUi
-from PyQt5.QtMultimedia import (
-    QMediaPlayer,
-    QMediaPlaylist,
-    QMediaContent,
-)
-from PyQt5.QtWidgets import (QMainWindow,
-    QApplication,
-    QTableWidget,
-    QShortcut,
-    QGraphicsOpacityEffect,
-    QHeaderView
-)
-from PyQt5.QtWebEngineCore import (
-    QWebEngineUrlSchemeHandler,
-    QWebEngineUrlScheme
-)
-from PyQt5.QtGui import (
-    QKeySequence,
-    QRegExpValidator,
-    QTextCursor
-)
+from PyQt5.QtMultimedia import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtWebEngineCore import *
+from PyQt5.QtGui import *
 from communication import *
 from promotions import *
 from utility import *
@@ -877,6 +860,7 @@ class MainWin(QMainWindow):
     def exit(self):
         log('Exit Shortcut', 'Shortcut activated. Exiting from UI...\n')
         self.close()
+        exit(0)
 
     def powerOff(self):
         enterPage(SHUTDONW_PAGE)
@@ -884,6 +868,7 @@ class MainWin(QMainWindow):
         gpioCleanup()
         if platform.system() == 'Windows':
             self.close()
+            exit(0)
         else:
             os.system('poweroff')
         
@@ -2761,15 +2746,20 @@ class LoadingWindow(QMainWindow):
     
     def showMain(self):
         self.timer.stop()
-        self.main = MainWin()
-        self.main.showFullScreen()
-        self.close()
+        createMainWin()
+        self.destroy()
 
+
+mainWin = None
+
+def createMainWin():
+    global mainWin
+    mainWin = MainWin()
+    mainWin.showFullScreen()
 
 scheme = QWebEngineUrlScheme(b"qt")
 scheme.setFlags(QWebEngineUrlScheme.CorsEnabled)
 QWebEngineUrlScheme.registerScheme(scheme)
 app = QApplication(sys.argv)
-loadingWin = MainWin()
-loadingWin.showFullScreen()
+loadingWin = LoadingWindow()
 sys.exit(app.exec_())

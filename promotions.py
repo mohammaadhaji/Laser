@@ -1,18 +1,7 @@
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-from PyQt5.QtWidgets import (
-    QFrame, QVBoxLayout, QHBoxLayout,
-    QLabel, QPushButton, QTextEdit,
-    QCheckBox, QSizePolicy, QSpacerItem,
-    QTableWidgetItem, QLineEdit, QWidget,
-    QSlider, QStackedWidget, QToolBox
-)
-from PyQt5.QtGui import (
-    QIcon, QPainter, QFont, QPolygon,
-    QPixmap, QMovie, QFontDatabase,
-    QPen, QColor, QRadialGradient,
-    QConicalGradient, QFontMetrics, QPolygonF
-)
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from werkzeug.utils import cached_property
 from communication import HARDWARE_TEST_PAGE, READ, sendPacket
