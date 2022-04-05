@@ -1,6 +1,7 @@
 import jdatetime, math, sys, time, os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 from pygame import mixer
+from PyQt5.uic import loadUi
 from PyQt5.QtMultimedia import (
     QMediaPlayer,
     QMediaPlaylist,
@@ -32,7 +33,6 @@ from user import *
 from lock import *
 from itertools import chain
 from pathlib import Path
-from interface import Ui_MainWindow
 mixer.init(buffer=2048)
 mixer.music.load(SHOT_SOUND)
 mixer.music.set_volume(0.5)
@@ -51,11 +51,11 @@ class QtSchemeHandler(QWebEngineUrlSchemeHandler):
         job.reply(mime_type.name().encode(), file)
 
 
-class MainWin(QMainWindow, Ui_MainWindow):
+class MainWin(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWin, self).__init__(*args, **kwargs)
-        self.setupUi(self)
-        self.setupUi2()
+        loadUi(APP_UI, self)
+        self.setupUi()
         self.browser = WebEngineView(self.mainPage)
         self.scheme_handler = QtSchemeHandler()
         self.browser.page().setBackgroundColor(Qt.GlobalColor.transparent)
@@ -68,7 +68,7 @@ class MainWin(QMainWindow, Ui_MainWindow):
         self.browser.load(url)
         self.browser.setGeometry(100, 200, 700, 700)
         
-    def setupUi2(self):
+    def setupUi(self):
         # self.setCursor(Qt.BlankCursor)
         self.configs = loadConfigs()
         self.usersData = loadUsers()
