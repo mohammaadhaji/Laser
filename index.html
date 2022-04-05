@@ -42,7 +42,7 @@
 
         // 3D Object
         const geometry = new THREE.BoxGeometry(5, 5, 5);
-        const material = new THREE.MeshPhongMaterial({color: 0x00ff00});
+        const material = new THREE.MeshPhongMaterial({color: 0x0f0f0f});
         const cube = new THREE.Mesh(geometry, material);
         scene.add(cube);
 
@@ -72,6 +72,34 @@
             render();
         }, false);
 
+        var raycaster = new THREE.Raycaster();
+        var mouse = new THREE.Vector2();
+
+        var index = 0;
+        function generateRandomColor(){
+            let colors = [
+                0xf54242, 0xf5d442, 0x42f548,
+                0x42eff5, 0xf542ef, 0xffffff, 
+                0x0f0f0f
+            ] 
+            var color = colors[index]
+            index++;
+
+            if (index == 7 ) index = 0;
+            return color
+        }
+
+        window.addEventListener('click', (event) => {
+            event.preventDefault(); 
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            var intersects = raycaster.intersectObjects(scene.children, true);
+            for (var i = 0; i < intersects.length; i++){
+                intersects[i].object.material.color.set(generateRandomColor());
+            }
+        });
+
         // main loop
         function render(time) {
             cube.rotation.x -= 0.005;
@@ -79,6 +107,7 @@
             renderer.render(scene, camera);
             requestAnimationFrame(render);
         }
+        render()
 
     </script>
 </body>
