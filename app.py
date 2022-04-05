@@ -860,7 +860,6 @@ class MainWin(QMainWindow):
     def exit(self):
         log('Exit Shortcut', 'Shortcut activated. Exiting from UI...\n')
         self.close()
-        exit(0)
 
     def powerOff(self):
         enterPage(SHUTDONW_PAGE)
@@ -868,7 +867,6 @@ class MainWin(QMainWindow):
         gpioCleanup()
         if platform.system() == 'Windows':
             self.close()
-            exit(0)
         else:
             os.system('poweroff')
         
@@ -2746,20 +2744,16 @@ class LoadingWindow(QMainWindow):
     
     def showMain(self):
         self.timer.stop()
-        createMainWin()
-        self.destroy()
+        self.main = MainWin()
+        self.main.show()
+        self.main.setFixedSize(QSize(1920, 1080))
+        self.close()
 
-
-mainWin = None
-
-def createMainWin():
-    global mainWin
-    mainWin = MainWin()
-    mainWin.showFullScreen()
 
 scheme = QWebEngineUrlScheme(b"qt")
 scheme.setFlags(QWebEngineUrlScheme.CorsEnabled)
 QWebEngineUrlScheme.registerScheme(scheme)
 app = QApplication(sys.argv)
-loadingWin = LoadingWindow()
+loadingWin = MainWin()
+loadingWin.showFullScreen()
 sys.exit(app.exec_())
