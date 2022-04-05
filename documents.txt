@@ -4,7 +4,7 @@
 Step 1 --
 Installing proper OS.
 
-Install raspios-bullseye using Raspberry Pi Imager.
+Install raspbian-bullseye using Raspberry Pi Imager.
 Download link: https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2022-01-28/2022-01-28-raspios-bullseye-armhf-lite.zip
 
 #################################################################################
@@ -21,8 +21,27 @@ Reboot your system.
 Step 3 --
 Install required packages And clone source code.
 
+Edit /etc/apt/source.list . This file should contain the following content:
+
+deb http://deb.debian.org/debian bullseye main contrib non-free
+deb http://deb.debian.org/debian bullseye-updates main contrib non-free
+
 $ sudo apt-get update
-$ sudo apt-get install python3-pip python3-pyqt5 python3-pyqt5.qtmultimedia libqt5multimedia5-plugins git libsdl2-mixer-2.0-0
+
+If an error occurs:
+    It is possible that you encounter some errors concerning missing public keys.
+    We will now validate through a keyserver:
+
+    $ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138
+    $ sudo apt-get update
+
+$ sudo apt-get install python3-pip python3-pyqt5 python3-pyqt5.qtmultimedia python3-pyqt5.qtwebengine libqt5multimedia5-plugins git libsdl2-mixer-2.0-0
+
+Edit /etc/apt/source.list . Set to the content it already had.
+
+deb http://raspbian.raspberrypi.org/raspbian/ bullseye main contrib non-free rpi
+
+$ sudo apt-get update
 $ sudo apt install gstreamer1.0-libav gstreamer1.0-plugins-bad gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly pulseaudio gstreamer1.0-alsa libgl1-mesa-dev libglu1-mesa-dev edid-decode
 $ sudo pip3 install jdatetime pyserial crccheck pygame nuitka Werkzeug
 
@@ -42,7 +61,9 @@ Edit /boot/configs.txt :
 
 uncomment : hdmi_drive=2
 uncomment : dtparam=audio=on
-comment : #dtoverlay=vc4-kms-v3dn
+
+find the option : dtoverlay=vc4-kms-v3dn
+change it to    : dtoverlay=vc4-fkms-v3dn
 
 #################################################################################
 Step 5 --
@@ -95,6 +116,7 @@ Put program into startup.
 Edit /etc/rc.local :
 
 Add following commands after if statement:
+
 cd /path/to/app.py; e.g. cd /home/pi/Laser;
 sudo python app.py -platform linuxfb 2> Errors.txt
 

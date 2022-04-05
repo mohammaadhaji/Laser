@@ -2745,7 +2745,7 @@ class LoadingWindow(QMainWindow):
     def showMain(self):
         self.timer.stop()
         self.main = MainWin()
-        self.main.show()
+        self.main.showFullScreen()
         self.main.setFixedSize(QSize(1920, 1080))
         self.close()
 
