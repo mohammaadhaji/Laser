@@ -17,14 +17,14 @@ try:
     GPIO.output(12, GPIO.HIGH)
 except Exception as e:
     pass
-    # log('GPIO', str(e) + '\n')
+    log('GPIO', str(e) + '\n')
     
 
 def gpioCleanup():
     try:
         GPIO.cleanup()
     except Exception as e:
-        # log('GPIO', str(e) + '\n')
+        log('GPIO', str(e) + '\n')
         pass
 
 if platform.system() == 'Windows':
@@ -98,8 +98,8 @@ def buildPacket(data, page, field, cmdType):
     crc_bytes = crc.to_bytes(2, byteorder='big')
     packet += crc_bytes
     packet.append(0xCC)
-    print('SENT: ', end='')
-    printPacket(packet)
+    # print('SENT: ', end='')
+    # printPacket(packet)
     return packet
 
 
@@ -389,8 +389,8 @@ class SerialTimer(QObject):
                             )
                             
                             if crc_r == crc_s:
-                                print('RECE: ', end='')
-                                printPacket(RECEIVED_DATA)
+                                # print('RECE: ', end='')
+                                # printPacket(RECEIVED_DATA)
                                 key, value = decodePacket(RECEIVED_DATA)
                                 if key == 'sensorFlags':
                                     self.sensorFlags.emit(value)
@@ -563,8 +563,8 @@ class SerialThread(QThread):
                                 )
 
                                 if crc_r == crc_s:
-                                    print('RECE: ', end='')
-                                    printPacket(RECEIVED_DATA)
+                                    # print('RECE: ', end='')
+                                    # printPacket(RECEIVED_DATA)
                                     key, value = decodePacket(RECEIVED_DATA)
                                     if key == 'sensorFlags':
                                         self.sensorFlags.emit(value)

@@ -46,7 +46,7 @@ class MainWin(QMainWindow):
             b"qt", self.scheme_handler
         )
         url = QUrl("qt://main")
-        url.setPath("/index.html")
+        url.setPath("/js/index.html")
         self.objIsLoaded = False
         self.browser.load(url)
         self.browser.setGeometry(100, 200, 700, 700)
