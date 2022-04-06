@@ -22,7 +22,7 @@
     <script type="module" src="./three.js"></script>
     <script type="module" src="./OBJLoader.js"></script>
     <script type="module">
-
+        import {GUI} from './gui.js';
         const canvas = document.querySelector('.webgl');
 
         // scene setup
@@ -34,37 +34,38 @@
         const near = 0.1;
         const far = 100;
         const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        camera.position.set(0, 0, 15)
+        camera.position.set(0, 0, 50)
         scene.add(camera);
  
         // renderer setup
         const renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true, alpha: true});
 
         // 3D Object
-        const geometry = new THREE.BoxGeometry(5, 5, 5);
-        const material = new THREE.MeshPhongMaterial({color: 0xffffff});
-        const cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
+        // const geometry = new THREE.BoxGeometry(5, 5, 5);
+        // const material = new THREE.MeshPhongMaterial({color: 0xffffff});
+        // const cube = new THREE.Mesh(geometry, material);
+        // scene.add(cube);
 
         
         const loader = new THREE.OBJLoader();
-        // var sat;
-        // loader.load('./Satellite.obj',function(object) {
-        //     sat = object;
-        //     scene.add( object );
-        //     render();
-        // });
+        var sat;
+        loader.load('./skull.OBJ',function(object) {
+            sat = object;
+            // object.rotation.y = Math.PI
+            scene.add( object );
+            render();
+        });
 
-        const light = new THREE.AmbientLight( 0xffffff, 0.5 ); // soft white light
-        scene.add( light );
+        // const light = new THREE.AmbientLight( 0xffffff, 0.1); // soft white light
+        // scene.add( light );
 
         // point light
-        const pointLight = new THREE.PointLight(0xffffff, 0.8)
-        pointLight.position.set(-5, 10, 0);
-        scene.add(pointLight);
+        // const pointLight = new THREE.PointLight(0xffffff, 0.8)
+        // pointLight.position.set(-5, 10, 0);
+        // scene.add(pointLight);
 
         const pointLight1 = new THREE.PointLight(0xffffff, 0.8)
-        pointLight1.position.set(5, 10, 0);
+        pointLight1.position.set(0, 0, 200);
         scene.add(pointLight1);
 
         // handling resizing
@@ -105,12 +106,12 @@
 
         // main loop
         function render(time) {
-            cube.rotation.x -= 0.005;
-            cube.rotation.z -= 0.005;
+            sat.rotation.y += 0.008;
+            // sat.rotation.z -= 0.005;
             renderer.render(scene, camera);
             requestAnimationFrame(render);
         }
-        render()
+    
 
     </script>
 </body>
