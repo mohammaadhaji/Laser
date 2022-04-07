@@ -39,17 +39,6 @@ class MainWin(QMainWindow):
         super(MainWin, self).__init__(*args, **kwargs)
         loadUi(APP_UI, self)
         self.setupUi()
-        self.browser = WebEngineView(self.mainPage)
-        self.scheme_handler = QtSchemeHandler()
-        self.browser.page().setBackgroundColor(Qt.GlobalColor.transparent)
-        self.browser.page().profile().installUrlSchemeHandler(
-            b"qt", self.scheme_handler
-        )
-        url = QUrl("qt://main")
-        url.setPath("/js/index.html")
-        self.objIsLoaded = False
-        self.browser.load(url)
-        self.browser.setGeometry(100, 200, 700, 700)
         
     def setupUi(self):
         # self.setCursor(Qt.BlankCursor)
@@ -203,6 +192,17 @@ class MainWin(QMainWindow):
         op=QGraphicsOpacityEffect(self)
         op.setOpacity(0.8) 
         self.listWidgetVideos.setGraphicsEffect(op)
+        self.browser = WebEngineView(self.mainPage)
+        self.scheme_handler = QtSchemeHandler()
+        self.browser.page().setBackgroundColor(Qt.GlobalColor.transparent)
+        self.browser.page().profile().installUrlSchemeHandler(
+            b"qt", self.scheme_handler
+        )
+        url = QUrl("qt://main")
+        url.setPath("/js/index.html")
+        self.objIsLoaded = False
+        self.browser.load(url)
+        self.browser.setGeometry(100, 200, 700, 700)
         mixer.Channel(0).set_volume(0.5)
         mixer.Channel(0).play(mixer.Sound(STARTUP_SOUND))
 
@@ -2197,7 +2197,7 @@ class MainWin(QMainWindow):
             self.usersTable.sortItems(2, Qt.AscendingOrder)
 
     def addUsersTable(self):
-        for i in range(5):
+        for i in range(10):
             if len(self.usersList) == 0:
                 self.loadUsersFinished()
                 return
