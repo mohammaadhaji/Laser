@@ -55,7 +55,7 @@ def monitorInfo():
         subprocess.call(f'{MONITOR_COMMAND}')
         with open(MONITOR_INFO_FILE, 'r') as f:
             for l in f:
-                if l.startswith('Display Product Name'):
+                if l.strip().startswith('Display Product Name'):
                     info = l.split(':')[1].strip()
 
     return info + ' ' + resolution
