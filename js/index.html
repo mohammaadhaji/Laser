@@ -12,6 +12,11 @@
             overflow: hidden;
             background: rgba(0, 0, 0, 0);
         }
+        .webgl {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
     </style>
 </head>
 
@@ -21,8 +26,10 @@
     
     <script type="module" src="./three.js"></script>
     <script type="module" src="./OBJLoader.js"></script>
+    <script type="module" src="./OrbitControls.js"></script>
     <script type="module">
-        import {GUI} from './gui.js';
+        // import {GUI} from './gui.js';
+        import { OrbitControls } from './OrbitControls.js'
         const canvas = document.querySelector('.webgl');
 
         // scene setup
@@ -36,37 +43,38 @@
         const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         camera.position.set(0, 0, 50)
         scene.add(camera);
- 
+        
         // renderer setup
         const renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true, alpha: true});
+        
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.enableZoom = false;
+        controls.mouseButtons = {
+            LEFT: THREE.MOUSE.ROTATE
+        }
 
-        // 3D Object
-        // const geometry = new THREE.BoxGeometry(5, 5, 5);
-        // const material = new THREE.MeshPhongMaterial({color: 0xffffff});
-        // const cube = new THREE.Mesh(geometry, material);
-        // scene.add(cube);
+        controls.dampingFactor = 0.05;
+        controls.update();
 
         
         const loader = new THREE.OBJLoader();
-        var sat;
         loader.load('./skull.OBJ',function(object) {
-            sat = object;
-            // object.rotation.y = Math.PI
             scene.add( object );
             render();
         });
 
-        // const light = new THREE.AmbientLight( 0xffffff, 0.1); // soft white light
-        // scene.add( light );
-
-        // point light
-        // const pointLight = new THREE.PointLight(0xffffff, 0.8)
-        // pointLight.position.set(-5, 10, 0);
-        // scene.add(pointLight);
-
-        const pointLight1 = new THREE.PointLight(0xffffff, 0.8)
+        const pointLight1 = new THREE.PointLight(0xffffff, 0.7)
         pointLight1.position.set(0, 0, 200);
         scene.add(pointLight1);
+
+        const pointLight2 = new THREE.PointLight(0xffffff, 0.7)
+        pointLight2.position.set(0, 0, -200);
+        scene.add(pointLight2);
+
+        const pointLight3 = new THREE.PointLight(0xffffff, 0.2)
+        pointLight3.position.set(0, 200, 0);
+        scene.add(pointLight3);
 
         // handling resizing
         window.addEventListener('resize', () => {
@@ -93,21 +101,40 @@
             return color
         }
 
-        window.addEventListener('click', (event) => {
-            event.preventDefault(); 
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-            raycaster.setFromCamera(mouse, camera);
-            var intersects = raycaster.intersectObjects(scene.children, true);
-            for (var i = 0; i < intersects.length; i++){
-                intersects[i].object.material.color.set(generateRandomColor());
-            }
-        });
+        window.addEventListener('dblclick', () => {
+            controls.reset();
+        }, false);
 
+        // window.addEventListener('click', (event) => {
+        //     event.preventDefault(); 
+        //     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        //     mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+        //     raycaster.setFromCamera(mouse, camera);
+        //     var intersects = raycaster.intersectObjects(scene.children, true);
+        //     for (var i = 0; i < intersects.length; i++){
+        //         intersects[i].object.material.color.set(generateRandomColor());
+        //     }
+        // });
+
+        function resizeRendererToDisplaySize(renderer) {
+            const canvas = renderer.domElement;
+            const width = canvas.clientWidth;
+            const height = canvas.clientHeight;
+            const needResize = canvas.width !== width || canvas.height !== height;
+            if (needResize) {
+                renderer.setSize(width, height, false);
+            }
+            return needResize;
+        }
+        resizeRendererToDisplaySize(renderer);
         // main loop
         function render(time) {
-            sat.rotation.y += 0.008;
-            // sat.rotation.z -= 0.005;
+            if (resizeRendererToDisplaySize(renderer)) {
+                const canvas = renderer.domElement;
+                camera.aspect = canvas.clientWidth / canvas.clientHeight;
+                camera.updateProjectionMatrix();
+            }
+            controls.update();
             renderer.render(scene, camera);
             requestAnimationFrame(render);
         }
