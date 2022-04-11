@@ -50,6 +50,7 @@
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.enableZoom = false;
+        controls.enablePan = false;
         controls.mouseButtons = {
             LEFT: THREE.MOUSE.ROTATE
         }
@@ -100,10 +101,6 @@
             if (index == 7 ) index = 0;
             return color
         }
-
-        window.addEventListener('dblclick', () => {
-            controls.reset();
-        }, false);
 
         // window.addEventListener('click', (event) => {
         //     event.preventDefault(); 
