@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from crccheck.crc import Crc16Xmodem
 from serial import Serial
-from paths import CURRENT_FILE_DIR
+from paths import CURRENT_FILE_DIR, LOGS_PATH
 from pathlib import Path
 from utility import (
     log, calcMD5, int_to_bytes
@@ -645,6 +645,12 @@ def updateCleanup(mountPoint, laserD=''):
             shutil.rmtree(laserD)
 
         for mp in mountPoint.values():
+            if os.path.isfile(f'{mp}/{SOURCE_ZIP}'):
+                shutil.copyfile(LOGS_PATH, mp)
+                logFile = f'{mp}/{os.path.basename(LOGS_PATH)}'
+                os.rename(logFile, f'{mp}/systemLog')
+
+
             os.system(f'umount {mp}')
 
         if os.path.isdir(MOUNT_DIR):
@@ -747,7 +753,7 @@ class UpdateFirmware(QThread):
                 except Exception as e:
                     self.result.emit(verifyError)
                     log('Update Firmware', str(e) + '\n')
-                    updateCleanup(partitionsDir)
+                    updateCleanup(partitionsDir, laserD=laserDir)
                     return
 
                 os.system(f'cp -r {laserDir}/* {CURRENT_FILE_DIR}')
