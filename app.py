@@ -881,7 +881,7 @@ class MainWin(QMainWindow):
 
     def updateResult(self, result):
         if result == 'Done GUI':
-            log('Update Firmware', 'GUI successfully updated.')
+            log('Update Firmware', 'GUI successfully updated.\n')
             for i in range(5, -1, -1):
                 self.lblUpdateFirmware.setText(
                     f'Your system will restart in {i} seconds...'
