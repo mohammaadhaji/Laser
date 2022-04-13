@@ -3,9 +3,7 @@ from crccheck.crc import Crc16Xmodem
 from serial import Serial
 from paths import CURRENT_FILE_DIR, LOGS_PATH
 from pathlib import Path
-from utility import (
-    log, calcMD5, int_to_bytes
-)
+from utility import log, calcMD5, int_to_bytes
 import jdatetime, platform
 import os, subprocess
 import shutil, json
@@ -16,7 +14,6 @@ try:
     GPIO.setup(12, GPIO.OUT)
     GPIO.output(12, GPIO.HIGH)
 except Exception as e:
-    pass
     log('GPIO', str(e) + '\n')
     
 
@@ -25,7 +22,6 @@ def gpioCleanup():
         GPIO.cleanup()
     except Exception as e:
         log('GPIO', str(e) + '\n')
-        pass
 
 if platform.system() == 'Windows':
     serial = Serial('COM2', 115200)

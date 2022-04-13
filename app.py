@@ -347,6 +347,7 @@ class MainWin(QMainWindow):
         self.btnEndSession.clicked.connect(lambda: enterPage(MAIN_PAGE))
         self.btnPowerOption.clicked.connect(lambda: self.powerOption('show'))
         self.btnStartSession.clicked.connect(self.startSession)
+        self.btnStartUserSession.clicked.connect(self.startSession)
         self.btnSubmit.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnSubmit.clicked.connect(self.submit)
         self.btnSystemLogs.clicked.connect(self.hwPageChanged)
@@ -524,7 +525,6 @@ class MainWin(QMainWindow):
         for txt in self.findChildren(LineEdit):
             if isinstance(txt, LineEdit):
                 txt.fIn.connect(lambda: self.keyboard('show'))
-        self.textEditNote.fIn.connect(lambda: self.keyboard('show'))
 
         self.txtOwnerInfo.setText(self.configs['OwnerInfo'])
         self.txtOwnerInfo.textChanged.connect(self.setOwnerInfo)
@@ -855,6 +855,7 @@ class MainWin(QMainWindow):
             self.lblShuttingdown.setText('Restarting...')
         self.shutdownMovie.start()
         self.changeAnimation('vertical')
+        self.stackedWidget.setSlideTransition(True)
         self.stackedWidget.setCurrentWidget(self.shutdownPage)
 
     def exit(self):
@@ -1957,29 +1958,13 @@ class MainWin(QMainWindow):
                 lang = 2
 
             if letter() == 'backspace':
-                if isinstance(widget, QLineEdit):
-                    widget.backspace()
-
-                elif isinstance(widget, QTextEdit):
-                    widget.textCursor().deletePreviousChar()  
-
-            elif letter() == 'enter':
-                if isinstance(widget, QTextEdit):
-                    widget.append('') 
+                widget.backspace() 
 
             elif len(letter()) == 3: # then it's a letter
-                if isinstance(widget, QLineEdit):
-                    widget.insert(letter()[lang])
-
-                elif  isinstance(widget, QTextEdit):
-                    widget.insertPlainText(letter()[lang])
+                widget.insert(letter()[lang])
 
             elif len(letter()) == 1: # then it's a number
-                if isinstance(widget, QLineEdit):
-                    widget.insert(letter())
-
-                elif  isinstance(widget, QTextEdit):
-                    widget.insertPlainText(letter())
+                widget.insert(letter())
 
         return wrapper
 
@@ -2308,7 +2293,6 @@ class MainWin(QMainWindow):
 
         self.txtEditNumber.setText(self.userInfo.phoneNumber)
         self.txtEditName.setText(self.userInfo.name)
-        self.textEditNote.setPlainText(self.userInfo.note)
         sessions = self.userInfo.sessions
         totalSessions = len(sessions)+1 if len(sessions) > 0 else 0
         self.userInfoTable.setRowCount(totalSessions)
@@ -2420,7 +2404,6 @@ class MainWin(QMainWindow):
     def saveUserInfo(self):
         numberEdit = self.txtEditNumber.text()
         nameEdit = self.txtEditName.text()
-        noteEdit = self.textEditNote.toPlainText()
         numberEdited = False
 
         if not numberEdit:
@@ -2454,7 +2437,6 @@ class MainWin(QMainWindow):
             nameEdit = 'Nobody'
 
         self.userInfo.setName(nameEdit)
-        self.userInfo.setNote(noteEdit)
 
         if not numberEdited:
             self.removeUser(self.userInfo.phoneNumber)
@@ -2499,7 +2481,12 @@ class MainWin(QMainWindow):
         self.startSession()
 
     def startSession(self):
-        numberEntered = self.txtNumber.text()
+        numberEntered = ''
+        index = self.stackedWidget.indexOf(self.editUserPage)
+        if self.stackedWidget.currentIndex() == index:
+            numberEntered = self.userInfo.phoneNumber
+        else:
+            numberEntered = self.txtNumber.text()
 
         if not numberEntered or numberEntered.isspace():
             self.laserNoUser = True

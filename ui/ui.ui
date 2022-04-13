@@ -60,7 +60,7 @@ QScrollBar:vertical {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>11</number>
+       <number>10</number>
       </property>
       <widget class="QWidget" name="adssPage">
        <property name="styleSheet">
@@ -189,8 +189,8 @@ QScrollBar:vertical {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1642</width>
-             <height>910</height>
+             <width>100</width>
+             <height>30</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -8242,8 +8242,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>1618</width>
-               <height>756</height>
+               <width>312</width>
+               <height>413</height>
               </rect>
              </property>
              <property name="styleSheet">
@@ -9857,53 +9857,17 @@ border:3px solid red;
              </widget>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_36">
-              <property name="leftMargin">
-               <number>0</number>
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
-              <item>
-               <spacer name="horizontalSpacer_4">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="btnNextSession">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>20</pointsize>
-                 </font>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QPushButton {
-background-color: rgb(68, 68, 68);
-min-width: 250px;
-min-height: 100px;
-border-radius: 50px;
-border: 1px solid gray;
-margin: 0 5px 0 5px;
-outline:0;
-color:white;
-}
-QPushButton:hover:!pressed{
-background-color:rgb(77, 77, 77);
-border: 1px solid white;
-}</string>
-                </property>
-                <property name="text">
-                 <string>Next Session</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </item>
@@ -10079,6 +10043,9 @@ QHeaderView::section
                <enum>QFrame::Raised</enum>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_56">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
                <item>
                 <layout class="QVBoxLayout" name="verticalLayout_20" stretch="9,0,1">
                  <property name="leftMargin">
@@ -10091,7 +10058,7 @@ QHeaderView::section
                   <number>20</number>
                  </property>
                  <item>
-                  <layout class="QGridLayout" name="gridLayout" rowstretch="1,0,0,0,0">
+                  <layout class="QGridLayout" name="gridLayout" rowstretch="1,0,0,0">
                    <property name="topMargin">
                     <number>0</number>
                    </property>
@@ -10107,204 +10074,6 @@ QHeaderView::section
                    <property name="verticalSpacing">
                     <number>20</number>
                    </property>
-                   <item row="1" column="0">
-                    <widget class="QLabel" name="lblPhoneNumber">
-                     <property name="font">
-                      <font>
-                       <family>Arial</family>
-                       <pointsize>20</pointsize>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>Phone Number</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="3" column="1">
-                    <widget class="TextEdit" name="textEditNote">
-                     <property name="font">
-                      <font>
-                       <family>Arial</family>
-                       <pointsize>20</pointsize>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">color: rgb(0, 0, 0);
-background-color: rgb(255, 255, 255);
-padding:10px 10px 10px 10px;
-border:2px soild white;</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="1">
-                    <widget class="LineEdit" name="txtEditNumber">
-                     <property name="font">
-                      <font>
-                       <family>Arial</family>
-                       <pointsize>20</pointsize>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true"/>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                     <property name="clearButtonEnabled">
-                      <bool>false</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="1">
-                    <widget class="LineEdit" name="txtEditName">
-                     <property name="font">
-                      <font>
-                       <family>Arial</family>
-                       <pointsize>20</pointsize>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true"/>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                     <property name="clearButtonEnabled">
-                      <bool>false</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="0">
-                    <widget class="QLabel" name="lblName">
-                     <property name="font">
-                      <font>
-                       <family>Arial</family>
-                       <pointsize>20</pointsize>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>Name</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="3" column="0">
-                    <layout class="QVBoxLayout" name="verticalLayout_24" stretch="0,0,2">
-                     <item>
-                      <spacer name="verticalSpacer_16">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblNote">
-                       <property name="font">
-                        <font>
-                         <family>Arial</family>
-                         <pointsize>20</pointsize>
-                        </font>
-                       </property>
-                       <property name="text">
-                        <string>Note</string>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <spacer name="verticalSpacer_11">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </item>
-                   <item row="4" column="1">
-                    <layout class="QHBoxLayout" name="horizontalLayout_15">
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <widget class="QPushButton" name="btnDeleteUser">
-                       <property name="font">
-                        <font>
-                         <pointsize>20</pointsize>
-                        </font>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true">QPushButton {
-background-color: rgb(68, 68, 68);
-color:red;
-min-width: 150px;
-min-height: 100px;
-border-radius: 50px;
-border: 1px solid gray;
-margin: 0 5px 0 5px;
-outline:0;
-}
-QPushButton:hover:!pressed{
-background-color:rgb(77, 77, 77);
-border: 1px solid white;
-}</string>
-                       </property>
-                       <property name="text">
-                        <string>Delete User</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="btnSaveInfo">
-                       <property name="font">
-                        <font>
-                         <pointsize>20</pointsize>
-                        </font>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true">QPushButton {
-background-color: rgb(68, 68, 68);
-color:white;
-min-width: 150px;
-min-height: 100px;
-border-radius: 50px;
-border: 1px solid gray;
-margin: 0 5px 0 5px;
-outline:0;
-}
-QPushButton:hover:!pressed{
-background-color:rgb(77, 77, 77);
-border: 1px solid white;
-}</string>
-                       </property>
-                       <property name="text">
-                        <string>Save</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
                    <item row="0" column="0">
                     <widget class="QLabel" name="lblNextSession">
                      <property name="font">
@@ -10342,6 +10111,213 @@ border: 1px solid white;
                       <bool>true</bool>
                      </property>
                     </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="lblPhoneNumber">
+                     <property name="font">
+                      <font>
+                       <family>Arial</family>
+                       <pointsize>20</pointsize>
+                      </font>
+                     </property>
+                     <property name="text">
+                      <string>Phone Number</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="LineEdit" name="txtEditName">
+                     <property name="font">
+                      <font>
+                       <family>Arial</family>
+                       <pointsize>20</pointsize>
+                      </font>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true"/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="clearButtonEnabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="LineEdit" name="txtEditNumber">
+                     <property name="font">
+                      <font>
+                       <family>Arial</family>
+                       <pointsize>20</pointsize>
+                      </font>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true"/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="clearButtonEnabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="lblName">
+                     <property name="font">
+                      <font>
+                       <family>Arial</family>
+                       <pointsize>20</pointsize>
+                      </font>
+                     </property>
+                     <property name="text">
+                      <string>Name</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <layout class="QVBoxLayout" name="verticalLayout_81">
+                     <property name="spacing">
+                      <number>15</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>10</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_15">
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>0</number>
+                       </property>
+                       <item>
+                        <widget class="QPushButton" name="btnDeleteUser">
+                         <property name="font">
+                          <font>
+                           <pointsize>20</pointsize>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+color:red;
+min-width: 150px;
+min-height: 100px;
+border-radius: 50px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                         </property>
+                         <property name="text">
+                          <string>Delete User</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="btnSaveInfo">
+                         <property name="font">
+                          <font>
+                           <pointsize>20</pointsize>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+color:white;
+min-width: 150px;
+min-height: 100px;
+border-radius: 50px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                         </property>
+                         <property name="text">
+                          <string>Save</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="btnNextSession">
+                       <property name="font">
+                        <font>
+                         <family>Arial</family>
+                         <pointsize>20</pointsize>
+                        </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+min-width: 250px;
+min-height: 100px;
+border-radius: 50px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+color:white;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                       </property>
+                       <property name="text">
+                        <string>Next Session</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="btnStartUserSession">
+                       <property name="font">
+                        <font>
+                         <family>Arial</family>
+                         <pointsize>20</pointsize>
+                        </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QPushButton {
+background-color: rgb(68, 68, 68);
+min-width: 250px;
+min-height: 100px;
+border-radius: 50px;
+border: 1px solid gray;
+margin: 0 5px 0 5px;
+outline:0;
+color:white;
+}
+QPushButton:hover:!pressed{
+background-color:rgb(77, 77, 77);
+border: 1px solid white;
+}</string>
+                       </property>
+                       <property name="text">
+                        <string>Start Session</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
                   </layout>
                  </item>
@@ -11776,8 +11752,8 @@ background-color: rgb(0, 170, 255);
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-71</y>
-                   <width>1556</width>
+                   <y>0</y>
+                   <width>1341</width>
                    <height>803</height>
                   </rect>
                  </property>
@@ -14942,11 +14918,6 @@ min-width:220px;
   <customwidget>
    <class>LineEdit</class>
    <extends>QLineEdit</extends>
-   <header location="global">promotions.h</header>
-  </customwidget>
-  <customwidget>
-   <class>TextEdit</class>
-   <extends>QTextEdit</extends>
    <header location="global">promotions.h</header>
   </customwidget>
   <customwidget>
