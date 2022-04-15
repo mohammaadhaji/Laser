@@ -60,7 +60,7 @@ QScrollBar:vertical {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>8</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="adssPage">
        <property name="styleSheet">
@@ -167,59 +167,6 @@ QScrollBar:vertical {
         <property name="bottomMargin">
          <number>0</number>
         </property>
-        <item>
-         <widget class="QScrollArea" name="scrollArea_4">
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="verticalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="horizontalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="sizeAdjustPolicy">
-           <enum>QAbstractScrollArea::AdjustToContents</enum>
-          </property>
-          <property name="widgetResizable">
-           <bool>true</bool>
-          </property>
-          <widget class="QWidget" name="scrollAreaWidgetContents_4">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>1642</width>
-             <height>898</height>
-            </rect>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_47">
-            <property name="spacing">
-             <number>0</number>
-            </property>
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="Label" name="lblSplash">
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </widget>
-        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="newUserPage">
@@ -8118,9 +8065,12 @@ border: 10px solid rgb(77, 77, 77);
       <widget class="QWidget" name="tutorialPage">
        <layout class="QVBoxLayout" name="verticalLayout_42">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_41" stretch="1,9">
-          <property name="bottomMargin">
+         <layout class="QVBoxLayout" name="verticalLayout_41" stretch="0,5,1">
+          <property name="rightMargin">
            <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>30</number>
           </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_30" stretch="0,0,0">
@@ -8227,77 +8177,44 @@ border:3px solid red;
            </layout>
           </item>
           <item>
-           <widget class="QScrollArea" name="scrollArea_3">
-            <property name="styleSheet">
-             <string notr="true"> background: transparent</string>
+           <layout class="QHBoxLayout" name="horizontalLayout_34" stretch="3,0,7">
+            <property name="leftMargin">
+             <number>30</number>
             </property>
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
+            <property name="topMargin">
+             <number>0</number>
             </property>
-            <property name="widgetResizable">
-             <bool>true</bool>
+            <property name="rightMargin">
+             <number>30</number>
             </property>
-            <widget class="QWidget" name="scrollAreaWidgetContents_2">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>1618</width>
-               <height>744</height>
-              </rect>
-             </property>
-             <property name="styleSheet">
-              <string notr="true"> background: transparent</string>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_78" stretch="9,1">
-              <property name="leftMargin">
-               <number>30</number>
-              </property>
-              <property name="topMargin">
-               <number>11</number>
-              </property>
-              <property name="rightMargin">
-               <number>30</number>
-              </property>
-              <property name="bottomMargin">
-               <number>30</number>
-              </property>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_45" stretch="1,9">
               <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_34" stretch="3,0,7">
-                <property name="topMargin">
-                 <number>0</number>
+               <widget class="QLabel" name="lblVideos">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>20</pointsize>
+                 </font>
                 </property>
-                <property name="rightMargin">
-                 <number>0</number>
+                <property name="text">
+                 <string>Videos</string>
                 </property>
-                <item>
-                 <layout class="QVBoxLayout" name="verticalLayout_45" stretch="1,9">
-                  <item>
-                   <widget class="QLabel" name="lblVideos">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>20</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Videos</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QListWidget" name="listWidgetVideos">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>16</pointsize>
-                     </font>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true">QListWidget {
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QListWidget" name="listWidgetVideos">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>16</pointsize>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QListWidget {
 background-color: rgb(255, 255, 255);
 color:black;
 padding: 20px 20px 20px 20px;
@@ -8419,146 +8336,146 @@ QScrollBar:horizontal
         subcontrol-origin: margin;
     }
 </string>
-                    </property>
-                    <property name="verticalScrollMode">
-                     <enum>QAbstractItemView::ScrollPerPixel</enum>
-                    </property>
-                    <property name="horizontalScrollMode">
-                     <enum>QAbstractItemView::ScrollPerPixel</enum>
-                    </property>
-                    <property name="spacing">
-                     <number>0</number>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_54">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <layout class="QVBoxLayout" name="verticalLayout_49" stretch="1,9">
-                  <property name="rightMargin">
-                   <number>0</number>
-                  </property>
-                  <item>
-                   <widget class="QLabel" name="lblTitle">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>20</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Title</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QFrame" name="frame_2">
-                    <property name="styleSheet">
-                     <string notr="true">background-color:rgb(0, 0, 0);
-border-radius:20px;
-border:1px solid white;</string>
-                    </property>
-                    <property name="frameShape">
-                     <enum>QFrame::StyledPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayout_46">
-                     <property name="topMargin">
-                      <number>11</number>
-                     </property>
-                     <item>
-                      <layout class="QVBoxLayout" name="videoLayout"/>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
+                </property>
+                <property name="verticalScrollMode">
+                 <enum>QAbstractItemView::ScrollPerPixel</enum>
+                </property>
+                <property name="horizontalScrollMode">
+                 <enum>QAbstractItemView::ScrollPerPixel</enum>
+                </property>
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_54">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_49" stretch="1,9">
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="lblTitle">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>20</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Title</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
               </item>
               <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_39" stretch="3,0,7">
-                <property name="topMargin">
-                 <number>0</number>
+               <widget class="QFrame" name="frame_2">
+                <property name="styleSheet">
+                 <string notr="true">background-color:rgb(0, 0, 0);
+border-radius:20px;
+border:1px solid white;</string>
                 </property>
-                <property name="rightMargin">
-                 <number>0</number>
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
                 </property>
-                <item>
-                 <spacer name="horizontalSpacer_49">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_55">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_38" stretch="0,0,0,0,0,1,0">
-                  <property name="leftMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>20</number>
-                  </property>
-                  <item>
-                   <spacer name="horizontalSpacer_52">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <widget class="QSlider" name="sliderVolume">
-                    <property name="minimumSize">
-                     <size>
-                      <width>50</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true">QSlider::groove:vertical {
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_46">
+                 <property name="topMargin">
+                  <number>11</number>
+                 </property>
+                 <item>
+                  <layout class="QVBoxLayout" name="videoLayout"/>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_39" stretch="3,0,7">
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <spacer name="horizontalSpacer_49">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_55">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_38" stretch="0,0,0,0,0,1,0">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>20</number>
+              </property>
+              <item>
+               <spacer name="horizontalSpacer_52">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QSlider" name="sliderVolume">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QSlider::groove:vertical {
     background: red;
     position: absolute; /* absolutely position 4px from the left and right of the widget. setting margins on the widget should work too... */
     left: 4px; right: 4px;
@@ -8590,35 +8507,35 @@ QSlider::sub-page:vertical {
 QSlider::handle:vertical:pressed {
     background-color: rgb(65, 255, 195);
 }</string>
-                    </property>
-                    <property name="maximum">
-                     <number>50</number>
-                    </property>
-                    <property name="value">
-                     <number>50</number>
-                    </property>
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_53">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="btnPlay">
-                    <property name="styleSheet">
-                     <string notr="true">QPushButton{
+                </property>
+                <property name="maximum">
+                 <number>50</number>
+                </property>
+                <property name="value">
+                 <number>50</number>
+                </property>
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_53">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnPlay">
+                <property name="styleSheet">
+                 <string notr="true">QPushButton{
 outline : 0;
 background-color: rgb(213, 213, 213);
 border-radius: 60px;
@@ -8631,63 +8548,63 @@ background-color: rgb(0, 170, 255);
 
 }
 </string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset>
-                      <normaloff>images/play.png</normaloff>images/play.png</iconset>
-                    </property>
-                    <property name="iconSize">
-                     <size>
-                      <width>100</width>
-                      <height>100</height>
-                     </size>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_50">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <layout class="QVBoxLayout" name="verticalLayout_48" stretch="0,0,0">
-                    <property name="leftMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
-                     <widget class="QLabel" name="label_33">
-                      <property name="font">
-                       <font>
-                        <family>Arial</family>
-                        <pointsize>14</pointsize>
-                       </font>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QSlider" name="positionSlider">
-                      <property name="minimumSize">
-                       <size>
-                        <width>0</width>
-                        <height>70</height>
-                       </size>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">QSlider {
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>images/play.png</normaloff>images/play.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>100</width>
+                  <height>100</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_50">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_48" stretch="0,0,0">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_33">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>14</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSlider" name="positionSlider">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>70</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">QSlider {
 min-height:70px;
 }
 QSlider::groove:horizontal {
@@ -8729,50 +8646,46 @@ height: 10px;
 border-radius: 4px;
 }
 </string>
-                      </property>
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="lblLength">
-                      <property name="font">
-                       <font>
-                        <family>Arial</family>
-                        <pointsize>16</pointsize>
-                       </font>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignCenter</set>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_51">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="lblLength">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>16</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
+              <item>
+               <spacer name="horizontalSpacer_51">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
              </layout>
-            </widget>
-           </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
@@ -15017,11 +14930,6 @@ min-width:220px;
    <class>LineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">promotions.h</header>
-  </customwidget>
-  <customwidget>
-   <class>Label</class>
-   <extends>QLabel</extends>
-   <header>promotions</header>
   </customwidget>
   <customwidget>
    <class>StackedWidget</class>

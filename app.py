@@ -105,6 +105,8 @@ class MainWin(QMainWindow):
         self.playlist.currentIndexChanged.connect(self.playlistIndexChanged)
         self.touchSound.set_volume(0.5)
         self.keyboardSound.set_volume(0.5)
+        self.lblSplash = Label(self.splashPage)
+        self.lblSplash.setGeometry(0, 0, 1920, 1080)
         self.lblSplash.setPixmap(QPixmap(SPLASH).scaled(1920,1080))
         self.lblSplash.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.lblSplash.clicked.connect(self.splashClicked)
