@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1642</width>
-    <height>910</height>
+    <height>898</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -60,7 +60,7 @@ QScrollBar:vertical {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>10</number>
+       <number>8</number>
       </property>
       <widget class="QWidget" name="adssPage">
        <property name="styleSheet">
@@ -189,8 +189,8 @@ QScrollBar:vertical {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>100</width>
-             <height>30</height>
+             <width>1642</width>
+             <height>898</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -8242,8 +8242,8 @@ border:3px solid red;
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>312</width>
-               <height>413</height>
+               <width>1618</width>
+               <height>744</height>
               </rect>
              </property>
              <property name="styleSheet">
@@ -8883,12 +8883,12 @@ border:3px solid red;
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_25">
+           <layout class="QHBoxLayout" name="horizontalLayout_25" stretch="6,4">
             <property name="leftMargin">
              <number>20</number>
             </property>
             <property name="topMargin">
-             <number>0</number>
+             <number>20</number>
             </property>
             <property name="rightMargin">
              <number>20</number>
@@ -8896,167 +8896,6 @@ border:3px solid red;
             <property name="bottomMargin">
              <number>20</number>
             </property>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_43">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_71">
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>5</number>
-                </property>
-                <item>
-                 <spacer name="horizontalSpacer_62">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QLabel" name="lblTomorrow">
-                  <property name="font">
-                   <font>
-                    <family>Arial</family>
-                    <pointsize>25</pointsize>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Tomorrow</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_8">
-                  <property name="font">
-                   <font>
-                    <family>Arial</family>
-                    <pointsize>25</pointsize>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string> → </string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="lblTomorrowCount">
-                  <property name="font">
-                   <font>
-                    <family>Arial</family>
-                    <pointsize>25</pointsize>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>0</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_104">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <widget class="QTableWidget" name="tableTomorrow">
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                 </font>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QHeaderView::section
-{
-    background-color:lightblue;
-	color:black;
-} 
- 
-QWidget {
-background-color: rgb(236, 236, 236);
-color:black;
-}
-
-QHeaderView::section
-{
-    background-color:lightblue;
-	color:black;
-} 
- </string>
-                </property>
-                <property name="selectionBehavior">
-                 <enum>QAbstractItemView::SelectRows</enum>
-                </property>
-                <column>
-                 <property name="text">
-                  <string>Phone Number</string>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <family>Arial</family>
-                   <pointsize>18</pointsize>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Name</string>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <family>Arial</family>
-                   <pointsize>18</pointsize>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Session Number</string>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <family>Arial</family>
-                   <pointsize>18</pointsize>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                </column>
-               </widget>
-              </item>
-             </layout>
-            </item>
             <item>
              <layout class="QVBoxLayout" name="verticalLayout_44">
               <property name="leftMargin">
@@ -9084,7 +8923,7 @@ QHeaderView::section
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QLabel" name="lblAfterTomorrow">
+                 <widget class="QLabel" name="lblDaysLater">
                   <property name="font">
                    <font>
                     <family>Arial</family>
@@ -9092,7 +8931,20 @@ QHeaderView::section
                    </font>
                   </property>
                   <property name="text">
-                   <string>Day After Tomorrow</string>
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="lblFutureSessionsTableTitle">
+                  <property name="font">
+                   <font>
+                    <family>Arial</family>
+                    <pointsize>25</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Tomorrow</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -9116,7 +8968,7 @@ QHeaderView::section
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="lblAfterTomorrowCount">
+                 <widget class="QLabel" name="lblFutureSessionsCount">
                   <property name="font">
                    <font>
                     <family>Arial</family>
@@ -9147,7 +8999,7 @@ QHeaderView::section
                </layout>
               </item>
               <item>
-               <widget class="QTableWidget" name="tableAfterTomorrow">
+               <widget class="QTableWidget" name="tableFutureSessions">
                 <property name="font">
                  <font>
                   <pointsize>14</pointsize>
@@ -9214,9 +9066,255 @@ QHeaderView::section
                   </font>
                  </property>
                 </column>
+                <column>
+                 <property name="text">
+                  <string>Last Session</string>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Arial</family>
+                   <pointsize>18</pointsize>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                </column>
                </widget>
               </item>
              </layout>
+            </item>
+            <item>
+             <widget class="QFrame" name="futureSessionsFrame">
+              <layout class="QVBoxLayout" name="verticalLayout_43" stretch="1,1,1">
+               <property name="topMargin">
+                <number>1</number>
+               </property>
+               <property name="rightMargin">
+                <number>1</number>
+               </property>
+               <property name="bottomMargin">
+                <number>1</number>
+               </property>
+               <item>
+                <spacer name="verticalSpacer_82">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QFrame" name="futureSessionFrame">
+                 <layout class="QHBoxLayout" name="horizontalLayout_36" stretch="1,0,0,0,1">
+                  <property name="leftMargin">
+                   <number>1</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>1</number>
+                  </property>
+                  <item>
+                   <spacer name="horizontalSpacer_5">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="lblShowSession">
+                    <property name="font">
+                     <font>
+                      <family>Arial</family>
+                      <pointsize>30</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Show Sessions After</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QVBoxLayout" name="verticalLayout_24">
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <spacer name="verticalSpacer_11">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>40</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="btnIncDayFS">
+                      <property name="styleSheet">
+                       <string notr="true">QPushButton{
+outline : 0;
+background-color: rgb(213, 213, 213);
+border-radius: 15px;
+border: 10px solid rgb(213, 213, 213);
+}
+
+QPushButton:pressed{
+background-color: rgb(0, 170, 255);
+border: 10px solid rgb(0, 170, 255);
+
+}
+</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset>
+                        <normaloff>images/up.png</normaloff>images/up.png</iconset>
+                      </property>
+                      <property name="iconSize">
+                       <size>
+                        <width>80</width>
+                        <height>80</height>
+                       </size>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="txtFSdays">
+                      <property name="maximumSize">
+                       <size>
+                        <width>140</width>
+                        <height>16777215</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <family>Arial</family>
+                        <pointsize>30</pointsize>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>1</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="btnDecDayFS">
+                      <property name="styleSheet">
+                       <string notr="true">QPushButton{
+outline : 0;
+background-color: rgb(213, 213, 213);
+border-radius: 15px;
+border: 10px solid rgb(213, 213, 213);
+}
+
+QPushButton:pressed{
+background-color: rgb(0, 170, 255);
+border: 10px solid rgb(0, 170, 255);
+
+}
+</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset>
+                        <normaloff>images/down.png</normaloff>images/down.png</iconset>
+                      </property>
+                      <property name="iconSize">
+                       <size>
+                        <width>80</width>
+                        <height>80</height>
+                       </size>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="verticalSpacer_16">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>40</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="lblDaysFS">
+                    <property name="font">
+                     <font>
+                      <family>Arial</family>
+                      <pointsize>30</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Days</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_62">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_92">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
             </item>
            </layout>
           </item>
@@ -13654,7 +13752,7 @@ border: 10px solid rgb(0, 170, 255);
                   </widget>
                  </item>
                  <item row="2" column="3">
-                  <widget class="QLabel" name="lblDays">
+                  <widget class="QLabel" name="lblDaysNS">
                    <property name="font">
                     <font>
                      <family>Arial</family>
@@ -13680,7 +13778,7 @@ border: 10px solid rgb(0, 170, 255);
                   </spacer>
                  </item>
                  <item row="3" column="2">
-                  <widget class="QPushButton" name="btnDecDay">
+                  <widget class="QPushButton" name="btnDecDayNS">
                    <property name="styleSheet">
                     <string notr="true">QPushButton{
 outline : 0;
@@ -13750,7 +13848,7 @@ border: 10px solid rgb(0, 170, 255);
                   </spacer>
                  </item>
                  <item row="1" column="2">
-                  <widget class="QPushButton" name="btnIncDay">
+                  <widget class="QPushButton" name="btnIncDayNS">
                    <property name="styleSheet">
                     <string notr="true">QPushButton{
 outline : 0;

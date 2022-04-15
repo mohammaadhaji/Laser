@@ -38,7 +38,7 @@ else:
                 x.addSession()
                 x.setNextSession(
                     datetime.datetime.now() + 
-                    datetime.timedelta(days=randint(1, 10))
+                    datetime.timedelta(days=randint(0, 10))
                 )
             usersData[num] = x
 

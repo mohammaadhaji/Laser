@@ -78,7 +78,6 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            render();
         }, false);
 
         var raycaster = new THREE.Raycaster();
@@ -109,24 +108,8 @@
         //     }
         // });
 
-        function resizeRendererToDisplaySize(renderer) {
-            const canvas = renderer.domElement;
-            const width = canvas.clientWidth;
-            const height = canvas.clientHeight;
-            const needResize = canvas.width !== width || canvas.height !== height;
-            if (needResize) {
-                renderer.setSize(width, height, false);
-            }
-            return needResize;
-        }
-        resizeRendererToDisplaySize(renderer);
         // main loop
         function render(time) {
-            if (resizeRendererToDisplaySize(renderer)) {
-                const canvas = renderer.domElement;
-                camera.aspect = canvas.clientWidth / canvas.clientHeight;
-                camera.updateProjectionMatrix();
-            }
             controls.update();
             renderer.render(scene, camera);
             requestAnimationFrame(render);

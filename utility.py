@@ -191,6 +191,7 @@ def loadConfigs():
                 'MusicVolume': 50,
                 'VideoVolume': 50,
                 'LoopMusic': True,
+                'futureSessionsDays': 1,
                 'theme': 'C1',
                 'OwnerInfo': '',
                 'SerialNumber': '',

@@ -3,9 +3,7 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 from pygame import mixer
 from PyQt5.uic import loadUi
 from PyQt5.QtMultimedia import *
-from PyQt5.QtWidgets import *
 from PyQt5.QtWebEngineCore import *
-from PyQt5.QtGui import *
 from communication import *
 from promotions import *
 from utility import *
@@ -203,6 +201,7 @@ class MainWin(QMainWindow):
         self.objIsLoaded = False
         self.browser.load(url)
         self.browser.setGeometry(100, 200, 700, 700)
+        self.txtFSdays.setText(str(self.configs['futureSessionsDays']))
         mixer.Channel(0).set_volume(0.5)
         mixer.Channel(0).play(mixer.Sound(STARTUP_SOUND))
 
@@ -314,8 +313,8 @@ class MainWin(QMainWindow):
         self.sensorsReportLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblSensorDateError, self.sensorsReportLabelTimer))
         self.musicRefreshLableTimer.timeout.connect(lambda: self.clearLabel(self.lblMusicRefresh, self.musicRefreshLableTimer))
         self.coeffLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblCalcCoeff, self.coeffLabelTimer))
-        self.incDaysTimer.timeout.connect(lambda: self.incDecDay('inc'))
-        self.decDaysTimer.timeout.connect(lambda: self.incDecDay('dec'))
+        self.incDaysTimer.timeout.connect(lambda: self.incDecDayNS('inc'))
+        self.decDaysTimer.timeout.connect(lambda: self.incDecDayNS('dec'))
         self.backspaceTimer.timeout.connect(self.type(lambda: 'backspace'))
         self.hwWrongPassTimer.timeout.connect(self.hwWrongPass)
         self.resetCounterPassTimer.timeout.connect(self.resetCounterWrongPass)
@@ -391,17 +390,19 @@ class MainWin(QMainWindow):
         self.btnCancelNS.clicked.connect(self.cancelNextSession)
         self.btnCancelNS.clicked.connect(lambda: self.keyboard('hide'))
         self.btnOkNS.clicked.connect(lambda: self.keyboard('hide'))
-        self.btnDecDay.clicked.connect(lambda: self.incDecDay('dec'))
-        self.btnIncDay.clicked.connect(lambda: self.incDecDay('inc'))
+        self.btnDecDayNS.clicked.connect(lambda: self.incDecDayNS('dec'))
+        self.btnIncDayNS.clicked.connect(lambda: self.incDecDayNS('inc'))
+        self.btnDecDayFS.clicked.connect(lambda: self.incDecDayFS('dec'))
+        self.btnIncDayFS.clicked.connect(lambda: self.incDecDayFS('inc'))
         self.btnOkNS.clicked.connect(self.saveNextSession)
         self.btnMale.clicked.connect(lambda: self.setSex('male'))
         self.btnFemale.clicked.connect(lambda: self.setSex('female'))
         self.btnBackspace.pressed.connect(lambda: self.backspaceTimer.start(100))
         self.btnBackspace.released.connect(lambda: self.backspaceTimer.stop())
-        self.btnIncDay.pressed.connect(lambda: self.incDaysTimer.start(100))
-        self.btnIncDay.released.connect(lambda: self.incDaysTimer.stop())
-        self.btnDecDay.pressed.connect(lambda: self.decDaysTimer.start(100))
-        self.btnDecDay.released.connect(lambda: self.decDaysTimer.stop())
+        self.btnIncDayNS.pressed.connect(lambda: self.incDaysTimer.start(100))
+        self.btnIncDayNS.released.connect(lambda: self.incDaysTimer.stop())
+        self.btnDecDayNS.pressed.connect(lambda: self.decDaysTimer.start(100))
+        self.btnDecDayNS.released.connect(lambda: self.decDaysTimer.stop())
         self.btnIncE.clicked.connect(lambda: self.setEnergy('inc'))
         self.btnDecE.clicked.connect(lambda: self.setEnergy('dec'))
         self.btnDecDac.clicked.connect(lambda: self.setDac('dec'))
@@ -1561,7 +1562,7 @@ class MainWin(QMainWindow):
         else:
             self.info(self.userNextSession.phoneNumber)
 
-    def incDecDay(self, operation):
+    def incDecDayNS(self, operation):
         if not self.txtDays.text():
             self.txtDays.setText('1')
         else:
@@ -2349,8 +2350,8 @@ class MainWin(QMainWindow):
 
     def futureSessions(self):
         users = self.usersData.values()
-        rowTomorrow = 0
-        rowAfterTomorrow = 0
+        row = 0
+        
         for user in users:
             if user.sessionNumber == 1:
                 nextSession = toJalali(user.nextSession)
@@ -2359,20 +2360,13 @@ class MainWin(QMainWindow):
                 text = TEXT['firstTime'][self.langIndex] 
                 lastSession = TableWidgetItem(text)
                 sn = TableWidgetItem(str(user.sessionNumber))
-                if nextSession and getDiff(nextSession) == 1:
-                    self.tableTomorrow.setRowCount(rowTomorrow +1)
-                    self.tableTomorrow.setItem(rowTomorrow, 0, num)
-                    self.tableTomorrow.setItem(rowTomorrow, 1, name)
-                    self.tableTomorrow.setItem(rowTomorrow, 2, sn)
-                    # self.tableTomorrow.setItem(rowTomorrow, 2, lastSession)
-                    rowTomorrow += 1
-                elif nextSession and getDiff(nextSession) == 2:
-                    self.tableAfterTomorrow.setRowCount(rowAfterTomorrow +1)
-                    self.tableAfterTomorrow.setItem(rowAfterTomorrow, 0, num)
-                    self.tableAfterTomorrow.setItem(rowAfterTomorrow, 1, name)
-                    self.tableAfterTomorrow.setItem(rowAfterTomorrow, 2, sn)
-                    # self.tableAfterTomorrow.setItem(rowAfterTomorrow, 2, lastSession)
-                    rowAfterTomorrow += 1
+                if nextSession and getDiff(nextSession) == int(self.txtFSdays.text()):
+                    self.tableFutureSessions.setRowCount(row + 1)
+                    self.tableFutureSessions.setItem(row, 0, num)
+                    self.tableFutureSessions.setItem(row, 1, name)
+                    self.tableFutureSessions.setItem(row, 2, sn)
+                    self.tableFutureSessions.setItem(row, 3, lastSession)
+                    row += 1
 
             else:
                 nextSession = toJalali(user.nextSession)
@@ -2381,25 +2375,37 @@ class MainWin(QMainWindow):
                 num = TableWidgetItem(user.phoneNumber)
                 name = TableWidgetItem(user.name)
                 sn = TableWidgetItem(str(user.sessionNumber))
-                if nextSession and getDiff(nextSession) == 1:
-                    self.tableTomorrow.setRowCount(rowTomorrow +1)
-                    self.tableTomorrow.setItem(rowTomorrow, 0, num)
-                    self.tableTomorrow.setItem(rowTomorrow, 1, name)
-                    self.tableTomorrow.setItem(rowTomorrow, 2, sn)
-                    # self.tableTomorrow.setItem(rowTomorrow, 2, lastSession)
-                    rowTomorrow += 1
-                elif nextSession and getDiff(nextSession) == 2:
-                    self.tableAfterTomorrow.setRowCount(rowAfterTomorrow +1)
-                    self.tableAfterTomorrow.setItem(rowAfterTomorrow, 0, num)
-                    self.tableAfterTomorrow.setItem(rowAfterTomorrow, 1, name)
-                    self.tableAfterTomorrow.setItem(rowAfterTomorrow, 2, sn)
-                    # self.tableAfterTomorrow.setItem(rowAfterTomorrow, 2, lastSession)
-                    rowAfterTomorrow += 1
+                if nextSession and getDiff(nextSession) == int(self.txtFSdays.text()):
+                    self.tableFutureSessions.setRowCount(row + 1)
+                    self.tableFutureSessions.setItem(row, 0, num)
+                    self.tableFutureSessions.setItem(row, 1, name)
+                    self.tableFutureSessions.setItem(row, 2, sn)
+                    self.tableFutureSessions.setItem(row, 3, lastSession)
+                    row += 1
 
-        self.lblTomorrowCount.setText(f'{rowTomorrow}')
-        self.lblAfterTomorrowCount.setText(f'{rowAfterTomorrow}')
-        self.tableTomorrow.setRowCount(rowTomorrow)
-        self.tableAfterTomorrow.setRowCount(rowAfterTomorrow)
+        self.lblFutureSessionsCount.setText(f'{row}')
+        self.tableFutureSessions.setRowCount(row)
+        fsDays = int(self.txtFSdays.text())
+        if fsDays == 0:
+            self.lblFutureSessionsTableTitle.setText(TEXT['today'][self.langIndex])
+        elif fsDays == 1:
+            self.lblFutureSessionsTableTitle.setText(TEXT['tomorrow'][self.langIndex])
+        elif fsDays > 1:
+            self.lblFutureSessionsTableTitle.setText(
+                self.txtFSdays.text() + ' ' + TEXT['daysLater'][self.langIndex]
+            )
+
+    def incDecDayFS(self, operation): 
+        num = int(self.txtFSdays.text())
+        num = num + 1 if operation == 'inc' else num - 1
+
+        if num in range(0, 10000):
+            self.txtFSdays.setText(str(num))
+            self.configs['futureSessionsDays'] = num
+            self.saveConfigs()
+
+        self.futureSessions()
+
 
     def saveUserInfo(self):
         numberEdit = self.txtEditNumber.text()
@@ -2577,6 +2583,7 @@ class MainWin(QMainWindow):
             self.currentUserFrame.setLayoutDirection(Qt.RightToLeft)
             self.resetCounterMsgFrame.setLayoutDirection(Qt.RightToLeft)
             self.calibFrame0.setLayoutDirection(Qt.RightToLeft)
+            self.futureSessionFrame.setLayoutDirection(Qt.RightToLeft)
             self.lblReadyCalibError.setAlignment(Qt.AlignCenter)
             icon = QPixmap(SELECTED_LANG_ICON)
             self.lblFaSelected.setPixmap(icon.scaled(70, 70))
@@ -2599,6 +2606,7 @@ class MainWin(QMainWindow):
             self.currentUserFrame.setLayoutDirection(Qt.LeftToRight)
             self.resetCounterMsgFrame.setLayoutDirection(Qt.LeftToRight)
             self.calibFrame0.setLayoutDirection(Qt.LeftToRight)
+            self.futureSessionFrame.setLayoutDirection(Qt.LeftToRight)
             self.lblReadyCalibError.setAlignment(Qt.AlignCenter)
             icon = QPixmap(SELECTED_LANG_ICON)
             self.lblEnSelected.setPixmap(icon.scaled(70, 70))
@@ -2636,13 +2644,11 @@ class MainWin(QMainWindow):
             if txt.objectName() in TEXT.keys():
                 txt.setPlaceholderText(TEXT[txt.objectName()][self.langIndex])
 
-        for i in range(3):
-            self.tableTomorrow.horizontalHeaderItem(i).setText(
+        for i in range(4):
+            self.tableFutureSessions.horizontalHeaderItem(i).setText(
                 TEXT[f'tbFsessions{i}'][self.langIndex]
             )
-            self.tableAfterTomorrow.horizontalHeaderItem(i).setText(
-                TEXT[f'tbFsessions{i}'][self.langIndex]
-            )
+            if i == 3: continue
             self.tableLock.horizontalHeaderItem(i).setText(
                 TEXT[f'tableLock{i}'][self.langIndex]
             )
