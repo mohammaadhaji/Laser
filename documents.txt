@@ -118,6 +118,7 @@ Edit /etc/rc.local :
 Add following commands after if statement:
 
 cd /path/to/app.py; e.g. cd /home/pi/Laser;
+export QT_QPA_EGLFS_HIDECURSOR=1
 sudo python app.py -platform eglfs --no-sandbox 2> Errors.txt
 
 #################################################################################

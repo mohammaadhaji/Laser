@@ -39,7 +39,6 @@ class MainWin(QMainWindow):
         self.setupUi()
         
     def setupUi(self):
-        # self.setCursor(Qt.BlankCursor)
         self.configs = loadConfigs()
         self.usersData = loadUsers()
         self.usersList = list(self.usersData.values())
@@ -47,8 +46,6 @@ class MainWin(QMainWindow):
         self.langIndex = 0
         icon = QPixmap(SELECTED_LANG_ICON)
         self.lblEnSelected.setPixmap(icon.scaled(70, 70))
-        # icon = QPixmap('ui/images/laserLogo.png')
-        # self.label.setPixmap(icon)
         self.serialC = SerialTimer() if RPI_VERSION == '3' else SerialThread()
         self.sensorFlags = [True, True, True, False, False, True]
         self.sensors = Sensors(
