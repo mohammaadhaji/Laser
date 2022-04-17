@@ -18,6 +18,186 @@ class WebEngineView(QWebEngineView):
     def setIsLoaded(self):
         self.isLoaded = True
 
+class Parameter(QFrame):
+    inc = pyqtSignal()
+    dec = pyqtSignal()
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.setGeometry(QRect(150, 90, 581, 351))
+        self.setStyleSheet("background-color: none;")
+        self.setFrameShape(QFrame.NoFrame)
+        self.setFrameShadow(QFrame.Raised)
+        self.progressFrame = QFrame(self)
+        self.progressFrame.setGeometry(QRect(110, 0, 350, 350))
+        self.progressFrame.setFrameShape(QFrame.StyledPanel)
+        self.progressFrame.setFrameShadow(QFrame.Raised)
+        self.progressFrame.setObjectName("progressFrame")
+        self.contentFrame = QFrame(self)
+        self.contentFrame.setGeometry(QRect(125, 15, 320, 320))
+        self.contentFrame.setBaseSize(QSize(0, 0))
+        self.contentFrame.setStyleSheet('''
+            QFrame#contentFrame{
+                border-radius: 160px;
+                background-color: rgb(58, 58, 102);
+            }'''
+        )
+        self.contentFrame.setFrameShape(QFrame.StyledPanel)
+        self.contentFrame.setFrameShadow(QFrame.Raised)
+        self.contentFrame.setObjectName("contentFrame")
+        self.frame = QFrame(self.contentFrame)
+        self.frame.setGeometry(QRect(20, 40, 281, 261))
+        self.frame.setObjectName("frame")
+        self.layout = QGridLayout(self.frame)
+        self.layout.setObjectName("layout")
+        self.lblValue = QLabel(self.frame)
+        font = QFont()
+        font.setFamily("Roboto Thin")
+        font.setPointSize(90)
+        self.lblValue.setFont(font)
+        self.lblValue.setStyleSheet("color: rgb(115, 185, 255); padding: 0px; background-color: none;")
+        self.lblValue.setAlignment(Qt.AlignCenter)
+        self.lblValue.setIndent(-1)
+        self.layout.addWidget(self.lblValue, 1, 0, 1, 1)
+        self.lblUnit = QLabel(self.frame)
+        font = QFont()
+        font.setFamily("Arial")
+        font.setPointSize(20)
+        font.setItalic(True)
+        self.lblUnit.setFont(font)
+        self.lblUnit.setStyleSheet("color: rgb(148, 148, 216); background-color: none;")
+        self.lblUnit.setAlignment(Qt.AlignCenter)
+        self.layout.addWidget(self.lblUnit, 2, 0, 1, 1)
+        self.lblParameter = QLabel(self.frame)
+        font = QFont()
+        font.setFamily("Arial")
+        font.setPointSize(25)
+        font.setBold(False)
+        font.setItalic(True)
+        font.setWeight(50)
+        self.lblParameter.setFont(font)
+        self.lblParameter.setStyleSheet("color: #FFFFFF; background-color: none;")
+        self.lblParameter.setAlignment(Qt.AlignCenter)
+        self.layout.addWidget(self.lblParameter, 0, 0, 1, 1)
+        self.btnInc = QPushButton(self)
+        self.btnInc.setGeometry(QRect(0, 121, 114, 110))
+        self.btnInc.setText("")
+        icon = QIcon()
+        icon.addPixmap(QPixmap(DEC_BLACK), QIcon.Normal, QIcon.Off)
+        self.btnInc.setIcon(icon)
+        self.btnInc.setIconSize(QSize(110, 110))
+        self.btnDec = QPushButton(self)
+        self.btnDec.setGeometry(QRect(470, 121, 114, 110))
+        self.btnDec.setText("")
+        icon1 = QIcon()
+        icon1.addPixmap(QPixmap(INC_BLACK), QIcon.Normal, QIcon.Off)
+        self.btnDec.setIcon(icon1)
+        self.btnDec.setIconSize(QSize(110, 110))
+        self.btnDec.setStyleSheet('''
+            QPushButton{
+                outline : 0;
+                border: 0;
+            }
+            QPushButton:pressed{
+                margin-left:20px;
+            }
+        ''')
+        self.btnInc.setStyleSheet('''
+            QPushButton{
+                outline : 0;
+                border: 0;
+            }
+            QPushButton:pressed{
+                margin-right:20px;
+            }
+        ''')
+
+        self.btnDec.clicked.connect(lambda: self.dec.emit())
+        self.btnInc.clicked.connect(lambda: self.inc.emit())
+        self.incTimer = QTimer()
+        self.decTimer = QTimer()
+        self.incTimer.timeout.connect(lambda: self.inc.emit())
+        self.decTimer.timeout.connect(lambda: self.dec.emit())
+        self.btnInc.pressed.connect(lambda: self.incTimer.start(100))
+        self.btnInc.released.connect(lambda: self.incTimer.stop())
+        self.btnDec.pressed.connect(lambda: self.decTimer.start(100))
+        self.btnDec.released.connect(lambda: self.decTimer.stop())
+
+    def setParameter(self, x):
+        def setIcon(dec, inc):
+            icon = QIcon()
+            icon.addPixmap(QPixmap(dec), QIcon.Normal, QIcon.Off)
+            self.btnInc.setIcon(icon)
+            self.btnInc.setIconSize(QSize(110, 110))
+            icon1 = QIcon()
+            icon1.addPixmap(QPixmap(inc), QIcon.Normal, QIcon.Off)
+            self.btnDec.setIcon(icon1)
+            self.btnDec.setIconSize(QSize(110, 110))
+
+        parameter = x
+        self.lblParameter.setText(parameter)
+        if self.lblParameter.text() == 'Energy':
+            setIcon(LEFT_BLUE, RIGHT_BLUE)
+            self.max = 100
+            self.lblUnit.setText('Joule')
+            self.color = 'rgba(85, 170, 255, 255)'
+            self.lblValue.setStyleSheet("color: rgb(115, 185, 255); padding: 0px; background-color: none;")
+            self.progressFrame.setStyleSheet('''
+            QFrame{
+                border-radius: 175px;
+                background-color: qconicalgradient(cx:0.5, cy:0.5, angle:90, stop:0.400 rgba(85, 170, 255, 255), stop:0.395 rgba(255, 255, 255, 0));
+            }'''
+        )
+        elif self.lblParameter.text() == 'Pulse Width':
+            setIcon(LEFT_GREEN, RIGHT_GREEN)
+            self.max = 100
+            self.lblUnit.setText('mSec')
+            self.color = 'rgba(85, 255, 127, 255)'
+            self.lblValue.setStyleSheet("color: rgb(115, 255, 171); padding: 0px; background-color: none;")
+            self.progressFrame.setStyleSheet('''
+            QFrame{
+                border-radius: 175px;	
+                background-color: qconicalgradient(cx:0.5, cy:0.5, angle:90, stop:0.600 rgba(85, 255, 127, 255), stop:0.595 rgba(255, 255, 255, 0));
+            }'''
+        )
+        elif self.lblParameter.text() == 'Frequency':
+            setIcon(LEFT_RED, RIGHT_RED)
+            self.max = 10
+            self.lblUnit.setText('Hz')
+            self.color = 'rgba(255, 0, 127, 255)'
+            self.lblValue.setStyleSheet("color: rgb(255, 44, 174); padding: 0px; background-color: none;")
+            self.progressFrame.setStyleSheet('''
+            QFrame{
+                border-radius: 175px;	
+                background-color: qconicalgradient(cx:0.5, cy:0.5, angle:90, stop:0.750 rgba(255, 0, 127, 255), stop:0.745 rgba(255, 255, 255, 0));
+            }'''
+        )
+
+    def setValue(self, value):
+
+        htmlText = """<p align="center"><span style=" font-size:50pt;">{VALUE}</span></p>"""
+        self.lblValue.setText(htmlText.replace("{VALUE}", str(value)))
+
+        styleSheet = """
+        QFrame{
+        	border-radius: 175px;
+        	background-color: qconicalgradient(cx:0.5, cy:0.5, angle:90, stop:{STOP_1} rgba(255, 0, 127, 0), stop:{STOP_2} {COLOR});
+        }
+        """
+        progress = (self.max - value) / self.max
+
+        stop_1 = str(progress - 0.001)
+        stop_2 = str(progress)
+
+        if value == self.max:
+            stop_1 = "1.000"
+            stop_2 = "1.000"
+
+        newStylesheet = styleSheet.replace("{STOP_1}", stop_1)\
+                                  .replace("{STOP_2}", stop_2)\
+                                  .replace("{COLOR}", self.color)
+
+        self.progressFrame.setStyleSheet(newStylesheet)
+
 
 
 class PowerOption(QFrame):

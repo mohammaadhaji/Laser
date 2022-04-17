@@ -15,7 +15,6 @@ from lock import *
 from itertools import chain
 from pathlib import Path
 mixer.init(buffer=2048)
-mixer.music.load(SHOT_SOUND)
 mixer.music.set_volume(0.5)
 
 
@@ -37,6 +36,16 @@ class MainWin(QMainWindow):
         super(MainWin, self).__init__(*args, **kwargs)
         loadUi(APP_UI, self)
         self.setupUi()
+        # scroller  = QScroller.scroller(self.usersTable)
+        # self.tableMusic.setVerticalScrollMode(QAbstractItemView.ScrollPerPixel)
+        # self.tableMusic.setHorizontalScrollMode(QAbstractItemView.ScrollPerPixel)
+        # properties = QScroller.scroller(scroller).scrollerProperties()
+        # overshootPolicy = QVariant(QScrollerProperties.OvershootAlwaysOff)
+        # properties.setScrollMetric(QScrollerProperties.VerticalOvershootPolicy, overshootPolicy)
+        # scroller.setScrollerProperties(properties)
+        # properties.setScrollMetric(QScrollerProperties.HorizontalOvershootPolicy, overshootPolicy)
+        # scroller.setScrollerProperties(properties)
+        # scroller.grabGesture(self.usersTable, QScroller.LeftMouseButtonGesture)
         
     def setupUi(self):
         self.configs = loadConfigs()
@@ -152,6 +161,16 @@ class MainWin(QMainWindow):
         xpos = 1920 - self.po.size().width()
         ypos = self.btnPowerOption.iconSize().height() + 20
         self.po.move(xpos , ypos)
+        self.energyWidget = Parameter(self.laserPage)
+        self.energyWidget.move(100, 180)
+        self.energyWidget.setParameter('Energy')
+        self.pulseWidthWidget = Parameter(self.laserPage)
+        self.pulseWidthWidget.move(800, 180)
+        self.pulseWidthWidget.setParameter('Pulse Width')
+        self.pulseWidthWidget.setEnabled(False)
+        self.frequencyWidget = Parameter(self.laserPage)
+        self.frequencyWidget.move(450, 420)
+        self.frequencyWidget.setParameter('Frequency')
         self.time(edit=True)
         self.initHwTest()
         self.tutorials()   
@@ -208,7 +227,6 @@ class MainWin(QMainWindow):
         if self.browser.isLoaded:
             self.stackedWidget.setCurrentWidget(self.mainPage) 
     
-
     def setTouchSound(self, active):
         self.configs['touchSound'] = active
         if not self.saveConfigs():
@@ -402,16 +420,16 @@ class MainWin(QMainWindow):
         self.btnIncDayNS.released.connect(lambda: self.incDaysTimer.stop())
         self.btnDecDayNS.pressed.connect(lambda: self.decDaysTimer.start(100))
         self.btnDecDayNS.released.connect(lambda: self.decDaysTimer.stop())
-        self.btnIncE.clicked.connect(lambda: self.setEnergy('inc'))
-        self.btnDecE.clicked.connect(lambda: self.setEnergy('dec'))
         self.btnDecDac.clicked.connect(lambda: self.setDac('dec'))
         self.btnIncDac.clicked.connect(lambda: self.setDac('inc'))
-        self.sliderEnergy.sliderMoved.connect(self.sldrSetEnergy)
+        self.energyWidget.inc.connect(lambda: self.setEnergy('inc'))
+        self.energyWidget.dec.connect(lambda: self.setEnergy('dec'))
+        # self.sliderEnergy.sliderMoved.connect(self.sldrSetEnergy)
         self.sliderEnergyCalib.sliderMoved.connect(lambda v: self.sldrSetEnergy(v*10))
-        self.btnIncF.clicked.connect(lambda: self.setFrequency('inc'))
-        self.btnDecF.clicked.connect(lambda: self.setFrequency('dec'))
-        self.sliderFrequency.sliderMoved.connect(self.sldrSetFrequency)
-        self.sliderFrequency.sliderReleased.connect(self.sldrFreqReleased)
+        self.frequencyWidget.inc.connect(lambda: self.setFrequency('inc'))
+        self.frequencyWidget.dec.connect(lambda: self.setFrequency('dec'))
+        # self.sliderFrequency.sliderMoved.connect(self.sldrSetFrequency)
+        # self.sliderFrequency.sliderReleased.connect(self.sldrFreqReleased)
         self.sliderFrequencyCalib.sliderMoved.connect(self.sldrSetFrequency)
         self.sliderFrequencyCalib.sliderReleased.connect(self.sldrFreqReleased)
         self.btnMale.clicked.connect(lambda: self.stackedWidgetSex.setCurrentWidget(self.malePage))
@@ -735,40 +753,22 @@ class MainWin(QMainWindow):
         inc = QIcon()
         dec = QIcon()
         if theme in ['C1', 'C2', 'C4']:
-            self.sliderEnergy.setStyleSheet(SLIDER_GB)
             self.sliderEnergyCalib.setStyleSheet(SLIDER_GB)
-            self.sliderFrequency.setStyleSheet(SLIDER_GB)
             self.sliderFrequencyCalib.setStyleSheet(SLIDER_GB)
-            self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED_GB)
             self.sliderPulseWidthCalib.setStyleSheet(SLIDER_DISABLED_GB)
             self.dacSlider.setStyleSheet(SLIDER_GB)
             inc.addPixmap(QPixmap(INC_BLACK))
             dec.addPixmap(QPixmap(DEC_BLACK))
-        else:
-            self.sliderEnergy.setStyleSheet(SLIDER_GW)                
-            self.sliderEnergyCalib.setStyleSheet(SLIDER_GW)
-            self.sliderFrequency.setStyleSheet(SLIDER_GW)                
+        else:          
+            self.sliderEnergyCalib.setStyleSheet(SLIDER_GW)           
             self.sliderFrequencyCalib.setStyleSheet(SLIDER_GW)
-            self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED_GW)
             self.sliderPulseWidthCalib.setStyleSheet(SLIDER_DISABLED_GW)
             self.dacSlider.setStyleSheet(SLIDER_GW)
             inc.addPixmap(QPixmap(INC_BLUE))
             dec.addPixmap(QPixmap(DEC_BLUE))
 
-        self.btnDecE.setIcon(dec)
-        self.btnDecP.setIcon(dec)
-        self.btnDecF.setIcon(dec)
-        self.btnIncE.setIcon(inc)
-        self.btnIncP.setIcon(inc)
-        self.btnIncF.setIcon(inc)
         self.btnDecDac.setIcon(dec)
         self.btnIncDac.setIcon(inc)
-        self.btnDecE.setIconSize(QSize(120, 120))                
-        self.btnDecP.setIconSize(QSize(120, 120))                
-        self.btnDecF.setIconSize(QSize(120, 120))                
-        self.btnIncE.setIconSize(QSize(120, 120))                
-        self.btnIncP.setIconSize(QSize(120, 120))                
-        self.btnIncF.setIconSize(QSize(120, 120)) 
 
         if theme == 'T1':
             self.centralWidget().setStyleSheet(THEME1)
@@ -1678,7 +1678,9 @@ class MainWin(QMainWindow):
                 self.btnStandByCalib.setStyleSheet(READY_NOT_SELECTED)
                 self.btnReady.setStyleSheet(READY_SELECTED)
                 self.btnReadyCalib.setStyleSheet(READY_SELECTED)
-                self.epfSkinGradeLayout.setEnabled(False)
+                self.skinGradeFrame.setEnabled(False)
+                self.frequencyWidget.setEnabled(False)
+                self.energyWidget.setEnabled(False)
                 self.epfLayout.setEnabled(False)
                 self.chgSliderColor(SLIDER_DISABLED_GB, SLIDER_DISABLED_GW)
 
@@ -1693,7 +1695,9 @@ class MainWin(QMainWindow):
             self.btnStandByCalib.setStyleSheet(READY_SELECTED)
             self.btnReady.setStyleSheet(READY_NOT_SELECTED)
             self.btnReadyCalib.setStyleSheet(READY_NOT_SELECTED)
-            self.epfSkinGradeLayout.setEnabled(True)
+            self.skinGradeFrame.setEnabled(True)
+            self.frequencyWidget.setEnabled(True)
+            self.energyWidget.setEnabled(True)
             self.epfLayout.setEnabled(True)
             self.chgSliderColor(SLIDER_GB, SLIDER_GW)
 
@@ -1751,19 +1755,13 @@ class MainWin(QMainWindow):
 
     def chgSliderColor(self, c1, c2):
         if self.configs['theme'] in ['C1', 'C2', 'C4']:
-            self.sliderEnergy.setStyleSheet(c1)
             self.sliderEnergyCalib.setStyleSheet(c1)
-            self.sliderFrequency.setStyleSheet(c1)
             self.sliderFrequencyCalib.setStyleSheet(c1)
-            self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED_GB)
             self.sliderPulseWidthCalib.setStyleSheet(SLIDER_DISABLED_GB)
             self.dacSlider.setStyleSheet(c1)
         else:
-            self.sliderEnergy.setStyleSheet(c2)
             self.sliderEnergyCalib.setStyleSheet(c2)
-            self.sliderFrequency.setStyleSheet(c2)
             self.sliderFrequencyCalib.setStyleSheet(c2)             
-            self.sliderPulseWidth.setStyleSheet(SLIDER_DISABLED_GW)
             self.sliderPulseWidthCalib.setStyleSheet(SLIDER_DISABLED_GW)
             self.dacSlider.setStyleSheet(c2)
 
@@ -1772,38 +1770,31 @@ class MainWin(QMainWindow):
         e = e + 1 if operation == 'inc' else e - 1
         if MIN_ENRGEY <= e <= MAX_ENERGY:
             self.energy = e
-            self.sliderEnergy.setValue(e)
-            self.lblEnergyValue.setText(str(e))
+            self.energyWidget.setValue(e)
             self.pulseWidth = e
-            self.sliderPulseWidth.setValue(e)
-            self.lblPulseWidthValue.setText(str(e))
+            self.pulseWidthWidget.setValue(e)
             pl = self.pulseWidth
             if MIN_PULSE_WIDTH <= pl <= MAX_PULSE_WIDTH:
                 self.pulseWidth = pl
-                self.sliderPulseWidth.setValue(pl)
-                self.lblPulseWidthValue.setText(str(pl))
+                self.pulseWidthWidget.setValue(pl)
                 maxF_pl = 1000 / (2 * self.pulseWidth)
                 maxF_pl_con = MAX_FREQUENCY >= maxF_pl
                 if maxF_pl_con and self.frequency >= maxF_pl:
                     self.frequency = math.floor(maxF_pl)
-                    self.sliderFrequency.setValue(self.frequency)
-                    self.lblFrequencyValue.setText(str(self.frequency))
-
+                    self.frequencyWidget.setValue(self.frequency)
+                    
     def sldrSetEnergy(self, value):
         self.energy = value
-        self.lblEnergyValue.setText(str(value))
         self.lblEnergyValueCalib.setText(str(value))
         self.pulseWidth = value
-        self.sliderPulseWidth.setValue(value)
+        self.pulseWidthWidget.setValue(value)
         self.sliderPulseWidthCalib.setValue(value)
-        self.lblPulseWidthValue.setText(str(value))
         self.lblPulseWidthValueCalib.setText(str(value))
         maxF_pl = 1000 / (2 * self.pulseWidth)
         maxF_pl_con = MAX_FREQUENCY >= maxF_pl
         if maxF_pl_con and self.frequency >= maxF_pl:
             self.frequency = math.floor(maxF_pl)
-            self.sliderFrequency.setValue(self.frequency)
-            self.lblFrequencyValue.setText(str(self.frequency))
+            self.frequencyWidget.setValue(self.frequency)
             self.sliderFrequencyCalib.setValue(self.frequency)
             self.lblFrequencyValueCalib.setText(str(self.frequency))
 
@@ -1812,30 +1803,23 @@ class MainWin(QMainWindow):
         freq = freq + 1 if operation == 'inc' else freq - 1
         if MIN_FREQUENCY <= freq <= MAX_FREQUENCY:
             self.frequency = freq
-            self.sliderFrequency.setValue(freq)
-            self.lblFrequencyValue.setText(str(freq))
+            self.frequencyWidget.setValue(freq)
             maxF_pl = math.floor(1000 / (2 * self.pulseWidth))
             maxF_pl_con = MAX_FREQUENCY >= maxF_pl
             if maxF_pl_con and self.frequency >= maxF_pl:
                 self.frequency = maxF_pl
-                self.sliderFrequency.setValue(maxF_pl)
-                self.lblFrequencyValue.setText(str(maxF_pl))
- 
+                self.frequencyWidget.setValue(maxF_pl)
     def sldrSetFrequency(self, value):
-        self.frequency = value
-        self.lblFrequencyValue.setText(str(value))
-        self.lblFrequencyValueCalib.setText(str(value))
-
+            self.frequency = value
+            self.lblFrequencyValueCalib.setText(str(value))
     def sldrFreqReleased(self):
         maxF_pl = math.floor(1000 / (2 * self.pulseWidth))
         maxF_pl_con = MAX_FREQUENCY >= maxF_pl
         if maxF_pl_con and self.frequency >= maxF_pl:
             self.frequency = maxF_pl
-            self.sliderFrequency.setValue(maxF_pl)
-            self.lblFrequencyValue.setText(str(maxF_pl))
+            self.frequencyWidget.setValue(maxF_pl)
             self.sliderFrequencyCalib.setValue(maxF_pl)
-            self.lblFrequencyValueCalib.setText(str(maxF_pl))
-        
+            self.lblFrequencyValueCalib.setText(str(maxF_pl))        
     def saveCase(self):
         case = openCase(self.case)
         case.save(
@@ -1913,12 +1897,9 @@ class MainWin(QMainWindow):
         self.energy = energy
         self.pulseWidth = pl
         self.frequency = freq
-        self.sliderEnergy.setValue(energy)
-        self.sliderPulseWidth.setValue(pl)
-        self.sliderFrequency.setValue(freq)
-        self.lblEnergyValue.setText(str(energy))
-        self.lblPulseWidthValue.setText(str(pl))
-        self.lblFrequencyValue.setText(str(freq))
+        self.energyWidget.setValue(energy)
+        self.pulseWidthWidget.setValue(pl)
+        self.frequencyWidget.setValue(freq)
 
     def backSettings(self):
         self.hwPass('hide')
