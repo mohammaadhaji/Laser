@@ -54,6 +54,12 @@ RIGHT_GREEN        = join(IMAGES_DIR, 'rightGreen.png')
 LEFT_GREEN         = join(IMAGES_DIR, 'leftGreen.png')
 RIGHT_YELLOW       = join(IMAGES_DIR, 'rightYellow.png')
 LEFT_YELLOW        = join(IMAGES_DIR, 'leftYellow.png')
+CASE_I             = join(IMAGES_DIR, 'I.png')
+CASE_II            = join(IMAGES_DIR, 'II.png')
+CASE_III           = join(IMAGES_DIR, 'III.png')
+CASE_IV            = join(IMAGES_DIR, 'IV.png')
+CASE_V             = join(IMAGES_DIR, 'V.png')
+CASE_SAVE          = join(IMAGES_DIR, 'save.png')
 BODY_PART_ICONS = {
         'f face':    join(IMAGES_DIR, 'fFace'),
         'f armpit':  join(IMAGES_DIR, 'fArmpit'),
