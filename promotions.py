@@ -18,6 +18,198 @@ class WebEngineView(QWebEngineView):
     def setIsLoaded(self):
         self.isLoaded = True
 
+class SelectedBodyPart(QFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.setStyleSheet('''
+            QFrame{
+                border-radius: 300px; 
+                background-color: rgb(235, 235, 235);
+            }'''
+        )
+        self.setFrameShape(QFrame.StyledPanel)
+        self.setFrameShadow(QFrame.Raised)
+        self.setObjectName("frame")
+        self.verticalLayoutWidget = QWidget(self)
+        self.verticalLayoutWidget.setGeometry(QRect(70, 80, 221, 211))
+        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
+        self.verticalLayout = QVBoxLayout(self.verticalLayoutWidget)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 20)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label = QLabel(self.verticalLayoutWidget)
+        self.label.setStyleSheet("background-color: rgba(0,0,0,0);")
+        self.label.setText("")
+        self.label.setAlignment(Qt.AlignCenter)
+        self.label.setObjectName("label")
+        icon = QPixmap(BODY_PART_ICONS['f arm'])
+        self.label.setPixmap(icon.scaled(200,200))
+        self.verticalLayout.addWidget(self.label)
+        self.label_2 = QLabel(self.verticalLayoutWidget)
+        self.label_2.setStyleSheet('color: black;')
+        font = QFont()
+        font.setPointSize(20)
+        self.label_2.setFont(font)
+        self.label_2.setAlignment(Qt.AlignCenter)
+        self.label_2.setObjectName("label_2")
+        self.verticalLayout.addWidget(self.label_2)
+        self.verticalLayout.setStretch(0, 4)
+        self.verticalLayout.setStretch(1, 1)
+
+    def setIcon(self, path):
+        icon = QPixmap(path)
+        self.label.setPixmap(icon.scaled(140,140))
+
+    def setText(self, txt):
+        self.label_2.setText(txt)
+
+
+class SkinGrade(QFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        minWidth = 100
+        maxWidth = 200
+        self.setStyleSheet('''
+            QFrame{
+                background-color: none;
+            }
+            QPushButton {
+                height:200px;
+                min-width:100px;
+                max-width:200px;
+                margin:0px;
+                border:0px solid black;
+                background-color: rgb(179, 196, 255);
+            }
+            QLabel {
+                font: 20pt \"Arial\";
+            }
+        ''')
+        self.setFrameShape(QFrame.StyledPanel)
+        self.setFrameShadow(QFrame.Raised)
+        self.setObjectName("frame")
+        self.btnCaseI = QPushButton(self)
+        self.btnCaseI.setGeometry(QRect(1, 81, 200, 112))
+        self.btnCaseI.setMinimumSize(QSize(minWidth, 0))
+        self.btnCaseI.setMaximumSize(QSize(maxWidth, 16777215))
+        self.btnCaseI.setStyleSheet('background-color: rgb(128, 157, 255);')
+        self.btnCaseI.setText("")
+        icon = QIcon()
+        icon.addPixmap(QPixmap(".\\ui\\images/I.png"), QIcon.Normal, QIcon.Off)
+        self.btnCaseI.setIcon(icon)
+        self.btnCaseI.setIconSize(QSize(80, 80))
+        self.btnCaseI.setObjectName("btnCaseI")
+        self.btnCaseII = QPushButton(self)
+        self.btnCaseII.setGeometry(QRect(1, 193, 100, 111))
+        self.btnCaseII.setMaximumSize(QSize(maxWidth, 16777215))
+        self.btnCaseII.setText("")
+        icon1 = QIcon()
+        icon1.addPixmap(QPixmap(".\\ui\\images/II.png"), QIcon.Normal, QIcon.Off)
+        self.btnCaseII.setIcon(icon1)
+        self.btnCaseII.setIconSize(QSize(80, 80))
+        self.btnCaseII.setObjectName("btnCaseII")
+        self.btnCaseIII = QPushButton(self)
+        self.btnCaseIII.setGeometry(QRect(1, 304, 100, 112))
+        self.btnCaseIII.setMaximumSize(QSize(maxWidth, 16777215))
+        self.btnCaseIII.setText("")
+        icon2 = QIcon()
+        icon2.addPixmap(QPixmap(".\\ui\\images/III.png"), QIcon.Normal, QIcon.Off)
+        self.btnCaseIII.setIcon(icon2)
+        self.btnCaseIII.setIconSize(QSize(80, 80))
+        self.btnCaseIII.setObjectName("btnCaseIII")
+        self.btnCaseIV = QPushButton(self)
+        self.btnCaseIV.setGeometry(QRect(1, 416, 100, 111))
+        self.btnCaseIV.setMaximumSize(QSize(maxWidth, 16777215))
+        self.btnCaseIV.setText("")
+        icon3 = QIcon()
+        icon3.addPixmap(QPixmap(".\\ui\\images/IV.png"), QIcon.Normal, QIcon.Off)
+        self.btnCaseIV.setIcon(icon3)
+        self.btnCaseIV.setIconSize(QSize(80, 80))
+        self.btnCaseIV.setObjectName("btnCaseIV")
+        self.btnCaseV = QPushButton(self)
+        self.btnCaseV.setGeometry(QRect(1, 527, 100, 112))
+        self.btnCaseV.setMaximumSize(QSize(maxWidth, 16777215))
+        self.btnCaseV.setText("")
+        icon4 = QIcon()
+        icon4.addPixmap(QPixmap(".\\ui\\images/V.png"), QIcon.Normal, QIcon.Off)
+        self.btnCaseV.setIcon(icon4)
+        self.btnCaseV.setIconSize(QSize(80, 80))
+        self.btnCaseV.setObjectName("btnCaseV")
+        self.btnSave = QPushButton(self)
+        self.btnSave.setGeometry(QRect(1, 639, 200, 100))
+        self.btnSave.setMaximumSize(QSize(maxWidth, 16777215))
+        self.btnSave.setText("Save")
+        self.btnSave.setFont(QFont('Arial', 20))
+        icon5 = QIcon()
+        icon5.addPixmap(QPixmap(".\\ui\\images/save.png"), QIcon.Normal, QIcon.Off)
+        self.btnSave.setIcon(icon5)
+        self.btnSave.setIconSize(QSize(70, 70))
+        self.btnSave.setObjectName("save")
+        self.btnSave.setStyleSheet('''
+            QPushButton {
+                border-bottom-right-radius: 10px;
+            }
+            QPushButton:pressed{
+                background-color: rgb(255, 255, 255);
+            }
+        ''')
+        self.label = QLabel(self)
+        self.label.setFont(QFont('A Iranian Sans', 30))
+        self.label.setText('Skin Grade')
+        self.label.setGeometry(QRect(1, 1, 200, 80))
+        self.label.setMinimumSize(QSize(0, 80))
+        self.label.setStyleSheet('''
+            background-color: rgb(230, 235, 255);
+            border-top-right-radius: 10px;
+            color: black;
+        ''')
+        self.label.setAlignment(Qt.AlignCenter)
+        self.label.setObjectName("label")
+        self.current = self.btnCaseI
+        self.allButtons = [self.btnCaseI, self.btnCaseII,
+                          self.btnCaseIII, self.btnCaseIV,
+                          self.btnCaseV]
+        for btn in self.allButtons:
+            btn.clicked.connect(self.showBtn(btn))
+
+    def showBtn(self, btn):
+        def wrapper():
+            if self.current.objectName() == btn.objectName():
+                return
+
+            self.animationShow = QPropertyAnimation(btn, b"geometry")
+            self.animationShow.setDuration(300)
+            self.animationShow.setStartValue(self.getGeo(btn, 'hide'))
+            self.animationShow.setEndValue(self.getGeo(btn, 'show'))
+            self.animationShow.setEasingCurve(QEasingCurve.InOutQuart)
+            self.animationShow.start()
+            style = """
+                background-color: rgb(128, 157, 255);
+            """
+            btn.setStyleSheet(style)
+
+            self.animationHide = QPropertyAnimation(self.current, b"geometry")
+            self.animationHide.setDuration(300)
+            self.animationHide.setStartValue(self.getGeo(self.current, 'show'))
+            self.animationHide.setEndValue(self.getGeo(self.current, 'hide'))
+            self.animationHide.setEasingCurve(QEasingCurve.InOutQuart)
+            self.animationHide.start()
+            style = 'background-color: rgb(179, 196, 255);'
+            self.current.setStyleSheet(style) 
+
+            self.current = btn
+
+        return wrapper
+
+    def getGeo(self, btn, x):
+        if x == 'hide':
+            geo = btn.geometry()
+            geo.setWidth(100)
+            return geo
+        else:
+            geo = btn.geometry()
+            geo.setWidth(200)
+            return geo
+
 class Parameter(QFrame):
     inc = pyqtSignal()
     dec = pyqtSignal()
@@ -113,14 +305,6 @@ class Parameter(QFrame):
 
         self.btnDec.clicked.connect(lambda: self.dec.emit())
         self.btnInc.clicked.connect(lambda: self.inc.emit())
-        self.incTimer = QTimer()
-        self.decTimer = QTimer()
-        self.incTimer.timeout.connect(lambda: self.inc.emit())
-        self.decTimer.timeout.connect(lambda: self.dec.emit())
-        self.btnInc.pressed.connect(lambda: self.incTimer.start(100))
-        self.btnInc.released.connect(lambda: self.incTimer.stop())
-        self.btnDec.pressed.connect(lambda: self.decTimer.start(100))
-        self.btnDec.released.connect(lambda: self.decTimer.stop())
 
     def setParameter(self, x):
         def setIcon(dec, inc):
@@ -136,15 +320,15 @@ class Parameter(QFrame):
         parameter = x
         self.lblParameter.setText(parameter)
         if self.lblParameter.text() == 'Energy':
-            setIcon(LEFT_BLUE, RIGHT_BLUE)
+            setIcon(LEFT_YELLOW, RIGHT_YELLOW)
             self.max = 100
             self.lblUnit.setText('Joule')
-            self.color = 'rgba(85, 170, 255, 255)'
-            self.lblValue.setStyleSheet("color: rgb(115, 185, 255); padding: 0px; background-color: none;")
+            self.color = 'rgba(255, 255, 26, 255)'
+            self.lblValue.setStyleSheet("color: rgb(255, 255, 26); padding: 0px; background-color: none;")
             self.progressFrame.setStyleSheet('''
             QFrame{
                 border-radius: 175px;
-                background-color: qconicalgradient(cx:0.5, cy:0.5, angle:90, stop:0.400 rgba(85, 170, 255, 255), stop:0.395 rgba(255, 255, 255, 0));
+                background-color: qconicalgradient(cx:0.5, cy:0.5, angle:90, stop:0.400 rgba(255, 255, 26, 255), stop:0.395 rgba(255, 255, 255, 0));
             }'''
         )
         elif self.lblParameter.text() == 'Pulse Width':
@@ -171,6 +355,40 @@ class Parameter(QFrame):
                 background-color: qconicalgradient(cx:0.5, cy:0.5, angle:90, stop:0.750 rgba(255, 0, 127, 255), stop:0.745 rgba(255, 255, 255, 0));
             }'''
         )
+        if self.lblParameter.text() == 'Cooling':
+            setIcon(LEFT_BLUE, RIGHT_BLUE)
+            self.max = 5
+            self.lblUnit.setText('')
+            self.color = 'rgba(85, 170, 255, 255)'
+            self.lblValue.setStyleSheet("color: rgb(115, 185, 255); padding: 0px; background-color: none;")
+            self.progressFrame.setStyleSheet('''
+            QFrame{
+                border-radius: 175px;
+                background-color: qconicalgradient(cx:0.5, cy:0.5, angle:90, stop:0.400 rgba(85, 170, 255, 255), stop:0.395 rgba(255, 255, 255, 0));
+            }'''
+        )
+        if self.lblParameter.text() == 'Counter':
+            self.max = 1000
+            self.btnDec.setVisible(False)
+            self.btnInc.setVisible(False)
+            self.lblUnit.setText('')
+            self.color = 'rgba(245, 126, 42, 255)'
+            self.lblValue.setStyleSheet("color: rgb(245, 126, 42); padding: 0px; background-color: none;")
+            self.progressFrame.setStyleSheet('''
+            QFrame{
+                border-radius: 175px;
+                background-color: qconicalgradient(cx:0.5, cy:0.5, angle:90, stop:0.400 rgba(245, 126, 42, 255), stop:0.395 rgba(255, 255, 255, 0));
+            }'''
+        )
+        if parameter == 'Energy':
+            self.incTimer = QTimer()
+            self.decTimer = QTimer()
+            self.incTimer.timeout.connect(lambda: self.inc.emit())
+            self.decTimer.timeout.connect(lambda: self.dec.emit())
+            self.btnInc.pressed.connect(lambda: self.incTimer.start(100))
+            self.btnInc.released.connect(lambda: self.incTimer.stop())
+            self.btnDec.pressed.connect(lambda: self.decTimer.start(100))
+            self.btnDec.released.connect(lambda: self.decTimer.stop())
 
     def setValue(self, value):
 
@@ -185,7 +403,7 @@ class Parameter(QFrame):
         """
         progress = (self.max - value) / self.max
 
-        stop_1 = str(progress - 0.001)
+        stop_1 = str(progress - 0.0001)
         stop_2 = str(progress)
 
         if value == self.max:
@@ -198,7 +416,29 @@ class Parameter(QFrame):
 
         self.progressFrame.setStyleSheet(newStylesheet)
 
+class CounterParameter(Parameter):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.max = 10
 
+    def setValue(self, value):
+        htmlText = """<p align="center"><span style=" font-size:50pt;">{VALUE}</span></p>"""
+        self.lblValue.setText(htmlText.replace("{VALUE}", str(value)))
+        styleSheet = """
+        QFrame{
+        	border-radius: 175px;
+        	background-color: qconicalgradient(cx:0.5, cy:0.5, angle:90, stop:{STOP_1} rgba(255, 0, 127, 0), stop:{STOP_2} {COLOR});
+        }
+        """
+        progress = (self.max - 0) / self.max
+
+        stop_1 = str(progress - 0.0001)
+        stop_2 = str(progress)
+
+        newStylesheet = styleSheet.replace("{STOP_1}", stop_1)\
+                                  .replace("{STOP_2}", stop_2)\
+                                  .replace("{COLOR}", self.color)
+        self.progressFrame.setStyleSheet(newStylesheet)
 
 class PowerOption(QFrame):
     shutdown = pyqtSignal()

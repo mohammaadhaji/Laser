@@ -80,10 +80,10 @@ TEXT = {
     'btnEndSession': ['End Session', 'پایان جلسه'],
     'btnFemale': ['Female', ' زن '],
     'btnMale': [' Male    ',' مرد '],
-    'lblEnergy': ['Energy   →', '→   انرژی'],
-    'lblFrequency': ['Frequency   →', '→   فرکانس'],
-    'lblPulseWidth': ['Pulse Width   →', '→   پهنای پالس'],
-    'lblCounter': ['Counter   →', '→   شمارنده'],
+    'lblEnergy': ['Energy', 'انرژی'],
+    'lblFrequency': ['Frequency', 'فرکانس'],
+    'lblPulseWidth': ['Pulse Width', 'پهنای پالس'],
+    'lblCounter': ['Counter', 'شمارنده'],
     'lblJoule': ['Joule', 'ژول'],
     'lblmSec': ['mSec', 'میلی ثانیه'],
     'lblHz': ['Hz', 'هرتز'],
@@ -236,7 +236,7 @@ TEXT = {
     'btnFailRes': ['Fail', 'مردود'], 
     'btnPassPower': ['Pass', 'قبول'], 
     'btnFailPower': ['Fail', 'مردود'],
-    'SensorCalibError': ['Sensor Error', 'خطای سنسور'],
+    'SensorError': ['Sensor Error', 'خطای سنسور'],
     'saveCoeffError': ['Error saving coefficient.', 'خطای ذخیره ضریب'],
     'CoeffError': ['Invalid input', 'ورودی نامعتبر']
 }
