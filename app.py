@@ -170,7 +170,7 @@ class MainWin(QMainWindow):
         self.counterWidget.setParameter('Counter')
         self.counterWidget.setValue(self.currentCounter)
         self.skinGradeWidget = SkinGrade(self.laserPage)
-        self.skinGradeWidget.setGeometry(-1, 70, 200, 800)
+        self.skinGradeWidget.setGeometry(-1, 60, 200, 800)
         self.selectedBodyPart = SelectedBodyPart(self.laserPage)
         self.selectedBodyPart.setGeometry(1600,650, 600, 600)
         self.time(edit=True)
@@ -426,12 +426,9 @@ class MainWin(QMainWindow):
         self.btnIncDac.clicked.connect(lambda: self.setDac('inc'))
         self.energyWidget.inc.connect(lambda: self.setEnergy('inc'))
         self.energyWidget.dec.connect(lambda: self.setEnergy('dec'))
-        # self.sliderEnergy.sliderMoved.connect(self.sldrSetEnergy)
         self.sliderEnergyCalib.sliderMoved.connect(lambda v: self.sldrSetEnergy(v*10))
         self.frequencyWidget.inc.connect(lambda: self.setFrequency('inc'))
         self.frequencyWidget.dec.connect(lambda: self.setFrequency('dec'))
-        # self.sliderFrequency.sliderMoved.connect(self.sldrSetFrequency)
-        # self.sliderFrequency.sliderReleased.connect(self.sldrFreqReleased)
         self.sliderFrequencyCalib.sliderMoved.connect(self.sldrSetFrequency)
         self.sliderFrequencyCalib.sliderReleased.connect(self.sldrFreqReleased)
         self.btnMale.clicked.connect(lambda: self.stackedWidgetSex.setCurrentWidget(self.malePage))
@@ -1309,8 +1306,14 @@ class MainWin(QMainWindow):
     def resetTotalShot(self):
         if self.logingSettingAdmin:
             text = '0 : ' + str(self.configs['TotalShotCounterAdmin'])
+            logText = 'The counter was reset by the admin.\n'
         else:
             text = '0'
+            logText = 'The counter was reset by the user.\n'
+        
+        logText += 'Counter value: ' + str(self.configs['TotalShotCounter']) + ' --> 0\n'
+        log('Reset Counter', logText)
+            
         self.txtTotalShotCounter.setText(text)
 
         self.configs['TotalShotCounter'] = 0
