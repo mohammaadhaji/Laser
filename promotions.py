@@ -89,7 +89,7 @@ class SkinGrade(QFrame):
         self.setFrameShadow(QFrame.Raised)
         self.setObjectName("frame")
         self.btnCaseI = QPushButton(self)
-        self.btnCaseI.setGeometry(QRect(1, 81, 200, 112))
+        self.btnCaseI.setGeometry(QRect(1, 101, 200, 112))
         self.btnCaseI.setMinimumSize(QSize(minWidth, 0))
         self.btnCaseI.setMaximumSize(QSize(maxWidth, 16777215))
         self.btnCaseI.setStyleSheet('background-color: rgb(128, 157, 255);')
@@ -100,7 +100,7 @@ class SkinGrade(QFrame):
         self.btnCaseI.setIconSize(QSize(80, 80))
         self.btnCaseI.setObjectName("btnCaseI")
         self.btnCaseII = QPushButton(self)
-        self.btnCaseII.setGeometry(QRect(1, 193, 100, 111))
+        self.btnCaseII.setGeometry(QRect(1, 213, 100, 111))
         self.btnCaseII.setMaximumSize(QSize(maxWidth, 16777215))
         self.btnCaseII.setText("")
         icon1 = QIcon()
@@ -109,7 +109,7 @@ class SkinGrade(QFrame):
         self.btnCaseII.setIconSize(QSize(80, 80))
         self.btnCaseII.setObjectName("btnCaseII")
         self.btnCaseIII = QPushButton(self)
-        self.btnCaseIII.setGeometry(QRect(1, 304, 100, 112))
+        self.btnCaseIII.setGeometry(QRect(1, 324, 100, 112))
         self.btnCaseIII.setMaximumSize(QSize(maxWidth, 16777215))
         self.btnCaseIII.setText("")
         icon2 = QIcon()
@@ -118,7 +118,7 @@ class SkinGrade(QFrame):
         self.btnCaseIII.setIconSize(QSize(80, 80))
         self.btnCaseIII.setObjectName("btnCaseIII")
         self.btnCaseIV = QPushButton(self)
-        self.btnCaseIV.setGeometry(QRect(1, 416, 100, 111))
+        self.btnCaseIV.setGeometry(QRect(1, 436, 100, 111))
         self.btnCaseIV.setMaximumSize(QSize(maxWidth, 16777215))
         self.btnCaseIV.setText("")
         icon3 = QIcon()
@@ -127,7 +127,7 @@ class SkinGrade(QFrame):
         self.btnCaseIV.setIconSize(QSize(80, 80))
         self.btnCaseIV.setObjectName("btnCaseIV")
         self.btnCaseV = QPushButton(self)
-        self.btnCaseV.setGeometry(QRect(1, 527, 100, 112))
+        self.btnCaseV.setGeometry(QRect(1, 547, 100, 112))
         self.btnCaseV.setMaximumSize(QSize(maxWidth, 16777215))
         self.btnCaseV.setText("")
         icon4 = QIcon()
@@ -136,7 +136,7 @@ class SkinGrade(QFrame):
         self.btnCaseV.setIconSize(QSize(80, 80))
         self.btnCaseV.setObjectName("btnCaseV")
         self.btnSave = QPushButton(self)
-        self.btnSave.setGeometry(QRect(1, 639, 200, 100))
+        self.btnSave.setGeometry(QRect(1, 659, 200, 100))
         self.btnSave.setMaximumSize(QSize(maxWidth, 16777215))
         self.btnSave.setText("Save")
         self.btnSave.setFont(QFont('Arial', 20))
@@ -156,7 +156,7 @@ class SkinGrade(QFrame):
         self.label = QLabel(self)
         self.label.setFont(QFont('A Iranian Sans', 30))
         self.label.setText('Skin Grade')
-        self.label.setGeometry(QRect(1, 1, 200, 80))
+        self.label.setGeometry(QRect(1, 1, 200, 100))
         self.label.setMinimumSize(QSize(0, 80))
         self.label.setStyleSheet('''
             background-color: rgb(230, 235, 255);
@@ -271,21 +271,21 @@ class Parameter(QFrame):
         self.lblParameter.setStyleSheet("color: #FFFFFF; background-color: none;")
         self.lblParameter.setAlignment(Qt.AlignCenter)
         self.layout.addWidget(self.lblParameter, 0, 0, 1, 1)
-        self.btnInc = QPushButton(self)
-        self.btnInc.setGeometry(QRect(0, 121, 114, 110))
-        self.btnInc.setText("")
+        self.btnDec = QPushButton(self)
+        self.btnDec.setGeometry(QRect(0, 121, 114, 110))
+        self.btnDec.setText("")
         icon = QIcon()
         icon.addPixmap(QPixmap(DEC_BLACK), QIcon.Normal, QIcon.Off)
-        self.btnInc.setIcon(icon)
-        self.btnInc.setIconSize(QSize(110, 110))
-        self.btnDec = QPushButton(self)
-        self.btnDec.setGeometry(QRect(470, 121, 114, 110))
-        self.btnDec.setText("")
+        self.btnDec.setIcon(icon)
+        self.btnDec.setIconSize(QSize(110, 110))
+        self.btnInc = QPushButton(self)
+        self.btnInc.setGeometry(QRect(470, 121, 114, 110))
+        self.btnInc.setText("")
         icon1 = QIcon()
         icon1.addPixmap(QPixmap(INC_BLACK), QIcon.Normal, QIcon.Off)
-        self.btnDec.setIcon(icon1)
-        self.btnDec.setIconSize(QSize(110, 110))
-        self.btnDec.setStyleSheet('''
+        self.btnInc.setIcon(icon1)
+        self.btnInc.setIconSize(QSize(110, 110))
+        self.btnInc.setStyleSheet('''
             QPushButton{
                 outline : 0;
                 border: 0;
@@ -294,7 +294,7 @@ class Parameter(QFrame):
                 margin-left:20px;
             }
         ''')
-        self.btnInc.setStyleSheet('''
+        self.btnDec.setStyleSheet('''
             QPushButton{
                 outline : 0;
                 border: 0;
@@ -304,19 +304,19 @@ class Parameter(QFrame):
             }
         ''')
 
-        self.btnDec.clicked.connect(lambda: self.dec.emit())
         self.btnInc.clicked.connect(lambda: self.inc.emit())
+        self.btnDec.clicked.connect(lambda: self.dec.emit())
 
     def setParameter(self, x):
         def setIcon(dec, inc):
             icon = QIcon()
             icon.addPixmap(QPixmap(dec), QIcon.Normal, QIcon.Off)
-            self.btnInc.setIcon(icon)
-            self.btnInc.setIconSize(QSize(110, 110))
+            self.btnDec.setIcon(icon)
+            self.btnDec.setIconSize(QSize(110, 110))
             icon1 = QIcon()
             icon1.addPixmap(QPixmap(inc), QIcon.Normal, QIcon.Off)
-            self.btnDec.setIcon(icon1)
-            self.btnDec.setIconSize(QSize(110, 110))
+            self.btnInc.setIcon(icon1)
+            self.btnInc.setIconSize(QSize(110, 110))
 
         parameter = x
         self.lblParameter.setText(parameter)
@@ -370,8 +370,8 @@ class Parameter(QFrame):
         )
         if self.lblParameter.text() == 'Counter':
             self.max = 1000
-            self.btnDec.setVisible(False)
             self.btnInc.setVisible(False)
+            self.btnDec.setVisible(False)
             self.lblUnit.setText('')
             self.color = 'rgba(245, 126, 42, 255)'
             self.lblValue.setStyleSheet("color: rgb(245, 126, 42); padding: 0px; background-color: none;")
@@ -386,10 +386,10 @@ class Parameter(QFrame):
             self.decTimer = QTimer()
             self.incTimer.timeout.connect(lambda: self.inc.emit())
             self.decTimer.timeout.connect(lambda: self.dec.emit())
-            self.btnInc.pressed.connect(lambda: self.incTimer.start(100))
-            self.btnInc.released.connect(lambda: self.incTimer.stop())
             self.btnDec.pressed.connect(lambda: self.decTimer.start(100))
             self.btnDec.released.connect(lambda: self.decTimer.stop())
+            self.btnInc.pressed.connect(lambda: self.incTimer.start(100))
+            self.btnInc.released.connect(lambda: self.incTimer.stop())
 
     def setValue(self, value):
 
