@@ -2349,7 +2349,7 @@ class MainWin(QMainWindow):
         nameEdit = self.txtEditName.text()
         numberEdited = False
 
-        if not numberEdit:
+        if not numberEdit or numberEdit.isspace():
             self.setLabel(
                     TEXT['emptyNumber'][self.langIndex], 
                     self.lblEditUser,
@@ -2376,7 +2376,7 @@ class MainWin(QMainWindow):
             self.removeUser(oldNumber)
 
 
-        if not nameEdit:
+        if not nameEdit or nameEdit.isspace():
             nameEdit = 'Nobody'
 
         self.userInfo.setName(nameEdit)
