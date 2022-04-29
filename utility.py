@@ -56,7 +56,7 @@ def monitorInfo():
         with open(MONITOR_INFO_FILE, 'r') as f:
             for l in f:
                 if l.strip().startswith('Display Product Name'):
-                    info = l.split(':')[1].strip()
+                    info = l.split(':')[1].strip()[1:-1]
 
     return info + ' ' + resolution
 

@@ -28,6 +28,9 @@ if platform.system() == 'Windows':
 else:
     serial = Serial('/dev/ttyS0', 460800)
 
+SHOW_SEND_MSG = False
+SHOW_RECE_MSG = False
+
 HEADER_1       = 1
 HEADER_2       = 2
 CHECK_NOB_1    = 3
@@ -94,8 +97,9 @@ def buildPacket(data, page, field, cmdType):
     crc_bytes = crc.to_bytes(2, byteorder='big')
     packet += crc_bytes
     packet.append(0xCC)
-    # print('SENT: ', end='')
-    # printPacket(packet)
+    if SHOW_SEND_MSG:
+        print('SENT: ', end='')
+        printPacket(packet)
     return packet
 
 
@@ -385,8 +389,10 @@ class SerialTimer(QObject):
                             )
                             
                             if crc_r == crc_s:
-                                # print('RECE: ', end='')
-                                # printPacket(RECEIVED_DATA)
+                                if SHOW_RECE_MSG:
+                                    print('RECE: ', end='AA BB ')
+                                    printPacket(RECEIVED_DATA)
+
                                 key, value = decodePacket(RECEIVED_DATA)
                                 if key == 'sensorFlags':
                                     self.sensorFlags.emit(value)
@@ -559,8 +565,10 @@ class SerialThread(QThread):
                                 )
 
                                 if crc_r == crc_s:
-                                    # print('RECE: ', end='')
-                                    # printPacket(RECEIVED_DATA)
+                                    if SHOW_RECE_MSG:
+                                        print('RECE: ', end='AA BB ')
+                                        printPacket(RECEIVED_DATA)
+
                                     key, value = decodePacket(RECEIVED_DATA)
                                     if key == 'sensorFlags':
                                         self.sensorFlags.emit(value)
