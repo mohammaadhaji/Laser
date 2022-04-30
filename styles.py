@@ -758,3 +758,18 @@ QPushButton:pressed{
     border: 10px solid white;
 }
 """
+MESSAGE_LABLE = """
+QLabel {
+    font: 20pt "Aril";
+	min-height: 70px;
+	border-top-right-radius: 35px;
+	border-bottom-right-radius: 35px;
+	border-top-left-radius: 35px;
+	border-bottom-left-radius: 35px;
+	background-color: #141413;
+	color: rgb(255, 255, 255);
+    padding-left: 30px;
+    padding-right: 30px;
+    border: 2px solid white;
+}
+"""

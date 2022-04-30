@@ -121,6 +121,10 @@ class MainWin(QMainWindow):
         self.ownerInfoSplash.setText(ownerInfo)
         self.ownerInfoSplash.move(0, 880)
         self.ownerInfoSplash.setMinimumHeight(200)
+        self.lblMsg = QLabel(self)
+        self.lblMsg.setStyleSheet(MESSAGE_LABLE)
+        self.lblMsg.setAlignment(Qt.AlignCenter)
+        self.lblMsg.setVisible(False)
         if not ownerInfo: self.ownerInfoSplash.setVisible(False)
         self.user = None
         self.userNextSession = None
@@ -232,11 +236,7 @@ class MainWin(QMainWindow):
     def setTouchSound(self, active):
         self.configs['touchSound'] = active
         if not self.saveConfigs():
-            self.setLabel(
-                TEXT['saveConfigError'][self.langIndex], 
-                self.lblUiError, 
-                self.uiLabelTimer, 4
-            )
+            self.setLabel(TEXT['saveConfigError'][self.langIndex], 4)
 
     def playTouchSound(self, sound):
         if self.configs['touchSound']:
@@ -269,11 +269,7 @@ class MainWin(QMainWindow):
         self.hwStackedWidget.setSlideTransition(checked)
         self.configs['slideTransition'] = checked
         if not self.saveConfigs():
-            self.setLabel(
-                TEXT['saveConfigError'][self.langIndex], 
-                self.lblUiError, 
-                self.uiLabelTimer, 4
-            )
+            self.setLabel(TEXT['saveConfigError'][self.langIndex], 4)
 
     def initTimers(self):
         if RPI_VERSION == '3':
@@ -282,27 +278,14 @@ class MainWin(QMainWindow):
             self.checkBuffer.start(10)
         else:
             self.serialC.start()
-        self.loginLabelTimer = QTimer()
-        self.submitLabelTimer = QTimer()
-        self.editLabelTimer = QTimer()
-        self.nextSessionLabelTimer = QTimer()
-        self.hwUpdatedLabelTimer = QTimer()
+        
         self.incDaysTimer = QTimer()
         self.decDaysTimer = QTimer()
         self.backspaceTimer = QTimer()
-        self.passwordLabelTimer = QTimer()
         self.hwWrongPassTimer = QTimer()
         self.resetCounterPassTimer = QTimer()
-        self.uuidPassLabelTimer = QTimer()
-        self.sysTimeStatusLabelTimer = QTimer()
-        self.lockErrorLabel = QTimer()
         self.updateFirmwareLabelTimer = QTimer()
-        self.uiLabelTimer = QTimer()
-        self.sensorsReportLabelTimer = QTimer()
-        self.musicRefreshLableTimer = QTimer()
-        self.coeffLabelTimer = QTimer()
         self.systemTimeTimer = QTimer()
-        self.readyErrorTimer =  QTimer()
         self.monitorSensorsTimer = QTimer()
         self.monitorReceivingSensors = QTimer()
         self.sparkTimer = QTimer()
@@ -310,28 +293,14 @@ class MainWin(QMainWindow):
         self.shutdownTimer = QTimer()
         self.restartTimer = QTimer()
         self.keyboardTimer = QTimer()
+        self.messageTimer = QTimer()
+        self.messageTimer.timeout.connect(self.clearLabel)
         self.keyboardTimer.timeout.connect(lambda: self.keyboard('hide'))
         self.shutdownTimer.timeout.connect(self.powerOff)
         self.restartTimer.timeout.connect(self.restart)
         self.loadUsersTimer.timeout.connect(self.addUsersTable)
         self.loadUsersTimer.start(20)
         self.systemTimeTimer.timeout.connect(self.time)
-        self.loginLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblLogin, self.loginLabelTimer))
-        self.submitLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblSubmit, self.submitLabelTimer))
-        self.editLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblEditUser, self.editLabelTimer))
-        self.nextSessionLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblErrNextSession, self.nextSessionLabelTimer))
-        self.hwUpdatedLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblSaveHw, self.hwUpdatedLabelTimer))
-        self.passwordLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblPassword, self.passwordLabelTimer))
-        self.uuidPassLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblPassUUID, self.uuidPassLabelTimer))
-        self.sysTimeStatusLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblSystemTimeStatus, self.sysTimeStatusLabelTimer))
-        self.lockErrorLabel.timeout.connect(lambda: self.clearLabel(self.lblLockError, self.lockErrorLabel))
-        self.readyErrorTimer.timeout.connect(lambda: self.clearLabel(self.lblReadyError, self.readyErrorTimer))
-        self.readyErrorTimer.timeout.connect(lambda: self.clearLabel(self.lblReadyCalibError, self.readyErrorTimer))
-        self.updateFirmwareLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblUpdateFirmware, self.updateFirmwareLabelTimer))
-        self.uiLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblUiError, self.uiLabelTimer))
-        self.sensorsReportLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblSensorDateError, self.sensorsReportLabelTimer))
-        self.musicRefreshLableTimer.timeout.connect(lambda: self.clearLabel(self.lblMusicRefresh, self.musicRefreshLableTimer))
-        self.coeffLabelTimer.timeout.connect(lambda: self.clearLabel(self.lblCalcCoeff, self.coeffLabelTimer))
         self.incDaysTimer.timeout.connect(lambda: self.incDecDayNS('inc'))
         self.decDaysTimer.timeout.connect(lambda: self.incDecDayNS('dec'))
         self.backspaceTimer.timeout.connect(self.type(lambda: 'backspace'))
@@ -698,43 +667,36 @@ class MainWin(QMainWindow):
             readValue = self.txtReadValue.text()
             readValue = float(readValue) if readValue else self.sliderEnergyCalib.value() * 10
             energy = self.sliderEnergyCalib.value() * 10
+            ratio = energy / readValue
+
+            if not 0.8 <= ratio <= 1.2:
+                raise Exception('out of range')
+
+            if energy <= 30:
+                self.configs['EnergyCoeffs'][0] = ratio
+            elif 30 < energy <= 40:
+                self.configs['EnergyCoeffs'][1] = ratio
+            elif 40 < energy <= 50:
+                self.configs['EnergyCoeffs'][2] = ratio
+            elif 50 < energy <= 60:
+                self.configs['EnergyCoeffs'][3] = ratio
+            elif 60 < energy <= 70:
+                self.configs['EnergyCoeffs'][4] = ratio
+            elif 70 < energy <= 80:
+                self.configs['EnergyCoeffs'][5] = ratio
+            elif 80 < energy <= 90:
+                self.configs['EnergyCoeffs'][6] = ratio
+            elif 90 < energy <= 100:
+                self.configs['EnergyCoeffs'][7] = ratio
+
         except Exception:
-            self.setLabel(
-                TEXT['CoeffError'][self.langIndex], 
-                self.lblCalcCoeff, 
-                self.coeffLabelTimer, 4
-            )
+            self.setLabel(TEXT['CoeffError'][self.langIndex], 4)
             return
-
-        if energy <= 30:
-            self.configs['EnergyCoeffs'][0] = energy / readValue
-        elif 30 < energy <= 40:
-            self.configs['EnergyCoeffs'][1] = energy / readValue
-        elif 40 < energy <= 50:
-            self.configs['EnergyCoeffs'][2] = energy / readValue
-        elif 50 < energy <= 60:
-            self.configs['EnergyCoeffs'][3] = energy / readValue
-        elif 60 < energy <= 70:
-            self.configs['EnergyCoeffs'][4] = energy / readValue
-        elif 70 < energy <= 80:
-            self.configs['EnergyCoeffs'][5] = energy / readValue
-        elif 80 < energy <= 90:
-            self.configs['EnergyCoeffs'][6] = energy / readValue
-        elif 90 < energy <= 100:
-            self.configs['EnergyCoeffs'][7] = energy / readValue
-
+            
         if not self.saveConfigs():
-            self.setLabel(
-                TEXT['saveCoeffError'][self.langIndex], 
-                self.lblCalcCoeff, 
-                self.coeffLabelTimer, 4
-            )
+            self.setLabel(TEXT['saveCoeffError'][self.langIndex], 4)
         else:
-            self.setLabel(
-                'Coeff  →  ' + str(round(energy / readValue, 2)), 
-                self.lblCalcCoeff, 
-                self.coeffLabelTimer, 5
-            )
+            self.setLabel('Coeff  →  ' + str(round(ratio, 2)), 5)
     
     def hwPageChanged(self):
         if self.calibrationPageActive:
@@ -791,22 +753,14 @@ class MainWin(QMainWindow):
 
         self.configs['theme'] = theme
         if not self.saveConfigs():
-            self.setLabel(
-                TEXT['saveConfigError'][self.langIndex], 
-                self.lblUiError, 
-                self.uiLabelTimer, 4
-            )
+            self.setLabel(TEXT['saveConfigError'][self.langIndex], 4)
 
     def setOwnerInfo(self, text):
         self.ownerInfoSplash.setText(text)
         self.ownerInfoSplash.adjustSize()
         self.configs['OwnerInfo'] = text
         if not self.saveConfigs():
-            self.setLabel(
-                TEXT['saveConfigError'][self.langIndex], 
-                self.lblUiError, 
-                self.uiLabelTimer, 4
-            )
+            self.setLabel(TEXT['saveConfigError'][self.langIndex], 4)
 
         if not text:
             self.ownerInfoSplash.setVisible(False)
@@ -881,34 +835,24 @@ class MainWin(QMainWindow):
         if result == 'Done GUI':
             log('Update Firmware', 'GUI successfully updated.\n')
             for i in range(5, -1, -1):
-                self.lblUpdateFirmware.setText(
-                    f'Your system will restart in {i} seconds...'
-                )
+                self.setLabel(f'Your system will restart in {i} seconds...')
                 QApplication.processEvents()
                 time.sleep(1)
             self.playShutdown('restart')
         else:
-            self.setLabel(
-                result, 
-                self.lblUpdateFirmware,
-                self.updateFirmwareLabelTimer
-            )
+            self.setLabel(result)
             self.btnUpdateFirmware.setDisabled(False)
 
     def updateProgress(self, status):
-        self.lblUpdateFirmware.setText(status)
+        self.setLabel(status, 100)
         if status == 'Rebooting Control System ...':
             self.btnUpdateFirmware.setDisabled(False)
             log('Update Firmware', 'Firmware successfully updated.')
-            self.setLabel(
-                'Rebooting Control System ...', 
-                self.lblUpdateFirmware,
-                self.updateFirmwareLabelTimer, 6
-            )
+            self.setLabel('Rebooting Control System ...',  6)
 
     def updateSystem(self):
         self.btnUpdateFirmware.setDisabled(True)
-        self.lblUpdateFirmware.setText('Please wait...')
+        self.setLabel('Please wait...')
         self.updateT.start()
 
     def shot(self):
@@ -954,58 +898,35 @@ class MainWin(QMainWindow):
             month = int(self.txtLockMonth.text())
             day = int(self.txtLockDay.text())
         except ValueError:
-            self.setLabel(
-                'Please fill in the fields.', 
-                self.lblLockError, 
-                self.lockErrorLabel, 4
-            )
+            self.setLabel('Please fill in the fields.')
             return
 
         try:
             date = jdatetime.datetime(year, month, day)
         except Exception as e:
-            self.setLabel(
-                    str(e).capitalize() + '.', 
-                    self.lblLockError, self.lockErrorLabel, 4
-                )
+            self.setLabel(str(e).capitalize() + '.')
             return
 
         numOfLocks = len(self.configs['LOCK'])
 
         if numOfLocks == 3:
-            self.setLabel(
-                    TEXT['maxLock'][self.langIndex], 
-                    self.lblLockError, 
-                    self.lockErrorLabel, 5
-                )
+            self.setLabel(TEXT['maxLock'][self.langIndex])
             return
 
         if getDiff(date) <= -1:
-            self.setLabel(
-                    TEXT['passedDate'][self.langIndex],
-                    self.lblLockError, 
-                    self.lockErrorLabel, 4
-                )
+            self.setLabel(TEXT['passedDate'][self.langIndex])
             return
 
         for lock in self.configs['LOCK']:
             if (date - toJalali(lock.date)).days <= 0:
-                self.setLabel(
-                    TEXT['anyLockBefor'][self.langIndex], 
-                    self.lblLockError, 
-                    self.lockErrorLabel, 5
-                )
+                self.setLabel(TEXT['anyLockBefor'][self.langIndex])
                 return
         
         license = self.configs['LICENSE'][f'{numOfLocks + 1}']
         lock = Lock(date.togregorian(), license)
         self.configs['LOCK'].append(lock)
         if not self.saveConfigs():
-            self.setLabel(
-                    TEXT['saveConfigError'][self.langIndex], 
-                    self.lblLockError, 
-                    self.lockErrorLabel, 4
-                )
+            self.setLabel(TEXT['saveConfigError'][self.langIndex])
 
         info = f"Lock license: {license}\nLock date: {toJalali(lock.date).strftime('%Y-%m-%d')}\n"
         log('Lock added', info)
@@ -1045,11 +966,8 @@ class MainWin(QMainWindow):
     def resetLock(self):
         self.configs['LOCK'] = []
         if not self.saveConfigs():
-            self.setLabel(
-                    TEXT['saveConfigError'][self.langIndex], 
-                    self.lblLockError, 
-                    self.lockErrorLabel, 4
-                )
+            self.setLabel(TEXT['saveConfigError'][self.langIndex])
+
         log('Lock reset', 'Lock table cleared.\n')
         self.time(edit=True)
         self.loadLocksTable()
@@ -1068,11 +986,7 @@ class MainWin(QMainWindow):
         else:
             self.txtPassUUID.setFocus()
             self.txtPassUUID.selectAll()
-            self.setLabel(
-                TEXT['wrongPass'][self.langIndex], 
-                self.lblPassUUID, 
-                self.uuidPassLabelTimer, 4
-            )
+            self.setLabel(TEXT['wrongPass'][self.langIndex])
 
     def checkUUID(self):
         hwid = getID()
@@ -1109,11 +1023,7 @@ class MainWin(QMainWindow):
 
             else:
                 if not auto:
-                    self.setLabel(
-                            TEXT['wrongPass'][self.langIndex], 
-                            self.lblPassword, 
-                            self.passwordLabelTimer, 4
-                            )
+                    self.setLabel(TEXT['wrongPass'][self.langIndex])
                     self.txtPassword.setFocus()
                     self.txtPassword.selectAll()
 
@@ -1232,18 +1142,10 @@ class MainWin(QMainWindow):
             except Exception as e:
                 print(e)
                 log('Setting Time', str(e) + '\n')
-                self.setLabel(
-                        TEXT['systemTimeStatusError'][self.langIndex], 
-                        self.lblSystemTimeStatus, 
-                        self.sysTimeStatusLabelTimer, 4
-                    )
+                self.setLabel(TEXT['systemTimeStatusError'][self.langIndex])
                 return
 
-            self.setLabel(
-                    TEXT['systemTimeStatus'][self.langIndex], 
-                    self.lblSystemTimeStatus, 
-                    self.sysTimeStatusLabelTimer, 4
-                )
+            self.setLabel(TEXT['systemTimeStatus'][self.langIndex])
 
         
         index = self.hwStackedWidget.indexOf(self.infoPage)
@@ -1261,17 +1163,9 @@ class MainWin(QMainWindow):
             self.enterSettingPage(WRITE)
 
             if not self.saveConfigs():
-                self.setLabel(
-                    TEXT['saveConfigError'][self.langIndex], 
-                    self.lblSaveHw, 
-                    self.hwUpdatedLabelTimer, 4
-                )
+                self.setLabel(TEXT['saveConfigError'][self.langIndex], 4)
             else:
-                self.setLabel(
-                        TEXT['saveHw'][self.langIndex], 
-                        self.lblSaveHw, 
-                        self.hwUpdatedLabelTimer, 2
-                    )
+                self.setLabel(TEXT['saveHw'][self.langIndex], 4)
     
     def settingsMenuSelected(self, selectedBtn):
         def wrapper():
@@ -1318,11 +1212,7 @@ class MainWin(QMainWindow):
 
         self.configs['TotalShotCounter'] = 0
         if not self.saveConfigs():
-            self.setLabel(
-                TEXT['saveConfigError'][self.langIndex], 
-                self.lblSaveHw, 
-                self.hwUpdatedLabelTimer, 4
-            )
+            self.setLabel(TEXT['saveConfigError'][self.langIndex], 4)
 
     def addMusics(self, paths):
         self.musicFiles = paths
@@ -1338,9 +1228,7 @@ class MainWin(QMainWindow):
             self.tableMusic.setItem(rowPosition, 0, item)
 
     def readMusicResult(self, res):
-        self.setLabel(
-                res, self.lblMusicRefresh, self.musicRefreshLableTimer
-        )
+        self.setLabel(res)
         self.musicFiles.clear()
         self.tableMusic.setRowCount(0)
         self.lblMusicName.clear()
@@ -1527,21 +1415,14 @@ class MainWin(QMainWindow):
             month = self.txtNsMonth.text()
             day = self.txtNsDay.text()
             if '' in [year, month, day]:
-                self.setLabel(
-                    'Please fill in the fields.', 
-                    self.lblErrNextSession, 
-                    self.nextSessionLabelTimer, 4
-                )
+                self.setLabel('Please fill in the fields.', 4)
                 return
 
             date = jdatetime.datetime(int(year), int(month), int(day))
             if getDiff(date) <= -1:
-                self.setLabel(
-                        TEXT['passedDate'][self.langIndex], 
-                        self.lblErrNextSession, 
-                        self.nextSessionLabelTimer
-                    )
+                self.setLabel(TEXT['passedDate'][self.langIndex])
                 return
+
             self.userNextSession.setNextSession(date.togregorian())
             if self.userNextSession.currentSession == 'started':
                 self.endSession()
@@ -1550,11 +1431,7 @@ class MainWin(QMainWindow):
 
         except Exception as e:
             log('Function: saveNextSession()', str(e) + '\n')
-            self.setLabel(
-                    str(e).capitalize() + '.', 
-                    self.lblErrNextSession,
-                    self.nextSessionLabelTimer
-                )
+            self.setLabel(str(e).capitalize() + '.')
 
     def cancelNextSession(self):
         if self.userNextSession.currentSession == 'started':
@@ -1632,16 +1509,7 @@ class MainWin(QMainWindow):
                 logErrors += TEXT['physicalDamage'][0] + '\n'
             
             if logErrors:
-                index = self.stackedWidget.indexOf(self.laserMainPage)
-                if self.stackedWidget.currentIndex() == index:
-                    lbl = self.lblReadyError
-                else:
-                    lbl = self.lblReadyCalibError
-
-                self.setLabel(
-                    TEXT['SensorError'][self.langIndex], lbl,
-                    self.readyErrorTimer, 3
-                )
+                self.setLabel(TEXT['SensorError'][self.langIndex], 4)
                 log('Sensors', logErrors)
 
             
@@ -1669,6 +1537,8 @@ class MainWin(QMainWindow):
                 self.frequencyWidget.setEnabled(False)
                 self.energyWidget.setEnabled(False)
                 self.skinGradeWidget.setEnabled(False)
+                self.sliderEnergyCalib.setEnabled(False)
+                self.sliderFrequencyCalib.setEnabled(False)
                 self.chgSliderColor(SLIDER_DISABLED_GB, SLIDER_DISABLED_GW)
 
         else:
@@ -1685,6 +1555,8 @@ class MainWin(QMainWindow):
             self.frequencyWidget.setEnabled(True)
             self.energyWidget.setEnabled(True)
             self.skinGradeWidget.setEnabled(True)
+            self.sliderEnergyCalib.setEnabled(True)
+            self.sliderFrequencyCalib.setEnabled(True)
             self.chgSliderColor(SLIDER_GB, SLIDER_GW)
 
     def correctEngyPulsWidth(self):
@@ -2350,21 +2222,13 @@ class MainWin(QMainWindow):
         numberEdited = False
 
         if not numberEdit or numberEdit.isspace():
-            self.setLabel(
-                    TEXT['emptyNumber'][self.langIndex], 
-                    self.lblEditUser,
-                    self.editLabelTimer
-                )
+            self.setLabel(TEXT['emptyNumber'][self.langIndex])
             self.txtEditNumber.setFocus()
             return
 
         if numberEdit != self.userInfo.phoneNumber:
             if numberEdit in self.usersData:
-                self.setLabel(
-                    TEXT['alreadyExists'][self.langIndex], 
-                    self.lblEditUser,
-                    self.editLabelTimer
-                )
+                self.setLabel(TEXT['alreadyExists'][self.langIndex])
                 self.txtEditNumber.setFocus()
                 return
 
@@ -2385,12 +2249,7 @@ class MainWin(QMainWindow):
             self.removeUser(self.userInfo.phoneNumber)
 
         self.insertToTabel(self.userInfo)
-
-        self.setLabel(
-                TEXT['userUpdated'][self.langIndex],
-                self.lblEditUser,
-                self.editLabelTimer, 3
-            )
+        self.setLabel(TEXT['userUpdated'][self.langIndex], 4)
 
     def submit(self):
         number = self.txtNumberSubmit.text()
@@ -2398,20 +2257,12 @@ class MainWin(QMainWindow):
         name = name if name else 'User ' + str(len(self.usersData) + 1)
 
         if not number or number.isspace():
-            self.setLabel(
-                    TEXT['emptyNumber'][self.langIndex], 
-                    self.lblSubmit, 
-                    self.submitLabelTimer
-                )
+            self.setLabel(TEXT['emptyNumber'][self.langIndex])
             self.txtNumberSubmit.setFocus()
             return
 
         if number in self.usersData:
-            self.setLabel(
-                    TEXT['alreadyExistsSub'][self.langIndex], 
-                    self.lblSubmit, 
-                    self.submitLabelTimer
-                )
+            self.setLabel(TEXT['alreadyExistsSub'][self.langIndex])
             self.txtNumberSubmit.setFocus()
             return
 
@@ -2494,13 +2345,34 @@ class MainWin(QMainWindow):
         self.pulseWidth = 20
         self.frequency = 1
 
-    def setLabel(self, text, label, timer, sec=5):
-        label.setText(text)
-        timer.start(sec * 1000)
+    def setLabel(self, text, sec=5):
+        self.lblMsg.setText(text)
+        self.lblMsg.setVisible(True)
+        self.lblMsg.adjustSize()
+        w = 1920 / 2 
+        w -= self.lblMsg.size().width() / 2
+        self.lblMsg.move(w, 800)
+        self.messageTimer.start(sec * 1000)
+        self.effect = QGraphicsOpacityEffect()
+        self.lblMsg.setGraphicsEffect(self.effect)
 
-    def clearLabel(self, label, timer):
-        label.clear()
-        timer.stop()
+        self.animationMsg = QPropertyAnimation(self.effect, b"opacity")
+        self.animationMsg.setDuration(200)
+        self.animationMsg.setStartValue(0)
+        self.animationMsg.setEndValue(1)
+        self.animationMsg.start()
+
+    def clearLabel(self):
+        self.messageTimer.stop()
+        # self.lblMsg.setVisible(False)
+        self.effect = QGraphicsOpacityEffect()
+        self.lblMsg.setGraphicsEffect(self.effect)
+
+        self.animation = QPropertyAnimation(self.effect, b"opacity")
+        self.animation.setDuration(400)
+        self.animation.setStartValue(1)
+        self.animation.setEndValue(0)
+        self.animation.start()
 
     def changeLang(self, lang):
         global app
@@ -2546,11 +2418,8 @@ class MainWin(QMainWindow):
             self.langIndex = 0
 
         if not self.saveConfigs():
-            self.setLabel(
-                TEXT['saveConfigError'][self.langIndex], 
-                self.lblUiError, 
-                self.uiLabelTimer, 4
-            )
+            self.setLabel(TEXT['saveConfigError'][self.langIndex], 4)
+
         self.txtLogs.setFont(QFont('Consolas', 18))
         self.ownerInfoSplash.adjustSize()
         txt = self.ownerInfoSplash.text()
