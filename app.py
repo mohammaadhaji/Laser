@@ -125,6 +125,7 @@ class MainWin(QMainWindow):
         self.lblMsg.setStyleSheet(MESSAGE_LABLE)
         self.lblMsg.setAlignment(Qt.AlignCenter)
         self.lblMsg.setVisible(False)
+        self.lblMsg.clear()
         if not ownerInfo: self.ownerInfoSplash.setVisible(False)
         self.user = None
         self.userNextSession = None
@@ -2347,31 +2348,33 @@ class MainWin(QMainWindow):
 
     def setLabel(self, text, sec=5):
         self.lblMsg.setText(text)
-        self.lblMsg.setVisible(True)
         self.lblMsg.adjustSize()
         w = 1920 / 2 
         w -= self.lblMsg.size().width() / 2
         self.lblMsg.move(w, 800)
         self.messageTimer.start(sec * 1000)
+        timespan = 200
+        if self.lblMsg.isVisible():
+            timespan = 5
+        self.lblMsg.setVisible(True)
         self.effect = QGraphicsOpacityEffect()
         self.lblMsg.setGraphicsEffect(self.effect)
-
         self.animationMsg = QPropertyAnimation(self.effect, b"opacity")
-        self.animationMsg.setDuration(200)
+        self.animationMsg.setDuration(timespan)
         self.animationMsg.setStartValue(0)
         self.animationMsg.setEndValue(1)
         self.animationMsg.start()
 
     def clearLabel(self):
         self.messageTimer.stop()
-        # self.lblMsg.setVisible(False)
         self.effect = QGraphicsOpacityEffect()
         self.lblMsg.setGraphicsEffect(self.effect)
-
         self.animation = QPropertyAnimation(self.effect, b"opacity")
         self.animation.setDuration(400)
         self.animation.setStartValue(1)
         self.animation.setEndValue(0)
+        self.animation.finished.connect(self.lblMsg.clear)
+        self.animation.finished.connect(lambda: self.lblMsg.setVisible(False))
         self.animation.start()
 
     def changeLang(self, lang):
