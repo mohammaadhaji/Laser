@@ -2351,11 +2351,11 @@ class MainWin(QMainWindow):
         self.lblMsg.adjustSize()
         w = 1920 / 2 
         w -= self.lblMsg.size().width() / 2
-        self.lblMsg.move(w, 800)
+        self.lblMsg.move(int(w), 800)
         self.messageTimer.start(sec * 1000)
         timespan = 200
         if self.lblMsg.isVisible():
-            timespan = 5
+            timespan = 1
         self.lblMsg.setVisible(True)
         self.effect = QGraphicsOpacityEffect()
         self.lblMsg.setGraphicsEffect(self.effect)
