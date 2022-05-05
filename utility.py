@@ -184,7 +184,6 @@ def loadConfigs():
             file = open(CONFIG_FILE, 'wb')
             configs = {
                 'LICENSE': genLicense(),
-                'PASSWORD': '',
                 'LANGUAGE': 'en',
                 'slideTransition': False,
                 'touchSound': True,

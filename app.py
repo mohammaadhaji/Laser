@@ -691,13 +691,13 @@ class MainWin(QMainWindow):
                 self.configs['EnergyCoeffs'][7] = ratio
 
         except Exception:
-            self.setLabel(TEXT['CoeffError'][self.langIndex], 4)
+            self.setLabel(TEXT['CoeffError'][self.langIndex], 3)
             return
             
         if not self.saveConfigs():
             self.setLabel(TEXT['saveCoeffError'][self.langIndex], 4)
         else:
-            self.setLabel('Coeff  →  ' + str(round(ratio, 2)), 5)
+            self.setLabel('Coeff  →  ' + str(round(ratio, 2)), 4)
     
     def hwPageChanged(self):
         if self.calibrationPageActive:
@@ -899,7 +899,7 @@ class MainWin(QMainWindow):
             month = int(self.txtLockMonth.text())
             day = int(self.txtLockDay.text())
         except ValueError:
-            self.setLabel('Please fill in the fields.')
+            self.setLabel('Please fill in the fields.', 4)
             return
 
         try:
@@ -981,19 +981,27 @@ class MainWin(QMainWindow):
         if hashlib.sha256(hwid.encode()).hexdigest()[:10].upper() == user_pass:
             index = self.stackedWidgetLock.indexOf(self.enterLaserPage)
             self.stackedWidgetLock.setCurrentIndex(index)
-            self.configs['PASSWORD'] = user_pass
+            
+            with open(COPY_RIGHT_PASS, 'w') as f:
+                f.write(user_pass)
+            
             self.saveConfigs()
             self.keyboard('hide')
         else:
             self.txtPassUUID.setFocus()
             self.txtPassUUID.selectAll()
-            self.setLabel(TEXT['wrongPass'][self.langIndex])
+            self.setLabel(TEXT['wrongPass'][self.langIndex], 3)
 
     def checkUUID(self):
         hwid = getID()
         self.txtUUID.setText(hwid)
         hwid += '@mohammaad_haji'
-        if not hashlib.sha256(hwid.encode()).hexdigest()[:10].upper() == self.configs['PASSWORD']:
+        password = ''
+        if isfile(COPY_RIGHT_PASS):
+            with open(COPY_RIGHT_PASS, 'r') as f:
+                password = f.read()
+
+        if not hashlib.sha256(hwid.encode()).hexdigest()[:10].upper() == password:
             index = self.stackedWidgetLock.indexOf(self.copyRightPage)
             self.stackedWidgetLock.setCurrentIndex(index)
 
@@ -1024,7 +1032,7 @@ class MainWin(QMainWindow):
 
             else:
                 if not auto:
-                    self.setLabel(TEXT['wrongPass'][self.langIndex])
+                    self.setLabel(TEXT['wrongPass'][self.langIndex], 3)
                     self.txtPassword.setFocus()
                     self.txtPassword.selectAll()
 
@@ -1143,10 +1151,10 @@ class MainWin(QMainWindow):
             except Exception as e:
                 print(e)
                 log('Setting Time', str(e) + '\n')
-                self.setLabel(TEXT['systemTimeStatusError'][self.langIndex])
+                self.setLabel(TEXT['systemTimeStatusError'][self.langIndex], 4)
                 return
 
-            self.setLabel(TEXT['systemTimeStatus'][self.langIndex])
+            self.setLabel(TEXT['systemTimeStatus'][self.langIndex], 3)
 
         
         index = self.hwStackedWidget.indexOf(self.infoPage)
@@ -1166,7 +1174,7 @@ class MainWin(QMainWindow):
             if not self.saveConfigs():
                 self.setLabel(TEXT['saveConfigError'][self.langIndex], 4)
             else:
-                self.setLabel(TEXT['saveHw'][self.langIndex], 4)
+                self.setLabel(TEXT['saveHw'][self.langIndex], 3)
     
     def settingsMenuSelected(self, selectedBtn):
         def wrapper():
@@ -1229,7 +1237,7 @@ class MainWin(QMainWindow):
             self.tableMusic.setItem(rowPosition, 0, item)
 
     def readMusicResult(self, res):
-        self.setLabel(res)
+        self.setLabel(res, 4)
         self.musicFiles.clear()
         self.tableMusic.setRowCount(0)
         self.lblMusicName.clear()
@@ -1421,7 +1429,7 @@ class MainWin(QMainWindow):
 
             date = jdatetime.datetime(int(year), int(month), int(day))
             if getDiff(date) <= -1:
-                self.setLabel(TEXT['passedDate'][self.langIndex])
+                self.setLabel(TEXT['passedDate'][self.langIndex], 4)
                 return
 
             self.userNextSession.setNextSession(date.togregorian())
@@ -1510,7 +1518,7 @@ class MainWin(QMainWindow):
                 logErrors += TEXT['physicalDamage'][0] + '\n'
             
             if logErrors:
-                self.setLabel(TEXT['SensorError'][self.langIndex], 4)
+                self.setLabel(TEXT['SensorError'][self.langIndex], 3)
                 log('Sensors', logErrors)
 
             
@@ -2223,13 +2231,13 @@ class MainWin(QMainWindow):
         numberEdited = False
 
         if not numberEdit or numberEdit.isspace():
-            self.setLabel(TEXT['emptyNumber'][self.langIndex])
+            self.setLabel(TEXT['emptyNumber'][self.langIndex], 4)
             self.txtEditNumber.setFocus()
             return
 
         if numberEdit != self.userInfo.phoneNumber:
             if numberEdit in self.usersData:
-                self.setLabel(TEXT['alreadyExists'][self.langIndex])
+                self.setLabel(TEXT['alreadyExists'][self.langIndex], 4)
                 self.txtEditNumber.setFocus()
                 return
 
@@ -2258,12 +2266,12 @@ class MainWin(QMainWindow):
         name = name if name else 'User ' + str(len(self.usersData) + 1)
 
         if not number or number.isspace():
-            self.setLabel(TEXT['emptyNumber'][self.langIndex])
+            self.setLabel(TEXT['emptyNumber'][self.langIndex], 3)
             self.txtNumberSubmit.setFocus()
             return
 
         if number in self.usersData:
-            self.setLabel(TEXT['alreadyExistsSub'][self.langIndex])
+            self.setLabel(TEXT['alreadyExistsSub'][self.langIndex], 4)
             self.txtNumberSubmit.setFocus()
             return
 
