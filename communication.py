@@ -290,7 +290,7 @@ def decodePacket(RECEIVED_DATA):
 
     return key, value
 
-class SerialTimer(QObject):
+class BaseSerial:
     sysClock         = pyqtSignal(tuple)
     sysDate          = pyqtSignal(tuple)
     driverCurrent    = pyqtSignal(float)
@@ -327,8 +327,79 @@ class SerialTimer(QObject):
     receivingSensors = pyqtSignal()
 
     def __init__(self):
-        super(QObject, self).__init__()
+        super().__init__()
 
+    def checkResult(self, key, value):
+        if key == 'sensorFlags':
+            self.sensorFlags.emit(value)
+            self.receivingSensors.emit()
+        elif key == 'sysDate':
+            self.sysDate.emit(value)
+        elif key == 'sysClock':
+            self.sysClock.emit(value)
+        elif key == 'tempValue':
+            self.tempValue.emit(value)
+        elif key == 'serialNumber':
+            self.serialNumber.emit(value)
+        elif key == 'productionDate':
+            self.productionDate.emit(value)
+        elif key == 'laserEnergy':
+            self.laserEnergy.emit(value)
+        elif key == 'laserWavelenght':
+            self.laserWavelenght.emit(value)
+        elif key == 'laserBarType':
+            self.laserBarType.emit(value)
+        elif key == 'spotSize':
+            self.spotSize.emit(value)
+        elif key == 'driverVersion':
+            self.driverVersion.emit(value)
+        elif key == 'mainControl':
+            self.mainControl.emit(value)
+        elif key == 'firmwareVesion':
+            self.firmwareVesion.emit(value)
+        elif key == 'updateProgress':
+            self.updateProgress.emit(value)
+        elif key == 'readCooling':
+            self.readCooling.emit()
+        elif key == 'readEnergy':
+            self.readEnergy.emit()
+        elif key == 'readPulseWidht':
+            self.readPulseWidht.emit()
+        elif key == 'readFrequency':
+            self.readFrequency.emit()
+        elif key == 'shot':
+            self.shot.emit()
+        elif key == 'handPiece':
+            self.handPiece.emit(value)
+        elif key == 'radiator':
+            self.radiator.emit(value)
+        elif key == 'laserPower':
+            self.laserPower.emit(value)
+        elif key == 'airCooling':
+            self.airCooling.emit(value)
+        elif key == 'reservedRelay':
+            self.reservedRelay.emit(value)
+        elif key == 'driverCurrent':
+            self.driverCurrent.emit(value)
+        elif key == 'dacVoltage':
+            self.dacVoltage.emit(value)
+        elif key == 'flowMeter':
+            self.flowMeter.emit(value)
+        elif key == 'waterTempSensor':
+            self.waterTempSensor.emit(value)
+        elif key == 'handpieceTemp':
+            self.handpieceTemp.emit(value)
+        elif key == 'airTempSensor':
+            self.airTempSensor.emit(value)
+        elif key == 'sensorFlagsTest':
+            self.interLockTest.emit(value[0])
+            self.waterLevelTest.emit(value[1])
+
+
+class SerialTimer(BaseSerial, QObject):
+
+    def __init__(self):
+        super().__init__()
 
     def closePort(self):
         serial.close()
@@ -394,70 +465,7 @@ class SerialTimer(QObject):
                                     printPacket(RECEIVED_DATA)
 
                                 key, value = decodePacket(RECEIVED_DATA)
-                                if key == 'sensorFlags':
-                                    self.sensorFlags.emit(value)
-                                    self.receivingSensors.emit()
-                                elif key == 'sysDate':
-                                    self.sysDate.emit(value)
-                                elif key == 'sysClock':
-                                    self.sysClock.emit(value)
-                                elif key == 'tempValue':
-                                    self.tempValue.emit(value)
-                                elif key == 'serialNumber':
-                                    self.serialNumber.emit(value)
-                                elif key == 'productionDate':
-                                    self.productionDate.emit(value)
-                                elif key == 'laserEnergy':
-                                    self.laserEnergy.emit(value)
-                                elif key == 'laserWavelenght':
-                                    self.laserWavelenght.emit(value)
-                                elif key == 'laserBarType':
-                                    self.laserBarType.emit(value)
-                                elif key == 'spotSize':
-                                    self.spotSize.emit(value)
-                                elif key == 'driverVersion':
-                                    self.driverVersion.emit(value)
-                                elif key == 'mainControl':
-                                    self.mainControl.emit(value)
-                                elif key == 'firmwareVesion':
-                                    self.firmwareVesion.emit(value)
-                                elif key == 'updateProgress':
-                                    self.updateProgress.emit(value)
-                                elif key == 'readCooling':
-                                    self.readCooling.emit()
-                                elif key == 'readEnergy':
-                                    self.readEnergy.emit()
-                                elif key == 'readPulseWidht':
-                                    self.readPulseWidht.emit()
-                                elif key == 'readFrequency':
-                                    self.readFrequency.emit()
-                                elif key == 'shot':
-                                    self.shot.emit()
-                                elif key == 'handPiece':
-                                    self.handPiece.emit(value)
-                                elif key == 'radiator':
-                                    self.radiator.emit(value)
-                                elif key == 'laserPower':
-                                    self.laserPower.emit(value)
-                                elif key == 'airCooling':
-                                    self.airCooling.emit(value)
-                                elif key == 'reservedRelay':
-                                    self.reservedRelay.emit(value)
-                                elif key == 'driverCurrent':
-                                    self.driverCurrent.emit(value)
-                                elif key == 'dacVoltage':
-                                    self.dacVoltage.emit(value)
-                                elif key == 'flowMeter':
-                                    self.flowMeter.emit(value)
-                                elif key == 'waterTempSensor':
-                                    self.waterTempSensor.emit(value)
-                                elif key == 'handpieceTemp':
-                                    self.handpieceTemp.emit(value)
-                                elif key == 'airTempSensor':
-                                    self.airTempSensor.emit(value)
-                                elif key == 'sensorFlagsTest':
-                                    self.interLockTest.emit(value[0])
-                                    self.waterLevelTest.emit(value[1])
+                                self.checkResult(key, value)
                         else:
                             RECEIVED_DATA.append(temp[counter])
 
@@ -467,51 +475,16 @@ class SerialTimer(QObject):
             log('Serial Unhandled Exception', str(e) + '\n')
 
 
-class SerialThread(QThread):
-    sysClock         = pyqtSignal(tuple)
-    sysDate          = pyqtSignal(tuple)
-    driverCurrent    = pyqtSignal(float)
-    dacVoltage       = pyqtSignal(float)
-    sensorFlags      = pyqtSignal(list)
-    handPiece        = pyqtSignal(list)
-    radiator         = pyqtSignal(list)
-    laserPower       = pyqtSignal(list)
-    airCooling       = pyqtSignal(list)
-    reservedRelay    = pyqtSignal(list)
-    interLockTest    = pyqtSignal(bool)
-    waterLevelTest   = pyqtSignal(bool)
-    airTempSensor    = pyqtSignal(int)
-    tempValue        = pyqtSignal(int)
-    flowMeter        = pyqtSignal(str)
-    waterTempSensor  = pyqtSignal(str)
-    handpieceTemp    = pyqtSignal(str)
-    airTempSensor    = pyqtSignal(str)
-    serialNumber     = pyqtSignal(str)
-    productionDate   = pyqtSignal(str)
-    laserEnergy      = pyqtSignal(str)
-    laserWavelenght  = pyqtSignal(str)
-    laserBarType     = pyqtSignal(str)
-    driverVersion    = pyqtSignal(str)
-    mainControl      = pyqtSignal(str)
-    firmwareVesion   = pyqtSignal(str)
-    updateProgress   = pyqtSignal(str)
-    spotSize         = pyqtSignal(str)
-    readCooling      = pyqtSignal()
-    readEnergy       = pyqtSignal()
-    readPulseWidht   = pyqtSignal()
-    readFrequency    = pyqtSignal()
-    shot             = pyqtSignal()
-    receivingSensors = pyqtSignal()
-
-    def __init__(self, parent = None):
-        super(SerialThread, self).__init__(parent)
+class SerialThread(BaseSerial, QThread):
+    
+    def __init__(self):
+        super().__init__()
         self.loop = True
 
 
     def closePort(self):
         self.loop = False
         serial.close()
-
 
     def run(self):
         global STATE, RECEIVED_DATA, NOB_BYTES
@@ -570,70 +543,7 @@ class SerialThread(QThread):
                                         printPacket(RECEIVED_DATA)
 
                                     key, value = decodePacket(RECEIVED_DATA)
-                                    if key == 'sensorFlags':
-                                        self.sensorFlags.emit(value)
-                                        self.receivingSensors.emit()
-                                    elif key == 'sysDate':
-                                        self.sysDate.emit(value)
-                                    elif key == 'sysClock':
-                                        self.sysClock.emit(value)
-                                    elif key == 'tempValue':
-                                        self.tempValue.emit(value)
-                                    elif key == 'serialNumber':
-                                        self.serialNumber.emit(value)
-                                    elif key == 'productionDate':
-                                        self.productionDate.emit(value)
-                                    elif key == 'laserEnergy':
-                                        self.laserEnergy.emit(value)
-                                    elif key == 'laserWavelenght':
-                                        self.laserWavelenght.emit(value)
-                                    elif key == 'laserBarType':
-                                        self.laserBarType.emit(value)
-                                    elif key == 'spotSize':
-                                        self.spotSize.emit(value)
-                                    elif key == 'driverVersion':
-                                        self.driverVersion.emit(value)
-                                    elif key == 'mainControl':
-                                        self.mainControl.emit(value)
-                                    elif key == 'firmwareVesion':
-                                        self.firmwareVesion.emit(value)
-                                    elif key == 'updateProgress':
-                                        self.updateProgress.emit(value)
-                                    elif key == 'readCooling':
-                                        self.readCooling.emit()
-                                    elif key == 'readEnergy':
-                                        self.readEnergy.emit()
-                                    elif key == 'readPulseWidht':
-                                        self.readPulseWidht.emit()
-                                    elif key == 'readFrequency':
-                                        self.readFrequency.emit()
-                                    elif key == 'shot':
-                                        self.shot.emit()
-                                    elif key == 'handPiece':
-                                        self.handPiece.emit(value)
-                                    elif key == 'radiator':
-                                        self.radiator.emit(value)
-                                    elif key == 'laserPower':
-                                        self.laserPower.emit(value)
-                                    elif key == 'airCooling':
-                                        self.airCooling.emit(value)
-                                    elif key == 'reservedRelay':
-                                        self.reservedRelay.emit(value)
-                                    elif key == 'driverCurrent':
-                                        self.driverCurrent.emit(value)
-                                    elif key == 'dacVoltage':
-                                        self.dacVoltage.emit(value)
-                                    elif key == 'flowMeter':
-                                        self.flowMeter.emit(value)
-                                    elif key == 'waterTempSensor':
-                                        self.waterTempSensor.emit(value)
-                                    elif key == 'handpieceTemp':
-                                        self.handpieceTemp.emit(value)
-                                    elif key == 'airTempSensor':
-                                        self.handpieceTemp.emit(value)
-                                    elif key == 'sensorFlagsTest':
-                                        self.interLockTest.emit(value[0])
-                                        self.waterLevelTest.emit(value[1])
+                                    self.checkResult(key, value)
                             else:
                                 RECEIVED_DATA.append(temp[counter])
 
