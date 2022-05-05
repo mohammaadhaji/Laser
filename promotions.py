@@ -279,7 +279,7 @@ class Parameter(QFrame):
         self.btnDec.setIcon(icon)
         self.btnDec.setIconSize(QSize(110, 110))
         self.btnInc = QPushButton(self)
-        self.btnInc.setGeometry(QRect(470, 121, 114, 110))
+        self.btnInc.setGeometry(QRect(460, 121, 114, 110))
         self.btnInc.setText("")
         icon1 = QIcon()
         icon1.addPixmap(QPixmap(INC_BLACK), QIcon.Normal, QIcon.Off)
