@@ -28,20 +28,20 @@ if platform.system() == 'Windows':
 else:
     serial = Serial('/dev/ttyS0', 460800)
 
-SHOW_SEND_MSG = False
-SHOW_RECE_MSG = False
+SHOW_SEND_PACKET   = False
+SHOW_RECE_PACKET   = False
 
-HEADER_1       = 1
-HEADER_2       = 2
-CHECK_NOB_1    = 3
-CHECK_NOB_2    = 4
-IN_MESSAGE     = 5
-STATE          = HEADER_1
+HEADER_1           = 1
+HEADER_2           = 2
+CHECK_NOB_1        = 3
+CHECK_NOB_2        = 4
+IN_MESSAGE         = 5
+STATE              = HEADER_1
 
-PAGE_INDEX     = 2
-FIELD_INDEX    = 3
-CMD_TYPE_INDEX = 4
-DATA_INDEX     = 5
+PAGE_INDEX         = 2
+FIELD_INDEX        = 3
+CMD_TYPE_INDEX     = 4
+DATA_INDEX         = 5
 
 LASER_PAGE         = 0
 SETTING_PAGE       = 1
@@ -55,19 +55,19 @@ LASER_CALIB_PAGE   = 8
 OTHER_PAGE         = 9
 
 
-REPORT         = 0x0A
-WRITE          = 0x0B 
-READ           = 0x0C
+REPORT             = 0x0A
+WRITE              = 0x0B 
+READ               = 0x0C
 
-MOUNT_DIR      = '/media/updateFirmware'
-SOURCE_ZIP     = 'Laser.zip'
-VERIFY         = 'verify'
-MICRO_SOURCE   = 'Laser_Application.bin'
-MICRO_DATA     = {}
-PACKET_NOB     = 1000
+MOUNT_DIR          = '/media/updateFirmware'
+SOURCE_ZIP         = 'Laser.zip'
+VERIFY             = 'verify'
+MICRO_SOURCE       = 'Laser_Application.bin'
+MICRO_DATA         = {}
+PACKET_NOB         = 1000
 
-RECEIVED_DATA  = bytearray()
-NOB_BYTES      = bytearray(2)
+RECEIVED_DATA      = bytearray()
+NOB_BYTES          = bytearray(2)
 
 
 def printPacket(packet):
@@ -97,7 +97,7 @@ def buildPacket(data, page, field, cmdType):
     crc_bytes = crc.to_bytes(2, byteorder='big')
     packet += crc_bytes
     packet.append(0xCC)
-    if SHOW_SEND_MSG:
+    if SHOW_SEND_PACKET:
         print('SENT: ', end='')
         printPacket(packet)
     return packet
@@ -460,7 +460,7 @@ class SerialTimer(BaseSerial, QObject):
                             )
                             
                             if crc_r == crc_s:
-                                if SHOW_RECE_MSG:
+                                if SHOW_RECE_PACKET:
                                     print('RECE: ', end='AA BB ')
                                     printPacket(RECEIVED_DATA)
 
@@ -538,7 +538,7 @@ class SerialThread(BaseSerial, QThread):
                                 )
 
                                 if crc_r == crc_s:
-                                    if SHOW_RECE_MSG:
+                                    if SHOW_RECE_PACKET:
                                         print('RECE: ', end='AA BB ')
                                         printPacket(RECEIVED_DATA)
 

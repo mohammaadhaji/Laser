@@ -5,6 +5,7 @@ from os.path import join
 CURRENT_FILE_DIR   = Path(__file__).parent.absolute()
 APP_UI             = join(CURRENT_FILE_DIR, 'ui/ui.ui')
 SPLASH             = join(CURRENT_FILE_DIR, 'ui/images/splash.jpg')
+SPLASH_LOADING     = join(CURRENT_FILE_DIR, 'ui/images/splashLoading.jpg')
 SHOT_SOUND         = join(CURRENT_FILE_DIR, 'ui/sounds/shot.wav')
 TOUCH_SOUND        = join(CURRENT_FILE_DIR, 'ui/sounds/touch.wav')
 KEYBOARD_SOUND     = join(CURRENT_FILE_DIR, 'ui/sounds/keyboard.wav')

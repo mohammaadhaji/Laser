@@ -2545,26 +2545,15 @@ class MainWin(QMainWindow):
         self.txtLogs.setTextCursor(textCursor)
 
 
-class LoadingWindow(QMainWindow):
-    def __init__(self):
-        QMainWindow.__init__(self)
-        self.setStyleSheet('border-image: url(ui/images/splashLoading.jpg);')
-        self.showFullScreen()
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.showMain)
-        self.timer.start(500)
-    
-    def showMain(self):
-        self.timer.stop()
-        self.main = MainWin()
-        self.main.showFullScreen()
-        self.main.setFixedSize(QSize(1920, 1080))
-        self.close()
-
-
 scheme = QWebEngineUrlScheme(b"qt")
 scheme.setFlags(QWebEngineUrlScheme.CorsEnabled)
 QWebEngineUrlScheme.registerScheme(scheme)
 app = QApplication(sys.argv)
-loadingWin = LoadingWindow()
+pixmap = QPixmap(SPLASH_LOADING)
+splash = QSplashScreen(pixmap)
+splash.showFullScreen()
+app.processEvents()
+win = MainWin()
+win.showFullScreen()
+splash.finish(win)
 sys.exit(app.exec_())
