@@ -1,4 +1,6 @@
-import jdatetime, math, time, sys, os
+import time 
+start = time.time()
+import jdatetime, math, sys, os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 from pygame import mixer
 from PyQt5.uic import loadUi
@@ -2557,4 +2559,5 @@ win = MainWin()
 win.showFullScreen()
 win.setFixedSize(QSize(1920, 1080))
 splash.finish(win)
+print(time.time() - start)
 sys.exit(app.exec_())
