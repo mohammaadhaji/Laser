@@ -41,9 +41,10 @@ class MainWin(QMainWindow):
         
     def setupUi(self):
         self.configs = loadConfigs()
+        self.coefficients = loadCoefficients()
         self.usersData = loadUsers()
         self.usersList = list(self.usersData.values())
-        self.langIndex = 0 if self.configs['LANGUAGE'] == 'en' else 1
+        self.langIndex = 0 if self.configs['Language'] == 'en' else 1
         self.langIndex = 0
         icon = QPixmap(SELECTED_LANG_ICON)
         self.lblEnSelected.setPixmap(icon.scaled(70, 70))
@@ -188,7 +189,7 @@ class MainWin(QMainWindow):
         self.initButtons()
         self.initTables()
         self.initTextboxes()
-        self.changeTheme(self.configs['theme'])
+        self.changeTheme(self.configs['Theme'])
         self.chgSliderColor(SLIDER_GB, SLIDER_GW)
         self.loadLocksTable()
         self.bodyPartsSignals()
@@ -201,14 +202,14 @@ class MainWin(QMainWindow):
         self.lblSpark.setPixmap(icon.scaled(130, 130))
         self.lblSpark.setVisible(False)
         self.lblLasing.setVisible(False)
-        if self.configs['LANGUAGE'] == 'fa': self.changeLang(self.configs['LANGUAGE'])
+        if self.configs['Language'] == 'fa': self.changeLang(self.configs['Language'])
         self.shortcut = QShortcut(QKeySequence("Ctrl+Shift+E"), self)
         self.shortcut.activated.connect(self.exit)
         self.chbSlideTransition.setFixedSize(150, 48)
-        self.chbSlideTransition.setChecked(self.configs['slideTransition'])
+        self.chbSlideTransition.setChecked(self.configs['SlideTransition'])
         self.chbSlideTransition.toggled.connect(self.setTransition)
         self.chbTouchSound.setFixedSize(150, 48)
-        self.chbTouchSound.setChecked(self.configs['touchSound'])
+        self.chbTouchSound.setChecked(self.configs['TouchSound'])
         self.chbTouchSound.toggled.connect(self.setTouchSound)
         self.setTemp(0)
         op=QGraphicsOpacityEffect(self)
@@ -228,7 +229,7 @@ class MainWin(QMainWindow):
         self.objIsLoaded = False
         self.browser.load(url)
         self.browser.setGeometry(100, 200, 700, 700)
-        self.txtFSdays.setText(str(self.configs['futureSessionsDays']))
+        self.txtFSdays.setText(str(self.configs['FutureSessionsDays']))
         mixer.Channel(0).set_volume(0.5)
         mixer.Channel(0).play(mixer.Sound(STARTUP_SOUND))
 
@@ -237,12 +238,12 @@ class MainWin(QMainWindow):
             self.stackedWidget.setCurrentWidget(self.mainPage) 
     
     def setTouchSound(self, active):
-        self.configs['touchSound'] = active
+        self.configs['TouchSound'] = active
         if not self.saveConfigs():
             self.setLabel(TEXT['saveConfigError'][self.langIndex], 4)
 
     def playTouchSound(self, sound):
-        if self.configs['touchSound']:
+        if self.configs['TouchSound']:
             if sound == 't':
                 self.touchSound.play()
             else:
@@ -258,7 +259,7 @@ class MainWin(QMainWindow):
             sw.setTransitionDirection(Qt.Horizontal)
             sw.setTransitionSpeed(500)
             sw.setTransitionEasingCurve(QEasingCurve.OutQuart)
-            sw.setSlideTransition(self.configs['slideTransition'])
+            sw.setSlideTransition(self.configs['SlideTransition'])
 
         self.stackedWidgetSex.setTransitionEasingCurve(QEasingCurve.OutBack)
         self.stackedWidgetSex.setTransitionDirection(Qt.Vertical)
@@ -270,7 +271,7 @@ class MainWin(QMainWindow):
         self.stackedWidgetLaser.setSlideTransition(checked)
         self.stackedWidgetSettings.setSlideTransition(checked)
         self.hwStackedWidget.setSlideTransition(checked)
-        self.configs['slideTransition'] = checked
+        self.configs['SlideTransition'] = checked
         if not self.saveConfigs():
             self.setLabel(TEXT['saveConfigError'][self.langIndex], 4)
 
@@ -575,7 +576,7 @@ class MainWin(QMainWindow):
         self.dacSlider.doubleValueChanged.connect(self.setDacSlidrColor)
     
     def setDacSlidrColor(self):
-        if self.configs['theme'] in ['C1', 'C2', 'C4']:
+        if self.configs['Theme'] in ['C1', 'C2', 'C4']:
             self.dacSlider.setStyleSheet(DAC_SLIDER_B_CHANGED)
         else:
             self.dacSlider.setStyleSheet(DAC_SLIDER_W_CHANGED)
@@ -676,30 +677,30 @@ class MainWin(QMainWindow):
                 raise Exception('out of range')
 
             if energy <= 30:
-                self.configs['EnergyCoeffs'][0] = ratio
+                self.coefficients[0] = ratio
             elif 30 < energy <= 40:
-                self.configs['EnergyCoeffs'][1] = ratio
+                self.coefficients[1] = ratio
             elif 40 < energy <= 50:
-                self.configs['EnergyCoeffs'][2] = ratio
+                self.coefficients[2] = ratio
             elif 50 < energy <= 60:
-                self.configs['EnergyCoeffs'][3] = ratio
+                self.coefficients[3] = ratio
             elif 60 < energy <= 70:
-                self.configs['EnergyCoeffs'][4] = ratio
+                self.coefficients[4] = ratio
             elif 70 < energy <= 80:
-                self.configs['EnergyCoeffs'][5] = ratio
+                self.coefficients[5] = ratio
             elif 80 < energy <= 90:
-                self.configs['EnergyCoeffs'][6] = ratio
+                self.coefficients[6] = ratio
             elif 90 < energy <= 100:
-                self.configs['EnergyCoeffs'][7] = ratio
+                self.coefficients[7] = ratio
 
         except Exception:
             self.setLabel(TEXT['CoeffError'][self.langIndex], 3)
             return
             
-        if not self.saveConfigs():
+        if not saveCoefficients(self.coefficients):
             self.setLabel(TEXT['saveCoeffError'][self.langIndex], 4)
         else:
-            self.setLabel('Coeff  →  ' + str(round(ratio, 2)), 4)
+            self.setLabel(TEXT['Coeff'][self.langIndex] + str(round(ratio, 2)), 4)
     
     def hwPageChanged(self):
         if self.calibrationPageActive:
@@ -754,7 +755,7 @@ class MainWin(QMainWindow):
         else:
             self.po.setStyleSheet(POWER_OPTION_D)
 
-        self.configs['theme'] = theme
+        self.configs['Theme'] = theme
         if not self.saveConfigs():
             self.setLabel(TEXT['saveConfigError'][self.langIndex], 4)
 
@@ -910,7 +911,7 @@ class MainWin(QMainWindow):
             self.setLabel(str(e).capitalize() + '.')
             return
 
-        numOfLocks = len(self.configs['LOCK'])
+        numOfLocks = len(self.configs['Locks'])
 
         if numOfLocks == 3:
             self.setLabel(TEXT['maxLock'][self.langIndex])
@@ -920,14 +921,14 @@ class MainWin(QMainWindow):
             self.setLabel(TEXT['passedDate'][self.langIndex])
             return
 
-        for lock in self.configs['LOCK']:
+        for lock in self.configs['Locks']:
             if (date - toJalali(lock.date)).days <= 0:
                 self.setLabel(TEXT['anyLockBefor'][self.langIndex])
                 return
         
-        license = self.configs['LICENSE'][f'{numOfLocks + 1}']
+        license = self.configs['License'][f'{numOfLocks + 1}']
         lock = Lock(date.togregorian(), license)
-        self.configs['LOCK'].append(lock)
+        self.configs['Locks'].append(lock)
         if not self.saveConfigs():
             self.setLabel(TEXT['saveConfigError'][self.langIndex])
 
@@ -940,8 +941,8 @@ class MainWin(QMainWindow):
         self.loadLocksTable()
 
     def loadLocksTable(self):
-        self.configs['LOCK'].sort(key=lambda x: x.date)
-        locks = self.configs['LOCK']
+        self.configs['Locks'].sort(key=lambda x: x.date)
+        locks = self.configs['Locks']
         self.tableLock.setRowCount(len(locks))
         for i, lock in enumerate(locks):
             date = TableWidgetItem(str(toJalali(lock.date).date()))
@@ -967,7 +968,7 @@ class MainWin(QMainWindow):
             self.tableLock.setItem(i, 2, paid)
             
     def resetLock(self):
-        self.configs['LOCK'] = []
+        self.configs['Locks'] = []
         if not self.saveConfigs():
             self.setLabel(TEXT['saveConfigError'][self.langIndex])
 
@@ -1010,7 +1011,7 @@ class MainWin(QMainWindow):
     def unlockLIC(self, auto=False):
         userPass = self.txtPassword.text().strip()
         locks = []
-        for lock in self.configs['LOCK']:
+        for lock in self.configs['Locks']:
             date = toJalali(lock.date)
             if not lock.paid and getDiff(date) <= 0:
                 locks.append(lock)
@@ -1573,21 +1574,21 @@ class MainWin(QMainWindow):
     def correctEngyPulsWidth(self):
         e = self.energy
         if self.energy <= 30:
-            e = self.energy * self.configs['EnergyCoeffs'][0]
+            e = self.energy * self.coefficients[0]
         elif 30 < self.energy <= 40:
-            e = self.energy * self.configs['EnergyCoeffs'][1]
+            e = self.energy * self.coefficients[1]
         elif 40 < self.energy <= 50:
-            e = self.energy * self.configs['EnergyCoeffs'][2]
+            e = self.energy * self.coefficients[2]
         elif 50 < self.energy <= 60:
-            e = self.energy * self.configs['EnergyCoeffs'][3]
+            e = self.energy * self.coefficients[3]
         elif 60 < self.energy <= 70:
-            e = self.energy * self.configs['EnergyCoeffs'][4]
+            e = self.energy * self.coefficients[4]
         elif 70 < self.energy <= 80:
-            e = self.energy * self.configs['EnergyCoeffs'][5]
+            e = self.energy * self.coefficients[5]
         elif 80 < self.energy <= 90:
-            e = self.energy * self.configs['EnergyCoeffs'][6]
+            e = self.energy * self.coefficients[6]
         elif 90 < self.energy <= 100:
-            e = self.energy * self.configs['EnergyCoeffs'][7]
+            e = self.energy * self.coefficients[7]
 
         return int(e)
 
@@ -1604,7 +1605,7 @@ class MainWin(QMainWindow):
                 laserPage({'cooling': self.cooling})
 
     def chgSliderColor(self, c1, c2):
-        if self.configs['theme'] in ['C1', 'C2', 'C4']:
+        if self.configs['Theme'] in ['C1', 'C2', 'C4']:
             self.sliderEnergyCalib.setStyleSheet(c1)
             self.sliderFrequencyCalib.setStyleSheet(c1)
             self.sliderPulseWidthCalib.setStyleSheet(SLIDER_DISABLED_GB)
@@ -1773,7 +1774,7 @@ class MainWin(QMainWindow):
 
     def type(self, letter):
         def wrapper():
-            self.keyboardTimer.start(15000)
+            self.keyboardTimer.start(30000)
             widget = QApplication.focusWidget()
             lang = 0
             if self.farsi:
@@ -1868,7 +1869,7 @@ class MainWin(QMainWindow):
         else:
             height = 0
             newHeight = 350
-            self.keyboardTimer.start(15000)
+            self.keyboardTimer.start(30000)
 
         self.animation = QPropertyAnimation(self.keyboardFrame, b"maximumHeight")
         self.animation.setDuration(250)
@@ -2222,7 +2223,7 @@ class MainWin(QMainWindow):
 
         if num in range(0, 10000):
             self.txtFSdays.setText(str(num))
-            self.configs['futureSessionsDays'] = num
+            self.configs['FutureSessionsDays'] = num
             self.saveConfigs()
 
         self.futureSessions()
@@ -2366,7 +2367,7 @@ class MainWin(QMainWindow):
         self.messageTimer.start(sec * 1000)
         timespan = 200
         if self.lblMsg.isVisible():
-            timespan = 1
+            timespan = 0
         self.lblMsg.setVisible(True)
         self.effect = QGraphicsOpacityEffect()
         self.lblMsg.setGraphicsEffect(self.effect)
@@ -2407,7 +2408,7 @@ class MainWin(QMainWindow):
             icon = QPixmap(SELECTED_LANG_ICON)
             self.lblFaSelected.setPixmap(icon.scaled(70, 70))
             self.lblEnSelected.clear()
-            self.configs['LANGUAGE'] = 'fa'
+            self.configs['Language'] = 'fa'
             self.langIndex = 1
         else:
             app.setStyleSheet('*{font-family:"Arial"}')
@@ -2426,7 +2427,7 @@ class MainWin(QMainWindow):
             icon = QPixmap(SELECTED_LANG_ICON)
             self.lblEnSelected.setPixmap(icon.scaled(70, 70))
             self.lblFaSelected.clear()
-            self.configs['LANGUAGE'] = 'en'
+            self.configs['Language'] = 'en'
             self.langIndex = 0
 
         if not self.saveConfigs():

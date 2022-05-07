@@ -3393,7 +3393,7 @@ QPushButton:pressed{
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1210</width>
+                       <width>896</width>
                        <height>824</height>
                       </rect>
                      </property>
@@ -4726,7 +4726,7 @@ QToolBox::tab:selected { /* italicize selected tabs */
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1210</width>
+                       <width>1089</width>
                        <height>461</height>
                       </rect>
                      </property>

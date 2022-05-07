@@ -239,5 +239,6 @@ TEXT = {
     'SensorError': ['Sensor Error', 'خطای سنسور'],
     'saveCoeffError': ['Error saving coefficient.', 'خطای ذخیره ضریب'],
     'CoeffError': ['Invalid input', 'ورودی نامعتبر'],
-    'saved': ['Saved.', 'ذخیره شد.']
+    'saved': ['Saved.', 'ذخیره شد.'],
+    'Coeff': ['Coeff  →  ', 'ضریب  ←  ']
 }

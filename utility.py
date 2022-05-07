@@ -1,3 +1,4 @@
+from genericpath import isfile
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QThread, pyqtSignal
 from paths import *
@@ -183,15 +184,15 @@ def loadConfigs():
             file.close()
             file = open(CONFIG_FILE, 'wb')
             configs = {
-                'LICENSE': genLicense(),
-                'LANGUAGE': 'en',
-                'slideTransition': False,
-                'touchSound': True,
+                'License': genLicense(),
+                'Language': 'en',
+                'SlideTransition': False,
+                'TouchSound': True,
                 'MusicVolume': 50,
                 'VideoVolume': 50,
                 'LoopMusic': True,
-                'futureSessionsDays': 1,
-                'theme': 'C1',
+                'FutureSessionsDays': 1,
+                'Theme': 'C1',
                 'OwnerInfo': '',
                 'SerialNumber': '',
                 'TotalShotCounter': 0,
@@ -205,8 +206,7 @@ def loadConfigs():
                 'FirmwareVersion': '',
                 'ProductionDate': '',
                 'GuiVersion': 'v1.0',
-                'LOCK': [],
-                'EnergyCoeffs': [1] * 8
+                'Locks': [],
             }
             pickle.dump(configs, file)
             file.close()
@@ -233,6 +233,31 @@ def saveConfigs(configs):
     
     except Exception as e:
         print('Error in saving config file.')
+        print(e)
+        return False
+
+def loadCoefficients():
+    try: 
+        if isfile(COEFFICIENTS):
+            with open(COEFFICIENTS, 'rb') as file:
+                coefficients = pickle.load(file)
+        else:
+            coefficients = [1] * 8
+
+    except Exception as e:
+        log('Loading coefficients', str(e) + '\n')
+        coefficients = [1] * 8
+    finally:
+        return coefficients
+
+def saveCoefficients(coeffs):
+    try:
+        with open(COEFFICIENTS, 'wb') as f:
+            pickle.dump(coeffs, f)
+
+        return True
+    except Exception as e:
+        print('Error in saving coefficients file.')
         print(e)
         return False
 
