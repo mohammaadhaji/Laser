@@ -238,5 +238,6 @@ TEXT = {
     'btnFailPower': ['Fail', 'مردود'],
     'SensorError': ['Sensor Error', 'خطای سنسور'],
     'saveCoeffError': ['Error saving coefficient.', 'خطای ذخیره ضریب'],
-    'CoeffError': ['Invalid input', 'ورودی نامعتبر']
+    'CoeffError': ['Invalid input', 'ورودی نامعتبر'],
+    'saved': ['Saved.', 'ذخیره شد.']
 }

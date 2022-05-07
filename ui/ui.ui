@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1642</width>
-    <height>891</height>
+    <width>1695</width>
+    <height>846</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1921,6 +1921,16 @@ border: 1px solid white;
                   <property name="text">
                    <string>Load</string>
                   </property>
+                  <property name="icon">
+                   <iconset>
+                    <normaloff>images/load.png</normaloff>images/load.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>60</width>
+                    <height>60</height>
+                   </size>
+                  </property>
                  </widget>
                 </item>
                </layout>
@@ -2466,7 +2476,7 @@ border:3px solid red;
         <item>
          <widget class="StackedWidget" name="stackedWidgetSettings">
           <property name="currentIndex">
-           <number>1</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="settingsMenuPage">
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -3345,7 +3355,7 @@ QPushButton:pressed{
               <item>
                <widget class="StackedWidget" name="hwStackedWidget">
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>2</number>
                 </property>
                 <widget class="QWidget" name="infoPage">
                  <property name="styleSheet">
@@ -4716,8 +4726,8 @@ QToolBox::tab:selected { /* italicize selected tabs */
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1250</width>
-                       <height>491</height>
+                       <width>1210</width>
+                       <height>461</height>
                       </rect>
                      </property>
                      <property name="styleSheet">
@@ -6849,8 +6859,8 @@ border: 1px solid white;
                                <string notr="true">QPushButton {
 background-color: rgb(213, 213, 213);
 color: rgb(0, 0, 0);
-min-width: 170px;
-min-height: 80px;
+min-width: 200px;
+min-height: 100px;
 border-radius: 15px;
 border: 10px solid red;
 outline:0;
@@ -6864,6 +6874,16 @@ border: 10px solid red;
                               </property>
                               <property name="text">
                                <string>Standby</string>
+                              </property>
+                              <property name="icon">
+                               <iconset>
+                                <normaloff>images/standby.png</normaloff>images/standby.png</iconset>
+                              </property>
+                              <property name="iconSize">
+                               <size>
+                                <width>60</width>
+                                <height>60</height>
+                               </size>
                               </property>
                              </widget>
                             </item>
@@ -6892,8 +6912,8 @@ border: 10px solid red;
                                <string notr="true">QPushButton {
 background-color: rgb(213, 213, 213);
 color: rgb(0, 0, 0);
-min-width: 170px;
-min-height: 80px;
+min-width: 200px;
+min-height: 100px;
 border-radius: 15px;
 border: 10px solid rgb(213, 213, 213);
 outline:0;
@@ -6907,6 +6927,16 @@ border: 10px solid rgb(0, 170, 255);
                               </property>
                               <property name="text">
                                <string>Ready</string>
+                              </property>
+                              <property name="icon">
+                               <iconset>
+                                <normaloff>images/ready.png</normaloff>images/ready.png</iconset>
+                              </property>
+                              <property name="iconSize">
+                               <size>
+                                <width>60</width>
+                                <height>60</height>
+                               </size>
                               </property>
                              </widget>
                             </item>
@@ -11682,7 +11712,7 @@ background-color: rgb(0, 170, 255);
                      <number>0</number>
                     </property>
                     <property name="bottomMargin">
-                     <number>40</number>
+                     <number>20</number>
                     </property>
                     <item>
                      <widget class="QLabel" name="lblSpark">
@@ -11728,7 +11758,7 @@ background-color: rgb(0, 170, 255);
                  </layout>
                 </item>
                 <item>
-                 <layout class="QHBoxLayout" name="laserBottomLayer" stretch="1,0,0,0,1">
+                 <layout class="QHBoxLayout" name="laserBottomLayer" stretch="2,1,0,1,2">
                   <property name="leftMargin">
                    <number>0</number>
                   </property>
@@ -11764,7 +11794,7 @@ background-color: rgb(0, 170, 255);
 background-color: rgb(213, 213, 213);
 color: rgb(0, 0, 0);
 min-width: 170px;
-min-height: 80px;
+min-height: 100px;
 border-radius: 15px;
 border: 10px solid red;
 outline:0;
@@ -11778,6 +11808,16 @@ border: 10px solid red;
                     </property>
                     <property name="text">
                      <string>Standby</string>
+                    </property>
+                    <property name="icon">
+                     <iconset>
+                      <normaloff>images/standby.png</normaloff>images/standby.png</iconset>
+                    </property>
+                    <property name="iconSize">
+                     <size>
+                      <width>60</width>
+                      <height>60</height>
+                     </size>
                     </property>
                    </widget>
                   </item>
@@ -11807,7 +11847,7 @@ border: 10px solid red;
 background-color: rgb(213, 213, 213);
 color: rgb(0, 0, 0);
 min-width: 170px;
-min-height: 80px;
+min-height: 100px;
 border-radius: 15px;
 border: 10px solid rgb(213, 213, 213);
 outline:0;
@@ -11821,6 +11861,16 @@ border: 10px solid rgb(0, 170, 255);
                     </property>
                     <property name="text">
                      <string>Ready</string>
+                    </property>
+                    <property name="icon">
+                     <iconset>
+                      <normaloff>images/ready.png</normaloff>images/ready.png</iconset>
+                    </property>
+                    <property name="iconSize">
+                     <size>
+                      <width>60</width>
+                      <height>60</height>
+                     </size>
                     </property>
                    </widget>
                   </item>

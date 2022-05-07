@@ -1520,7 +1520,7 @@ class MainWin(QMainWindow):
                 logErrors += TEXT['physicalDamage'][0] + '\n'
             
             if logErrors:
-                self.setLabel(TEXT['SensorError'][self.langIndex], 3)
+                self.setLabel(TEXT['SensorError'][self.langIndex], 2)
                 log('Sensors', logErrors)
 
             
@@ -1675,6 +1675,7 @@ class MainWin(QMainWindow):
         case.save(
             self.sex, self.bodyPart, (self.energy, self.pulseWidth, self.frequency)
         )
+        self.setLabel(TEXT['saved'][self.langIndex], 1.5)
 
     def bodyPartsSignals(self):
         buttons = chain(
