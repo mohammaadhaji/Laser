@@ -16,6 +16,25 @@ from PyQt5.QtWidgets import QApplication
 from paths import *
 
 
+RPI_MODEL = ''
+RPI_VERSION = ''
+if os.path.isfile('/proc/device-tree/model'):
+    with open('/proc/device-tree/model', 'r') as f:
+        RPI_MODEL = f.read()
+        RPI_VERSION = RPI_MODEL.split('Pi')[1][:2].strip()
+    
+else:
+    RPI_MODEL = 'Unknown'
+
+
+OS_SPEC = ''
+if platform.system() == 'Windows':
+    OS_SPEC = platform.platform()
+        
+else:
+    OS_SPEC = platform.platform().split('-with')[0].replace('-', ' ')
+
+
 def log(title, info):
     time = str(jdatetime.datetime.now().strftime('[%Y-%m-%d %H:%M:%S]'))
     time += ' <' + title + '>\n'
@@ -32,25 +51,6 @@ def log(title, info):
     except Exception as e:
         print(e)
 
-
-RPI_MODEL = ''
-RPI_VERSION = ''
-if os.path.isfile('/proc/device-tree/model'):
-    file = open('/proc/device-tree/model', 'r')
-    RPI_MODEL = file.read()
-    RPI_VERSION = RPI_MODEL.split('Pi')[1][:2].strip()
-    file.close()
-
-else:
-    RPI_MODEL = 'Unknown'
-
-
-OS_SPEC = ''
-if platform.system() == 'Windows':
-    OS_SPEC = platform.platform()
-        
-else:
-    OS_SPEC = platform.platform().split('-with')[0].replace('-', ' ')
 
 def monitorInfo():
     info = ''
@@ -69,7 +69,6 @@ def monitorInfo():
     return info + ' ' + resolution
 
 
-
 def isFarsi(text):
     farsi = list('اآبپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی')
     for i in farsi:
@@ -77,6 +76,7 @@ def isFarsi(text):
             return True
 
     return False
+
 
 def setSystemTime(time):
     if platform.system() == 'Windows':
@@ -181,6 +181,7 @@ def EncryptDecrypt(filename, key):
 def loadConfigs():
     if not os.path.isfile(CONFIG_FILE):
         print("Config file not found.")
+        log('Config', 'Config file not found.\n')
         exit(1)
     
     try:
@@ -243,6 +244,7 @@ def saveConfigs(configs):
         print(e)
         return False
 
+
 def loadCoefficients():
     try: 
         if os.path.isfile(COEFFICIENTS):
@@ -256,6 +258,7 @@ def loadCoefficients():
         coefficients = [1] * 8
     finally:
         return coefficients
+
 
 def saveCoefficients(coeffs):
     try:
@@ -273,11 +276,11 @@ def getID():
     id = ''
     if not RPI_MODEL == 'Unknown':
         try:
-            f = open('/proc/cpuinfo','r')
-            for line in f:
-                if line.startswith('Serial'):
-                    id = line.split(':')[1].strip()
-            f.close()
+            with open('/proc/cpuinfo','r') as f:
+                for line in f:
+                    if line.startswith('Serial'):
+                        id = line.split(':')[1].strip()
+
         except:
             id = str(uuid.getnode()).upper()
     
@@ -319,7 +322,6 @@ def toJalali(date):
         return jdatetime.datetime.fromgregorian(year=y, month=m, day=d)
 
 
-
 def calcPosition(pos):
     seconds = int((pos/1000) % 60)
     minutes = int((pos/60000) % 60)
@@ -328,6 +330,7 @@ def calcPosition(pos):
 
 
 MOUNT_DIR = '/media/musics'
+
 def musicCleanup(mountPoint):
     try:
         for mp in mountPoint.values():

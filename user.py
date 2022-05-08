@@ -5,7 +5,6 @@ import os
 from paths import USERS_DATA
 
 
-
 class User:
     def __init__(self, number, name):
         self.phoneNumber = number

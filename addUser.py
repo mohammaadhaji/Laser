@@ -4,9 +4,9 @@ import pickle
 import sys
 import os
 
-from user import User
 from paths import USERS_DATA
 from utility import randID
+from user import User
 
 help = """
 help:   python addUser.py N  ---> adds N users.

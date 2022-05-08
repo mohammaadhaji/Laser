@@ -28,6 +28,7 @@ def gpioCleanup():
     except Exception as e:
         log('GPIO', str(e) + '\n')
 
+
 if platform.system() == 'Windows':
     serial = Serial('COM2', 115200)
 else:

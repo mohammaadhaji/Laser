@@ -20,6 +20,7 @@ class WebEngineView(QWebEngineView):
     def setIsLoaded(self):
         self.isLoaded = True
 
+
 class SelectedBodyPart(QFrame):
     def __init__(self, parent):
         super().__init__(parent)
@@ -212,6 +213,7 @@ class SkinGrade(QFrame):
             geo = btn.geometry()
             geo.setWidth(200)
             return geo
+
 
 class Parameter(QFrame):
     inc = pyqtSignal()
@@ -419,6 +421,7 @@ class Parameter(QFrame):
 
         self.progressFrame.setStyleSheet(newStylesheet)
 
+
 class CounterParameter(Parameter):
     def __init__(self, parent):
         super().__init__(parent)
@@ -442,6 +445,7 @@ class CounterParameter(Parameter):
                                   .replace("{STOP_2}", stop_2)\
                                   .replace("{COLOR}", self.color)
         self.progressFrame.setStyleSheet(newStylesheet)
+
 
 class PowerOption(QFrame):
     shutdown = pyqtSignal()
@@ -805,6 +809,7 @@ class Action(QWidget):
         )
         layout.addItem(spacerItem2)
 
+
 class LineEdit(QLineEdit):
     fIn = pyqtSignal()
     def __init__(self, parent):
@@ -814,6 +819,7 @@ class LineEdit(QLineEdit):
     def mousePressEvent(self, QMouseEvent):
         super(LineEdit, self).mousePressEvent(QMouseEvent)
         self.fIn.emit()
+
 
 class TextEdit(QTextEdit):
     fIn = pyqtSignal()
@@ -825,10 +831,12 @@ class TextEdit(QTextEdit):
         super(TextEdit, self).mousePressEvent(QMouseEvent)
         self.fIn.emit()
 
+
 class TableWidgetItem(QTableWidgetItem):
     def __init__(self, parent = None):
         QTableWidgetItem.__init__(self, parent)
         self.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+
 
 class VideoWidget(QVideoWidget):
         def __init__(self, parent = None):
@@ -845,6 +853,7 @@ class VideoWidget(QVideoWidget):
         def mouseDoubleClickEvent(self, event):
             self.setFullScreen(not self.isFullScreen())
             event.accept()
+
 
 class ToggleButton(QCheckBox):
     def __init__(
@@ -1108,6 +1117,7 @@ class StackedWidget(QStackedWidget):
 
         if not self.slideTransition and not self.fadeTransition:
             self.setCurrentIndex(nextIndex)
+
 
 class FadeWidgetTransition(QWidget):
     def __init__(self, animationSettings, oldWidget, newWidget):

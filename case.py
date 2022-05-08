@@ -3,6 +3,7 @@ import os
 
 from paths import CASES_DIR
 
+
 MAX_ENERGY = 100
 MIN_ENRGEY = 20
 MAX_FREQUENCY = 10
@@ -33,18 +34,20 @@ class Case:
                 self.female[bodyPart] = values
 
             filePath = os.path.join(CASES_DIR, self.name)
-            fileHandler = open(filePath, 'wb')
-            pickle.dump(self, fileHandler)
-            fileHandler.close()
+            with open(filePath, 'wb') as f:
+                pickle.dump(self, f)
+
         except Exception as e:
             print(e)
 
+
 def openCase(name):
     filePath = os.path.join(CASES_DIR, name)
+
     if os.path.isfile(filePath):
-        fileHandler = open(filePath, 'rb')
-        case = pickle.load(fileHandler)
-        fileHandler.close()
+        with open(filePath, 'rb') as f:
+            case = pickle.load(f)
+
         return case
     else:
         return Case(name)
