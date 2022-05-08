@@ -1,6 +1,7 @@
 from distutils.dir_util import copy_tree
 from pathlib import Path
-import shutil, os
+import shutil
+import os
 
 laser     = Path(__file__).parent.absolute()
 parentDir = Path(laser).parent

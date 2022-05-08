@@ -1,13 +1,15 @@
+import math
+
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from werkzeug.utils import cached_property
+
 from communication import HARDWARE_TEST_PAGE, READ, sendPacket
 from styles import *
 from paths import *
-import math
 
 class WebEngineView(QWebEngineView):
     def __init__(self, parent):

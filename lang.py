@@ -164,7 +164,7 @@ TEXT = {
     'lblTheme': ['Themes', 'تم ها'],
     'daysLater': ['Days Later', 'روز بعد'],
     'tomorrow': ['Tomorrow', 'فردا'],
-    'lblShowSession': ['Show Sessions After', 'جلسه های بعد از'],
+    'lblShowSession': ['Sessions After', 'جلسه های بعد از'],
     'lblDaysFS': ['Days', 'روز'],
     'btnRefreshFS': ['Refresh', 'تازه سازی'],
     'lblTotalUsers': ['Total Users', 'تعداد کل'],

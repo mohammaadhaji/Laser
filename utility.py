@@ -1,12 +1,19 @@
-from genericpath import isfile
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import QThread, pyqtSignal
-from paths import *
-import datetime, jdatetime
-import subprocess, platform, pickle, hashlib
-import random, uuid, os, json, shutil
-from uuid import getnode as get_mac
+import subprocess
+import jdatetime
+import datetime
+import platform
+import hashlib
+import random
+import shutil
+import pickle
+import uuid
+import json
+import os
 
+from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtWidgets import QApplication
+
+from paths import *
 
 
 def log(title, info):
@@ -272,10 +279,10 @@ def getID():
                     id = line.split(':')[1].strip()
             f.close()
         except:
-            id = str(get_mac()).upper()
+            id = str(uuid.getnode()).upper()
     
     else:
-        id = str(get_mac()).upper()
+        id = str(uuid.getnode()).upper()
 
     return id.upper()
 

@@ -1,6 +1,8 @@
-from os.path import isfile
+import datetime
+import pickle
+import os
+
 from paths import USERS_DATA
-import datetime, pickle
 
 
 
@@ -48,7 +50,7 @@ class User:
 
 def loadUsers():
     try:
-        if isfile(USERS_DATA):
+        if os.path.isfile(USERS_DATA):
             fileHandler = open(USERS_DATA, 'rb')
             usersData = pickle.load(fileHandler)
             fileHandler.close()

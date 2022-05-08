@@ -1,8 +1,8 @@
-from pathlib import Path
 from os.path import join
+import pathlib
 
 
-CURRENT_FILE_DIR   = Path(__file__).parent.absolute()
+CURRENT_FILE_DIR   = pathlib.Path(__file__).parent.absolute()
 APP_UI             = join(CURRENT_FILE_DIR, 'ui/ui.ui')
 SPLASH             = join(CURRENT_FILE_DIR, 'ui/images/splash.jpg')
 SPLASH_LOADING     = join(CURRENT_FILE_DIR, 'ui/images/splashLoading.jpg')

@@ -1,12 +1,17 @@
+import subprocess
+import jdatetime
+import platform
+import pathlib
+import shutil
+import json
+import os
+
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from crccheck.crc import Crc16Xmodem
 from serial import Serial
+
 from paths import CURRENT_FILE_DIR, LOGS_PATH
-from pathlib import Path
 from utility import log, calcMD5, int_to_bytes
-import jdatetime, platform
-import os, subprocess
-import shutil, json
 try:
     import RPi.GPIO as GPIO
     GPIO.setwarnings(False)
@@ -28,50 +33,50 @@ if platform.system() == 'Windows':
 else:
     serial = Serial('/dev/ttyS0', 460800)
 
-SHOW_SEND_PACKET   = False
-SHOW_RECE_PACKET   = False
+SHOW_SEND_PACKET = False
+SHOW_RECE_PACKET = False
 
-HEADER_1           = 1
-HEADER_2           = 2
-CHECK_NOB_1        = 3
-CHECK_NOB_2        = 4
-IN_MESSAGE         = 5
-STATE              = HEADER_1
+HEADER_1 = 1
+HEADER_2 = 2
+CHECK_NOB_1 = 3
+CHECK_NOB_2 = 4
+IN_MESSAGE = 5
+STATE = HEADER_1
 
-PAGE_INDEX         = 2
-FIELD_INDEX        = 3
-CMD_TYPE_INDEX     = 4
-DATA_INDEX         = 5
+PAGE_INDEX = 2
+FIELD_INDEX = 3
+CMD_TYPE_INDEX = 4
+DATA_INDEX = 5
 
-LASER_PAGE         = 0
-SETTING_PAGE       = 1
-LOCK_TIME_PAGE     = 2
-BODY_PART_PAGE     = 3
-MAIN_PAGE          = 4
-SHUTDONW_PAGE      = 5
-UPDATE_PAGE        = 6
+LASER_PAGE = 0
+SETTING_PAGE = 1
+LOCK_TIME_PAGE = 2
+BODY_PART_PAGE = 3
+MAIN_PAGE = 4
+SHUTDONW_PAGE = 5
+UPDATE_PAGE = 6
 HARDWARE_TEST_PAGE = 7
-LASER_CALIB_PAGE   = 8
-OTHER_PAGE         = 9
+LASER_CALIB_PAGE = 8
+OTHER_PAGE = 9
 
+REPORT = 0x0A
+WRITE  = 0x0B 
+READ   = 0x0C
 
-REPORT             = 0x0A
-WRITE              = 0x0B 
-READ               = 0x0C
+MOUNT_DIR = '/media/updateFirmware'
+SOURCE_ZIP = 'Laser.zip'
+VERIFY = 'verify'
+MICRO_SOURCE = 'Laser_Application.bin'
+MICRO_DATA = {}
+PACKET_NOB = 1000
 
-MOUNT_DIR          = '/media/updateFirmware'
-SOURCE_ZIP         = 'Laser.zip'
-VERIFY             = 'verify'
-MICRO_SOURCE       = 'Laser_Application.bin'
-MICRO_DATA         = {}
-PACKET_NOB         = 1000
-
-RECEIVED_DATA      = bytearray()
-NOB_BYTES          = bytearray(2)
+RECEIVED_DATA = bytearray()
+NOB_BYTES = bytearray(2)
 
 
 def printPacket(packet):
-    print( " ".join(packet.hex()[i:i+2].upper() for i in range(0, len(packet.hex()), 2)))
+    print(" ".join(packet.hex()[i:i+2].upper() for i in range(0, len(packet.hex()), 2)))
+
 
 def sensors(packet):
     flags = [False] * 6
@@ -154,6 +159,7 @@ def lockPage(cmdType):
     date  = jdatetime.datetime.now().togregorian().strftime('%Y-%m-%d')
     fieldValues = {'clock': clock, 'date': date}
     sendPacket(fieldsIndex, fieldValues, LOCK_TIME_PAGE, cmdType)
+
 
 def decodePacket(RECEIVED_DATA):
     key = ''
@@ -289,6 +295,7 @@ def decodePacket(RECEIVED_DATA):
                 serial.write(MICRO_DATA[251])
 
     return key, value
+
 
 class BaseSerial:
     sysClock         = pyqtSignal(tuple)
@@ -632,8 +639,8 @@ class UpdateFirmware(QThread):
                 if os.path.isfile(f'{dir}/{SOURCE_ZIP}'):
                     laserFound = True
                     laserTarDir = f'{dir}/{SOURCE_ZIP}'
-                    laserDir = str(Path(laserTarDir).with_suffix(''))
-                    laserUnpackDir = Path(laserTarDir).parent.absolute()
+                    laserDir = str(pathlib.Path(laserTarDir).with_suffix(''))
+                    laserUnpackDir = pathlib.Path(laserTarDir).parent.absolute()
 
             if not laserFound:
                 err = "Source files not found."

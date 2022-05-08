@@ -60,7 +60,7 @@ QScrollBar:vertical {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>6</number>
+       <number>8</number>
       </property>
       <widget class="QWidget" name="adssPage">
        <property name="styleSheet">
@@ -8954,7 +8954,7 @@ QHeaderView::section
                      </font>
                     </property>
                     <property name="text">
-                     <string>Show Sessions After</string>
+                     <string>Sessions After</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>

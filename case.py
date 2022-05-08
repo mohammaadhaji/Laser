@@ -1,6 +1,7 @@
-from paths import CASES_DIR
-from os.path import join, isfile
 import pickle
+import os
+
+from paths import CASES_DIR
 
 MAX_ENERGY = 100
 MIN_ENRGEY = 20
@@ -31,7 +32,7 @@ class Case:
             else:
                 self.female[bodyPart] = values
 
-            filePath = join(CASES_DIR, self.name)
+            filePath = os.path.join(CASES_DIR, self.name)
             fileHandler = open(filePath, 'wb')
             pickle.dump(self, fileHandler)
             fileHandler.close()
@@ -39,8 +40,8 @@ class Case:
             print(e)
 
 def openCase(name):
-    filePath = join(CASES_DIR, name)
-    if isfile(filePath):
+    filePath = os.path.join(CASES_DIR, name)
+    if os.path.isfile(filePath):
         fileHandler = open(filePath, 'rb')
         case = pickle.load(fileHandler)
         fileHandler.close()

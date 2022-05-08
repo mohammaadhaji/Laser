@@ -1,11 +1,23 @@
+from itertools import chain
+import jdatetime
 import time 
-start = time.time()
-import jdatetime, math, sys, os
+import math
+import sys
+import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
-from pygame import mixer
+
+from PyQt5.QtWebEngineCore import (
+    QWebEngineUrlSchemeHandler,
+    QWebEngineUrlScheme,
+)
+from PyQt5.QtMultimedia import (
+    QMediaPlayer,
+    QMediaPlaylist,
+    QMediaContent,
+)
 from PyQt5.uic import loadUi
-from PyQt5.QtMultimedia import *
-from PyQt5.QtWebEngineCore import *
+from pygame import mixer
+
 from communication import *
 from promotions import *
 from utility import *
@@ -14,8 +26,7 @@ from lang import *
 from case import *
 from user import *
 from lock import *
-from itertools import chain
-from pathlib import Path
+
 mixer.init(buffer=2048)
 mixer.music.set_volume(0.5)
 
@@ -1000,7 +1011,7 @@ class MainWin(QMainWindow):
         self.txtUUID.setText(hwid)
         hwid += '@mohammaad_haji'
         password = ''
-        if isfile(COPY_RIGHT_PASS):
+        if os.path.isfile(COPY_RIGHT_PASS):
             with open(COPY_RIGHT_PASS, 'r') as f:
                 password = f.read()
 
@@ -1303,7 +1314,7 @@ class MainWin(QMainWindow):
             tutoriasl.remove('.gitignore')
         for file in tutoriasl:
             path = os.path.join(TUTORIALS_DIR, file) 
-            name = Path(path).stem
+            name = pathlib.Path(path).stem
             self.listWidgetVideos.addItem(name)
 
     def setVideoVolume(self, v):
@@ -2487,7 +2498,7 @@ class MainWin(QMainWindow):
             )        
         
     def enterLogsPage(self):
-        if isfile(LOGS_PATH):
+        if os.path.isfile(LOGS_PATH):
             EncryptDecrypt(LOGS_PATH, 15)
             f = open(LOGS_PATH, 'r')
             self.txtLogs.setText(f.read())
@@ -2501,7 +2512,7 @@ class MainWin(QMainWindow):
         )
 
     def deleteLogs(self):
-        if isfile(LOGS_PATH):
+        if os.path.isfile(LOGS_PATH):
             os.remove(LOGS_PATH)
         
         self.txtLogs.setText('')
@@ -2561,5 +2572,4 @@ win = MainWin()
 win.showFullScreen()
 win.setFixedSize(QSize(1920, 1080))
 splash.finish(win)
-print(time.time() - start)
 sys.exit(app.exec_())
