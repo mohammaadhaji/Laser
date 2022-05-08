@@ -122,8 +122,8 @@ def addExtenstion(file):
         files.remove('.gitignore')
     for f in files:
         path = os.path.join(TUTORIALS_DIR, f)
-        if file == Path(path).stem:
-            return file + Path(path).suffix
+        if file == pathlib.Path(path).stem:
+            return file + pathlib.Path(path).suffix
 
 
 def randBinNumber(n):
@@ -245,7 +245,7 @@ def saveConfigs(configs):
 
 def loadCoefficients():
     try: 
-        if isfile(COEFFICIENTS):
+        if os.path.isfile(COEFFICIENTS):
             with open(COEFFICIENTS, 'rb') as file:
                 coefficients = pickle.load(file)
         else:
@@ -292,7 +292,7 @@ def calcMD5(directory, verifyFileName):
     for root, dirs, files in os.walk(directory):
         for file in files:
             file_path = os.path.join(root, file)
-            if Path(file_path).name == verifyFileName:
+            if pathlib.Path(file_path).name == verifyFileName:
                 continue
             with open(file_path, 'rb') as f:
                 data = f.read()
