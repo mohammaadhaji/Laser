@@ -2567,8 +2567,9 @@ class MainWin(QMainWindow):
         textCursor.setPosition(self.findIndex + len(findText), QTextCursor.KeepAnchor)
         self.txtLogs.setTextCursor(textCursor)
 
-
+app = None
 def main():
+    global app
     scheme = QWebEngineUrlScheme(b"qt")
     scheme.setFlags(QWebEngineUrlScheme.CorsEnabled)
     QWebEngineUrlScheme.registerScheme(scheme)
