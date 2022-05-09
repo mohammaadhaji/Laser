@@ -310,6 +310,7 @@ class Parameter(QFrame):
 
         self.btnInc.clicked.connect(lambda: self.inc.emit())
         self.btnDec.clicked.connect(lambda: self.dec.emit())
+        self.value = 0
 
     def setParameter(self, x):
         def setIcon(dec, inc):
@@ -395,31 +396,49 @@ class Parameter(QFrame):
             self.btnInc.pressed.connect(lambda: self.incTimer.start(100))
             self.btnInc.released.connect(lambda: self.incTimer.stop())
 
-    def setValue(self, value):
-
-        htmlText = """<p align="center"><span style=" font-size:50pt;">{VALUE}</span></p>"""
-        self.lblValue.setText(htmlText.replace("{VALUE}", str(value)))
-
-        styleSheet = """
+    def setFrame(self, color):
+        styleFrame = """
         QFrame{
         	border-radius: 175px;
         	background-color: qconicalgradient(cx:0.5, cy:0.5, angle:90, stop:{STOP_1} rgba(255, 0, 127, 0), stop:{STOP_2} {COLOR});
         }
         """
-        progress = (self.max - value) / self.max
+        styleLable = "color: {COLOR}; padding: 0px; background-color: none;"
+        progress = (self.max - self.value) / self.max
 
         stop_1 = str(progress - 0.0001)
         stop_2 = str(progress)
 
-        if value == self.max:
+        if self.value == self.max:
             stop_1 = "1.000"
             stop_2 = "1.000"
 
-        newStylesheet = styleSheet.replace("{STOP_1}", stop_1)\
+        newStyleFrame = styleFrame.replace("{STOP_1}", stop_1)\
                                   .replace("{STOP_2}", stop_2)\
-                                  .replace("{COLOR}", self.color)
+                                  .replace("{COLOR}", color)
 
-        self.progressFrame.setStyleSheet(newStylesheet)
+        newStyleLable = styleLable.replace("{COLOR}", color)
+
+        self.progressFrame.setStyleSheet(newStyleFrame)
+        self.lblValue.setStyleSheet(newStyleLable)
+
+    def setValue(self, value):
+        self.value = value
+        htmlText = """<p align="center"><span style=" font-size:50pt;">{VALUE}</span></p>"""
+        self.lblValue.setText(htmlText.replace("{VALUE}", str(value)))
+        self.setFrame(self.color)
+    
+    def setEnabled(self, x):
+        super().setEnabled(x)
+
+        if x:
+            color = self.color
+        else:
+            color = 'rgba(207, 203, 200, 255)'
+
+        self.setFrame(color)
+        if self.lblParameter.text() == 'Pulse Width':
+            super().setEnabled(False)
 
 
 class CounterParameter(Parameter):

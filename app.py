@@ -30,7 +30,7 @@ from lock import *
 mixer.init(buffer=2048)
 mixer.music.set_volume(0.5)
 
-
+a = 'jsjj'
 class QtSchemeHandler(QWebEngineUrlSchemeHandler):
     def requestStarted(self, job):
         request_url = job.requestUrl()
@@ -1511,6 +1511,12 @@ class MainWin(QMainWindow):
             self.stackedWidget.setCurrentWidget(self.nextSessionPage)
 
     def setReady(self, ready):
+        if ready == self.ready:
+            return
+
+        if (not ready) == (not self.ready):
+            return
+
         if ready:
             logErrors = ''
             if self.sensorFlags[5]:
@@ -1559,6 +1565,7 @@ class MainWin(QMainWindow):
                 self.btnReadyCalib.setStyleSheet(READY_SELECTED)
                 self.frequencyWidget.setEnabled(False)
                 self.energyWidget.setEnabled(False)
+                self.pulseWidthWidget.setEnabled(False)
                 self.skinGradeWidget.setEnabled(False)
                 self.sliderEnergyCalib.setEnabled(False)
                 self.sliderFrequencyCalib.setEnabled(False)
@@ -1577,6 +1584,7 @@ class MainWin(QMainWindow):
             self.btnReadyCalib.setStyleSheet(READY_NOT_SELECTED)
             self.frequencyWidget.setEnabled(True)
             self.energyWidget.setEnabled(True)
+            self.pulseWidthWidget.setEnabled(True)
             self.skinGradeWidget.setEnabled(True)
             self.sliderEnergyCalib.setEnabled(True)
             self.sliderFrequencyCalib.setEnabled(True)
@@ -2560,16 +2568,20 @@ class MainWin(QMainWindow):
         self.txtLogs.setTextCursor(textCursor)
 
 
-scheme = QWebEngineUrlScheme(b"qt")
-scheme.setFlags(QWebEngineUrlScheme.CorsEnabled)
-QWebEngineUrlScheme.registerScheme(scheme)
-app = QApplication(sys.argv)
-pixmap = QPixmap(SPLASH_LOADING)
-splash = QSplashScreen(pixmap)
-splash.showFullScreen()
-app.processEvents()
-win = MainWin()
-win.showFullScreen()
-win.setFixedSize(QSize(1920, 1080))
-splash.finish(win)
-sys.exit(app.exec_())
+def main():
+    scheme = QWebEngineUrlScheme(b"qt")
+    scheme.setFlags(QWebEngineUrlScheme.CorsEnabled)
+    QWebEngineUrlScheme.registerScheme(scheme)
+    app = QApplication(sys.argv)
+    pixmap = QPixmap(SPLASH_LOADING)
+    splash = QSplashScreen(pixmap)
+    splash.showFullScreen()
+    app.processEvents()
+    win = MainWin()
+    win.showFullScreen()
+    win.setFixedSize(QSize(1920, 1080))
+    splash.finish(win)
+    sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()
