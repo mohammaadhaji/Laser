@@ -951,8 +951,7 @@ class Label(QLabel):
 
 
 class DoubleSlider(QSlider):
-
-    # create our our signal that we can connect to if necessary
+    
     doubleValueChanged = pyqtSignal(float)
 
     def __init__(self, decimals=3, *args, **kargs):

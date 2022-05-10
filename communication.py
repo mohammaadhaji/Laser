@@ -6,7 +6,7 @@ import shutil
 import json
 import os
 
-from PyQt5.QtCore import QObject, QThread, pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal
 from crccheck.crc import Crc16Xmodem
 from serial import Serial
 
@@ -298,7 +298,7 @@ def decodePacket(RECEIVED_DATA):
     return key, value
 
 
-class BaseSerial:
+class SerialThread(QThread):
     sysClock         = pyqtSignal(tuple)
     sysDate          = pyqtSignal(tuple)
     driverCurrent    = pyqtSignal(float)
@@ -333,9 +333,14 @@ class BaseSerial:
     readFrequency    = pyqtSignal()
     shot             = pyqtSignal()
     receivingSensors = pyqtSignal()
-
+    
     def __init__(self):
         super().__init__()
+        self.loop = True
+
+    def closePort(self):
+        self.loop = False
+        serial.close()
 
     def checkResult(self, key, value):
         if key == 'sensorFlags':
@@ -402,97 +407,6 @@ class BaseSerial:
         elif key == 'sensorFlagsTest':
             self.interLockTest.emit(value[0])
             self.waterLevelTest.emit(value[1])
-
-
-class SerialTimer(BaseSerial, QObject):
-
-    def __init__(self):
-        super().__init__()
-
-    def closePort(self):
-        serial.close()
-
-    def checkBuffer(self):
-        if serial.is_open and serial.in_waiting > 1:
-            self.readDate()
-
-    def readDate(self):
-        global STATE, RECEIVED_DATA, NOB_BYTES
-        nob  = 0
-        nob1 = 0 
-        nob2 = 0
-
-        try:
-            temp = serial.read_all()
-            counter = 0
-
-            if temp:
-                len_temp = len(temp)
-                while counter < len_temp:
-                    if STATE == HEADER_1:
-
-                        if temp[counter] == 0xAA:
-                            STATE = HEADER_2
-
-                    elif STATE == HEADER_2:
-
-                        if temp[counter] == 0xBB:
-                            STATE = CHECK_NOB_1
-                            RECEIVED_DATA[:] = []
-
-                    elif STATE == CHECK_NOB_1:
-                        nob1 = temp[counter]
-                        STATE = CHECK_NOB_2
-                    
-                    elif STATE == CHECK_NOB_2:
-                        nob2 = temp[counter]
-                        NOB_BYTES[0] = nob1
-                        NOB_BYTES[1] = nob2
-                        nob = int.from_bytes(NOB_BYTES, "big")  
-                        STATE = IN_MESSAGE
-
-                    elif STATE == IN_MESSAGE:
-                    
-                        if len(RECEIVED_DATA) == nob:
-                            STATE = HEADER_1
-                            RECEIVED_DATA[0:0] = nob.to_bytes(2, 'big')
-
-                            crc_s = int.from_bytes(
-                                RECEIVED_DATA[-2:], 
-                                byteorder='big', 
-                                signed=False
-                            )
-
-                            crc_r = Crc16Xmodem.calc(
-                                RECEIVED_DATA[:-2]
-                            )
-                            
-                            if crc_r == crc_s:
-                                if SHOW_RECE_PACKET:
-                                    print('RECE: ', end='AA BB ')
-                                    printPacket(RECEIVED_DATA)
-
-                                key, value = decodePacket(RECEIVED_DATA)
-                                self.checkResult(key, value)
-                        else:
-                            RECEIVED_DATA.append(temp[counter])
-
-                    counter = counter + 1
-        except Exception as e:
-            print(e)
-            log('Serial Unhandled Exception', str(e) + '\n')
-
-
-class SerialThread(BaseSerial, QThread):
-    
-    def __init__(self):
-        super().__init__()
-        self.loop = True
-
-
-    def closePort(self):
-        self.loop = False
-        serial.close()
 
     def run(self):
         global STATE, RECEIVED_DATA, NOB_BYTES

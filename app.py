@@ -59,7 +59,7 @@ class MainWin(QMainWindow):
         self.langIndex = 0
         icon = QPixmap(SELECTED_LANG_ICON)
         self.lblEnSelected.setPixmap(icon.scaled(70, 70))
-        self.serialC = SerialTimer() if RPI_VERSION == '3' else SerialThread()
+        self.serialC = SerialThread()
         self.sensorFlags = [True, True, True, False, False, True]
         self.sensors = Sensors(
             self.btnLock,
@@ -94,6 +94,7 @@ class MainWin(QMainWindow):
         self.serialC.readFrequency.connect(lambda: laserPage({'frequency': self.frequency}))
         self.serialC.sysDate.connect(self.receiveDate)
         self.serialC.sysClock.connect(self.adjustTime)
+        self.serialC.start()
         self.updateT = UpdateFirmware()
         self.readMusicT = ReadMusics()
         self.readMusicT.result.connect(self.readMusicResult)
@@ -286,14 +287,7 @@ class MainWin(QMainWindow):
         if not self.saveConfigs():
             self.setLabel(TEXT['saveConfigError'][self.langIndex], 4)
 
-    def initTimers(self):
-        if RPI_VERSION == '3':
-            self.checkBuffer = QTimer()
-            self.checkBuffer.timeout.connect(self.serialC.checkBuffer)
-            self.checkBuffer.start(10)
-        else:
-            self.serialC.start()
-        
+    def initTimers(self):        
         self.incDaysTimer = QTimer()
         self.decDaysTimer = QTimer()
         self.backspaceTimer = QTimer()
@@ -1679,9 +1673,11 @@ class MainWin(QMainWindow):
             if maxF_pl_con and self.frequency >= maxF_pl:
                 self.frequency = maxF_pl
                 self.frequencyWidget.setValue(maxF_pl)
+    
     def sldrSetFrequency(self, value):
             self.frequency = value
             self.lblFrequencyValueCalib.setText(str(value))
+    
     def sldrFreqReleased(self):
         maxF_pl = math.floor(1000 / (2 * self.pulseWidth))
         maxF_pl_con = MAX_FREQUENCY >= maxF_pl
@@ -1690,6 +1686,7 @@ class MainWin(QMainWindow):
             self.frequencyWidget.setValue(maxF_pl)
             self.sliderFrequencyCalib.setValue(maxF_pl)
             self.lblFrequencyValueCalib.setText(str(maxF_pl))        
+    
     def saveCase(self):
         case = openCase(self.case)
         case.save(
@@ -2246,7 +2243,6 @@ class MainWin(QMainWindow):
             self.saveConfigs()
 
         self.futureSessions()
-
 
     def saveUserInfo(self):
         numberEdit = self.txtEditNumber.text()
