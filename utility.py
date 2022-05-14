@@ -16,23 +16,24 @@ from PyQt5.QtWidgets import QApplication
 from paths import *
 
 
-RPI_MODEL = ''
-RPI_VERSION = ''
-if os.path.isfile('/proc/device-tree/model'):
-    with open('/proc/device-tree/model', 'r') as f:
-        RPI_MODEL = f.read()
-        RPI_VERSION = RPI_MODEL.split('Pi')[1][:2].strip()
-    
-else:
-    RPI_MODEL = 'Unknown'
+def getRPiModel():
+    if os.path.isfile('/proc/device-tree/model'):
+        with open('/proc/device-tree/model', 'r') as f:
+            model = f.read()
+            # version = model.split('Pi')[1][:2].strip()
+    else:
+        model = 'Unknown'
+
+    return model
 
 
-OS_SPEC = ''
-if platform.system() == 'Windows':
-    OS_SPEC = platform.platform()
-        
-else:
-    OS_SPEC = platform.platform().split('-with')[0].replace('-', ' ')
+def getOS():
+    if platform.system() == 'Windows':
+        os = platform.platform()
+    else:
+        os = platform.platform().split('-with')[0].replace('-', ' ')
+
+    return os
 
 
 def log(title, info):
@@ -98,16 +99,17 @@ def setSystemTime(time):
         subprocess.call(shlex.split("sudo hwclock -w"))       
 
 
-def get_grpbox_widget(grpbox, widget):
-    return (w for w in grpbox.children() if isinstance(w, widget))
+def getFrameWidgets(frame, widget):
+    return (w for w in frame.children() if isinstance(w, widget))
 
 
-def layout_widgets(layout):
-    return (layout.itemAt(i).widget() for i in range(layout.count())) 
+def getLayoutWidgets(layout, widget):
+    widgets = []
+    for i in range(layout.count()):
+        if isinstance(layout.itemAt(i).widget(), widget):
+            widgets.append(layout.itemAt(i).widget())
 
-
-def get_layout_widget(layout, widget):
-    return (layout.itemAt(i).widget() for i in range(layout.count()) if isinstance(layout.itemAt(i).widget(), widget)) 
+    return widgets
 
 
 def getDiff(date):
@@ -274,7 +276,9 @@ def saveCoefficients(coeffs):
 
 def getID():
     id = ''
-    if not RPI_MODEL == 'Unknown':
+    if getRPiModel() == 'Unknown':
+        id = str(uuid.getnode()).upper()
+    else:
         try:
             with open('/proc/cpuinfo','r') as f:
                 for line in f:
@@ -284,9 +288,6 @@ def getID():
         except:
             id = str(uuid.getnode()).upper()
     
-    else:
-        id = str(uuid.getnode()).upper()
-
     return id.upper()
 
 
@@ -304,7 +305,7 @@ def calcMD5(directory, verifyFileName):
     return sumMd5
 
 
-def int_to_bytes(x: int) -> bytes:
+def intToBytes(x):
     return x.to_bytes((x.bit_length() + 7) // 8, 'big')
 
 

@@ -30,7 +30,7 @@ from lock import *
 mixer.init(buffer=2048)
 mixer.music.set_volume(0.5)
 
-a = 'jsjj'
+
 class QtSchemeHandler(QWebEngineUrlSchemeHandler):
     def requestStarted(self, job):
         request_url = job.requestUrl()
@@ -478,12 +478,12 @@ class MainWin(QMainWindow):
             'btnWaterflowCalib', 'txtTempCalib'
         ]
         keyboardButtons = list(chain(
-            layout_widgets(self.keyboardRow1),
-            layout_widgets(self.keyboardRow2),
-            layout_widgets(self.keyboardRow3),
-            layout_widgets(self.numRow1),
-            layout_widgets(self.numRow2),
-            layout_widgets(self.numRow3)
+            getLayoutWidgets(self.keyboardRow1, QPushButton),
+            getLayoutWidgets(self.keyboardRow2, QPushButton),
+            getLayoutWidgets(self.keyboardRow3, QPushButton),
+            getLayoutWidgets(self.numRow1, QPushButton),
+            getLayoutWidgets(self.numRow2, QPushButton),
+            getLayoutWidgets(self.numRow3, QPushButton)
         ))
         keyboardButtons.append(self.btnBackspace)
         keyboardButtons.append(self.btnReturn)
@@ -504,7 +504,7 @@ class MainWin(QMainWindow):
             elif btn.objectName() not in sensors:
                 btn.pressed.connect(lambda: self.playTouchSound('t'))       
 
-        buttons = get_grpbox_widget(self.hwbtnsFrame, QPushButton)
+        buttons = getFrameWidgets(self.hwbtnsFrame, QPushButton)
         for btn in buttons:
             if btn.objectName() == 'btnSaveHw':
                 continue
@@ -1048,10 +1048,10 @@ class MainWin(QMainWindow):
         password = self.txtHwPass.text()
         self.hwStackedWidget.setCurrentIndex(0)
         txts = chain(
-            get_layout_widget(self.prodGridLayout, QLineEdit),
-            get_layout_widget(self.laserGridLayout, QLineEdit),
-            get_layout_widget(self.driverGridLayout, QLineEdit),
-            get_layout_widget(self.embeddGridLayout, QLineEdit)
+            getLayoutWidgets(self.prodGridLayout, QLineEdit),
+            getLayoutWidgets(self.laserGridLayout, QLineEdit),
+            getLayoutWidgets(self.driverGridLayout, QLineEdit),
+            getLayoutWidgets(self.embeddGridLayout, QLineEdit)
         )
         self.btnHwinfo.setStyleSheet(SETTINGS_MENU_SELECTED)
         if password == '1':
@@ -1110,8 +1110,8 @@ class MainWin(QMainWindow):
         self.txtResetCounterPass.setStyleSheet(TXT_RESET_COUNTER_PASS)
 
     def readHwInfo(self):
-        self.txtOsSpecification.setText(OS_SPEC)
-        self.txtRpiVersion.setText(RPI_MODEL)
+        self.txtOsSpecification.setText(getOS())
+        self.txtRpiVersion.setText(getRPiModel())
         self.txtMonitor.setText(monitorInfo())
         self.txtSerialNumber.setText(self.configs['SerialNumber'])                
         self.txtLaserDiodeEnergy.setText(self.configs['LaserDiodeEnergy'])                
@@ -1186,7 +1186,7 @@ class MainWin(QMainWindow):
     
     def settingsMenuSelected(self, selectedBtn):
         def wrapper():
-            buttons = get_grpbox_widget(self.hwbtnsFrame, QPushButton)
+            buttons = getFrameWidgets(self.hwbtnsFrame, QPushButton)
             for btn in buttons:
                 btn.setStyleSheet('')
             if not selectedBtn == 'back':
@@ -1696,8 +1696,8 @@ class MainWin(QMainWindow):
 
     def bodyPartsSignals(self):
         buttons = chain(
-            get_layout_widget(self.fBodyPartsLayout, QPushButton),
-            get_layout_widget(self.mBodyPartsLayout, QPushButton)
+            getLayoutWidgets(self.fBodyPartsLayout, QPushButton),
+            getLayoutWidgets(self.mBodyPartsLayout, QPushButton)
         )
 
         for btn in buttons:
@@ -1824,12 +1824,12 @@ class MainWin(QMainWindow):
 
     def keyboardSignals(self):
         buttons = chain(
-            layout_widgets(self.keyboardRow1),
-            layout_widgets(self.keyboardRow2),
-            layout_widgets(self.keyboardRow3),
-            layout_widgets(self.numRow1),
-            layout_widgets(self.numRow2),
-            layout_widgets(self.numRow3)
+            getLayoutWidgets(self.keyboardRow1, QPushButton),
+            getLayoutWidgets(self.keyboardRow2, QPushButton),
+            getLayoutWidgets(self.keyboardRow3, QPushButton),
+            getLayoutWidgets(self.numRow1, QPushButton),
+            getLayoutWidgets(self.numRow2, QPushButton),
+            getLayoutWidgets(self.numRow3, QPushButton)
         )
 
         for btn in buttons:
@@ -1845,9 +1845,9 @@ class MainWin(QMainWindow):
         self.shift = not self.shift
 
         buttons = chain(
-            layout_widgets(self.keyboardRow1),
-            layout_widgets(self.keyboardRow2),
-            layout_widgets(self.keyboardRow3),
+            getLayoutWidgets(self.keyboardRow1, QPushButton),
+            getLayoutWidgets(self.keyboardRow2, QPushButton),
+            getLayoutWidgets(self.keyboardRow3, QPushButton),
         )
             
         if self.shift:

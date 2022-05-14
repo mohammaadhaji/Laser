@@ -11,7 +11,7 @@ from crccheck.crc import Crc16Xmodem
 from serial import Serial
 
 from paths import CURRENT_FILE_DIR, LOGS_PATH
-from utility import log, calcMD5, int_to_bytes
+from utility import log, calcMD5, intToBytes
 try:
     import RPi.GPIO as GPIO
     GPIO.setwarnings(False)
@@ -608,11 +608,11 @@ class UpdateFirmware(QThread):
                     )
                 
                 MICRO_DATA[250] = buildPacket(
-                    int_to_bytes(len(data)), 
+                    intToBytes(len(data)), 
                     UPDATE_PAGE, 250, REPORT
                 )
                 MICRO_DATA[251] = buildPacket(
-                    int_to_bytes(PACKET_NOB), 
+                    intToBytes(PACKET_NOB), 
                     UPDATE_PAGE, 251, REPORT
                 )
                 enterPage(UPDATE_PAGE)

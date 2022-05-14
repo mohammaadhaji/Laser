@@ -45,7 +45,7 @@ $ sudo apt-get update
 $ sudo apt install gstreamer1.0-libav gstreamer1.0-plugins-bad gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly pulseaudio gstreamer1.0-alsa libgl1-mesa-dev libglu1-mesa-dev edid-decode
 $ sudo pip3 install jdatetime pyserial crccheck pygame nuitka Werkzeug
 
-$ git clone https://github.com/mohammaadhaji/Laser.git
+$ git clone --depth=1 https://github.com/mohammaadhaji/Laser.git
 
 #################################################################################
 Step 4 --
