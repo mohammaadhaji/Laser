@@ -10,11 +10,6 @@ from PyQt5.QtWebEngineCore import (
     QWebEngineUrlSchemeHandler,
     QWebEngineUrlScheme,
 )
-from PyQt5.QtMultimedia import (
-    QMediaPlayer,
-    QMediaPlaylist,
-    QMediaContent,
-)
 from PyQt5.uic import loadUi
 from pygame import mixer
 
@@ -227,9 +222,6 @@ class MainWin(QMainWindow):
         op=QGraphicsOpacityEffect(self)
         op.setOpacity(0.8) 
         self.musicFrame.setGraphicsEffect(op)
-        op=QGraphicsOpacityEffect(self)
-        op.setOpacity(0.8) 
-        self.listWidgetVideos.setGraphicsEffect(op)
         self.browser = WebEngineView(self.mainPage)
         self.scheme_handler = QtSchemeHandler()
         self.browser.page().setBackgroundColor(Qt.GlobalColor.transparent)
@@ -379,8 +371,7 @@ class MainWin(QMainWindow):
         self.btnBackNotify.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnTutorials.clicked.connect(lambda: self.changeAnimation('horizontal'))
         self.btnTutorials.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.tutorialPage))
-        self.btnTutorials.clicked.connect(lambda: self.mediaPlayer.setMedia(QMediaContent()))
-        self.btnBackTutorials.clicked.connect(lambda: self.mediaPlayer.setMedia(QMediaContent()))
+        self.btnBackTutorials.clicked.connect(lambda: self.player.close(fast=True))
         self.btnBackTutorials.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         self.btnNextSession.clicked.connect(lambda: self.changeAnimation('vertical'))
         self.btnNextSession.clicked.connect(lambda: self.setNextSession('edit'))
@@ -415,8 +406,7 @@ class MainWin(QMainWindow):
         self.coolingWidget.inc.connect(lambda: self.setCooling('inc'))
         self.skinGradeWidget.btnSave.clicked.connect(self.saveCase)
         self.btnDeleteLogs.clicked.connect(self.deleteLogs)
-        self.btnPlay.clicked.connect(lambda: self.play('video'))
-        self.btnPlayMusic.clicked.connect(lambda: self.play('music'))
+        self.btnPlayMusic.clicked.connect(self.playMusic)
         self.btnLoadMusic.clicked.connect(self.readMusic)
         self.btnFindNext.clicked.connect(lambda : self.findWord(self.txtSearchLogs.text()))
         self.btnFindBefor.clicked.connect(lambda : self.findWord(self.txtSearchLogs.text(), True))
@@ -1263,7 +1253,7 @@ class MainWin(QMainWindow):
         self.sliderVolumeMusic.valueChanged.connect(self.setMusicVolume)
         self.musicSound.setVolume(self.configs['MusicVolume'])
         self.sliderVolumeMusic.setValue(self.configs['MusicVolume'])
-        self.musicSound.stateChanged.connect(lambda: self.mediaStateChanged('music'))
+        self.musicSound.stateChanged.connect(self.mediaStateChanged)
         self.musicSound.positionChanged.connect(self.positionChangedMusic)
         self.musicSound.durationChanged.connect(self.durationChangedMusic)
         self.positionSliderMusic.sliderMoved.connect(self.setPositionMusic)
@@ -1272,6 +1262,10 @@ class MainWin(QMainWindow):
         self.singleIco = QIcon()
         self.loopIco.addPixmap(QPixmap(LOOP_MUSIC_ICON))
         self.singleIco.addPixmap(QPixmap(SINGLE_MUSIC_ICON))
+        self.playIco = QIcon()
+        self.pauseIco = QIcon()
+        self.playIco.addPixmap(QPixmap(PLAY_ICON))
+        self.pauseIco.addPixmap(QPixmap(PAUSE_ICON))
         if self.LoopMusicFlag:
             self.btnLoop.setIcon(self.loopIco)
             self.playlist.setPlaybackMode(QMediaPlaylist.Loop)
@@ -1281,41 +1275,25 @@ class MainWin(QMainWindow):
         self.btnLoop.setIconSize(QSize(80, 80))
 
     def tutorials(self):
-        self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
-        self.videoWidget = VideoWidget()
-        self.videoLayout.addWidget(self.videoWidget)
-        self.listWidgetVideos.itemClicked.connect(self.videoSelected)
-        self.positionSlider.setRange(0, 0)
-        self.positionSlider.sliderMoved.connect(self.setPosition)
-        self.mediaPlayer.setVolume(self.configs['VideoVolume'])
-        self.sliderVolume.setValue(self.configs['VideoVolume'])
-        self.sliderVolume.valueChanged.connect(self.setVideoVolume)
-        self.mediaPlayer.setVideoOutput(self.videoWidget)
-        self.mediaPlayer.stateChanged.connect(lambda: self.mediaStateChanged('video'))
-        self.mediaPlayer.stateChanged.connect(self.adssDemoEnd)
-        self.mediaPlayer.positionChanged.connect(self.positionChanged)
-        self.mediaPlayer.durationChanged.connect(self.durationChanged)
-        self.playIco = QIcon()
-        self.pauseIco = QIcon()
-        self.playIco.addPixmap(QPixmap(PLAY_ICON))
-        self.pauseIco.addPixmap(QPixmap(PAUSE_ICON))
-        self.btnPlay.setIcon(self.playIco)
-        self.btnPlay.setIconSize(QSize(100, 100))
-        self.length = '00:00:00'
-        self.lblLength.setText(self.length)
-        tutoriasl = os.listdir(TUTORIALS_DIR)
-        if '.gitignore' in tutoriasl:
-            tutoriasl.remove('.gitignore')
-        for file in tutoriasl:
-            path = os.path.join(TUTORIALS_DIR, file) 
-            name = pathlib.Path(path).stem
-            self.listWidgetVideos.addItem(name)
+        self.player = Player(self.tutorialPage)
+        ax = (1920 - self.player.size().width()) / 2
+        ay = (1080 - self.player.size().height()) / 2
+        self.player.move(ax, ay)
 
-    def setVideoVolume(self, v):
-        self.mediaPlayer.setVolume(v)
-        self.configs['VideoVolume'] = v
-        self.saveConfigs()
+        films = os.listdir(TUTORIALS_DIR)
+        if '.gitignore' in films:
+            films.remove('.gitignore')
 
+        rows = len(films) // 3 if len(films) % 3 == 0 else len(films) // 3 + 1
+
+        for x in range(rows):
+            for y in range(3):
+                if films:
+                    button = QPushButton(str(str(3*x+y)))
+                    button.setText(films.pop())
+                    self.videosLayout.addWidget(button, x, y)
+                    button.clicked.connect(self.player.onOpen(button))
+        
     def setLoopMusic(self):
         self.LoopMusicFlag = not self.LoopMusicFlag
         if self.LoopMusicFlag:
@@ -1333,13 +1311,6 @@ class MainWin(QMainWindow):
         self.configs['MusicVolume'] = v
         self.saveConfigs()
         
-    def videoSelected(self, video):
-        stem = video.text()
-        self.lblTitle.setText(stem)
-        path = join(TUTORIALS_DIR, addExtenstion(stem))
-        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(path)))
-        self.play('video')
-        
     def musicSelected(self, r, c):
         name = os.path.basename(self.musicFiles[r])
         name = name[:50] + '...' if len(name) > 50 else name
@@ -1354,55 +1325,30 @@ class MainWin(QMainWindow):
         self.tableMusic.clearSelection()
         self.tableMusic.selectRow(self.playlist.currentIndex())
            
-    def play(self, i):
-        if i == 'video':
-            if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-                self.mediaPlayer.pause()
-            else:
-                self.mediaPlayer.play()
+    def playMusic(self):
+        if self.musicSound.state() == QMediaPlayer.PlayingState:
+            self.musicSound.pause()
+            self.musicMovie.stop()
         else:
-            if self.musicSound.state() == QMediaPlayer.PlayingState:
-                self.musicSound.pause()
-                self.musicMovie.stop()
-            else:
-                self.musicSound.play()
-                if self.btnPlayMusic.icon() == self.pauseIco:
-                    self.musicMovie.start()
-             
-    def setPosition(self, position):
-        self.mediaPlayer.setPosition(position)
+            self.musicSound.play()
+            if self.btnPlayMusic.icon() == self.pauseIco:
+                self.musicMovie.start()
     
     def setPositionMusic(self, position):
         self.musicSound.setPosition(position)
 
-    def mediaStateChanged(self, i):
-        if i == 'video':
-            if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-                self.btnPlay.setIcon(self.pauseIco)
-            else:
-                self.btnPlay.setIcon(self.playIco)
+    def mediaStateChanged(self):
+        if self.musicSound.state() == QMediaPlayer.PlayingState:
+            self.btnPlayMusic.setIcon(self.pauseIco)
+            self.musicMovie.start()
         else:
-            if self.musicSound.state() == QMediaPlayer.PlayingState:
-                self.btnPlayMusic.setIcon(self.pauseIco)
-                self.musicMovie.start()
-            else:
-                self.btnPlayMusic.setIcon(self.playIco)
-                self.musicMovie.stop()
-
-    def positionChanged(self, position):
-        self.positionSlider.setValue(position)
-        current = '{:02d}:{:02d}:{:02d} / '.format(*calcPosition(position)) + self.length
-        self.lblLength.setText(current)
+            self.btnPlayMusic.setIcon(self.playIco)
+            self.musicMovie.stop()
 
     def positionChangedMusic(self, position):
         self.positionSliderMusic.setValue(position)
         current = '{:02d}:{:02d}:{:02d} / '.format(*calcPosition(position)) + self.musicLength
         self.lblLengthMusic.setText(current)
-
-    def durationChanged(self, duration):
-        self.length = '{:02d}:{:02d}:{:02d}'.format(*calcPosition(duration))
-        self.lblLength.setText('00:00:00 / ' + self.length)
-        self.positionSlider.setRange(0, duration)
 
     def durationChangedMusic(self, duration):
         self.musicLength = '{:02d}:{:02d}:{:02d}'.format(*calcPosition(duration))

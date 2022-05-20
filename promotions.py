@@ -1,5 +1,11 @@
 import math
+import os
 
+from PyQt5.QtMultimedia import (
+    QMediaPlayer,
+    QMediaPlaylist,
+    QMediaContent,
+)
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import *
@@ -8,6 +14,7 @@ from PyQt5.QtCore import *
 from werkzeug.utils import cached_property
 
 from communication import HARDWARE_TEST_PAGE, READ, sendPacket
+from utility import calcPosition
 from styles import *
 from paths import *
 
@@ -858,20 +865,13 @@ class TableWidgetItem(QTableWidgetItem):
 
 
 class VideoWidget(QVideoWidget):
-        def __init__(self, parent = None):
-            QVideoWidget.__init__(self, parent)
+    clicked = pyqtSignal()
+    def __init__(self, parent = None):
+        QVideoWidget.__init__(self, parent)
 
-        def keyPressEvent(self, event):
-            if event.key() == Qt.Key_Escape and self.isFullScreen():
-                self.setFullScreen(False)
-                event.accept()
-            elif event.key() == Qt.Key_Enter and event.modifiers() & Qt.Key_Alt:
-                self.setFullScreen(not self.isFullScreen())
-                event.accept()
-
-        def mouseDoubleClickEvent(self, event):
-            self.setFullScreen(not self.isFullScreen())
-            event.accept()
+    def mousePressEvent(self, a0: QMouseEvent) -> None:
+        self.clicked.emit()
+        return super().mousePressEvent(a0)
 
 
 class ToggleButton(QCheckBox):
@@ -1849,3 +1849,386 @@ class AnimatedToolBox(QToolBox):
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self._computeTargetSize()
+
+
+class Player(QFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.setGeometry(QRect(20, 0, 1200, 680))
+        self.resize(0, 0)
+        self.setStyleSheet("""
+            QFrame#frame{
+                background-color: rgb(0, 0, 0);
+                border:5px solid rgb(5, 0, 48);
+                border-radius:10px;
+            }
+            QLabel{color:rgb(255, 255, 255);}
+        """)
+        self.setFrameShape(QFrame.NoFrame)
+        self.setFrameShadow(QFrame.Raised)
+        self.setObjectName("frame")
+        self.verticalLayout = QVBoxLayout(self)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout.setSpacing(0)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.topFrame = QFrame(self)
+        self.topFrame.setMaximumSize(QSize(16777215, 0))
+        self.topFrame.setStyleSheet("""
+            QFrame{
+                background-color: rgb(5, 0, 48);
+                border-top-left-radius: 10px;
+	            border-top-right-radius: 10px;
+            }
+        """)
+        self.topFrame.setFrameShape(QFrame.StyledPanel)
+        self.topFrame.setFrameShadow(QFrame.Raised)
+        self.topFrame.setObjectName("topFrame")
+        self.horizontalLayout = QHBoxLayout(self.topFrame)
+        self.horizontalLayout.setContentsMargins(20, 0, 0, 0)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.lblTitle = QLabel(self.topFrame)
+        font = QFont()
+        font.setFamily("Arial")
+        font.setPointSize(16)
+        self.lblTitle.setFont(font)
+        self.lblTitle.setText("")
+        self.lblTitle.setObjectName("lblTitle")
+        self.horizontalLayout.addWidget(self.lblTitle)
+        spacerItem = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem)
+        self.btnClose = QPushButton(self.topFrame)
+        self.btnClose.setMaximumSize(QSize(50, 50))
+        # self.btnClose.setStyleSheet("QPushButton {outline:0;border-radius:25px;border:0px;}")
+        self.btnClose.setText("")
+        icon = QIcon()
+        icon.addPixmap(QPixmap(CLOSE_FILM), QIcon.Normal, QIcon.Off)
+        self.btnClose.setIcon(icon)
+        self.btnClose.setIconSize(QSize(50, 50))
+        self.btnClose.setObjectName("btnClose")
+        self.horizontalLayout.addWidget(self.btnClose)
+        self.verticalLayout.addWidget(self.topFrame)
+        self.widgetFrame = QFrame(self)
+        self.widgetFrame.setFrameShape(QFrame.StyledPanel)
+        self.widgetFrame.setFrameShadow(QFrame.Raised)
+        self.widgetFrame.setObjectName("widgetFrame")
+        self.widgetFrame.setStyleSheet("background-color: black;")
+        self.verticalLayout_4 = QVBoxLayout(self.widgetFrame)
+        self.verticalLayout_4.setContentsMargins(10, 10, 10, 10)
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.widget = VideoWidget(self.widgetFrame)
+        self.widget.setObjectName("widget")
+        self.verticalLayout_2 = QVBoxLayout(self.widget)
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.verticalLayout_4.addWidget(self.widget)
+        self.verticalLayout.addWidget(self.widgetFrame)
+        self.bottomFrame = QFrame(self)
+        self.bottomFrame.setMaximumSize(QSize(16777215, 0))
+        self.bottomFrame.setStyleSheet("background-color: rgb(5, 0, 48);")
+        self.bottomFrame.setFrameShape(QFrame.StyledPanel)
+        self.bottomFrame.setFrameShadow(QFrame.Raised)
+        self.bottomFrame.setObjectName("bottomFrame")
+        self.horizontalLayout_2 = QHBoxLayout(self.bottomFrame)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.horizontalLayout_2.setContentsMargins(23, -1, 23, -1)
+        self.sliderVolume = QSlider(self.bottomFrame)
+        self.sliderVolume.setMinimumSize(QSize(50, 0))
+        self.sliderVolume.setStyleSheet("""
+            QSlider::groove:vertical {
+                background: red;
+                position: absolute; 
+                left: 4px; right: 4px;
+                width: 10px;
+            }
+
+            QSlider::handle:vertical {
+                height: 30px;
+                width: 30px;
+                border-radius:5px;
+                background: rgb(85, 170, 255);
+                margin: 0 -20px; 
+            }
+
+            QSlider::add-page:vertical {
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                stop: 0 #ABCD44, 
+                stop: 0.5 #ABCD44,
+                stop: 0.51 #A1C72E,
+                stop: 0.54 #A1C72E,
+                stop: 1.0 #9CC322);
+            }
+
+            QSlider::sub-page:vertical {
+                background: #fff;
+            }
+            QSlider::handle:vertical:pressed {
+                background-color: rgb(65, 255, 195);
+            }
+        """)
+        self.sliderVolume.setMaximum(50)
+        self.sliderVolume.setProperty("value", 50)
+        self.sliderVolume.setOrientation(Qt.Vertical)
+        self.sliderVolume.setObjectName("sliderVolume")
+        self.horizontalLayout_2.addWidget(self.sliderVolume)
+        spacerItem1 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem1)
+        self.btnPlay = QPushButton(self.bottomFrame)
+        self.btnPlay.setStyleSheet("""
+            QPushButton{
+                outline : 0;
+                background-color: rgb(213, 213, 213);
+                border-radius: 50px;
+                border:10px solid rgb(74, 74, 74);
+            }
+            QPushButton:pressed{
+                background-color: rgb(0, 170, 255);
+            }
+        """)
+        self.btnPlay.setText("")
+        icon1 = QIcon()
+        icon1.addPixmap(QPixmap(PLAY_ICON), QIcon.Normal, QIcon.Off)
+        self.btnPlay.setIcon(icon1)
+        self.btnPlay.setIconSize(QSize(80, 80))
+        self.btnPlay.setObjectName("btnPlay")
+        self.horizontalLayout_2.addWidget(self.btnPlay)
+        spacerItem2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem2)
+        self.verticalLayout_3 = QVBoxLayout()
+        self.verticalLayout_3.setContentsMargins(0, -1, -1, -1)
+        self.verticalLayout_3.setSpacing(0)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.label = QLabel(self.bottomFrame)
+        font = QFont()
+        font.setPointSize(16)
+        self.label.setFont(font)
+        self.label.setText("")
+        self.label.setObjectName("label")
+        self.verticalLayout_3.addWidget(self.label)
+        self.positionSlider = QSlider(self.bottomFrame)
+        self.positionSlider.setMinimumSize(QSize(0, 70))
+        self.positionSlider.setStyleSheet("QSlider {\n"
+"min-height:70px;\n"
+"}\n"
+"QSlider::groove:horizontal {\n"
+"    border-radius: 1px;\n"
+"    height: 10px;\n"
+"    margin: 0px;\n"
+"    background-color: rgb(52, 59, 72);\n"
+"}\n"
+"\n"
+"QSlider::handle:horizontal {\n"
+"    background-color: rgb(85, 170, 255);\n"
+"    border: none;\n"
+"    height: 70px;\n"
+"    width: 60px;\n"
+"    border-radius:25px;\n"
+"    margin: -25px 0;\n"
+"    padding: -25px 0px;\n"
+"}\n"
+"QSlider::handle:horizontal:pressed {\n"
+"    background-color: rgb(65, 255, 195);\n"
+"}\n"
+"\n"
+"QSlider::sub-page:horizontal {\n"
+"background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"  stop: 0 #ABCD44, \n"
+"  stop: 0.5 #ABCD44,\n"
+"  stop: 0.51 #A1C72E,\n"
+"  stop: 0.54 #A1C72E,\n"
+"  stop: 1.0 #9CC322);\n"
+"border: 1px solid #777;\n"
+"height: 10px;\n"
+"border-radius: 4px;\n"
+"}\n"
+"\n"
+"QSlider::add-page:horizontal {\n"
+"background: #fff;\n"
+"border: 1px solid #777;\n"
+"height: 10px;\n"
+"border-radius: 4px;\n"
+"}\n"
+"")
+        self.positionSlider.setOrientation(Qt.Horizontal)
+        self.positionSlider.setObjectName("positionSlider")
+        self.verticalLayout_3.addWidget(self.positionSlider)
+        self.lblLength = QLabel(self.bottomFrame)
+        font = QFont()
+        font.setFamily("Arial")
+        font.setPointSize(18)
+        self.lblLength.setFont(font)
+        self.lblLength.setStyleSheet("color:rgb(255, 255, 255)")
+        self.lblLength.setAlignment(Qt.AlignCenter)
+        self.lblLength.setObjectName("lblLength")
+        self.verticalLayout_3.addWidget(self.lblLength)
+        self.horizontalLayout_2.addLayout(self.verticalLayout_3)
+        spacerItem3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem3)
+        self.btnFullscreen = QPushButton(self.bottomFrame)
+        self.btnFullscreen.setText("")
+        icon2 = QIcon()
+        icon2.addPixmap(QPixmap(FULLSCREEN_ICON), QIcon.Normal, QIcon.Off)
+        self.btnFullscreen.setIcon(icon2)
+        self.btnFullscreen.setIconSize(QSize(50, 50))
+        self.btnFullscreen.setObjectName("btnFullscreen")
+        self.horizontalLayout_2.addWidget(self.btnFullscreen)
+        self.horizontalLayout_2.setStretch(4, 1)
+        self.verticalLayout.addWidget(self.bottomFrame)
+        self.verticalLayout.setStretch(1, 1)
+
+        self.widget.clicked.connect(lambda: self.control('show'))
+
+        self.timer = QTimer()
+        self.timer.timeout.connect(lambda: self.control('hide'))
+        self.btnFullscreen.clicked.connect(self.showFullScreen)
+        self.btnFullscreen.setCheckable(True)
+
+        self.playIcon = QIcon()
+        self.pauseIcon = QIcon()
+        self.playIcon.addPixmap(QPixmap(PLAY_ICON))
+        self.pauseIcon.addPixmap(QPixmap(PAUSE_ICON))
+
+        self.length = '00:00:00'
+        self.lblLength.setText("00:00:00")
+
+        self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+        self.mediaPlayer.setVideoOutput(self.widget)
+        self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
+        self.mediaPlayer.positionChanged.connect(self.positionChanged)
+        self.mediaPlayer.durationChanged.connect(self.durationChanged)
+        self.btnPlay.clicked.connect(self.play)
+        self.sliderVolume.valueChanged.connect(self.setVideoVolume)
+        self.positionSlider.setRange(0, 0)
+        self.positionSlider.sliderMoved.connect(self.setPosition)
+        self.positionSlider.sliderPressed.connect(lambda: self.timer.start(5000))
+        self.sliderVolume.sliderPressed.connect(lambda: self.timer.start(5000))
+        self.btnPlay.clicked.connect(lambda: self.timer.start(5000))
+        self.btnClose.clicked.connect(self.close)
+        self.close()
+
+        
+
+    def play(self):    
+        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+            self.mediaPlayer.pause()
+        else:
+            self.mediaPlayer.play()
+
+    def mediaStateChanged(self):
+        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+            self.btnPlay.setIcon(self.pauseIcon)
+        else:
+            self.btnPlay.setIcon(self.playIcon)
+
+    def setPosition(self, position):
+        self.mediaPlayer.setPosition(position)
+
+    def positionChanged(self, position):
+        self.positionSlider.setValue(position)
+        current = '{:02d}:{:02d}:{:02d} / '.format(*calcPosition(position)) + self.length
+        self.lblLength.setText(current)
+
+    def durationChanged(self, duration):
+        self.length = '{:02d}:{:02d}:{:02d}'.format(*calcPosition(duration))
+        self.lblLength.setText('00:00:00 / ' + self.length)
+        self.positionSlider.setRange(0, duration)
+
+    def setVideoVolume(self, v):
+        self.mediaPlayer.setVolume(v)
+
+    def videoSelected(self, name):
+        path = join(TUTORIALS_DIR, name)
+        self.lblTitle.setText(name)
+        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(path)))
+        self.play()
+    
+    def showFullScreen(self, full):
+        icon = QIcon()
+        if full:
+            icon.addPixmap(QPixmap(NOT_FULLSCREEN_ICON))
+            pos = QRect(-2, -2, 1924, 1084)
+            self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
+            self.setStyleSheet("""
+                QFrame#frame{
+                    background-color: rgb(0, 0, 0);
+                    border:5px solid black;
+                    border-radius:1px;
+                }
+                QLabel{color:rgb(255, 255, 255);}
+            """)
+        else:
+            icon.addPixmap(QPixmap(FULLSCREEN_ICON))
+            ax = (1920 - 1200) / 2
+            ay = (1080 - 680) / 2
+            pos = QRect(ax, ay, 1200, 680)
+            self.verticalLayout_4.setContentsMargins(10, 10, 10, 10)
+            self.setStyleSheet("""
+                QFrame#frame{
+                    background-color: rgb(0, 0, 0);
+                    border:5px solid rgb(5, 0, 48);
+                    border-radius:10px;
+                }
+                QLabel{color:rgb(255, 255, 255);}
+            """)
+
+        self.btnFullscreen.setIcon(icon)   
+        self.setGeometry(pos)
+        self.timer.start(5000)
+                
+    def control(self, i, force=False):
+        topH = self.topFrame.size().height()
+        if not force: 
+            if i == 'hide' and topH == 0:
+                return
+            
+            if i == 'show' and topH > 0:
+                return
+
+        if i == 'hide':
+            topH = 65
+            newTopH = 0
+            newBottomH = 0
+            self.timer.stop()
+            
+        else:
+            topH = 0
+            newTopH = 65
+            newBottomH = 165
+            self.timer.start(5000)
+
+        self.topFrame.setMaximumHeight(newTopH)
+        self.bottomFrame.setMaximumHeight(newBottomH)
+        
+    def close(self, fast=False):
+        self.mediaPlayer.setMedia(QMediaContent())
+        self.animation = QPropertyAnimation(self, b"geometry")
+        time = 500
+        if fast:
+            time = 0
+        self.animation.setDuration(time)
+        self.animation.setStartValue(self.geometry())
+        self.animation.setEndValue(QRect(1920 // 2, 1080 // 2, 0, 0))
+        self.animation.setEasingCurve(QEasingCurve.InOutQuart)
+        self.animation.start()
+
+    def onOpen(self, btn):
+        def wrapper():
+            if self.width() <= 1: 
+                self.btnPlay.setIcon(self.playIcon)
+                self.animation = QPropertyAnimation(self, b"geometry")
+                self.animation.setDuration(500)
+                self.animation.setStartValue(self.lower(btn.geometry()))
+                ax = (1920 - 1200) / 2
+                ay = (1080 - 680) / 2
+                self.animation.setEndValue(QRect(ax, ay , 1200, 680))
+                self.animation.setEasingCurve(QEasingCurve.InOutQuart)
+                self.animation.start()
+                self.animation.finished.connect(lambda :self.videoSelected(btn.text()))
+            else:
+                self.videoSelected(btn.text())
+                
+            self.control('show', force=True)
+        
+        return wrapper
+
+    def lower(self, pos):
+        return QRect(pos.left(), pos.top() + 130, pos.width()+ 10, pos.height())

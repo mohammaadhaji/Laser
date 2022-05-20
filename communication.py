@@ -19,14 +19,16 @@ try:
     GPIO.setup(12, GPIO.OUT)
     GPIO.output(12, GPIO.HIGH)
 except Exception as e:
-    log('GPIO', str(e) + '\n')
+    if not platform.system() == 'Windows':
+        log('GPIO', str(e) + '\n')
     
 
 def gpioCleanup():
     try:
         GPIO.cleanup()
     except Exception as e:
-        log('GPIO', str(e) + '\n')
+        if not platform.system() == 'Windows': 
+            log('GPIO', str(e) + '\n')
 
 
 if platform.system() == 'Windows':
