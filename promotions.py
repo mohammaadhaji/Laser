@@ -1898,7 +1898,6 @@ class Player(QFrame):
         self.horizontalLayout.addItem(spacerItem)
         self.btnClose = QPushButton(self.topFrame)
         self.btnClose.setMaximumSize(QSize(50, 50))
-        # self.btnClose.setStyleSheet("QPushButton {outline:0;border-radius:25px;border:0px;}")
         self.btnClose.setText("")
         icon = QIcon()
         icon.addPixmap(QPixmap(CLOSE_FILM), QIcon.Normal, QIcon.Off)
@@ -1933,38 +1932,7 @@ class Player(QFrame):
         self.horizontalLayout_2.setContentsMargins(23, -1, 23, -1)
         self.sliderVolume = QSlider(self.bottomFrame)
         self.sliderVolume.setMinimumSize(QSize(50, 0))
-        self.sliderVolume.setStyleSheet("""
-            QSlider::groove:vertical {
-                background: red;
-                position: absolute; 
-                left: 4px; right: 4px;
-                width: 10px;
-            }
-
-            QSlider::handle:vertical {
-                height: 30px;
-                width: 30px;
-                border-radius:5px;
-                background: rgb(85, 170, 255);
-                margin: 0 -20px; 
-            }
-
-            QSlider::add-page:vertical {
-                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                stop: 0 #ABCD44, 
-                stop: 0.5 #ABCD44,
-                stop: 0.51 #A1C72E,
-                stop: 0.54 #A1C72E,
-                stop: 1.0 #9CC322);
-            }
-
-            QSlider::sub-page:vertical {
-                background: #fff;
-            }
-            QSlider::handle:vertical:pressed {
-                background-color: rgb(65, 255, 195);
-            }
-        """)
+        self.sliderVolume.setStyleSheet(SLIDER_VOLUME)
         self.sliderVolume.setMaximum(50)
         self.sliderVolume.setProperty("value", 50)
         self.sliderVolume.setOrientation(Qt.Vertical)
@@ -1973,17 +1941,7 @@ class Player(QFrame):
         spacerItem1 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem1)
         self.btnPlay = QPushButton(self.bottomFrame)
-        self.btnPlay.setStyleSheet("""
-            QPushButton{
-                outline : 0;
-                background-color: rgb(213, 213, 213);
-                border-radius: 50px;
-                border:10px solid rgb(74, 74, 74);
-            }
-            QPushButton:pressed{
-                background-color: rgb(0, 170, 255);
-            }
-        """)
+        self.btnPlay.setStyleSheet(BTN_PLAY)
         self.btnPlay.setText("")
         icon1 = QIcon()
         icon1.addPixmap(QPixmap(PLAY_ICON), QIcon.Normal, QIcon.Off)
@@ -2006,48 +1964,7 @@ class Player(QFrame):
         self.verticalLayout_3.addWidget(self.label)
         self.positionSlider = QSlider(self.bottomFrame)
         self.positionSlider.setMinimumSize(QSize(0, 70))
-        self.positionSlider.setStyleSheet("QSlider {\n"
-"min-height:70px;\n"
-"}\n"
-"QSlider::groove:horizontal {\n"
-"    border-radius: 1px;\n"
-"    height: 10px;\n"
-"    margin: 0px;\n"
-"    background-color: rgb(52, 59, 72);\n"
-"}\n"
-"\n"
-"QSlider::handle:horizontal {\n"
-"    background-color: rgb(85, 170, 255);\n"
-"    border: none;\n"
-"    height: 70px;\n"
-"    width: 60px;\n"
-"    border-radius:25px;\n"
-"    margin: -25px 0;\n"
-"    padding: -25px 0px;\n"
-"}\n"
-"QSlider::handle:horizontal:pressed {\n"
-"    background-color: rgb(65, 255, 195);\n"
-"}\n"
-"\n"
-"QSlider::sub-page:horizontal {\n"
-"background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"  stop: 0 #ABCD44, \n"
-"  stop: 0.5 #ABCD44,\n"
-"  stop: 0.51 #A1C72E,\n"
-"  stop: 0.54 #A1C72E,\n"
-"  stop: 1.0 #9CC322);\n"
-"border: 1px solid #777;\n"
-"height: 10px;\n"
-"border-radius: 4px;\n"
-"}\n"
-"\n"
-"QSlider::add-page:horizontal {\n"
-"background: #fff;\n"
-"border: 1px solid #777;\n"
-"height: 10px;\n"
-"border-radius: 4px;\n"
-"}\n"
-"")
+        self.positionSlider.setStyleSheet(SLIDER_DURATION)
         self.positionSlider.setOrientation(Qt.Horizontal)
         self.positionSlider.setObjectName("positionSlider")
         self.verticalLayout_3.addWidget(self.positionSlider)
@@ -2064,7 +1981,6 @@ class Player(QFrame):
         spacerItem3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem3)
         self.btnFullscreen = QPushButton(self.bottomFrame)
-        self.btnFullscreen.setText("")
         icon2 = QIcon()
         icon2.addPixmap(QPixmap(FULLSCREEN_ICON), QIcon.Normal, QIcon.Off)
         self.btnFullscreen.setIcon(icon2)
@@ -2141,7 +2057,7 @@ class Player(QFrame):
         self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(path)))
         self.play()
     
-    def showFullScreen(self, full):
+    def showFullScreen(self, full, onClosing=False):
         icon = QIcon()
         if full:
             icon.addPixmap(QPixmap(NOT_FULLSCREEN_ICON))
@@ -2171,8 +2087,9 @@ class Player(QFrame):
             """)
 
         self.btnFullscreen.setIcon(icon)   
-        self.setGeometry(pos)
         self.timer.start(5000)
+        if not onClosing:
+            self.setGeometry(pos)
                 
     def control(self, i, force=False):
         topH = self.topFrame.size().height()
@@ -2200,10 +2117,12 @@ class Player(QFrame):
         
     def close(self, fast=False):
         self.mediaPlayer.setMedia(QMediaContent())
-        self.animation = QPropertyAnimation(self, b"geometry")
-        time = 500
+        self.showFullScreen(False, onClosing=True)
+        self.btnFullscreen.setChecked(False)
+        time = 400
         if fast:
             time = 0
+        self.animation = QPropertyAnimation(self, b"geometry")
         self.animation.setDuration(time)
         self.animation.setStartValue(self.geometry())
         self.animation.setEndValue(QRect(1920 // 2, 1080 // 2, 0, 0))

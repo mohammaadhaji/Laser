@@ -773,3 +773,92 @@ QLabel {
     border: 2px solid white;
 }
 """
+
+SLIDER_VOLUME = """
+QSlider::groove:vertical {
+    background: red;
+    position: absolute; 
+    left: 4px; right: 4px;
+    width: 10px;
+}
+
+QSlider::handle:vertical {
+    height: 30px;
+    width: 30px;
+    border-radius:5px;
+    background: rgb(85, 170, 255);
+    margin: 0 -20px; 
+}
+
+QSlider::add-page:vertical {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+    stop: 0 #ABCD44, 
+    stop: 0.5 #ABCD44,
+    stop: 0.51 #A1C72E,
+    stop: 0.54 #A1C72E,
+    stop: 1.0 #9CC322);
+}
+
+QSlider::sub-page:vertical {
+    background: #fff;
+}
+QSlider::handle:vertical:pressed {
+    background-color: rgb(65, 255, 195);
+}
+"""
+
+SLIDER_DURATION = """
+QSlider {
+    min-height:70px;
+}
+QSlider::groove:horizontal {
+    border-radius: 1px;
+    height: 10px;
+    margin: 0px;
+    background-color: rgb(52, 59, 72);
+}
+
+QSlider::handle:horizontal {
+    background-color: rgb(85, 170, 255);
+    border: none;
+    height: 70px;
+    width: 60px;
+    border-radius:25px;
+    margin: -25px 0;
+    padding: -25px 0px;
+}
+QSlider::handle:horizontal:pressed {
+    background-color: rgb(65, 255, 195);
+}
+
+QSlider::sub-page:horizontal {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #ABCD44, 
+        stop: 0.5 #ABCD44,
+        stop: 0.51 #A1C72E,
+        stop: 0.54 #A1C72E,
+        stop: 1.0 #9CC322);
+    border: 1px solid #777;
+    height: 10px;
+    border-radius: 4px;
+}
+
+QSlider::add-page:horizontal {
+    background: #fff;
+    border: 1px solid #777;
+    height: 10px;
+    border-radius: 4px;
+}
+"""
+
+BTN_PLAY = """
+QPushButton{
+    outline : 0;
+    background-color: rgb(213, 213, 213);
+    border-radius: 50px;
+    border:10px solid rgb(74, 74, 74);
+}
+QPushButton:pressed{
+    background-color: rgb(0, 170, 255);
+}
+"""
