@@ -1,5 +1,4 @@
 import math
-import os
 
 from PyQt5.QtMultimedia import (
     QMediaPlayer,

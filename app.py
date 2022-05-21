@@ -51,9 +51,7 @@ class MainWin(QMainWindow):
         self.usersData = loadUsers()
         self.usersList = list(self.usersData.values())
         self.langIndex = 0 if self.configs['Language'] == 'en' else 1
-        self.langIndex = 0
-        icon = QPixmap(SELECTED_LANG_ICON)
-        self.lblEnSelected.setPixmap(icon.scaled(70, 70))
+        self.lblEnSelected.setPixmap(QPixmap(SELECTED_LANG_ICON).scaled(70, 70))
         self.serialC = SerialThread()
         self.sensorFlags = [True, True, True, False, False, True]
         self.sensors = Sensors(
@@ -104,6 +102,9 @@ class MainWin(QMainWindow):
         self.musicMovie.start()
         self.musicMovie.stop()
         self.lblShutdownGif.setMovie(self.shutdownMovie)
+        self.adssMedia = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+        self.adssMedia.setVideoOutput(self.adssVideo)
+        self.adssMedia.stateChanged.connect(self.adssDemoEnd)
         self.musicSound = QMediaPlayer()
         self.touchSound = mixer.Sound(TOUCH_SOUND)
         self.keyboardSound = mixer.Sound(KEYBOARD_SOUND)
@@ -601,21 +602,17 @@ class MainWin(QMainWindow):
     def adss(self):
         self.changeAnimation('vertical')
         self.keyboard('hide')
-        self.videoLayout.removeWidget(self.videoWidget)
-        self.adssLayout.addWidget(self.videoWidget)
-        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(ADSS_DEMO)))
-        self.mediaPlayer.play()
+        self.adssMedia.setMedia(QMediaContent(QUrl.fromLocalFile(ADSS_DEMO)))
+        self.adssMedia.play()
         index = self.stackedWidget.indexOf(self.adssPage)
         self.stackedWidget.setCurrentIndex(index)
     
     def adssDemoEnd(self):
         index = self.stackedWidget.indexOf(self.adssPage)
         if self.stackedWidget.currentIndex() == index:
-            if not self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-                self.mediaPlayer.setMedia(QMediaContent())
-                self.stackedWidget.setCurrentWidget(self.mainPage)
-                self.adssLayout.removeWidget(self.videoWidget)
-                self.videoLayout.addWidget(self.videoWidget)
+            self.adssMedia.setMedia(QMediaContent())
+            self.stackedWidget.setCurrentWidget(self.mainPage)
+        
             
     def setSensorFlags(self, flags):
         self.sensorFlags = flags
@@ -1276,10 +1273,9 @@ class MainWin(QMainWindow):
 
     def tutorials(self):
         self.player = Player(self.tutorialPage)
-        ax = (1920 - self.player.size().width()) / 2
-        ay = (1080 - self.player.size().height()) / 2
+        ax = (1920 - self.player.size().width()) // 2
+        ay = (1080 - self.player.size().height()) // 2
         self.player.move(ax, ay)
-
         films = os.listdir(TUTORIALS_DIR)
         if '.gitignore' in films:
             films.remove('.gitignore')

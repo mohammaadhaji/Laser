@@ -60,7 +60,7 @@ QScrollBar:vertical {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>7</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="adssPage">
        <property name="styleSheet">
@@ -87,6 +87,9 @@ QScrollBar:vertical {
           <property name="spacing">
            <number>0</number>
           </property>
+          <item>
+           <widget class="QVideoWidget" name="adssVideo" native="true"/>
+          </item>
          </layout>
         </item>
        </layout>
@@ -592,7 +595,7 @@ border: 1px solid white;
       <widget class="QWidget" name="mainPage">
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,5,1">
+         <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,5,1">
           <property name="spacing">
            <number>8</number>
           </property>
@@ -12814,6 +12817,12 @@ min-width:220px;
    <class>AnimatedToolBox</class>
    <extends>QToolBox</extends>
    <header>promotions.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QVideoWidget</class>
+   <extends>QWidget</extends>
+   <header>PyQt5.QtMultimediaWidgets.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
